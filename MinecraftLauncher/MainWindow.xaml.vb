@@ -55,6 +55,9 @@ Module GlobaleVariablen
     Public cachefolder As String = mcpfad & "\cache"
     Public downloadfilepath As String
     Public servers As IList(Of Server) = New List(Of Server)
+    Public Applicationcache As String = IO.Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, "cache")
+    Public onlineversionfile As String = IO.Path.Combine(Applicationcache, "version.txt")
+    Public changelogfile As String = IO.Path.Combine(Applicationcache, "changelog.txt")
 
 End Module
 
@@ -74,33 +77,16 @@ Public Class MainWindow
     Private modslist As IList(Of ForgeMod)
     Public WithEvents updController As New updateSystemDotNet.updateController
 
-    Private Sub UpdateControllerInitalisieren()
-        updController.updateUrl = "http://patzleiner.net/mcmetrolauncher/updatesystem/"
-        updController.projectId = "5fa10b5a-f769-498e-bb55-3a06f20e2c5e"
-        updController.publicKey = "<RSAKeyValue><Modulus>pesqJDkvV0z870bUwSIJlGs0mkk2lFmvtRYrQu991v5daNhRUsUTiKxl7vKipJYKQJ/bw1LfF5fd6ntSjcsMAR5dKQFmeS5jaz0R6oJg9qkI1ZygUJ1qb1oC0NpsruaCp9oe5MTOjEsPVfX4TELfhyIurp7AxiihHXJysjltPWqxZtMXs1OIVxnxzNDQ16T02m2Gve/F/hY4hXjiwgLRYZN/nwLghbxnljlfflbOVsvaWSC4Rw3YyPIveLg2kiTUcqoN3tBlKOQ5YDbPIzkOSt6TOlyGnDQFG1ClyzhyUMCWGhtLE1/QRytrs7SwzG+tB+ygPcqFkLf0FT6az3nylbsurpRARLM0C9K7XWN39yzfCcOHHTwbP0GxRc4x9WqsMKmJK1ofwe99Lf+0gZ4IPXoc2U4n+sOW18pDPOMSdddz9zblPia2hdSGgJ9z9cuQ3f2RLFQh1QDGzgvxwqLt+Sy0Km3LFDb3yoIq3HfVvuz9lVCz0SsLV/YOB/l4EYonC1nKCHvHXI68/XsZ0WKd0ZyQ/X2LeTENH0bF7DQc/shC5iTNjHuownP/Reo0YnzR0tKNyt7i7M+zAf+V4snt6ykxmXy7CauOll7u0AVnwkJ5lkNH2VG51nCc2LdvMzUhdiKAlTSc27LXTXPKz0vQL13PjbhUlHiENaYR8888ac0=</Modulus><Exponent>AQAB</Exponent></RSAKeyValue>"
-        updController.releaseFilter.checkForFinal = True
-        updController.releaseFilter.checkForBeta = True
-        updController.releaseFilter.checkForAlpha = False
-        updController.restartApplication = True
-        updController.autoCloseHostApplication = True
-        updController.retrieveHostVersion = True
-    End Sub
+    Private ReadOnly Property AssemblyVersion As String
+        Get
+            Return System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString()
+        End Get
+    End Property
 
     Sub Check_Updates()
-        UpdateControllerInitalisieren()
-        updController.checkForUpdatesAsync()
-        'updController.updateInteractive()
-    End Sub
-
-    Private Sub updController_updateFound(sender As Object, e As updateSystemDotNet.appEventArgs.updateFoundEventArgs) Handles updController.updateFound
-        Dim updater As New Updater
-        updater.ShowDialog()
-    End Sub
-
-    Private Sub updController_checkForUpdatesCompleted(sender As Object, e As updateSystemDotNet.appEventArgs.checkForUpdatesCompletedEventArgs) Handles updController.checkForUpdatesCompleted
-        If e.Cancelled AndAlso e.Error IsNot Nothing Then
-            MessageBox.Show(e.Error.ToString, "Fehler!")
-            Return
+        If File.ReadAllText(onlineversionfile) > AssemblyVersion Then
+            Dim Updater As New Updater
+            Updater.Show()
         End If
     End Sub
 
@@ -162,7 +148,6 @@ Public Class MainWindow
     End Sub
 
     Private Sub MainWindow_Loaded(sender As Object, e As RoutedEventArgs) Handles Me.Loaded
-        Check_Updates()
         'AccentColors = ThemeManager.DefaultAccents.Select(Function(p) p.Name)
         Me.ShowWindowCommandsOnTop = False
         tb_modsfolder.Text = modsfolder
@@ -174,6 +159,7 @@ Public Class MainWindow
 
         Load_Servers()
         Ping_servers()
+        Check_Updates()
     End Sub
 
     Sub Get_Profiles()
@@ -1323,6 +1309,15 @@ Public Class MainWindow
 
 
 #End Region
+
+    Private Sub btn_update_Click(sender As Object, e As RoutedEventArgs) Handles btn_update.Click
+        If File.ReadAllText(onlineversionfile) > AssemblyVersion Then
+            Dim Updater As New Updater
+            Updater.Show()
+        Else
+            lbl_noupdatefound.Text = "Du besitzt die aktuelle Version"
+        End If
+    End Sub
 End Class
 
 Public Class ImageConvert

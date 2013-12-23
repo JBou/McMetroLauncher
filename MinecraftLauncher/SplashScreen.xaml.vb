@@ -8,10 +8,14 @@ Public Class SplashScreen
     WithEvents wcresources_xml As New WebClient
     WithEvents wcmodlist As New WebClient
     WithEvents wcupdate As New WebClient
+    WithEvents wcversion As New WebClient
+    WithEvents wcchangelog As New WebClient
 
     Dim resourcesurl As String = "https://s3.amazonaws.com/Minecraft.Resources"
     Dim Versionsurl As String = "http://s3.amazonaws.com/Minecraft.Download/versions/versions.json"
     Dim modfileurl As String = Website & "/download/modlist.json"
+    Dim versionurl As String = Website & "/mcmetrolauncher/version.txt"
+    Dim changelogurl As String = Website & "/mcmetrolauncher/changelog.txt"
 
 
     Function internetconnection() As Boolean
@@ -78,7 +82,8 @@ New JProperty("selectedProfile", "Default"))
         Try
             lbl_status.Content = "Lade Resourcen-Liste herunter"
             wcresources_xml.DownloadFileAsync(New Uri(resourcesurl), resourcesfile)
-        Catch
+        Catch ex As Exception
+            MsgBox(ex.Message)
         End Try
     End Sub
 
@@ -92,7 +97,20 @@ New JProperty("selectedProfile", "Default"))
     End Sub
 
     Private Sub wcmodlist_DownloadFileCompleted(sender As Object, e As ComponentModel.AsyncCompletedEventArgs) Handles wcmodlist.DownloadFileCompleted
-        Start()
+        Try
+            wcversion.DownloadFileAsync(New Uri(versionurl), onlineversionfile)
+            lbl_status.Content = "Prüfe auf Updates"
+        Catch ex As Exception
+            MsgBox(ex.Message)
+        End Try
+    End Sub
+
+    Private Sub wcversion_DownloadFileCompleted(sender As Object, e As ComponentModel.AsyncCompletedEventArgs) Handles wcversion.DownloadFileCompleted
+        Try
+            wcchangelog.DownloadFileAsync(New Uri(changelogurl), changelogfile)
+        Catch ex As Exception
+            MsgBox(ex.Message)
+        End Try
     End Sub
 
     Sub Start()
@@ -107,5 +125,8 @@ New JProperty("selectedProfile", "Default"))
         End Try
     End Sub
 
+    Private Sub wcchangelog_DownloadFileCompleted(sender As Object, e As ComponentModel.AsyncCompletedEventArgs) Handles wcchangelog.DownloadFileCompleted
+        Start()
+    End Sub
 End Class
 

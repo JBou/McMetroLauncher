@@ -11,7 +11,7 @@
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
         <Controls:MetroProgressBar x:Name="prg" Foreground="{DynamicResource AccentColorBrush}" Margin="10,0,10,10" Height="9" VerticalAlignment="Bottom"/>
-        <TextBox AcceptsReturn="True" x:Name="txtChangelog" Margin="10,67,10,54" IsReadOnly="True" />
+        <TextBox AcceptsReturn="True" x:Name="tb_Changelog" Margin="10,67,10,54" IsReadOnly="True" TextWrapping="Wrap" />
         <StackPanel Orientation="Vertical" Margin="10,10,10,368" >
             <Label x:Name="lblCurrentVersion" Content="Aktuelle Version: "/>
             <Label x:Name="lblNewestVersion" Content="Neuste Version: "/>
