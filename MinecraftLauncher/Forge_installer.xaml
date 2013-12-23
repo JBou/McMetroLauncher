@@ -1,0 +1,25 @@
+﻿<Controls:MetroWindow x:Class="Forge_installer"
+    xmlns:metro="http://schemas.codeplex.com/elysium"
+    xmlns:params="http://schemas.codeplex.com/elysium/params"
+    xmlns:syncfusion="http://schemas.syncfusion.com/wpf"
+    xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    GlowBrush="{DynamicResource AccentColorBrush}"   
+    xmlns:wf="clr-namespace:System.Windows.Forms;assembly=System.Windows.Forms" 
+    Title="Minecraft Forge" Height="448" Width="660" Icon="favicon.ico" ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
+    
+    <Grid>
+        <ListView x:Name="lst" Margin="10,10,10,59">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="Build Nummer" DisplayMemberBinding="{Binding Path=build}" Width="130"/>
+                    <GridViewColumn Header="Version" HeaderStringFormat="" DisplayMemberBinding="{Binding Path=version}" Width="130"/>
+                    <GridViewColumn Header="Datum" DisplayMemberBinding="{Binding Path=time}" Width="376"/>
+                </GridView>
+            </ListView.View>
+        </ListView>
+        <Button x:Name="btn_download" Content="Herunterladen und Installieren" Margin="180,0,180,25" VerticalAlignment="Bottom" Height="29"/>
+        <Controls:MetroProgressBar Foreground="{DynamicResource AccentColorBrush}" x:Name="pb_download" Height="10" Margin="10" VerticalAlignment="Bottom" />
+    </Grid>
+</Controls:MetroWindow>

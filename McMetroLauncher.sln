@@ -1,0 +1,57 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.21005.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "McMetroLauncher", "MinecraftLauncher\McMetroLauncher.vbproj", "{D9B5CFB9-BB76-4842-9D76-F55AFEDC4EB8}"
+EndProject
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "McMetroLauncher-Manager", "McMetroLauncher-Manager\McMetroLauncher-Manager.vbproj", "{78764115-3EBE-4CBC-91BF-B3DE69EB31E3}"
+EndProject
+Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "Setup", "Setup\Setup.wixproj", "{9B2688FA-3165-44AA-9D90-0366C4987E35}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|Mixed Platforms = Debug|Mixed Platforms
+		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
+		Release|Mixed Platforms = Release|Mixed Platforms
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D9B5CFB9-BB76-4842-9D76-F55AFEDC4EB8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D9B5CFB9-BB76-4842-9D76-F55AFEDC4EB8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D9B5CFB9-BB76-4842-9D76-F55AFEDC4EB8}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{D9B5CFB9-BB76-4842-9D76-F55AFEDC4EB8}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{D9B5CFB9-BB76-4842-9D76-F55AFEDC4EB8}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{D9B5CFB9-BB76-4842-9D76-F55AFEDC4EB8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D9B5CFB9-BB76-4842-9D76-F55AFEDC4EB8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D9B5CFB9-BB76-4842-9D76-F55AFEDC4EB8}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{D9B5CFB9-BB76-4842-9D76-F55AFEDC4EB8}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{D9B5CFB9-BB76-4842-9D76-F55AFEDC4EB8}.Release|x86.ActiveCfg = Release|Any CPU
+		{78764115-3EBE-4CBC-91BF-B3DE69EB31E3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{78764115-3EBE-4CBC-91BF-B3DE69EB31E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{78764115-3EBE-4CBC-91BF-B3DE69EB31E3}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{78764115-3EBE-4CBC-91BF-B3DE69EB31E3}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{78764115-3EBE-4CBC-91BF-B3DE69EB31E3}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{78764115-3EBE-4CBC-91BF-B3DE69EB31E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{78764115-3EBE-4CBC-91BF-B3DE69EB31E3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{78764115-3EBE-4CBC-91BF-B3DE69EB31E3}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{78764115-3EBE-4CBC-91BF-B3DE69EB31E3}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{78764115-3EBE-4CBC-91BF-B3DE69EB31E3}.Release|x86.ActiveCfg = Release|Any CPU
+		{9B2688FA-3165-44AA-9D90-0366C4987E35}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{9B2688FA-3165-44AA-9D90-0366C4987E35}.Debug|Any CPU.Build.0 = Debug|x86
+		{9B2688FA-3165-44AA-9D90-0366C4987E35}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{9B2688FA-3165-44AA-9D90-0366C4987E35}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{9B2688FA-3165-44AA-9D90-0366C4987E35}.Debug|x86.ActiveCfg = Debug|x86
+		{9B2688FA-3165-44AA-9D90-0366C4987E35}.Debug|x86.Build.0 = Debug|x86
+		{9B2688FA-3165-44AA-9D90-0366C4987E35}.Release|Any CPU.ActiveCfg = Release|x86
+		{9B2688FA-3165-44AA-9D90-0366C4987E35}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{9B2688FA-3165-44AA-9D90-0366C4987E35}.Release|Mixed Platforms.Build.0 = Release|x86
+		{9B2688FA-3165-44AA-9D90-0366C4987E35}.Release|x86.ActiveCfg = Release|x86
+		{9B2688FA-3165-44AA-9D90-0366C4987E35}.Release|x86.Build.0 = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

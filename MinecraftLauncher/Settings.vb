@@ -1,0 +1,93 @@
+﻿Imports System.Xml
+Imports System.IO
+Imports Microsoft.Win32
+
+Public Class Settings
+    Private Shared SettingsFile As New FileInfo(Path.Combine(Appdata, "McMetroLauncher", "Settings.xml"))
+
+    Private Shared _Username As String
+    Private Shared _mcpfad As String
+
+    Public Shared Property mcpfad As String
+        Get
+            Return _mcpfad
+        End Get
+        Set(value As String)
+            _mcpfad = value
+        End Set
+    End Property
+
+    Public Shared Property Username As String
+        Get
+            Return _Username
+        End Get
+        Set(value As String)
+            _Username = value
+        End Set
+    End Property
+
+    Public Shared Sub Load()
+        If SettingsFile.Exists Then
+            ReadSettings()
+        Else
+            Username = Nothing
+            mcpfad = mcpfad
+        End If
+    End Sub
+
+    Private Shared Sub ReadSettings()
+        Dim document As XmlReader = New XmlTextReader(SettingsFile.FullName)
+
+        While (document.Read())
+            Dim type As XmlNodeType = document.NodeType
+
+            If type = XmlNodeType.Element Then
+
+                Select Case document.Name
+                    Case "Username"
+                        Username = document.ReadInnerXml
+                    Case "mcpfad"
+                        mcpfad = document.ReadInnerXml
+                End Select
+
+            End If
+        End While
+    End Sub
+
+    Public Shared Sub Save()
+
+        If SettingsFile.Exists = False Then
+            SettingsFile.Directory.Create()
+        End If
+
+        Dim settings As New XmlWriterSettings()
+
+        settings.Indent = True
+
+        Dim XmlWrt As XmlWriter = XmlWriter.Create(SettingsFile.FullName, settings)
+
+        With XmlWrt
+
+            .WriteStartDocument()
+
+            .WriteComment("Einstellungen vom McMetroLauncher")
+            .WriteComment("Bitte nicht manuell bearbeiten")
+
+            .WriteStartElement("Settings")
+
+            .WriteStartElement("Username")
+            .WriteString(Username)
+            .WriteEndElement()
+
+            .WriteStartElement("mcpfad")
+            .WriteString(mcpfad)
+            .WriteEndElement()
+
+            .WriteEndElement()
+
+            .WriteEndDocument()
+            .Close()
+
+        End With
+    End Sub
+End Class

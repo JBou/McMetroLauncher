@@ -1,0 +1,21 @@
+﻿<Controls:MetroWindow x:Class="Updater"
+    xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+    xmlns:params="http://schemas.codeplex.com/elysium/params"
+    GlowBrush="{DynamicResource AccentColorBrush}"   
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Title="Updater" Height="459" Width="508" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" Icon="favicon.ico" ShowMinButton="False" ShowMaxRestoreButton="False">
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Controls:MetroProgressBar x:Name="prg" Foreground="{DynamicResource AccentColorBrush}" Margin="10,0,10,10" Height="9" VerticalAlignment="Bottom"/>
+        <TextBox AcceptsReturn="True" x:Name="txtChangelog" Margin="10,67,10,54" IsReadOnly="True" />
+        <StackPanel Orientation="Vertical" Margin="10,10,10,368" >
+            <Label x:Name="lblCurrentVersion" Content="Aktuelle Version: "/>
+            <Label x:Name="lblNewestVersion" Content="Neuste Version: "/>
+        </StackPanel>
+        <Button x:Name="btn" Margin="130,381,130,0" Content="Update downloaden" Click="btn_Click" Height="24" VerticalAlignment="Top"/>
+    </Grid>
+</Controls:MetroWindow>

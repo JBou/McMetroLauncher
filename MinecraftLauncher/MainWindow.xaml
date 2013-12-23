@@ -1,0 +1,316 @@
+﻿<Controls:MetroWindow  x:Class="MainWindow"
+    xmlns:params="http://schemas.codeplex.com/elysium/params"
+    xmlns:syncfusion="http://schemas.syncfusion.com/wpf"
+    xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:wf="clr-namespace:System.Windows.Forms;assembly=System.Windows.Forms"
+    xmlns:awe="http://schemas.awesomium.com/winfx" 
+    xmlns:Behaviours="clr-namespace:MahApps.Metro.Behaviours;assembly=MahApps.Metro"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    GlowBrush="{DynamicResource AccentColorBrush}"            
+    Title="McMetroLauncher" Height="600" Width="950"
+    ForceCursor="True" MinWidth="950" MinHeight="600" Icon="favicon.ico" ResizeMode="CanResizeWithGrip" UseLayoutRounding="False" ScrollViewer.CanContentScroll="True" >
+
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro.Resources;component/Icons.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/FlatSlider.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.ListView.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            <Style x:Key="DescriptionHeaderStyle" TargetType="Label">
+                <Setter Property="FontSize" Value="22" />
+                <Setter Property="HorizontalAlignment" Value="Center" />
+            </Style>
+            <Ellipse x:Key="DarkThemeMenuIcon"
+                     x:Shared="False"
+                     Width="16"
+                     Height="16"
+                     StrokeThickness="1"
+                     Stroke="{DynamicResource BlackBrush}"
+                     Fill="{DynamicResource WhiteBrush}" />
+            <Ellipse x:Key="LightThemeMenuIcon"
+                     x:Shared="False"
+                     Width="16"
+                     Height="16"
+                     StrokeThickness="1"
+                     Stroke="{DynamicResource BlackBrush}"
+                     Fill="{DynamicResource BlackBrush}" />
+            <Ellipse x:Key="AccentMenuIcon"
+                     x:Shared="False"
+                     Width="16"
+                     Height="16"
+                     Fill="{Binding ColorBrush, Mode=OneWay}" />
+            <Style x:Key="AccentColorMenuItemStyle"
+                   TargetType="{x:Type MenuItem}"
+                   BasedOn="{StaticResource MetroMenuItem}">
+                <Setter Property="Command"
+                        Value="{Binding ChangeAccentCommand}" />
+                <Setter Property="Icon" Value="{StaticResource AccentMenuIcon}" />
+                <Setter Property="Header" Value="{Binding Name, Mode=OneWay}" />
+            </Style>
+            <Style x:Key="myHeaderStyle" TargetType="{x:Type GridViewColumnHeader}">
+                <Setter Property="Visibility" Value="Collapsed" />
+            </Style>
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <Controls:MetroWindow.WindowCommands>
+        <Controls:WindowCommands>
+            <Button Content="Einstellungen" Click="ShowSettings"/>
+            <Button Content="?" Click="Help"/>
+        </Controls:WindowCommands>
+
+    </Controls:MetroWindow.WindowCommands>
+
+    <Controls:MetroWindow.Flyouts>
+        <Controls:FlyoutsControl>
+            <Controls:Flyout x:Name="settingsFlyout" Width="500" Header="Einstellungen" Position="Right">
+                <Controls:MetroContentControl>
+                    <Grid Margin="10">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <Menu Grid.Row="0"
+                  Margin="5"
+                  VerticalAlignment="Stretch"
+                  HorizontalAlignment="Left">
+                            <MenuItem Header="Theme">
+                                <MenuItem Click="ThemeLight" Header="Hell" Icon="{StaticResource LightThemeMenuIcon}"/>
+                                <MenuItem Click="ThemeDark" Header="Dunkel" Icon="{StaticResource DarkThemeMenuIcon}" />
+                            </MenuItem>
+                            <MenuItem Header="Accent"
+                          ItemsSource="{Binding AccentColors}"/>
+                        </Menu>
+
+
+                        <!--<TextBlock Grid.Row="0" Text="Something above the ScrollPanel" />
+
+                    <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                        <StackPanel Orientation="Vertical">
+                            <TextBox Controls:TextboxHelper.Watermark="TextBox 01" />
+                            <TextBox Margin="0,5,0,0" Controls:TextboxHelper.Watermark="TextBox 02" />
+                            <TextBox Margin="0,5,0,0" Controls:TextboxHelper.Watermark="TextBox 03" />
+                            <TextBox Margin="0,5,0,0" Controls:TextboxHelper.Watermark="TextBox 04" />
+                            <TextBox Margin="0,5,0,0" Controls:TextboxHelper.Watermark="TextBox 05" />
+                            <TextBox Margin="0,5,0,0" Controls:TextboxHelper.Watermark="TextBox 06" />
+                            <TextBox Margin="0,5,0,0" Controls:TextboxHelper.Watermark="TextBox 07" />
+                            <TextBox Margin="0,5,0,0" Controls:TextboxHelper.Watermark="TextBox 08" />
+                            <TextBox Margin="0,5,0,0" Controls:TextboxHelper.Watermark="TextBox 09" />
+                            <TextBox Margin="0,5,0,0" Controls:TextboxHelper.Watermark="TextBox 10" />
+                        </StackPanel>
+                    </ScrollViewer>-->
+
+                        <UniformGrid Columns="2"
+                                 Grid.Row="2"
+                                 Margin="10">
+                            <Button Style="{DynamicResource SquareButtonStyle}"
+                                Margin="10"
+                                Content="Speichern" />
+                            <Button Style="{DynamicResource SquareButtonStyle}"
+                                Margin="10"
+                                Content="Abbrechen"
+                                Click="ShowSettings" />
+                        </UniformGrid>
+
+                    </Grid>
+                </Controls:MetroContentControl>
+            </Controls:Flyout>
+        </Controls:FlyoutsControl>
+    </Controls:MetroWindow.Flyouts>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Controls:MetroAnimatedTabControl x:Name="TabControl_main">
+            <TabItem Header="Minecraft">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <TextBox x:Name="tb_ausgabe" VerticalScrollBarVisibility="Auto" AcceptsReturn="True" IsReadOnly="True" VerticalContentAlignment="Top" Margin="10,10,10,97" HorizontalScrollBarVisibility="Auto"/>
+                    <ListBox x:Name="Listbox1" HorizontalAlignment="Left" Height="271" Margin="459,10,0,0" VerticalAlignment="Top" Width="473" Visibility="Collapsed"/>
+                    <TextBox x:Name="tb_username" HorizontalAlignment="Right" Height="32" Margin="0,0,138,11" TextWrapping="Wrap" VerticalAlignment="Bottom" Width="148" VerticalContentAlignment="Center"/>
+                    <Button x:Name="btn_startMC" Content="Start" HorizontalAlignment="Right" Margin="0,0,10,10" VerticalAlignment="Bottom" Width="123" Height="68" FontSize="30"/>
+                    <Controls:MetroProgressBar Foreground="{DynamicResource AccentColorBrush}" x:Name="pb_download" Height="8" Margin="10,0,10,84" VerticalAlignment="Bottom"/>
+                    <ComboBox x:Name="cb_versions" HorizontalAlignment="Left" Margin="348,0,0,47" VerticalAlignment="Bottom" Width="76" Height="32" Visibility="Hidden"/>
+                    <ComboBox x:Name="cb_type" HorizontalAlignment="Left" Margin="246,0,0,47" VerticalAlignment="Bottom" Width="97" Height="32" Visibility="Hidden"/>
+                    <ListBox x:Name="lb_Datum" HorizontalAlignment="Left" Height="162" Margin="10,348,0,0" VerticalAlignment="Top" Width="179" Visibility="Hidden"/>
+                    <Label x:Name="lbl_datum" Content="" HorizontalAlignment="Left" Margin="246,0,0,10" VerticalAlignment="Bottom" Width="178" Height="32" Visibility="Hidden"/>
+                    <ListBox x:Name="lb_startedversions" HorizontalAlignment="Left" Height="271" Margin="866,10,-58,0" VerticalAlignment="Top" Width="134" Visibility="Hidden"/>
+                    <ComboBox x:Name="cb_ram" HorizontalAlignment="Right" Margin="0,0,138,10" VerticalAlignment="Bottom" Width="148" Height="32" ToolTip="Nur verfügbar mit Java 64 bit" Visibility="Hidden"/>
+                    <Label Content="Username" HorizontalAlignment="Right" Margin="0,0,138,48" VerticalAlignment="Bottom" Height="32" Width="148" FontSize="15" HorizontalContentAlignment="Center"/>
+                    <Label Content="Ram" HorizontalAlignment="Right" Margin="0,0,291,10" VerticalAlignment="Bottom" Height="32" Width="78" FontSize="15" ToolTip="Nur verfügbar mit Java 64 bit" Visibility="Hidden"/>
+                    <Button x:Name="btn_new_profile" Content="Neu" HorizontalAlignment="Left" Margin="10,0,0,10" VerticalAlignment="Bottom" Width="26" Height="33" MinWidth="50"/>
+                    <Button x:Name="btn_edit_profile" Content="Bearbeiten" HorizontalAlignment="Left" Margin="65,0,0,10" VerticalAlignment="Bottom" Width="89" Height="33"/>
+                    <ComboBox x:Name="cb_profiles" HorizontalAlignment="Left" Margin="10,0,0,48" VerticalAlignment="Bottom" Width="218" Height="31"/>
+                    <Button x:Name="btn_delete_profile" Content="Löschen" HorizontalAlignment="Left" Margin="159,0,0,10" VerticalAlignment="Bottom" Width="69" Height="33"/>
+                    <ListBox x:Name="lb_libraries_extract" HorizontalAlignment="Left" Height="271" Margin="648,120,-48,0" VerticalAlignment="Top" Width="342" Visibility="Hidden"/>
+                    <ListBox x:Name="lb_libraries" HorizontalAlignment="Left" Height="271" Margin="-2,120,0,0" VerticalAlignment="Top" Width="320" Visibility="Hidden"/>
+                    <ListBox x:Name="lb_libraries_url" HorizontalAlignment="Left" Height="271" Margin="323,120,0,0" VerticalAlignment="Top" Width="320" Visibility="Hidden"/>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Mods" Margin="4,0,-4,0">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+
+                    <ListView x:Name="lb_mods" Margin="10,77,0,23" Width="352" HorizontalAlignment="Left" BorderThickness="0" >
+                        <ListView.View>
+                            <GridView ColumnHeaderContainerStyle="{StaticResource myHeaderStyle}">
+                                <GridViewColumn>
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                                <Image Width="15">
+                                                    <Image.Style>
+                                                        <Style TargetType="{x:Type Image}">
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding installed}" Value="True">
+                                                                    <Setter Property="Source" Value="images/check_green.png"/>
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding installed}" Value="False">
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Image.Style>
+                                                </Image>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                <GridViewColumn Header="Name" DisplayMemberBinding="{Binding Path=name}" Width="300"/>
+                                <!--<GridViewColumn Header="Autor" DisplayMemberBinding="{Binding Path=autor}" />-->
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                    <Label Content="Mods Ordner:" VerticalAlignment="Top" Margin="367,15,489,0"/>
+                    <TextBox Name="tb_modsfolder" Margin="367,46,110,0" VerticalAlignment="Top" IsReadOnly="True"/>
+                    <Button Name="btn_resetmodsfoler" Margin="0,46,41,0" Content="Standard" HorizontalAlignment="Right" VerticalAlignment="Top" Height="26" />
+                    <Button x:Name="btn_selectmodsfolder" Margin="0,46,10,0" Content="..." HorizontalAlignment="Right" VerticalAlignment="Top" Width="26" Height="26" />
+                    <Image x:Name="img_installed" Height="23" Width="23" Margin="368,80,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Source="images/check_green.png"/>
+                    <Label x:Name="lbl_name" Margin="395,77,139,0" VerticalAlignment="Top" Height="29" FontWeight="Bold" VerticalContentAlignment="Center" Background="#00000000" Foreground="#FF1F94F5" FontSize="15" />
+                    <Button x:Name="btn_list_delete_mod" Margin="778,0,0,23" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="32" Height="32" Padding="0" >
+                        <Image Source="images/appbar.delete.png" Margin="0"/>
+                    </Button>
+                    <Button Foreground="{DynamicResource AccentColorBrush}" x:Name="btn_downloadmod" Content="Installieren" Margin="815,0,10,23" VerticalAlignment="Bottom" Height="32" FontWeight="Bold" FontSize="12"/>
+                    <Controls:MetroProgressBar Foreground="{DynamicResource AccentColorBrush}" x:Name="pb_mods_download" Height="8" Margin="10,0,10,10" VerticalAlignment="Bottom"/>
+                    <TextBox x:Name="tb_description" Margin="367,111,10,60" TextWrapping="Wrap" BorderThickness="1" HorizontalScrollBarVisibility="Visible" AcceptsReturn="True" IsReadOnly="True" VerticalContentAlignment="Top" VerticalScrollBarVisibility="Auto"/>
+                    <ComboBox x:Name="cb_modversions" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="352" Height="31"/>
+                    <Button x:Name="btn_website" Content="Website besuchen" Margin="663,0,0,23" VerticalAlignment="Bottom" Height="32" HorizontalAlignment="Left" Width="110"/>
+                    <Button x:Name="btn_video" Content="Video ansehen" Margin="548,0,0,23" VerticalAlignment="Bottom" RenderTransformOrigin="0.489,0.548" HorizontalAlignment="Left" Height="32" Width="110"/>
+                    <Button x:Name="btn_installforge" Foreground="{DynamicResource AccentColorBrush}" Content="Du musst Minecraft Forge installieren, um die Mods zu verwenden!" Margin="517,15,41,0" VerticalAlignment="Top" Height="26"/>
+                    <Button x:Name="btn_play" Content="Play" Margin="192,466,628,24" Visibility="Hidden" />
+                    <TextBox x:Name="tb_downloadlink" HorizontalAlignment="Left" Height="26" Margin="362,439,-17,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="597" Visibility="Hidden"/>
+                    <Label x:Name="lbl_mods_status" Content="" HorizontalAlignment="Left" Margin="368,0,0,23" VerticalAlignment="Bottom" Height="32" Width="175"/>
+                    <Label x:Name="lbl_autor" Content="" Margin="743,77,10,0" VerticalAlignment="Top" Height="29" FontWeight="Bold" VerticalContentAlignment="Center" HorizontalContentAlignment="Right" Background="#00000000" Foreground="#FF1F94F5" FontSize="15"/>
+                    <Button x:Name="btn_refresh" Click="RefreshMods" Margin="0,15,10,0" HorizontalAlignment="Right" VerticalAlignment="Top" Width="26" Height="26" Padding="0" >
+                        <Image Source="images/appbar.refresh.png" Margin="0"/>
+                    </Button>
+                    <TextBox x:Name="tb_search_mods" Controls:TextboxHelper.ClearTextButton="True" Controls:TextboxHelper.Watermark="Suche" Margin="10,46,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="352" />
+                </Grid>
+            </TabItem>
+            <TabItem Header="ResourcePacks" Visibility="Collapsed">
+                <Grid>
+                    <ComboBox x:Name="cb_resourcepacksversions" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="350" Height="31"/>
+                    <ListView x:Name="lb_resourcepacks" Margin="10,46,0,23" Width="350" HorizontalAlignment="Left" BorderThickness="0" >
+                        <ListView.View>
+                            <GridView ColumnHeaderContainerStyle="{StaticResource myHeaderStyle}" AllowsColumnReorder="False">
+                                <GridViewColumn Header="Icon" DisplayMemberBinding="{Binding Path=icon}" />
+                                <GridViewColumn Header="Name" DisplayMemberBinding="{Binding Path=name}" />
+                                <GridViewColumn Header="Website" DisplayMemberBinding="{Binding Path=website}" />
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Server">
+                <Grid>
+                    <ListView x:Name="lb_servers" DisplayMemberPath="name" Margin="10,10,10,47" Width="900" HorizontalAlignment="Center" BorderThickness="0" >
+                        <ListView.ItemContainerStyle>
+                            <Style TargetType="{x:Type ListViewItem}"
+                   BasedOn="{StaticResource MetroListViewItem}">
+                                <Setter Property="Height" Value="80" />
+                                <Setter Property="ToolTip" Value="{Binding ip}"/>
+                            </Style>
+                        </ListView.ItemContainerStyle>
+                        <ListView.View>
+                            <GridView ColumnHeaderContainerStyle="{StaticResource myHeaderStyle}" AllowsColumnReorder="False" >
+                                <GridViewColumn Header="Icon" Width="80" >
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Image Source="{Binding Path=icon}" />
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                <GridViewColumn Header="Name" Width="720">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <StackPanel >
+                                                <!--Anpassen-->
+                                                <TextBlock Text="{Binding Path=name}" FontSize="20" VerticalAlignment="Top" />
+                                                <TextBlock Text="{Binding Path=ServerPing.Description}" FontSize="15"/>
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                <GridViewColumn Header="Status" Width="80">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <StackPanel >
+                                                <!--Anpassen-->
+                                                <TextBlock FontSize="20" VerticalAlignment="Top" >
+                                                    <TextBlock.Style>
+                                                        <Style TargetType="TextBlock">
+                                                            <Setter Property="Text">
+                                                                <Setter.Value>
+                                                                    <MultiBinding StringFormat="{}{0} / {1}">
+                                                                        <Binding Path="ServerPing.PlayerCount" />
+                                                                        <Binding Path="ServerPing.MaxPlayerCount" />
+                                                                    </MultiBinding>
+                                                                </Setter.Value>
+                                                            </Setter>
+                                                            <Setter Property="Foreground" Value="Green" />
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding Path=ServerPing.Online}" Value="False">
+                                                                    <Setter Property="Text" Value="Offline" />
+                                                                    <Setter Property="Foreground" Value="Red" />
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </TextBlock.Style>
+                                                </TextBlock>
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                    <DockPanel Margin="10" VerticalAlignment="Bottom" HorizontalAlignment="Center" UseLayoutRounding="False" LastChildFill="False">
+                        <Button x:Name="btn_refresh_servers" Content="Aktualisieren" VerticalAlignment="Bottom" Height="32" HorizontalAlignment="Right" Margin="10,0,10,0"/>
+                        <Button x:Name="btn_add_servers" Content="Hinzufügen" VerticalAlignment="Bottom" Height="32" HorizontalAlignment="Right" Margin="10,0,10,0"/>
+                        <Button x:Name="btn_edit_servers" Content="Bearbeiten" VerticalAlignment="Bottom" Height="32" HorizontalAlignment="Right" Margin="10,0,10,0"/>
+                        <Button x:Name="btn_delete_servers" Content="Entfernen" VerticalAlignment="Bottom" Height="32" HorizontalAlignment="Right" Margin="10,0,10,0"/>
+                    </DockPanel>
+                </Grid>
+            </TabItem>
+        </Controls:MetroAnimatedTabControl>
+        <!--<StatusBar Height="25" VerticalAlignment="Bottom" Background="#FF5EA0FF">
+            <StatusBarItem>
+                <Label Name="lbl_Serverstatus" HorizontalAlignment="Left" Padding="5,0,0,0" Foreground="White" />
+            </StatusBarItem>
+        </StatusBar>-->
+
+    </Grid>
+</Controls:MetroWindow>

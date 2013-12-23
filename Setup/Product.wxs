@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+
+  <?define Manufactor = "Patzleiner"?>
+  <?define UpgradeGuid = "{DBC552D0-2FCB-4E70-B902-B65E8D7DDF67}"?>
+  <?define Name = "McMetroLauncher"?>
+
+  <Product
+  Id="*"
+  Name="$(var.Name)"
+  Language="1033"
+  Version="!(bind.FileVersion.MyApplicationFile)"
+  Manufacturer="$(var.Manufactor)"
+  UpgradeCode="$(var.UpgradeGuid)">
+    
+    <Package
+    InstallerVersion="200"
+    Compressed="yes"
+    Description="Installiert den $(var.Name)"
+    Manufacturer="$(var.Manufactor)"
+    Comments="Danke, dass Sie sich für den $(var.Name) entschieden haben"
+  />
+    
+    <Media
+    Id="1"
+    Cabinet="media1.cab"
+    EmbedCab="yes"
+  />
+    
+    <!--Und dieses Icon soll für den Shortcut verwendet werden--> 
+    <Icon Id="Icon.exe" SourceFile="$(var.McMetroLauncher.TargetPath)" />
+    
+    <Property Id="WIXUI_INSTALLDIR" Value="INSTALLDIR" />
+    
+    <!-- Mehr Infos: http://wix.tramontana.co.hu/tutorial/user-interface/ui-wizardry
+    
+    http://wixtoolset.org/documentation/manual/v3/wixui/wixui_customizations.html -->
+    
+  <!--<WixVariable Id="WixUILicenseRtf" Value="path\License.rtf" />-->
+  <WixVariable Id="WixUIBannerBmp" Value="Banner.png" />
+  <WixVariable Id="WixUIDialogBmp" Value="Dialog.png" />
+  <!--<WixVariable Id="WixUIExclamationIco" Value="path\exclamation.ico" />-->
+  <!--<WixVariable Id="WixUIInfoIco" Value="path\information.ico" />-->
+  <!--<WixVariable Id="WixUINewIco" Value="path\new.ico" />-->
+  <!--<WixVariable Id="WixUIUpIco" Value="path\up.ico" />-->
+    
+    <Property Id="ARPCOMMENTS" Value="$(var.Name)" />
+    <Property Id="ARPHELPLINK" Value="http://patzleiner.net" />
+    <Property Id="ARPCONTACT" Value="Patzleiner" />
+    <Property Id="ARPURLINFOABOUT" Value="http://patzleiner.net" />
+    <Property Id="ARPPRODUCTICON" Value="Icon.exe" />
+    <Upgrade Id="$(var.UpgradeGuid)">
+      <UpgradeVersion Minimum="!(bind.FileVersion.MyApplicationFile)"
+                      IncludeMinimum="no"
+                      OnlyDetect="yes"
+                      Language="1033"
+                      Property="NEWPRODUCTFOUND" />
+      <UpgradeVersion Minimum="0.1.0.0"
+                      IncludeMinimum="yes"
+                      Maximum="!(bind.FileVersion.MyApplicationFile)"
+                      IncludeMaximum="no"
+                      Language="1033"
+                      Property="UPGRADEFOUND" />
+      <UpgradeVersion Minimum="1.0.0.0" 
+                      Maximum="99.0.0.0"
+                      Property="PREVIOUSVERSIONSINSTALLED"
+                      IncludeMinimum="yes" 
+                      IncludeMaximum="no" />
+    </Upgrade>  
+
+    <Directory Id="TARGETDIR" Name="SourceDir">      
+      <Directory Id="ProgramFilesFolder">
+          <Directory Id="INSTALLLOCATION" Name="$(var.Name)">
+            <!-- Und dahinein packen wir eine Component, in diesem Fall Unser Ausführbares Programm 
+                Jede Component muss eine eindeutige Id bestzen, diese wird weiter unter verwendet um die Component 
+                einem Feature zuzuordnen.
+                Eine Component sollte eine Guid besitzten, damit es später Möglich ist anhand dieser Guid die Datei 
+                eindeutig zu identifizieren, damit man mit dem MS Installer, eine Reparatur einer vorhandenen Installation
+                durchführen kann.
+            -->
+            <Component Id="ProductComponent" Guid="{4A5619DF-5841-48EC-8D7C-D368718C6D1A}">
+              <File Id="MyApplicationFile" Name="$(var.McMetroLauncher.TargetFileName)" Source="$(var.McMetroLauncher.TargetPath)" KeyPath="yes">
+                 <!--Dann legen wir doch gleich noch einen Desktop Shortcut für das Projekt an.--> 
+                <Shortcut Advertise="yes" Id="DesktopShortCut" Name="$(var.Name)" Directory="DesktopFolder" WorkingDirectory="INSTALLLOCATION" Description="$(var.Name) ausführen" Icon="Icon.exe">
+                </Shortcut>
+              </File>
+            </Component>
+            
+            <Component Id="McMetroLauncher.exe.config" Guid="{02C26E13-C9CB-4215-8974-6A5D553E5CF2}">
+              <!-- Hier nun die zu installierende Datei der Component hinzufügen -->
+              <File Id="McMetroLauncher.exe.config" Name="McMetroLauncher.exe.config" Source="$(var.McMetroLauncher.TargetDir)McMetroLauncher.exe.config"  />            
+            </Component>
+              
+            <Component Id="libraries" Guid="{D4A5EAE3-E7E3-49F8-A70A-EBEE65CBCABF}">
+              <File Id="GrayscaleEffect" Name="GrayscaleEffect.dll" Source="$(var.McMetroLauncher.TargetDir)GrayscaleEffect.dll" />
+              <File Id="Ionic.Zip" Name="Ionic.Zip.dll" Source="$(var.McMetroLauncher.TargetDir)Ionic.Zip.dll" />            
+              <File Id="MahApps.Metro" Name="MahApps.Metro.dll" Source="$(var.McMetroLauncher.TargetDir)MahApps.Metro.dll" />        
+              <File Id="MahApps.Metro.Resources" Name="MahApps.Metro.Resources.dll" Source="$(var.McMetroLauncher.TargetDir)MahApps.Metro.Resources.dll" />      
+              <File Id="Newtonsoft.Json" Name="Newtonsoft.Json.dll" Source="$(var.McMetroLauncher.TargetDir)Newtonsoft.Json.dll" />            
+              <File Id="System.Net.Http.Formatting" Name="System.Net.Http.Formatting.dll" Source="$(var.McMetroLauncher.TargetDir)System.Net.Http.Formatting.dll" /> 
+              <File Id="System.Windows.Interactivity" Name="System.Windows.Interactivity.dll" Source="$(var.McMetroLauncher.TargetDir)System.Windows.Interactivity.dll" />          
+              <File Id="updateSystemDotNet.Controller" Name="updateSystemDotNet.Controller.dll" Source="$(var.McMetroLauncher.TargetDir)updateSystemDotNet.Controller.dll" /> 
+              <File Id="Ookii.Dialogs.Wpf" Name="Ookii.Dialogs.Wpf.dll" Source="$(var.McMetroLauncher.TargetDir)Ookii.Dialogs.Wpf.dll" />             
+            </Component>
+
+            <Component Id="ShortCutDeinstall" Guid="{0BA3B1B9-679B-45C0-A6BB-0CEA1C5CDA7F}">
+              <Shortcut Id="DeinstallShortCut" Name="$(var.Name) deinstallieren" Target="[System64Folder]msiexec.exe" Arguments="/x [ProductCode]" Icon="Icon.exe"/>
+              <RegistryValue Root="HKCU" Key="Software\$(var.Name)" Name="installed" Type="integer" Value="1" KeyPath="yes"/>
+            </Component>
+          
+        </Directory>
+      </Directory>  
+      
+      <!-- Verknüpfungen im Startmenü setzen 
+          Siehe auch http://wix.sourceforge.net/manual-wix3/create_start_menu_shortcut.htm
+      -->
+      <Directory Id="ProgramMenuFolder">
+        <Directory Id="MyShortCutsDir" Name="$(var.Name)">
+          <Component Id="ShortCutComponent" Guid="{B51BC276-F509-4F25-9738-EE176445D073}">
+            <Shortcut Id="ProgShortCut" Name="$(var.Name)" Description="$(var.Name) Verknüpfung" Target="[INSTALLLOCATION]McMetroLauncher.exe"></Shortcut>
+            <Shortcut Id="UninstallShortCut" Name="$(var.Name) deinstallieren" Target="[System64Folder]msiexec.exe" Arguments="/x [ProductCode]" Icon="Icon.exe"/>
+            <RemoveFolder Id="MyShortCutsDir" On="uninstall"/>
+            <RegistryValue Root="HKCU" Key="Software\$(var.Name)" Name="installed" Type="integer" Value="1" KeyPath="yes"/>
+          </Component>
+        </Directory>
+      </Directory>
+      <!-- Wird benötigt um den Desktop Shortcut anlegen zu können -->
+      <Directory Id="DesktopFolder" Name="Desktop" />
+    </Directory>
+    
+    <!-- Feature Bereich hier als Basistemplate nur ein Feature (Alles installieren)
+        Siehe auch http://wix.sourceforge.net/manual-wix3/wix_xsd_feature.htm
+    -->
+    <Feature Id="ProductFeature" Title="$(var.Name)" Level="1">
+      <ComponentRef Id="ProductComponent" />
+      <ComponentRef Id="McMetroLauncher.exe.config" />
+      <ComponentRef Id="libraries" />
+      <ComponentRef Id="ShortCutDeinstall"/>
+      <ComponentRef Id="ShortCutComponent" />
+    </Feature>
+    
+    <!-- Das was nun folgt ist schon ein wenig Finetuning CustomActions
+        siehe auch http://wix.sourceforge.net/manual-wix3/wix_xsd_customaction.htm
+    -->
+    <!-- Keinen Downgrade zulassen -->
+    <CustomAction Id="PreventDowngrading"
+                  Error="Es ist bereits eine neuere Version installiert." />
+
+    <!-- Nun noch die auszuführende Reihenfolg angeben 
+        siehe auch http://wix.sourceforge.net/manual-wix3/wix_xsd_installexecutesequence.htm
+    -->
+    <InstallExecuteSequence>
+      <Custom Action="PreventDowngrading"
+              After="FindRelatedProducts">NEWPRODUCTFOUND</Custom>
+      <RemoveExistingProducts After="InstallFinalize" />
+    </InstallExecuteSequence>
+
+    <!-- Wenn ein neueres Produkt gerunden wurde, soll das auch in der UI ausgegeben werden
+        siehe auch http://wix.sourceforge.net/manual-wix3/wix_xsd_installuisequence.htm
+    -->
+    <InstallUISequence>
+      <Custom Action="PreventDowngrading"
+              After="FindRelatedProducts">NEWPRODUCTFOUND</Custom>
+    </InstallUISequence>
+  
+    <!-- So kann man eine eigene Lizenzmeldung ausgeben -->
+    <!--<WixVariable Id='WixUILicenseRtf' Overridable='yes' Value='$(var.McMetroLauncher.ProjectDir)Lizenzbestimmungen.rtf'/>-->
+
+    <!-- UI Definition für Minimales Setup 
+    Um diese UI Definition vornehmen zu können, 
+    muss im WiX Projekt die WixUIExtension.dll als Reference hinzugefügt werden
+    -->
+    <UI>
+      <UIRef Id="WixUI_Minimal" />
+      <UIRef Id="WixUI_ErrorProgressText" />
+      
+      <Publish Dialog="ExitDialog"
+      Control="Finish" 
+      Event="DoAction" 
+      Value="LaunchApplication">WIXUI_EXITDIALOGOPTIONALCHECKBOX = 1 and NOT Installed</Publish>
+    
+    </UI>
+    
+  <!-- Checkbox zum starten nach der installation -->
+<Property Id="WIXUI_EXITDIALOGOPTIONALCHECKBOXTEXT" Value="$(var.Name) starten" />
+  
+<Property Id="WixShellExecTarget" Value="$(var.McMetroLauncher.TargetPath)" />
+<CustomAction Id="LaunchApplication" BinaryKey="WixCA" DllEntry="WixShellExec" Impersonate="yes" />
+
+  </Product>
+</Wix>

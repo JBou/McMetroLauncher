@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>CSCore</id>
+    <version>0.9.0.8</version>
+    <title>CSCore</title>
+    <authors>Florian Rosmann</authors>
+    <owners>Florian Rosmann</owners>
+    <licenseUrl>https://cscore.codeplex.com/license</licenseUrl>
+    <projectUrl>https://cscore.codeplex.com/</projectUrl>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <description>Opensource .NET audio library. It currently supports many formats including(mp3, wave, wma, flac,...), many different output provider(including waveout, directsound and wasapi), many different input provider, effects, dsp(like fft,...), etc.
+
+For more information see https://cscore.codeplex.com/</description>
+    <releaseNotes />
+    <copyright />
+    <language />
+    <tags>cscore audio sound library .net visualization c# visual basic vb</tags>
+  </metadata>
+</package>
