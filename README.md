@@ -11,5 +11,4 @@ http://patzleiner.net
   License
 =====================
 
-The McMetroLauncher is licensed under the GNU GENERAL PUBLIC LICENSE Version 3
---> LICENSE
+The McMetroLauncher is licensed under the GNU GENERAL PUBLIC LICENSE --> LICENSE
