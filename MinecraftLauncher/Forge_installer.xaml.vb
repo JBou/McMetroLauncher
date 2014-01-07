@@ -14,7 +14,7 @@ Class Forge_installer
         lst.Items.Clear()
         List.Clear()
         For Each item As ForgeEintrag In Forge.Get_Forge
-            'MsgBox(String.Join(" | ", item.build, item.version, item.time, item.downloadLink))
+            'MessageBox.Show(String.Join(" | ", item.build, item.version, item.time, item.downloadLink))
             lst.Items.Add(item)
             List.Add(item)
         Next
@@ -35,6 +35,7 @@ Class Forge_installer
             Dim ls As IList(Of String) = url.Segments
             filename = cachefolder & "\" & ls.Last
             wc.DownloadFileAsync(url, filename)
+            btn_download.Content = "Abbrechen"
 
             'Dim dateiendung As String = "zip"
             'version = DirectCast(lst.SelectedItem, ForgeEintrag).version
@@ -47,21 +48,26 @@ Class Forge_installer
     End Sub
 
     Private Sub wc_DownloadFileCompleted(sender As Object, e As ComponentModel.AsyncCompletedEventArgs) Handles wc.DownloadFileCompleted
-        pb_download.IsIndeterminate = True
-        Process.Start(filename)
-        Me.Close()
-        ''Entpacken... und installieren
-        'UnzipForge(filename)
-        ''Profiles hinzufügen
-        'Dim profile As New Profile(profilename, Nothing, version, Nothing, Nothing, Nothing, Nothing, Nothing)
-        'If Profiles.List.Contains(profilename) = True Then
-        '    Profiles.Edit(profilename, profile)
-        'Else
-        '    Profiles.Add(profile)
-        'End If
-        'pb_download.IsIndeterminate = False
-        'pb_download.Value = pb_download.Maximum
-        'downloading = False
+        If e.Cancelled = True Then
+            IO.File.Delete(filename)
+        Else
+            pb_download.IsIndeterminate = True
+            Process.Start(filename)
+            Me.Close()
+            ''Entpacken... und installieren
+            'UnzipForge(filename)
+            ''Profiles hinzufügen
+            'Dim profile As New Profile(profilename, Nothing, version, Nothing, Nothing, Nothing, Nothing, Nothing)
+            'If Profiles.List.Contains(profilename) = True Then
+            '    Profiles.Edit(profilename, profile)
+            'Else
+            '    Profiles.Add(profile)
+            'End If
+            'pb_download.IsIndeterminate = False
+            'pb_download.Value = pb_download.Maximum
+            'downloading = False
+        End If
+        btn_download.Content = "Herunterladen und Installieren"
     End Sub
 
     Private Sub wc_DownloadProgressChanged(sender As Object, e As DownloadProgressChangedEventArgs) Handles wc.DownloadProgressChanged

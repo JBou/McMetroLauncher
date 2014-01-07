@@ -23,8 +23,7 @@ Public Class Profiles
 
     Public Shared Function List() As IList(Of String)
         Load()
-        Dim Profiles As IList(Of String) = profilesjo.Value(Of JObject)("profiles").Properties.Select(Function(p) p.Name).ToList()
-        Return Profiles
+        Return profilesjo.Value(Of JObject)("profiles").Properties.Select(Function(p) p.Name).ToList()
     End Function
 
     Public Shared Function name(profilename As String) As String

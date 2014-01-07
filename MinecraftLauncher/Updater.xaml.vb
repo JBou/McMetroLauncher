@@ -3,11 +3,8 @@ Imports System.Net
 
 Class Updater
 
-    Private WithEvents updController As New updateSystemDotNet.updateController()
     Private WithEvents wc As New WebClient
-    Dim Installer As String = IO.Path.Combine(Applicationcache, "McMetroLauncher.msi")
-    Dim OnlineVersion As String = Nothing
-    Dim changelog As String = Nothing
+    Dim Installer As String = IO.Path.Combine(Applicationcache.FullName, "McMetroLauncher.msi")
 
     Private ReadOnly Property AssemblyVersion As String
         Get
@@ -21,9 +18,6 @@ Class Updater
         InitializeComponent()
 
         ' Fügen Sie Initialisierungen nach dem InitializeComponent()-Aufruf hinzu.
-
-        OnlineVersion = IO.File.ReadAllText(onlineversionfile)
-        changelog = IO.File.ReadAllText(changelogfile)
 
         lblCurrentVersion.Content = "Aktuelle Version: " & AssemblyVersion
         lblNewestVersion.Content = "Neuste Version: " & OnlineVersion

@@ -29,12 +29,13 @@
         <ComboBox x:Name="cb_versions" Grid.Column="2" HorizontalAlignment="Left" Margin="134,180,0,0" VerticalAlignment="Top" Width="297" Height="35"/>
         <CheckBox x:Name="cb_java_arguments" Content="JVM Argumente:" HorizontalAlignment="Left" Margin="10,297,0,0" VerticalAlignment="Top" Width="142" Height="26" VerticalContentAlignment="Center" Grid.Column="2"/>
         <TextBox x:Name="tb_java_arguments" HorizontalAlignment="Left" Height="26" Margin="134,297,0,0" VerticalAlignment="Top" Width="297" Grid.Column="2" MaxLines="1"/>
-        <Button x:Name="btn_save" Content="Profil speichern" Grid.Column="2" HorizontalAlignment="Left" Margin="314,328,0,0" VerticalAlignment="Top" Width="117" Height="31" />
+        <Button x:Name="btn_save" Content="Profil speichern" Grid.Column="2" HorizontalAlignment="Right" Margin="0,0,10,10" VerticalAlignment="Bottom" Width="117" Height="31" />
         <TextBox x:Name="tb_gameDir" HorizontalAlignment="Left" Height="26" Margin="134,60,0,0" VerticalAlignment="Top" Width="267" Grid.Column="2" MaxLines="1" IsReadOnly="True"/>
         <Button x:Name="btn_selectgamedir" HorizontalAlignment="Left" Height="26" Margin="406,60,0,0" VerticalAlignment="Top" Grid.Column="2" Width="25" Content="..." />
         <CheckBox x:Name="cb_game_directory" Content="Spiel Pfad:" HorizontalAlignment="Left" Margin="10,60,0,0" VerticalAlignment="Top" Width="142" Height="26" Grid.Column="2" VerticalContentAlignment="Center"/>
         <CheckBox x:Name="cb_resolution" Content="Auflösung:" HorizontalAlignment="Left" Margin="10,91,0,0" VerticalAlignment="Top" Width="142" Height="26" VerticalContentAlignment="Center" Grid.Column="2"/>
-        <Button x:Name="btn_selectjavadir" HorizontalAlignment="Left" Height="26" Margin="406,266,0,0" VerticalAlignment="Top" Grid.Column="2" Width="25" Content="..." />
+        <Button x:Name="btn_selectjavadir" HorizontalAlignment="Right" Height="26" Margin="0,266,10,0" VerticalAlignment="Top" Grid.Column="2" Width="25" Content="..." />
+        <Button x:Name="btn_open_gameDir" Content="Spiel Pfad öffnen" Click="Open_gameDir" Grid.Column="2" HorizontalAlignment="Right" Margin="0,0,132,10" VerticalAlignment="Bottom" Width="117" Height="31" />
 
     </Grid>
 </Controls:MetroWindow>

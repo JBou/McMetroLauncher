@@ -184,7 +184,7 @@ Public Class Mods
         For Each version As String In Get_ModVersions()
             modsjo.Value(Of JObject)("forgemods").Property(version).OrderByDescending(Function(p) p("name").ToString)
         Next
-        MsgBox(modsjo.ToString)
+        MessageBox.Show(modsjo.ToString)
     End Sub
 
     Public Shared Function All_Needed_Mods(ByVal Modname As String, Version As String) As IList(Of String)
@@ -222,8 +222,8 @@ Public Class Mods
 
     Public Shared Function modfolder_filenames() As IList(Of String)
         If IO.Directory.Exists(modsfolder) = True Then
-            MsgBox(String.Join(" | ", IO.Directory.EnumerateFiles(modsfolder)))
-            MsgBox(String.Join(" | ", IO.Directory.GetFiles(modsfolder)))
+            MessageBox.Show(String.Join(" | ", IO.Directory.EnumerateFiles(modsfolder)))
+            MessageBox.Show(String.Join(" | ", IO.Directory.GetFiles(modsfolder)))
             Return IO.Directory.EnumerateFiles(modsfolder).ToList
         Else
             Return Nothing

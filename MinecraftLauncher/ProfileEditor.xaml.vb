@@ -292,4 +292,12 @@ Public Class ProfileEditor
         End If
     End Sub
 
+    Private Sub Open_gameDir()
+        Dim p As New Process
+        With p.StartInfo
+            .FileName = "explorer.exe"
+            .Arguments = tb_gameDir.Text
+        End With
+        p.Start()
+    End Sub
 End Class

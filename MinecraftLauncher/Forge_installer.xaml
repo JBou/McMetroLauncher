@@ -6,7 +6,6 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     GlowBrush="{DynamicResource AccentColorBrush}"   
-    xmlns:wf="clr-namespace:System.Windows.Forms;assembly=System.Windows.Forms" 
     Title="Minecraft Forge" Height="448" Width="660" Icon="favicon.ico" ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
     
     <Grid>

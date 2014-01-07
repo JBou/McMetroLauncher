@@ -1,21 +1,14 @@
 ﻿Imports System.Net
 Imports System.IO
 Imports Newtonsoft.Json.Linq
-Imports updateSystemDotNet.updateController
+Imports System.Text
 
 Public Class SplashScreen
     WithEvents wcversionsstring As New WebClient
-    WithEvents wcresources_xml As New WebClient
     WithEvents wcmodlist As New WebClient
     WithEvents wcupdate As New WebClient
     WithEvents wcversion As New WebClient
     WithEvents wcchangelog As New WebClient
-
-    Dim resourcesurl As String = "https://s3.amazonaws.com/Minecraft.Resources"
-    Dim Versionsurl As String = "http://s3.amazonaws.com/Minecraft.Download/versions/versions.json"
-    Dim modfileurl As String = Website & "/download/modlist.json"
-    Dim versionurl As String = Website & "/mcmetrolauncher/version.txt"
-    Dim changelogurl As String = Website & "/mcmetrolauncher/changelog.txt"
 
 
     Function internetconnection() As Boolean
@@ -80,53 +73,48 @@ New JProperty("selectedProfile", "Default"))
 
     Private Sub wcversionsstring_DownloadFileCompleted(sender As Object, e As ComponentModel.AsyncCompletedEventArgs) Handles wcversionsstring.DownloadFileCompleted
         Try
-            lbl_status.Content = "Lade Resourcen-Liste herunter"
-            wcresources_xml.DownloadFileAsync(New Uri(resourcesurl), resourcesfile)
-        Catch ex As Exception
-            MsgBox(ex.Message)
-        End Try
-    End Sub
-
-    Private Sub wcresources_xml_DownloadFileCompleted(sender As Object, e As ComponentModel.AsyncCompletedEventArgs) Handles wcresources_xml.DownloadFileCompleted
-        Try
+            Versions.Load()
             lbl_status.Content = "Lade Mod-Liste herunter"
             wcmodlist.DownloadFileAsync(New Uri(modfileurl), modsfile)
         Catch ex As Exception
-            MsgBox(ex.Message)
+            MessageBox.Show(ex.Message)
         End Try
     End Sub
 
     Private Sub wcmodlist_DownloadFileCompleted(sender As Object, e As ComponentModel.AsyncCompletedEventArgs) Handles wcmodlist.DownloadFileCompleted
         Try
-            wcversion.DownloadFileAsync(New Uri(versionurl), onlineversionfile)
+            Mods.Load()
             lbl_status.Content = "Prüfe auf Updates"
+            wcversion.DownloadStringAsync(New Uri(versionurl))
         Catch ex As Exception
-            MsgBox(ex.Message)
+            MessageBox.Show(ex.Message)
         End Try
     End Sub
 
-    Private Sub wcversion_DownloadFileCompleted(sender As Object, e As ComponentModel.AsyncCompletedEventArgs) Handles wcversion.DownloadFileCompleted
+    Private Sub wcversion_DownloadFileCompleted(sender As Object, e As DownloadStringCompletedEventArgs) Handles wcversion.DownloadStringCompleted
+        onlineversion = e.Result
         Try
-            wcchangelog.DownloadFileAsync(New Uri(changelogurl), changelogfile)
+            wcchangelog.DownloadStringAsync(New Uri(changelogurl))
         Catch ex As Exception
-            MsgBox(ex.Message)
+            MessageBox.Show(ex.Message)
         End Try
+    End Sub
+
+    Private Sub wcchangelog_DownloadFileCompleted(sender As Object, e As DownloadStringCompletedEventArgs) Handles wcchangelog.DownloadStringCompleted
+        changelog = e.Result
+        Start()
     End Sub
 
     Sub Start()
         Try
-            Versions.Load()
-            Mods.Load()
             Dim MainWindow As New MainWindow
+            Me.Hide()
             MainWindow.Show()
             Me.Close()
         Catch ex As Exception
-            MsgBox(ex.Message)
+            MessageBox.Show(ex.Message)
         End Try
     End Sub
 
-    Private Sub wcchangelog_DownloadFileCompleted(sender As Object, e As ComponentModel.AsyncCompletedEventArgs) Handles wcchangelog.DownloadFileCompleted
-        Start()
-    End Sub
 End Class
 

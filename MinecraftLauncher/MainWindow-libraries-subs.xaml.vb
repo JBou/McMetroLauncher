@@ -224,7 +224,7 @@
 '    Sub Download_Resources()
 
 '        If wcresources.IsBusy Or wcversionsdownload.IsBusy Then
-'            MsgBox("Download läuft!", MsgBoxStyle.Information, "Achtung")
+'            MessageBox.Show("Download läuft!", MessageBoxStyle.Information, "Achtung")
 '        Else
 
 '            'Auslesen
@@ -295,7 +295,7 @@
 
 '    Sub Download_Version()
 '        If wcresources.IsBusy Or wcversionsdownload.IsBusy Then
-'            MsgBox("Download läuft!", MsgBoxStyle.Information, "Achtung")
+'            MessageBox.Show("Download läuft!", MessageBoxStyle.Information, "Achtung")
 '        Else
 
 '            Dim VersionsURl As String = "https://s3.amazonaws.com/Minecraft.Download/versions/" & lastversionID & "/" & lastversionID & ".jar"
@@ -365,7 +365,7 @@
 '    Sub Start_MC()
 '        ' Anwendungspfad setzen -> hier liegt es im Anwendungsordner
 '        If Startcmd() = Nothing Then
-'            Dim result As MessageBoxResult = CType(MessageBox.Show("Du musst Java installieren, um Minecraft zu spielen. Jetzt herunterladen?", "Java fehlt", MessageBoxButtons.OKCancel), MessageBoxResult)
+'            Dim result As MessageBoxResult = CType(MessageBox.Show("Du musst Java installieren, um Minecraft zu spielen. Jetzt herunterladen?", "Java fehlt", MessageBoxButton.OKCancel), MessageBoxResult)
 
 '            If result = MessageBoxResult.OK Then
 '                Process.Start("http://java.com/de/download")
@@ -455,7 +455,7 @@
 '                    Dim libraryfiles As String = filenametemp1 & filenametemp2 & filenametemp3 & windows_natives & ".jar"
 
 
-'                    'MsgBox(rulesallow & "-" & rulesdisallow & "-" & libraryfiles)
+'                    'MessageBox.Show(rulesallow & "-" & rulesdisallow & "-" & libraryfiles)
 '                    lb_libraries_url.Items.Add(librariesrootURL)
 '                    lb_libraries.Items.Add(libraryfiles)
 
@@ -510,10 +510,10 @@
 '                    Download_Libraries()
 '                End If
 '            Catch ex As Exception
-'                MsgBox(ex.Message)
+'                MessageBox.Show(ex.Message)
 '            End Try
 '        Else
-'            MsgBox(lb_libraries.Items.Count & librariesDownloadindex)
+'            MessageBox.Show(lb_libraries.Items.Count & librariesDownloadindex)
 '            Unzip()
 '        End If
 
@@ -631,7 +631,7 @@
 
 '        Arguments = javaargs & " -Djava.library.path=" & natives & " -cp " & libraries & Versionsjar & " " & mainClass & " " & minecraftArguments & height & width
 
-'        'MsgBox(Arguments)
+'        'MessageBox.Show(Arguments)
 
 '        'StartArgumente und mainclass ... von JSON IO.File
 '        'Überprüfen, ob username eingegeben wurde!
@@ -642,11 +642,11 @@
 '    Public Sub StartMC()
 
 '        If IsStarting = True Then
-'            MsgBox("Minecraft wird bereits gestartet!", MsgBoxStyle.Information, "Achtung")
+'            MessageBox.Show("Minecraft wird bereits gestartet!", MessageBoxStyle.Information, "Achtung")
 '        ElseIf cb_profiles.SelectedIndex = -1 Then
-'            MsgBox("Wähle bitte ein Profil auswählen!", MsgBoxStyle.Information, "Achtung")
+'            MessageBox.Show("Wähle bitte ein Profil auswählen!", MessageBoxStyle.Information, "Achtung")
 '        ElseIf tb_username.Text = Nothing Then
-'            MsgBox("Gib einen Usernamen ein!", MsgBoxStyle.Information, "Fehler")
+'            MessageBox.Show("Gib einen Usernamen ein!", MessageBoxStyle.Information, "Fehler")
 '        Else
 
 '            If Profiles.lastVersionId(selectedprofile) <> Nothing Then
@@ -862,7 +862,7 @@
 
 '    Private Sub btn_downloadmod_Click(sender As Object, e As RoutedEventArgs) Handles btn_downloadmod.Click
 '        If moddownloading = True Then
-'            MessageBox.Show("Eine Mod wird bereits heruntergeladen. Warte bitte, bis diese fertig ist!", "Download läuft", MessageBoxButtons.OK, MessageBoxIcon.Information)
+'            MessageBox.Show("Eine Mod wird bereits heruntergeladen. Warte bitte, bis diese fertig ist!", "Download läuft", MessageBoxButton.OK, MessageBoxImage.Information)
 '        Else
 '            btn_resetmodsfoler.IsEnabled = False
 '            btn_selectmodsfolder.IsEnabled = False
@@ -888,7 +888,7 @@
 '    Private Sub download_mod()
 '        If downloadindex < downloadlist.Count Then
 '            If tb_modsfolder.Text.Contains(IO.Path.GetInvalidPathChars) = True Then
-'                MessageBox.Show("Der Pfad des Mods Ordner enthält ungültige Zeichen", "Fehler", MessageBoxButtons.OK, MessageBoxIcon.Error)
+'                MessageBox.Show("Der Pfad des Mods Ordner enthält ungültige Zeichen", "Fehler", MessageBoxButton.OK, MessageBoxImage.Error)
 '            Else
 '                Dim Version As String = downloadlist.Item(downloadindex).version
 '                Dim path As String = tb_modsfolder.Text
@@ -912,7 +912,7 @@
 '                    wcmod.DownloadFileAsync(url, cachefolder & "\" & Modsfilename)
 '                Catch ex As Exception
 '                    lbl_mods_status.Content = ex.Message
-'                    MsgBox(ex.Message)
+'                    MessageBox.Show(ex.Message)
 '                    Mod_Download_finished()
 '                    Exit Sub
 '                End Try
@@ -931,7 +931,7 @@
 '    Private Sub wcmod_DownloadFileCompleted(sender As Object, e As System.ComponentModel.AsyncCompletedEventArgs) Handles wcmod.DownloadFileCompleted
 '        If e.Cancelled = True Then
 '            lbl_mods_status.Content = e.Error
-'            MsgBox(e.Error)
+'            MessageBox.Show(e.Error)
 '            Mod_Download_finished()
 '        Else
 '            Try
@@ -1060,7 +1060,7 @@
 
 '    'Private Sub PlayButton_Click(sender As Object, e As EventArgs) Handles btn_play.Click
 '    '    If moddownloading = True Then
-'    '        MessageBox.Show("Ein Song wird bereits heruntergeladen. Warte bitte, bis diese fertig ist!", "Download läuft", MessageBoxButtons.OK, MessageBoxIcon.Information)
+'    '        MessageBox.Show("Ein Song wird bereits heruntergeladen. Warte bitte, bis diese fertig ist!", "Download läuft", MessageBoxButton.OK, MessageBoxImage.Information)
 '    '    Else
 '    '        moddownloading = True
 '    '        pb_mods_download.Value = 0

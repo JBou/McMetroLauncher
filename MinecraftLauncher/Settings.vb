@@ -1,12 +1,12 @@
 ﻿Imports System.Xml
 Imports System.IO
 Imports Microsoft.Win32
+Imports MahApps
 
 Public Class Settings
-    Private Shared SettingsFile As New FileInfo(Path.Combine(Appdata, "McMetroLauncher", "Settings.xml"))
+    Private Shared SettingsFile As New FileInfo(Path.Combine(Applicationdata.FullName, "Settings.xml"))
 
-    Private Shared _Username As String
-    Private Shared _mcpfad As String
+    Private Shared _Username As String, _mcpfad As String, _accent As String, _Theme As String
 
     Public Shared Property mcpfad As String
         Get
@@ -14,6 +14,24 @@ Public Class Settings
         End Get
         Set(value As String)
             _mcpfad = value
+        End Set
+    End Property
+
+    Public Shared Property Accent As String
+        Get
+            Return _accent
+        End Get
+        Set(value As String)
+            _accent = value
+        End Set
+    End Property
+
+    Public Shared Property Theme As String
+        Get
+            Return _Theme
+        End Get
+        Set(value As String)
+            _Theme = value
         End Set
     End Property
 
@@ -32,6 +50,8 @@ Public Class Settings
         Else
             Username = Nothing
             mcpfad = mcpfad
+            Accent = "Blue"
+            Theme = "Light"
         End If
     End Sub
 
@@ -48,6 +68,10 @@ Public Class Settings
                         Username = document.ReadInnerXml
                     Case "mcpfad"
                         mcpfad = document.ReadInnerXml
+                    Case "Accent"
+                        Accent = document.ReadInnerXml
+                    Case "Theme"
+                        Theme = document.ReadInnerXml
                 End Select
 
             End If
@@ -55,39 +79,52 @@ Public Class Settings
     End Sub
 
     Public Shared Sub Save()
+        Try
 
-        If SettingsFile.Exists = False Then
-            SettingsFile.Directory.Create()
-        End If
+            If SettingsFile.Exists = False Then
+                SettingsFile.Directory.Create()
+            End If
 
-        Dim settings As New XmlWriterSettings()
+            Dim Settings As New XmlWriterSettings()
 
-        settings.Indent = True
+            Settings.Indent = True
 
-        Dim XmlWrt As XmlWriter = XmlWriter.Create(SettingsFile.FullName, settings)
+            Dim XmlWrt As XmlWriter = XmlWriter.Create(SettingsFile.FullName, Settings)
 
-        With XmlWrt
+            With XmlWrt
 
-            .WriteStartDocument()
+                .WriteStartDocument()
 
-            .WriteComment("Einstellungen vom McMetroLauncher")
-            .WriteComment("Bitte nicht manuell bearbeiten")
+                .WriteComment("Einstellungen vom McMetroLauncher")
+                .WriteComment("Bitte nicht manuell bearbeiten")
 
-            .WriteStartElement("Settings")
+                .WriteStartElement("Settings")
 
-            .WriteStartElement("Username")
-            .WriteString(Username)
-            .WriteEndElement()
+                .WriteStartElement("Username")
+                .WriteString(Username)
+                .WriteEndElement()
 
-            .WriteStartElement("mcpfad")
-            .WriteString(mcpfad)
-            .WriteEndElement()
+                .WriteStartElement("mcpfad")
+                .WriteString(mcpfad)
+                .WriteEndElement()
 
-            .WriteEndElement()
+                .WriteStartElement("Accent")
+                .WriteString(Accent)
+                .WriteEndElement()
 
-            .WriteEndDocument()
-            .Close()
+                .WriteStartElement("Theme")
+                .WriteString(Theme)
+                .WriteEndElement()
 
-        End With
+                .WriteEndElement()
+
+                .WriteEndDocument()
+                .Close()
+
+            End With
+        Catch
+
+        End Try
     End Sub
+
 End Class
