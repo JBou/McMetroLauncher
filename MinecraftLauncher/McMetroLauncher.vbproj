@@ -155,17 +155,17 @@
       <DependentUpon>Forge_installer.xaml</DependentUpon>
     </Compile>
     <Compile Include="JSONAPI.vb" />
+    <Compile Include="My Project\Resources.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="VersionsInfo.vb" />
     <Compile Include="MainWindow-libraries-subs.xaml.vb" />
     <Compile Include="MainWindow.xaml.vb">
       <DependentUpon>MainWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Mods.vb" />
-    <Compile Include="My Project\Resources.Designer.vb">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
     <Compile Include="Resources.vb" />
     <Compile Include="Server.vb" />
     <Compile Include="ServerEditor.xaml.vb">
@@ -301,13 +301,14 @@
   <ItemGroup>
     <Compile Include="SimpleCommand.vb" />
     <Resource Include="images\transparent64_64.png" />
-    <Resource Include="images\appbar.delete.png" />
-    <Resource Include="images\appbar.refresh.png" />
     <Resource Include="images\check_green.png" />
-    <None Include="images\albumart.jpg" />
-    <None Include="images\noalbumart.jpg" />
     <Resource Include="minecraft_block.png" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="images\dark\appbar.delete.png" />
+    <Resource Include="images\dark\appbar.refresh.png" />
+    <Resource Include="images\light\appbar.delete.png" />
+    <Resource Include="images\light\appbar.refresh.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
 </Project>

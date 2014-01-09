@@ -181,6 +181,8 @@ Public Class MainWindow
         ThemeManager.ChangeTheme(Application.Current, theme.Item2, MahApps.Metro.Theme.Light)
         Settings.Theme = "Light"
         Settings.Save()
+        btn_refresh_image.Source = ImageConvert.GetImageStream(My.Resources.appbar_refresh_light)
+        btn_list_delete_mod_image.Source = ImageConvert.GetImageStream(My.Resources.appbar_delete_light)
     End Sub
 
     Private Sub ThemeDark()
@@ -188,6 +190,8 @@ Public Class MainWindow
         ThemeManager.ChangeTheme(Application.Current, theme.Item2, MahApps.Metro.Theme.Dark)
         Settings.Theme = "Dark"
         Settings.Save()
+        btn_refresh_image.Source = ImageConvert.GetImageStream(My.Resources.appbar_refresh_dark)
+        btn_list_delete_mod_image.Source = ImageConvert.GetImageStream(My.Resources.appbar_delete_dark)
     End Sub
 
     Private Sub OnMenuItemClicked(sender As Object, e As RoutedEventArgs)
@@ -783,21 +787,30 @@ Public Class MainWindow
                     If librarypath.Directory.Exists = False Then
                         librarypath.Directory.Create()
                     End If
-                    wc_libraries.DownloadFileAsync(New Uri(url), librarypath.FullName)
-                    Write("Library wird heruntergeladen (Versuch " & librariesdownloadtry & "): " & librarypath.FullName)
+                    If Currentlibrarysha1.Length > 0 Then
+                        MsgBox(Currentlibrarysha1)
+                        wc_libraries.DownloadFileAsync(New Uri(url), librarypath.FullName)
+                        Write("Library wird heruntergeladen (Versuch " & librariesdownloadtry & "): " & librarypath.FullName)
+                    Else
+                        If librarypath.Exists Then
+                            Write("Library konnte nicht auf Hash überprüft werden und wird übersprungen, in der Annahme, dass die lokale Datei gut ist: " & librarypath.FullName)
+                        End If
+                        librariesdownloadindex += 1
+                        DownloadLibraries()
+                    End If
                 Else
-                    Write("Library existiert bereits: " & librarypath.FullName)
-                    librariesdownloadindex += 1
-                    DownloadLibraries()
+                        Write("Library existiert bereits: " & librarypath.FullName)
+                        librariesdownloadindex += 1
+                        DownloadLibraries()
                 End If
             Else
                 librariesdownloadindex += 1
                 DownloadLibraries()
             End If
-            Else
-                'Downloads fertig
-                DownloadLibrariesfinished()
-            End If
+        Else
+            'Downloads fertig
+            DownloadLibrariesfinished()
+        End If
     End Sub
 
     Private Sub wc_libraries_DownloadFileCompleted(sender As Object, e As System.ComponentModel.AsyncCompletedEventArgs) Handles wc_libraries.DownloadFileCompleted
@@ -1017,7 +1030,13 @@ Public Class MainWindow
         Parse_VersionsInfo()
         For i = 0 To VersionsInfos.libraries.Count - 1
             Dim librarytemp As Library = VersionsInfos.libraries.Item(i)
-            libraries &= Path.Combine(librariesfolder, librarytemp.path & ";")
+            If librarytemp.natives Is Nothing Then
+                libraries &= Path.Combine(librariesfolder, librarytemp.path.Replace("/", "\") & ";")
+            Else
+                If librarytemp.natives.windows IsNot Nothing Then
+                    libraries &= Path.Combine(librariesfolder, librarytemp.path.Replace("/", "\") & ";")
+                End If
+            End If
         Next
 
         If Profiles.gameDir(selectedprofile) <> Nothing Then

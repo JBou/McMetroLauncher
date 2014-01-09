@@ -184,7 +184,7 @@
                     <Image x:Name="img_installed" Height="23" Width="23" Margin="368,80,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Source="images/check_green.png"/>
                     <Label x:Name="lbl_name" Margin="395,77,110,0" VerticalAlignment="Top" Height="29" FontWeight="Bold" VerticalContentAlignment="Center" Background="#00000000" Foreground="#FF1F94F5" FontSize="15" />
                     <Button x:Name="btn_list_delete_mod" Margin="778,0,0,23" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="32" Height="32" Padding="0" >
-                        <Image Source="images/appbar.delete.png" Margin="0"/>
+                        <Image x:Name="btn_list_delete_mod_image" Source="images/light/appbar.delete.png" Margin="0"/>
                     </Button>
                     <Button Foreground="{DynamicResource AccentColorBrush}" x:Name="btn_downloadmod" Content="Installieren" Margin="815,0,10,23" VerticalAlignment="Bottom" Height="32" FontWeight="Bold" FontSize="12"/>
                     <Controls:MetroProgressBar Foreground="{DynamicResource AccentColorBrush}" x:Name="pb_mods_download" Height="8" Margin="10,0,10,10" VerticalAlignment="Bottom"/>
@@ -198,7 +198,7 @@
                     <Label x:Name="lbl_mods_status" Content="" HorizontalAlignment="Left" Margin="368,0,0,23" VerticalAlignment="Bottom" Height="32" Width="175"/>
                     <Label x:Name="lbl_autor" Content="" Margin="517,77,10,0" VerticalAlignment="Top" Height="29" FontWeight="Bold" VerticalContentAlignment="Center" HorizontalContentAlignment="Right" Background="#00000000" Foreground="#FF1F94F5" FontSize="15"/>
                     <Button x:Name="btn_refresh" Click="RefreshMods" Margin="0,15,10,0" HorizontalAlignment="Right" VerticalAlignment="Top" Width="26" Height="26" Padding="0" >
-                        <Image Source="images/appbar.refresh.png" Margin="0"/>
+                        <Image x:Name="btn_refresh_image" Source="images/light/appbar.refresh.png" Margin="0"/>
                     </Button>
                     <TextBox x:Name="tb_search_mods" Controls:TextboxHelper.ClearTextButton="True" Controls:TextboxHelper.Watermark="Suche" Margin="10,46,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="352" />
                 </Grid>
