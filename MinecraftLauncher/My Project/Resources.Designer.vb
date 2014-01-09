@@ -63,16 +63,6 @@ Namespace My.Resources
         '''<summary>
         '''  Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
         '''</summary>
-        Friend ReadOnly Property albumart() As System.Drawing.Bitmap
-            Get
-                Dim obj As Object = ResourceManager.GetObject("albumart", resourceCulture)
-                Return CType(obj,System.Drawing.Bitmap)
-            End Get
-        End Property
-        
-        '''<summary>
-        '''  Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
-        '''</summary>
         Friend ReadOnly Property appbar_delete() As System.Drawing.Bitmap
             Get
                 Dim obj As Object = ResourceManager.GetObject("appbar_delete", resourceCulture)
@@ -106,16 +96,6 @@ Namespace My.Resources
         Friend ReadOnly Property minecraft_block() As System.Drawing.Bitmap
             Get
                 Dim obj As Object = ResourceManager.GetObject("minecraft_block", resourceCulture)
-                Return CType(obj,System.Drawing.Bitmap)
-            End Get
-        End Property
-        
-        '''<summary>
-        '''  Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
-        '''</summary>
-        Friend ReadOnly Property noalbumart() As System.Drawing.Bitmap
-            Get
-                Dim obj As Object = ResourceManager.GetObject("noalbumart", resourceCulture)
                 Return CType(obj,System.Drawing.Bitmap)
             End Get
         End Property

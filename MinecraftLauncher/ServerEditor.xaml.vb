@@ -47,7 +47,7 @@ Public Class ServerEditor
         item.Add(tag_ip)
         item.Add(tag_hide)
         nbtserverfile.RootTag.Get(Of NbtList)("servers").Insert(index, New NbtCompound(item.AsEnumerable))
-        nbtserverfile.SaveToFile(servers_dat, NbtCompression.GZip)
+        nbtserverfile.SaveToFile(servers_dat, NbtCompression.None)
         DialogResult = True
         Me.Close()
     End Sub

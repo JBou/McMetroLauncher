@@ -4,7 +4,6 @@ Imports Ionic.Zip
 Class Forge_installer
     Private List As New List(Of ForgeEintrag)
     WithEvents wc As New WebClient
-    Private downloading As Boolean
     Private filename As String
     Private profilename As String
     Private version As String
@@ -27,10 +26,9 @@ Class Forge_installer
     Private Sub btn_download_Click(sender As Object, e As RoutedEventArgs) Handles btn_download.Click
         If lst.SelectedIndex = -1 Then
             MessageBox.Show("Bitte wähle eine Forge Version Aus!", "Fehler", MessageBoxButton.OK, MessageBoxImage.Error)
-        ElseIf downloading = True Then
-            MessageBox.Show("Forge wird bereits installiert...", "Fehler", MessageBoxButton.OK, MessageBoxImage.Error)
+        ElseIf wc.IsBusy = True Then
+            wc.CancelAsync()
         Else
-            downloading = True
             Dim url As New Uri(DirectCast(lst.SelectedItem, ForgeEintrag).downloadLink)
             Dim ls As IList(Of String) = url.Segments
             filename = cachefolder & "\" & ls.Last
@@ -53,7 +51,6 @@ Class Forge_installer
         Else
             pb_download.IsIndeterminate = True
             Process.Start(filename)
-            Me.Close()
             ''Entpacken... und installieren
             'UnzipForge(filename)
             ''Profiles hinzufügen

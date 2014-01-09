@@ -155,6 +155,7 @@
       <DependentUpon>Forge_installer.xaml</DependentUpon>
     </Compile>
     <Compile Include="JSONAPI.vb" />
+    <Compile Include="VersionsInfo.vb" />
     <Compile Include="MainWindow-libraries-subs.xaml.vb" />
     <Compile Include="MainWindow.xaml.vb">
       <DependentUpon>MainWindow.xaml</DependentUpon>
@@ -251,13 +252,7 @@
       <SubType>Designer</SubType>
       <LastGenOutput>Resources.Designer.vb</LastGenOutput>
     </EmbeddedResource>
-    <None Include="Areas\Installation\Views\Shared\_Layout.cshtml" />
-    <None Include="Areas\Installation\Views\Updates\Check.cshtml" />
-    <None Include="Areas\Installation\Views\Updates\InstallUpdate.cshtml" />
-    <None Include="Areas\Installation\Views\Updates\Upgrade.cshtml" />
-    <None Include="Areas\Installation\Views\_ViewStart.cshtml" />
     <None Include="ClassDiagram1.cd" />
-    <None Include="en\Elysium.chm" />
     <None Include="MinecraftLauncher_TemporaryKey.pfx" />
     <None Include="My Project\app.manifest" />
     <None Include="My Project\Settings.settings">
@@ -266,7 +261,6 @@
     </None>
     <AppDesigner Include="My Project\" />
     <None Include="packages.config" />
-    <None Include="ru\Elysium.chm" />
     <Resource Include="Resources\Entypo.ttf" />
   </ItemGroup>
   <ItemGroup>
@@ -276,19 +270,7 @@
     <Resource Include="Resources\Entypo-license.txt" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="ru\Microsoft.Expression.Drawing.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="ru\Elysium.xml" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Microsoft.Expression.Drawing.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="en\Microsoft.Expression.Drawing.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="en\Elysium.xml" />
   </ItemGroup>
   <ItemGroup>
     <None Include="images\minecraft_block.png" />
@@ -317,8 +299,6 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Areas\Installation\InstallationAreaRegistration.cs" />
-    <Content Include="Areas\Installation\Scripts\autoupdate.js" />
     <Compile Include="SimpleCommand.vb" />
     <Resource Include="images\transparent64_64.png" />
     <Resource Include="images\appbar.delete.png" />

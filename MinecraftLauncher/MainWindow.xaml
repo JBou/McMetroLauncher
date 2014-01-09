@@ -134,6 +134,14 @@
 
                 </Grid>
             </TabItem>
+            <TabItem Header="Tools">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Button Content="Forge installieren" x:Name="install_forge" Click="forge_installer" Margin="10"/>
+                </Grid>
+            </TabItem>
             <TabItem Header="Mods" Margin="4,0,-4,0">
                 <Grid>
                     <Grid.RowDefinitions>
@@ -184,7 +192,7 @@
                     <ComboBox x:Name="cb_modversions" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="352" Height="31"/>
                     <Button x:Name="btn_website" Content="Website besuchen" Margin="663,0,0,23" VerticalAlignment="Bottom" Height="32" HorizontalAlignment="Left" Width="110"/>
                     <Button x:Name="btn_video" Content="Video ansehen" Margin="548,0,0,23" VerticalAlignment="Bottom" RenderTransformOrigin="0.489,0.548" HorizontalAlignment="Left" Height="32" Width="110"/>
-                    <Button x:Name="btn_installforge" Foreground="{DynamicResource AccentColorBrush}" Content="Du musst Minecraft Forge installieren, um die Mods zu verwenden!" Margin="517,15,41,0" VerticalAlignment="Top" Height="26"/>
+                    <Button x:Name="btn_installforge" Foreground="{DynamicResource AccentColorBrush}" Click="forge_installer" Content="Du musst Minecraft Forge installieren, um die Mods zu verwenden!" Margin="517,15,41,0" VerticalAlignment="Top" Height="26"/>
                     <Button x:Name="btn_play" Content="Play" Margin="192,466,628,24" Visibility="Hidden" />
                     <TextBox x:Name="tb_downloadlink" HorizontalAlignment="Left" Height="26" Margin="362,439,-17,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="597" Visibility="Hidden"/>
                     <Label x:Name="lbl_mods_status" Content="" HorizontalAlignment="Left" Margin="368,0,0,23" VerticalAlignment="Bottom" Height="32" Width="175"/>
@@ -274,9 +282,9 @@
                     </ListView>
                     <DockPanel Margin="10" VerticalAlignment="Bottom" HorizontalAlignment="Center" UseLayoutRounding="False" LastChildFill="False">
                         <Button x:Name="btn_refresh_servers" Content="Aktualisieren" VerticalAlignment="Bottom" Height="32" HorizontalAlignment="Right" Margin="10,0,10,0"/>
-                        <Button x:Name="btn_add_servers" Content="Hinzufügen" VerticalAlignment="Bottom" Height="32" HorizontalAlignment="Right" Margin="10,0,10,0" IsEnabled="False"/>
-                        <Button x:Name="btn_edit_servers" Content="Bearbeiten" VerticalAlignment="Bottom" Height="32" HorizontalAlignment="Right" Margin="10,0,10,0" IsEnabled="False"/>
-                        <Button x:Name="btn_delete_servers" Content="Entfernen" VerticalAlignment="Bottom" Height="32" HorizontalAlignment="Right" Margin="10,0,10,0" IsEnabled="False"/>
+                        <Button x:Name="btn_add_servers" Content="Hinzufügen" VerticalAlignment="Bottom" Height="32" HorizontalAlignment="Right" Margin="10,0,10,0" />
+                        <Button x:Name="btn_edit_servers" Content="Bearbeiten" VerticalAlignment="Bottom" Height="32" HorizontalAlignment="Right" Margin="10,0,10,0"/>
+                        <Button x:Name="btn_delete_servers" Content="Entfernen" VerticalAlignment="Bottom" Height="32" HorizontalAlignment="Right" Margin="10,0,10,0"/>
                     </DockPanel>
                 </Grid>
             </TabItem>

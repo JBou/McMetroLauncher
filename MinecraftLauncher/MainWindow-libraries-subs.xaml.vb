@@ -26,7 +26,7 @@
 ''    Public Appdata As String = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)
 ''    Public mcpfad As String = Appdata & "\.minecraft"
 ''    Public modsfile As String = mcpfad & "\cache\modlist.json"
-''    Public librariespath As String = mcpfad & "\libraries"
+''    Public librariesfolder As String = mcpfad & "\libraries"
 ''    Public assetspath As String = mcpfad & "\assets"
 ''    Public resourcesfile As String = mcpfad & "\cache\minecraft_resources.xml"
 ''    Public launcher_profiles_json As String = mcpfad & "\launcher_profiles.json"
@@ -546,7 +546,7 @@
 
 '        For i = 0 To lb_libraries_extract.Items.Count - 1
 
-'            Dim ZipToUnpack As String = librariespath & "\" & lb_libraries_extract.Items.Item(i).ToString
+'            Dim ZipToUnpack As String = librariesfolder & "\" & lb_libraries_extract.Items.Item(i).ToString
 '            Dim Directoryname As String = IO.Path.GetDirectoryName(UnpackDirectory)
 
 '            If IO.Directory.Exists(Directoryname) = False Then
@@ -586,7 +586,7 @@
 
 '        For i = 0 To lb_libraries.Items.Count - 1
 '            Dim librarytemp As String = lb_libraries.Items.Item(i).ToString
-'            libraries = libraries & librariespath & "\" & librarytemp.Replace("/", "\") & ";"
+'            libraries = libraries & librariesfolder & "\" & librarytemp.Replace("/", "\") & ";"
 '        Next
 
 '        If Profiles.gameDir(selectedprofile) <> Nothing Then

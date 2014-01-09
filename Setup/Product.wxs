@@ -97,10 +97,9 @@
               <File Id="MahApps.Metro" Name="MahApps.Metro.dll" Source="$(var.McMetroLauncher.TargetDir)MahApps.Metro.dll" />        
               <File Id="MahApps.Metro.Resources" Name="MahApps.Metro.Resources.dll" Source="$(var.McMetroLauncher.TargetDir)MahApps.Metro.Resources.dll" />      
               <File Id="Newtonsoft.Json" Name="Newtonsoft.Json.dll" Source="$(var.McMetroLauncher.TargetDir)Newtonsoft.Json.dll" />            
-              <File Id="System.Net.Http.Formatting" Name="System.Net.Http.Formatting.dll" Source="$(var.McMetroLauncher.TargetDir)System.Net.Http.Formatting.dll" /> 
-              <File Id="System.Windows.Interactivity" Name="System.Windows.Interactivity.dll" Source="$(var.McMetroLauncher.TargetDir)System.Windows.Interactivity.dll" />          
-              <File Id="updateSystemDotNet.Controller" Name="updateSystemDotNet.Controller.dll" Source="$(var.McMetroLauncher.TargetDir)updateSystemDotNet.Controller.dll" /> 
-              <File Id="Ookii.Dialogs.Wpf" Name="Ookii.Dialogs.Wpf.dll" Source="$(var.McMetroLauncher.TargetDir)Ookii.Dialogs.Wpf.dll" />             
+              <File Id="System.Windows.Interactivity" Name="System.Windows.Interactivity.dll" Source="$(var.McMetroLauncher.TargetDir)System.Windows.Interactivity.dll" />           
+              <File Id="Ookii.Dialogs.Wpf" Name="Ookii.Dialogs.Wpf.dll" Source="$(var.McMetroLauncher.TargetDir)Ookii.Dialogs.Wpf.dll" />           
+              <File Id="fNbt" Name="fNbt.dll" Source="$(var.McMetroLauncher.TargetDir)fNbt.dll" />           
             </Component>
 
             <Component Id="ShortCutDeinstall" Guid="{0BA3B1B9-679B-45C0-A6BB-0CEA1C5CDA7F}">
@@ -175,16 +174,16 @@
       <UIRef Id="WixUI_ErrorProgressText" />
       
       <Publish Dialog="ExitDialog"
-      Control="Finish" 
-      Event="DoAction" 
-      Value="LaunchApplication">WIXUI_EXITDIALOGOPTIONALCHECKBOX = 1 and NOT Installed</Publish>
+          Control="Finish" 
+          Event="DoAction" 
+          Value="LaunchApplication">WIXUI_EXITDIALOGOPTIONALCHECKBOX = 1 and NOT Installed</Publish>
     
     </UI>
     
   <!-- Checkbox zum starten nach der installation -->
 <Property Id="WIXUI_EXITDIALOGOPTIONALCHECKBOXTEXT" Value="$(var.Name) starten" />
   
-<Property Id="WixShellExecTarget" Value="$(var.McMetroLauncher.TargetPath)" />
+<Property Id="WixShellExecTarget" Value="[#MyApplicationFile]" />
 <CustomAction Id="LaunchApplication" BinaryKey="WixCA" DllEntry="WixShellExec" Impersonate="yes" />
 
   </Product>

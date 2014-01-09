@@ -21,7 +21,7 @@
         lst.Items.Clear()
         List.Clear()
         For Each item As ForgeEintrag In Forge.Get_Forge
-            'MsgBox(String.Join(" | ", item.build, item.version, item.time, item.downloadLink))
+            'MessageBox.Show(String.Join(" | ", item.build, item.version, item.time, item.downloadLink))
             lst.Items.Add(item)
             List.Add(item)
         Next
