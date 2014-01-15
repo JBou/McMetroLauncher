@@ -1,4 +1,5 @@
 ﻿<Controls:MetroWindow  x:Class="MainWindow"
+    xmlns:local="clr-namespace:McMetroLauncher"
     xmlns:params="http://schemas.codeplex.com/elysium/params"
     xmlns:syncfusion="http://schemas.syncfusion.com/wpf"
     xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
@@ -10,6 +11,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     GlowBrush="{DynamicResource AccentColorBrush}"            
     Title="McMetroLauncher" Height="600" Width="950"
+    DataContext="{Binding RelativeSource={RelativeSource Self}}"
     ForceCursor="True" MinWidth="950" MinHeight="600" Icon="favicon.ico" ResizeMode="CanResizeWithGrip" UseLayoutRounding="False" ScrollViewer.CanContentScroll="True" >
 
     <Window.Resources>
@@ -19,6 +21,10 @@
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/FlatSlider.xaml"/>
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.ListView.xaml" />
             </ResourceDictionary.MergedDictionaries>
+
+            <local:Base64ImageConverter x:Key="Base64ImageConverter"/>
+            <local:FormattingcodesStringConverter x:Key="FormattingcodesStringConverter"/>
+
             <Style x:Key="DescriptionHeaderStyle" TargetType="Label">
                 <Setter Property="FontSize" Value="22" />
                 <Setter Property="HorizontalAlignment" Value="Center" />
@@ -111,18 +117,17 @@
                     <Grid.RowDefinitions>
                         <RowDefinition/>
                     </Grid.RowDefinitions>
-                    <TextBox x:Name="tb_ausgabe" VerticalScrollBarVisibility="Auto" AcceptsReturn="True" IsReadOnly="True" VerticalContentAlignment="Top" Margin="10,10,10,97" HorizontalScrollBarVisibility="Auto"/>
+                    <TextBox x:Name="tb_ausgabe" VerticalScrollBarVisibility="Auto" AcceptsReturn="True" IsReadOnly="True" VerticalContentAlignment="Top" Margin="10,10,10,95" HorizontalScrollBarVisibility="Auto"/>
                     <ListBox x:Name="Listbox1" HorizontalAlignment="Left" Height="271" Margin="459,10,0,0" VerticalAlignment="Top" Width="473" Visibility="Collapsed"/>
-                    <TextBox x:Name="tb_username" HorizontalAlignment="Right" Height="32" Margin="0,0,138,11" TextWrapping="Wrap" VerticalAlignment="Bottom" Width="148" VerticalContentAlignment="Center"/>
-                    <Button x:Name="btn_startMC" Content="Start" HorizontalAlignment="Right" Margin="0,0,10,10" VerticalAlignment="Bottom" Width="123" Height="68" FontSize="30"/>
-                    <Controls:MetroProgressBar Foreground="{DynamicResource AccentColorBrush}" x:Name="pb_download" Height="8" Margin="10,0,10,84" VerticalAlignment="Bottom"/>
+                    <TextBox x:Name="tb_username" HorizontalAlignment="Right" Height="32" Margin="0,0,138,47" TextWrapping="Wrap" VerticalAlignment="Bottom" Width="148" VerticalContentAlignment="Center"/>
+                    <Button x:Name="btn_startMC" Content="Start" HorizontalAlignment="Right" Margin="0,0,10,10" VerticalAlignment="Bottom" Width="123" Height="69" FontSize="30"/>
+                    <Controls:MetroProgressBar Foreground="{DynamicResource AccentColorBrush}" x:Name="pb_download" Height="5" Margin="10,0,10,84" VerticalAlignment="Bottom"/>
                     <ComboBox x:Name="cb_versions" HorizontalAlignment="Left" Margin="348,0,0,47" VerticalAlignment="Bottom" Width="76" Height="32" Visibility="Hidden"/>
                     <ComboBox x:Name="cb_type" HorizontalAlignment="Left" Margin="246,0,0,47" VerticalAlignment="Bottom" Width="97" Height="32" Visibility="Hidden"/>
                     <ListBox x:Name="lb_Datum" HorizontalAlignment="Left" Height="162" Margin="10,348,0,0" VerticalAlignment="Top" Width="179" Visibility="Hidden"/>
                     <Label x:Name="lbl_downloadstatus" HorizontalAlignment="Left" Margin="233,0,0,47" VerticalAlignment="Bottom" Width="418" Height="32"/>
                     <ListBox x:Name="lb_startedversions" HorizontalAlignment="Left" Height="271" Margin="866,10,-58,0" VerticalAlignment="Top" Width="134" Visibility="Hidden"/>
                     <ComboBox x:Name="cb_ram" HorizontalAlignment="Right" Margin="0,0,138,10" VerticalAlignment="Bottom" Width="148" Height="32" ToolTip="Nur verfügbar mit Java 64 bit" Visibility="Hidden"/>
-                    <Label Content="Username" HorizontalAlignment="Right" Margin="0,0,138,48" VerticalAlignment="Bottom" Height="32" Width="148" FontSize="15" HorizontalContentAlignment="Center"/>
                     <Label Content="Ram" HorizontalAlignment="Right" Margin="0,0,291,10" VerticalAlignment="Bottom" Height="32" Width="78" FontSize="15" ToolTip="Nur verfügbar mit Java 64 bit" Visibility="Hidden"/>
                     <Button x:Name="btn_new_profile" Content="Neu" HorizontalAlignment="Left" Margin="10,0,0,10" VerticalAlignment="Bottom" Width="26" Height="33" MinWidth="50"/>
                     <Button x:Name="btn_edit_profile" Content="Bearbeiten" HorizontalAlignment="Left" Margin="65,0,0,10" VerticalAlignment="Bottom" Width="89" Height="33"/>
@@ -131,16 +136,22 @@
                     <ListBox x:Name="lb_libraries_extract" HorizontalAlignment="Left" Height="271" Margin="648,120,-48,0" VerticalAlignment="Top" Width="342" Visibility="Collapsed"/>
                     <ListBox x:Name="lb_libraries" HorizontalAlignment="Left" Height="271" Margin="-2,120,0,0" VerticalAlignment="Top" Width="320" Visibility="Collapsed"/>
                     <ListBox x:Name="lb_libraries_url" HorizontalAlignment="Left" Height="271" Margin="323,120,0,0" VerticalAlignment="Top" Width="320" Visibility="Collapsed"/>
+                    <PasswordBox x:Name="pb_Password" HorizontalAlignment="Right" Height="32" Margin="0,0,138,10" VerticalAlignment="Bottom" Width="148" VerticalContentAlignment="Center" IsEnabled="False"/>
+                    <CheckBox x:Name="cb_online_mode" HorizontalAlignment="Right" Height="32" Content="Online Mode" Margin="0,0,180,10" VerticalAlignment="Bottom" Width="106" VerticalContentAlignment="Center" IsEnabled="False"/>
+                    <TextBox x:Name="tb_server_address" Controls:TextboxHelper.Watermark="Address" HorizontalAlignment="Right" Height="32" Margin="0,0,291,10" TextWrapping="Wrap" VerticalAlignment="Bottom" Width="148" VerticalContentAlignment="Center"/>
+                    <CheckBox x:Name="cb_direct_join" HorizontalAlignment="Right" Height="32" Content="Direct Join" Margin="0,0,291,47" VerticalAlignment="Bottom" Width="148" VerticalContentAlignment="Center" Padding="6,0,0,0"/>
+
 
                 </Grid>
             </TabItem>
             <TabItem Header="Tools">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition/>
-                    </Grid.ColumnDefinitions>
-                    <Button Content="Forge installieren" x:Name="install_forge" Click="forge_installer" Margin="10"/>
-                </Grid>
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <Grid>
+                        <Button Content="Forge installieren" x:Name="install_forge" Click="forge_installer" Margin="693,30,10,419"/>
+                        <TextBlock TextWrapping="WrapWithOverflow" Margin="245,30,254,419" Foreground="Black" Padding="5" Text="Minecraft Forge ist ein ModLoader mit dem ihr einfacher Mods installieren könnt. Er hilft dabei, dass die Mods untereinander kompatibel sind. Die meisten Mods basieren auf Forge. Du kannst Mods für Forge unter dem Tab &quot;Mods&quot; installieren." />
+                        <Image Margin="30,30,0,0" Height="79" VerticalAlignment="Top" HorizontalAlignment="Left" Width="210" Source="images/forge_banner.png" Stretch="None"/>
+                    </Grid>
+                </ScrollViewer>
             </TabItem>
             <TabItem Header="Mods" Margin="4,0,-4,0">
                 <Grid>
@@ -219,7 +230,8 @@
             </TabItem>
             <TabItem Header="Server">
                 <Grid>
-                    <ListView x:Name="lb_servers" DisplayMemberPath="name" Margin="10,10,10,47" Width="900" HorizontalAlignment="Center" BorderThickness="0" >
+                    <Label Margin="10,10,10,47" Width="900" VerticalAlignment="Top" HorizontalAlignment="Center" BorderThickness="0" Content="Server, dessen Version älter als 1.7 ist, werden als &quot;Offline&quot; angezeigt " HorizontalContentAlignment="Center"  />
+                    <ListView x:Name="lb_servers" Margin="21,42,21,47" Width="900" HorizontalAlignment="Center" BorderThickness="0" >
                         <ListView.ItemContainerStyle>
                             <Style TargetType="{x:Type ListViewItem}"
         						BasedOn="{StaticResource MetroListViewItem}">
@@ -228,60 +240,74 @@
                             </Style>
                         </ListView.ItemContainerStyle>
                         <ListView.View>
-                            <GridView ColumnHeaderContainerStyle="{StaticResource myHeaderStyle}" AllowsColumnReorder="False" >
+                            <GridView ColumnHeaderContainerStyle="{StaticResource myHeaderStyle}" AllowsColumnReorder="False">
+                                <!--Icon-->
                                 <GridViewColumn Header="Icon" Width="80" >
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
-                                            <Image Source="{Binding icon}" />
+                                            <Image Source="{Binding icon, Converter={StaticResource Base64ImageConverter}}" />
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>
-                                <GridViewColumn Header="Name" Width="720">
+                                <GridViewColumn Header="Info" Width="800">
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
-                                            <StackPanel >
-                                                <!--Anpassen-->
-                                                <TextBlock Text="{Binding name}" FontSize="20" VerticalAlignment="Top" />
-                                                <TextBlock Text="{Binding ServerPing.Description}" FontSize="15"/>
-                                            </StackPanel>
-                                        </DataTemplate>
-                                    </GridViewColumn.CellTemplate>
-                                </GridViewColumn>
-                                <GridViewColumn Header="Status" Width="80">
-                                    <GridViewColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <StackPanel >
-                                                <!--Anpassen-->
-                                                <TextBlock FontSize="20" VerticalAlignment="Top" >
+                                            <DockPanel LastChildFill="True">
+                                                <TextBlock DockPanel.Dock="Right" FontSize="20" VerticalAlignment="Top" >
                                                     <TextBlock.Style>
                                                         <Style TargetType="{x:Type TextBlock}">
-                                                            <Setter Property="Text">
-                                                                <Setter.Value>
-                                                                    <MultiBinding StringFormat="{}{0} / {1}">
-                                                                        <Binding Path="ServerPing.PlayerCount" />
-                                                                        <Binding Path="ServerPing.MaxPlayerCount" />
-                                                                    </MultiBinding>
-                                                                </Setter.Value>
-                                                            </Setter>
-                                                            <Setter Property="Foreground" Value="Green" />
                                                             <Style.Triggers>
-                                                                <DataTrigger Binding="{Binding ServerPing.Online}" Value="False">
+                                                                <DataTrigger Binding="{Binding ServerStatus.Online}" Value="False">
                                                                     <Setter Property="Text" Value="Offline" />
                                                                     <Setter Property="Foreground" Value="Red" />
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding ServerStatus.Online}" Value="True">
+                                                                    <Setter Property="Text">
+                                                                        <Setter.Value>
+                                                                            <MultiBinding StringFormat="{}{0} / {1}">
+                                                                                <Binding Path="ServerStatus.Players.OnlinePlayers" />
+                                                                                <Binding Path="ServerStatus.Players.MaxPlayers" />
+                                                                            </MultiBinding>
+                                                                        </Setter.Value>
+                                                                    </Setter>
+                                                                    <Setter Property="Foreground" Value="Green" />
                                                                 </DataTrigger>
                                                             </Style.Triggers>
                                                         </Style>
                                                     </TextBlock.Style>
                                                 </TextBlock>
-                                            </StackPanel>
+                                                <StackPanel>
+                                                    <TextBlock Text="{Binding name}" FontSize="20" VerticalAlignment="Top" />
+                                                    <!--Description-->
+                                                    <TextBlock FontSize="15">
+                                                        <TextBlock.Style>
+                                                            <Style TargetType="{x:Type TextBlock}">
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding ServerStatus.Online}" Value="True">
+                                                                        <Setter Property="Text" Value="{Binding ServerStatus.Description, Converter={StaticResource FormattingcodesStringConverter}}"/>
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </TextBlock.Style>
+                                                    </TextBlock>
+                                                </StackPanel>
+                                            </DockPanel>
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>
+                                <!--<GridViewColumn Header="Status" Width="100">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>-->
                             </GridView>
                         </ListView.View>
                     </ListView>
+                    <Label x:Name="lbl_no_servers" Margin="10,10,10,47" Width="900" VerticalAlignment="Center" HorizontalAlignment="Center" BorderThickness="0" Content="Du hast noch keine gespeicherten Server" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="25" Visibility="Collapsed"/>
                     <DockPanel Margin="10" VerticalAlignment="Bottom" HorizontalAlignment="Center" UseLayoutRounding="False" LastChildFill="False">
-                        <Button x:Name="btn_refresh_servers" Content="Aktualisieren" VerticalAlignment="Bottom" Height="32" HorizontalAlignment="Right" Margin="10,0,10,0"/>
+                        <Button x:Name="btn_refresh_servers" Content="Aktualisieren" VerticalAlignment="Bottom" Height="32" HorizontalAlignment="Left" Margin="10,0,10,0"/>
                         <Button x:Name="btn_add_servers" Content="Hinzufügen" VerticalAlignment="Bottom" Height="32" HorizontalAlignment="Right" Margin="10,0,10,0" />
                         <Button x:Name="btn_edit_servers" Content="Bearbeiten" VerticalAlignment="Bottom" Height="32" HorizontalAlignment="Right" Margin="10,0,10,0"/>
                         <Button x:Name="btn_delete_servers" Content="Entfernen" VerticalAlignment="Bottom" Height="32" HorizontalAlignment="Right" Margin="10,0,10,0"/>

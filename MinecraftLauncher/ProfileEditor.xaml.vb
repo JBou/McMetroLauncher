@@ -4,53 +4,43 @@ Imports System.Xml.Linq
 Imports Newtonsoft.Json
 Imports Newtonsoft.Json.Linq
 Imports Ookii.Dialogs.Wpf
+Imports MahApps.Metro
+Imports MahApps.Metro.Controls
+Imports MahApps.Metro.Controls.Dialogs
 
 Public Class ProfileEditor
     Private loadedprofile As String
 
     Sub Get_Versions()
-        Dim o As String = File.ReadAllText(outputjsonversions)
-        Dim jo As JObject = JObject.Parse(o)
-        Dim i As Integer = 0
-        Dim versionid As String = jo("versions").ElementAt(i).Value(Of String)("id").ToString
-        'Dim versionid As String = CStr(jo.SelectToken("versions[" & i & "].id"))
-        Dim versiontype As String = jo("versions").ElementAt(i).Value(Of String)("type").ToString
-        'Dim versiontype As String = CStr(jo.SelectToken("versions[" & i & "].type"))
+        'Wenn index nicht - ist
+        Dim selectedid As String = Nothing
+        If cb_versions.SelectedIndex <> -1 Then
+            selectedid = DirectCast(cb_versions.SelectedItem, Versionslist.Version).id
+        End If
         cb_versions.Items.Clear()
-        cb_versions.Items.Add("Neueste Version")
-
-        For i = 0 To versionsidlist.Count - 1
-            If versiontypelist.Item(i).ToString = "release" Then
-                cb_versions.Items.Add(versiontypelist.Item(i).ToString & " " & versionsidlist.Item(i).ToString)
-            ElseIf cb_snapshots.IsChecked = True Then
-                If versiontypelist.Item(i).ToString = "snapshot" Then
-                    cb_versions.Items.Add(versiontypelist.Item(i).ToString & " " & versionsidlist.Item(i).ToString)
+        cb_versions.Items.Add(New Versionslist.Version() With {.type = "Neueste Version"})
+        For Each item As Versionslist.Version In Versions.versions
+            If item.type = "release" Then
+                cb_versions.Items.Add(item)
+            ElseIf item.type = "snapshot" Then
+                If cb_snapshots.IsChecked = True Then
+                    cb_versions.Items.Add(item)
                 End If
-                'Andere Versionen hier einfügen
+            ElseIf item.type = "old_beta" Then
+                If cb_old_beta.IsChecked = True Then
+                    cb_versions.Items.Add(item)
+                End If
+            ElseIf item.type = "old_alpha" Then
+                If cb_old_alpha.IsChecked = True Then
+                    cb_versions.Items.Add(item)
+                End If
             End If
         Next
-
-        If IO.Directory.Exists(mcpfad & "\versions") = True Then
-            Dim list_versionsdirectories As IEnumerable(Of String) = IO.Directory.GetDirectories(mcpfad & "\versions")
-            Dim list_versions As IList(Of String) = New List(Of String)
-            For Each version As String In list_versionsdirectories
-                Dim versionname As String = IO.Path.GetFileName(version)
-                If versionsidlist.Contains(versionname) = False Then
-                    list_versions.Add(versionname)
-                End If
-            Next
-            For Each Version As String In list_versions
-                If File.Exists(mcpfad & "\versions\" & Version & "\" & Version & ".jar") And File.Exists(mcpfad & "\versions\" & Version & "\" & Version & ".json") = True Then
-                    cb_versions.Items.Add("release " & Version)
-                End If
-            Next
-        End If
-        'Profiles, die nur lokal existieren in die Combobox eintragen
-
-        If cb_versions.SelectedIndex = -1 Then
+        If selectedid = Nothing Then
             cb_versions.SelectedIndex = 0
+        Else
+            cb_versions.SelectedItem = cb_versions.Items.OfType(Of Versionslist.Version).ToList.Where(Function(p) p.id = selectedid).FirstOrDefault
         End If
-
     End Sub
 
     Sub Load_ProfileInfos()
@@ -81,9 +71,15 @@ Public Class ProfileEditor
             If Profiles.allowedReleaseTypes(loadedprofile).Contains("snapshot") = True Then
                 cb_snapshots.IsChecked = True
             End If
+            If Profiles.allowedReleaseTypes(loadedprofile).Contains("cb_old_beta") = True Then
+                cb_old_beta.IsChecked = True
+            End If
+            If Profiles.allowedReleaseTypes(loadedprofile).Contains("cb_old_alpha") = True Then
+                cb_old_alpha.IsChecked = True
+            End If
         End If
         Get_Versions()
-        cb_versions.SelectedItem = Load_Versiontype() & " " & Profiles.lastVersionId(loadedprofile)
+        cb_versions.SelectedItem = cb_versions.Items.OfType(Of Versionslist.Version).ToList.Where(Function(p) p.id = Profiles.lastVersionId(loadedprofile)).FirstOrDefault
         If Profiles.javaDir(loadedprofile) = Nothing Then
             tb_java_executable.Text = MainWindow.Startcmd
         Else
@@ -99,27 +95,7 @@ Public Class ProfileEditor
 
     End Sub
 
-    Private Function Load_Versiontype() As String
-        Dim outputjsonversions As String = mcpfad & "\cache\versions.json"
-        Dim o As String = File.ReadAllText(outputjsonversions)
-        Dim jo As JObject = JObject.Parse(o)
-        Dim i As Integer = 0
-        Dim versionid As String = CStr(jo.SelectToken("versions[" & i & "].id"))
-        Dim versiontype As String = CStr(jo.SelectToken("versions[" & i & "].type"))
-
-        Do Until versionid = Nothing
-            If versionid = Profiles.lastVersionId(loadedprofile) Then
-                Return versiontype
-            End If
-            i = i + 1
-            versionid = CStr(jo.SelectToken("versions[" & i & "].id"))
-            versiontype = CStr(jo.SelectToken("versions[" & i & "].type"))
-        Loop
-        '*Keine übereinstimmung
-        Return "release"
-    End Function
-
-    Sub StandartValues()
+    Sub StandardValues()
         tb_gameDir.Text = mcpfad
         tb_res_height.Text = "480"
         tb_res_width.Text = "854"
@@ -170,16 +146,35 @@ Public Class ProfileEditor
         Get_Versions()
         loadedprofile = selectedprofile
         If Newprofile = True Then
-            StandartValues()
+            StandardValues()
         Else
             Load_ProfileInfos()
         End If
         Check_cb_Status()
     End Sub
 
-    Private Sub cb_snapshots_Click(sender As Object, e As RoutedEventArgs) Handles cb_snapshots.Click
-        Get_Versions()
-    End Sub
+    'Private Async Sub cb_snapshots_Click(sender As Object, e As RoutedEventArgs) Handles cb_snapshots.Click, cb_old_beta.Click, cb_old_alpha.Click
+    '    If DirectCast(sender, CheckBox).IsChecked = True Then
+    '        If sender Is cb_old_beta Or sender Is cb_old_alpha Then
+    '            Dim msgtext As String = "Diese Versionen sind sehr veraltet und können unstabil sein. Alle Fehler, Abstürze, fehlende Funktionen oder andere Defekte die du finden könnstest werden in diesen Versionen nicht mehr behoben." & Environment.NewLine & "Es wird stark empfohlen, dass du diese Versionen in einem separatem Verzeichniss spielst, um Datenverlust zu vermeiden. Wir sind nicht verantwortlich für den Schaden an deinen Daten!" & Environment.NewLine & Environment.NewLine & "Bist du dir sicher, dass du fortsetzen möchstest?"
+    '            Dim result As MessageDialogResult = Await Me.ShowMessageAsync("Achtung", msgtext, MessageDialogStyle.AffirmativeAndNegativeAndSingleAuxiliary, New MetroDialogSettings() With {.AffirmativeButtonText = "Ja", .NegativeButtonText = "Nein", .FirstAuxiliaryButtonText = "Abbrechen", .ColorScheme = MetroDialogColorScheme.Accented, .UseAnimations = True})
+
+    '            If result = MessageDialogResult.Affirmative Then
+    '                Get_Versions()
+    '                DirectCast(sender, CheckBox).IsChecked = True
+    '            Else
+    '                DirectCast(sender, CheckBox).IsChecked = False
+    '            End If
+    '        Else
+    '            Get_Versions()
+    '        End If
+    '    Else
+    '        Get_Versions()
+    '    End If
+    '    If cb_versions.SelectedIndex = -1 Then
+    '        cb_versions.SelectedIndex = 0
+    '    End If
+    'End Sub
 
     Private Sub btn_save_Click(sender As Object, e As RoutedEventArgs) Handles btn_save.Click
 
@@ -202,16 +197,11 @@ Public Class ProfileEditor
             End If
 
             If cb_versions.SelectedIndex <> 0 Then
-                Dim selectedversion As String = cb_versions.SelectedItem.ToString
-                ' String to search in.
-                Dim SearchString As String = selectedversion
-                ' Search for "P".
-                Dim SearchChar As String = " "
-                Dim leertastenindex As Integer
-                ' A textual comparison starting at position 4. Returns 6.
-                leertastenindex = InStr(1, SearchString, SearchChar, CompareMethod.Text)
-                selectedversion = Mid(selectedversion, leertastenindex + 1, selectedversion.Length)
-                lastVersionId = selectedversion
+                If cb_versions.SelectedIndex = 0 Then
+                    lastVersionId = Nothing
+                Else
+                        lastVersionId = DirectCast(cb_versions.SelectedItem, Versionslist.Version).id
+                End If
             End If
 
             If cb_java_path.IsChecked = True Then
@@ -229,17 +219,17 @@ Public Class ProfileEditor
                 resolution_height = tb_res_height.Text
             End If
 
-            If cb_snapshots.IsChecked Then 'Or cb_alpha.IsChecked...
+            If cb_snapshots.IsChecked Or cb_old_beta.IsChecked Or cb_old_alpha.IsChecked Then
                 If cb_snapshots.IsChecked = True Then
                     allowedReleaseTypes.Add("snapshot")
                 End If
-                'If cb_alpha.IsChecked = True Then
-                '    allowedReleaseTypes.Add("old_alpha")
-                'End If
-
+                If cb_old_beta.IsChecked = True Then
+                    allowedReleaseTypes.Add("old_beta")
+                End If
+                If cb_old_alpha.IsChecked = True Then
+                    allowedReleaseTypes.Add("old_alpha")
+                End If
                 'Release wird in der ProfileClass automatisch eingefügt, falls die liste nicht nothing ist
-
-                'Andere Typen z.B. alpha einfügen
             Else
                 allowedReleaseTypes = Nothing
             End If
@@ -263,7 +253,7 @@ Public Class ProfileEditor
 
             Me.DialogResult = True
             Me.Close()
-        End If
+            End If
     End Sub
 
     Private Sub btn_selectgamedir_Click(sender As Object, e As RoutedEventArgs) Handles btn_selectgamedir.Click
@@ -299,5 +289,28 @@ Public Class ProfileEditor
             .Arguments = tb_gameDir.Text
         End With
         p.Start()
+    End Sub
+
+    Private Async Sub cb_old_alpha_PreviewMouseDown(sender As Object, e As MouseButtonEventArgs) Handles cb_snapshots.PreviewMouseDown, cb_old_beta.PreviewMouseDown, cb_old_alpha.PreviewMouseDown
+        If DirectCast(sender, CheckBox).IsChecked = False Then
+            If sender Is cb_old_beta Or sender Is cb_old_alpha Then
+                Dim msgtext As String = "Diese Versionen sind sehr veraltet und können unstabil sein. Alle Fehler, Abstürze, fehlende Funktionen oder andere Defekte die du finden könnstest werden in diesen Versionen nicht mehr behoben." & Environment.NewLine & "Es wird stark empfohlen, dass du diese Versionen in einem separatem Verzeichniss spielst, um Datenverlust zu vermeiden. Wir sind nicht verantwortlich für den Schaden an deinen Daten!" & Environment.NewLine & Environment.NewLine & "Bist du dir sicher, dass du fortsetzen möchstest?"
+                Dim result As MessageDialogResult = Await Me.ShowMessageAsync("Achtung", msgtext, MessageDialogStyle.AffirmativeAndNegativeAndSingleAuxiliary, New MetroDialogSettings() With {.AffirmativeButtonText = "Ja", .NegativeButtonText = "Nein", .FirstAuxiliaryButtonText = "Abbrechen", .ColorScheme = MetroDialogColorScheme.Accented, .UseAnimations = True})
+
+                If result = MessageDialogResult.Affirmative Then
+                    Get_Versions()
+                    DirectCast(sender, CheckBox).IsChecked = True
+                Else
+                    DirectCast(sender, CheckBox).IsChecked = False
+                End If
+            Else
+                Get_Versions()
+            End If
+        Else
+            Get_Versions()
+        End If
+        If cb_versions.SelectedIndex = -1 Then
+            cb_versions.SelectedIndex = 0
+        End If
     End Sub
 End Class

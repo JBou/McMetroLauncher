@@ -73,7 +73,7 @@ Class Forge_installer
 
     Private Sub UnzipForge(file As String)
         Dim UnpackDirectory As String = mcpfad
-        Using zip1 As ZipFile = ZipFile.Read(file)
+        Using zip1 As Zipfile = ZipFile.Read(file)
             Dim e As ZipEntry
             ' here, we extract every entry, but we could extract conditionally,
             ' based on entry name, size, date, checkbox status, etc.   

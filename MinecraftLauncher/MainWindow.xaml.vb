@@ -1,6 +1,5 @@
 ﻿Imports System.Net
 Imports System.IO
-Imports System.Data
 Imports System.Xml.Linq
 Imports Newtonsoft.Json
 Imports Newtonsoft.Json.Linq
@@ -13,15 +12,73 @@ Imports System.Windows.Threading
 Imports System.Text.RegularExpressions
 Imports MahApps.Metro.Accent
 Imports MahApps.Metro.Controls
-Imports System.Windows.Input
+Imports MahApps.Metro.Controls.Dialogs
 Imports Microsoft.Win32
 Imports Ookii.Dialogs.Wpf
 Imports System.Xml
 Imports fNbt
 Imports System.Threading
 Imports System.Security.Cryptography
+Imports Craft.Net
+Imports Craft.Net.Client
 
-Module GlobaleVariablen
+Public Module GlobalInfos
+    Public Structure Startinfos
+        Public Structure Server
+            Private Shared m_serveradress As String
+            Private Shared m_serverport As String
+            Public Shared Property ServerAdress As String
+                Get
+                    Return m_serveradress
+                End Get
+                Set(value As String)
+                    m_serveradress = value
+                End Set
+            End Property
+            Public Shared Property ServerPort As String
+                Get
+                    Return m_serverport
+                End Get
+                Set(value As String)
+                    m_serverport = value
+                End Set
+            End Property
+        End Structure
+        Public Structure Profile
+
+        End Structure
+        Public Shared Property Version As Versionslist.Version
+            Get
+                Return m_verison
+            End Get
+            Set(value As Versionslist.Version)
+                m_verison = value
+            End Set
+        End Property
+        Private Shared m_verison As Versionslist.Version
+        Public Shared Property Versionsinfo As VersionsInfo
+            Get
+                Return m_versionsinfo
+            End Get
+            Set(value As VersionsInfo)
+                m_versionsinfo = value
+            End Set
+        End Property
+        Private Shared m_versionsinfo As VersionsInfo
+        Public Shared Property IsStarting As Boolean
+            Get
+                Return m_isstarting
+            End Get
+            Set(value As Boolean)
+                m_isstarting = value
+            End Set
+        End Property
+        Private Shared m_isstarting As Boolean
+    End Structure
+
+    Public Versions As Versionslist
+    Public LastLogin As LastLogin
+    Public Session As Session
     Public Website As String = "http://patzleiner.net"
     Public Appdata As New DirectoryInfo(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData))
     Public mcpfad As String = Appdata.FullName & "\.minecraft"
@@ -36,27 +93,17 @@ Module GlobaleVariablen
     Public outputjsonversions As String = mcpfad & "\cache\versions.json"
     Public ReadOnly Property versionsJSON As String
         Get
-            Return mcpfad & "\versions\" & lastversionID & "\" & lastversionID & ".json"
+            Return mcpfad & "\versions\" & Versions.versions.Where(Function(p) p.id = Profiles.lastVersionId(selectedprofile)).First.id & "\" & Versions.versions.Where(Function(p) p.id = Profiles.lastVersionId(selectedprofile)).First.id & ".json"
         End Get
     End Property
     Public Versionsjar As String
     Public UnpackDirectory As String
     Public Arguments As String
-    Public serverip As String = "gabrielpatzleiner.tk"
-    Public serverport As Integer = 25565
-    Public JSONAPIpassword As String = Nothing
-    Public JSONAPIsalt As String = Nothing
-    Public JSONAPIport As Integer = 20059
-    Public JSONAPI_RTKport As Integer = 25561
-    Public IsStarting As Boolean
-    Public versionsidlist As IList(Of String) = New List(Of String)
-    Public versiontypelist As IList(Of String) = New List(Of String)
-    Public lastversionID As String
     Public Delegate Sub WriteA(ByVal Text As String)
     Public modsfolder As String = mcpfad & "\mods"
     Public cachefolder As String = mcpfad & "\cache"
     Public downloadfilepath As String
-    Public servers As IList(Of Server) = New List(Of Server)
+    Public servers As ServerList = New ServerList
     Public Applicationdata As New DirectoryInfo(Path.Combine(Appdata.FullName, "McMetroLauncher"))
     Public Applicationcache As New DirectoryInfo(IO.Path.Combine(Applicationdata.FullName, "cache"))
     Public onlineversion As String = Nothing
@@ -89,6 +136,7 @@ Module GlobaleVariablen
             Return "http://resources.download.minecraft.net/" & hash.Substring(0, 2) & "/" & hash
         End Get
     End Property
+
     Public Versionsurl As String = "http://s3.amazonaws.com/Minecraft.Download/versions/versions.json"
     Public modfileurl As String = Website & "/download/modlist.json"
     Public versionurl As String = Website & "/mcmetrolauncher/version.txt"
@@ -102,7 +150,7 @@ Public Class AccentColorMenuData
             Return m_Name
         End Get
         Set(value As String)
-            m_Name = Value
+            m_Name = value
         End Set
     End Property
     Private m_Name As String
@@ -126,8 +174,6 @@ Public Class AccentColorMenuData
 End Class
 
 Public Class MainWindow
-
-
     '****************Webclients*****************
     WithEvents wcresources As New System.Net.WebClient ' Für das WebClient steuerelement mit Events z.b. DownloadProgressChanged... 
     WithEvents wcversionsdownload As New System.Net.WebClient
@@ -283,8 +329,48 @@ Public Class MainWindow
         Else
             ThemeLight()
         End If
+        'LastLogin = Client.LastLogin.GetLastLogin
+        'If LastLogin IsNot Nothing Then
+        '    If LastLogin.Username <> Nothing Then
+        '        tb_username.Text = LastLogin.Username
+        '    End If
+        '    If LastLogin.Password <> Nothing Then
+        '        pb_Password.Password = LastLogin.Password
+        '    End If
+        'End If
         Load_Servers()
+        'Dim s As ServerList.Server = DirectCast(servers.Servers.Item(6), ServerList.Server)
+        's.DoPing()
+        'MsgBox(s.ServerStatus.Description)
         Ping_servers()
+    End Sub
+
+    ''' <summary>
+    ''' Registriert ein benutzerdefiniertes URL-Protokoll für die Verwendung mit der
+    ''' Windows-Shell, dem Internet Explorer und Office.
+    ''' 
+    ''' Beispiel für einen URL eines benutzerdefinierten URL-Protokolls:
+    ''' 
+    '''   rainbird://RemoteControl/OpenFridge/GetBeer
+    ''' </summary>
+    ''' <param name="protocolName">Name des Protokolls (z.B. "rainbird" für "rainbird://...")</param>
+    ''' <param name="applicationPath">Vollständiger Dateisystem-Pfad zur EXE-Datei, die den URL bei Aufruf verarbeitet (Der komplette URL wird als Befehlszeilenparameter übergteben)</param>
+    ''' <param name="description">Beschreibung (z.B. "URL:Rainbird Custom URL")</param>
+    Public Sub RegisterURLProtocol(protocolName As String, applicationPath As String, description As String)
+        ' Neuer Schlüssel für das gewünschte URL Protokoll erstellen
+        Dim myKey As RegistryKey = Registry.ClassesRoot.CreateSubKey(protocolName)
+
+        ' Protokoll zuweisen
+        myKey.SetValue(Nothing, description)
+        myKey.SetValue("URL Protocol", String.Empty)
+
+        ' Shellwerte eintragen
+        Registry.ClassesRoot.CreateSubKey(protocolName & "\Shell")
+        Registry.ClassesRoot.CreateSubKey(protocolName & "\Shell\open")
+        myKey = Registry.ClassesRoot.CreateSubKey(protocolName & "\Shell\open\command")
+
+        ' Anwendung festlegen, die das URL-Protokoll behandelt
+        myKey.SetValue(Nothing, Chr(34) & applicationPath & Chr(34) & " %1")
     End Sub
 
     Public Sub ChangeAccent()
@@ -432,7 +518,7 @@ Public Class MainWindow
         If e.Cancelled = False And e.Error Is Nothing Then
             If resourcesdownloadtry > 3 Then
                 Write("---Der Download wurde aufgrund zu vieler Fehlversuche abgebrochen!")
-                IsStarting = False
+                Startinfos.IsStarting = False
                 resourcesdownloading = False
                 Exit Sub
             Else
@@ -470,7 +556,7 @@ Public Class MainWindow
                 End Try
             Next
         End If
-        If IsStarting = True Then
+        If Startinfos.IsStarting = True Then
             Download_Libraries()
         End If
     End Sub
@@ -501,138 +587,66 @@ Public Class MainWindow
         Return Result
     End Function
 
-    'Sub Download_Resources()
-
-    'If wcresources.IsBusy Or wcversionsdownload.IsBusy Then
-    '    MessageBox.Show("Download läuft!", MessageBox.Show.ShowStyle.Information, "Achtung")
-    'Else
-
-    '    'Auslesen
-
-    '    Try
-
-    '        Dim doc As New Xml.XmlDocument
-
-    '        doc.Load(resourcesfile)
-
-    '        Dim xmlTitles As Xml.XmlNodeList = doc.GetElementsByTagName("Key")
-
-    '        'Dim myNode As XmlNode = doc.SelectSingleNode("//Personen") ' Geht zum gewünschten Hauptknoten
-    '        'myNode = myNode.SelectSingleNode("Person")                      ' Geht weiter zum angegebenen Knoten
-    '        'TextBox1.Text = myNode.Attributes("Titel").Value                ' Holt sich den Wert des Attributs
-
-    '        'In Listbox eintragen
-
-    '        For i As Integer = 0 To xmlTitles.Count - 1
-    '            If xmlTitles(i).FirstChild.Value.EndsWith("/") = False Then
-
-    '                Listbox1.Items.Add(xmlTitles(i).FirstChild.Value)
-
-    '            End If
-    '        Next
-
-    '    Catch ex As Exception
-    '        Dispatcher.Invoke(New WriteA(AddressOf Write), ex.Message & vbNewLine)
-    '    End Try
-
-    '    'Download
-
-    '    pb_download.Maximum = Listbox1.Items.Count
-    '    pb_download.Value = 0
-    '    For i = 0 To Listbox1.Items.Count - 1
-    '        Dim Inputfile As String = resourcesurl & "/" & Listbox1.Items.Item(i).ToString
-    '        Dim Outputfile As String = resources_dir & "\" & Listbox1.Items.Item(i).ToString
-    '        Dim CacheOutputfile As String = mcpfad & "\cache\" & Listbox1.Items.Item(i).ToString
-    '        Dim Directoryname As String = IO.Path.GetDirectoryName(Outputfile)
-    '        Dim CacheDirectoryname As String = IO.Path.GetDirectoryName(CacheOutputfile)
-
-    '        Try
-    '            If IO.File.Exists(Outputfile) = False Then
-
-    '                If IO.Directory.Exists(CacheDirectoryname) = False Then
-    '                    IO.Directory.CreateDirectory(CacheDirectoryname)
-    '                End If
-    '                wcresources = New WebClient
-    '                Dispatcher.Invoke(New WriteA(AddressOf Write), "Lade " & Listbox1.Items.Item(i).ToString & " herunter" & vbNewLine)
-    '                Dispatcher.Invoke(New WriteA(AddressOf Write), Inputfile & vbNewLine)
-    '                wcresources.DownloadFileAsync(New Uri(Inputfile), CacheOutputfile)
-    '                While wcresources.IsBusy
-    '                    DoEvents()
-    '                End While
-
-    '                If IO.Directory.Exists(Directoryname) = False Then
-    '                    IO.Directory.CreateDirectory(Directoryname)
-    '                End If
-
-    '                IO.File.Move(CacheOutputfile, Outputfile)
-    '            End If
-    '            pb_download.Value = i + 1
-    '        Catch ex As Exception
-    '            Dispatcher.Invoke(New WriteA(AddressOf Write), "Fehler beim herunterladen von " & Listbox1.Items.Item(i).ToString & " :" & vbNewLine & ex.Message & vbNewLine)
-    '        End Try
-    '    Next
-    'End If
-    'End Sub
-
     Sub Download_Version()
-        If wcresources.IsBusy Or wcversionsdownload.IsBusy Then
-            MessageBox.Show("Download läuft!", "Achtung", MessageBoxButton.OK, MessageBoxImage.Information)
-        Else
+        Dim versionid As String = Startinfos.Version.id
+        Dim VersionsURl As String = "https://s3.amazonaws.com/Minecraft.Download/versions/" & versionid & "/" & versionid & ".jar"
+        Dim VersionsJSONURL As String = "https://s3.amazonaws.com/Minecraft.Download/versions/" & versionid & "/" & versionid & ".json"
+        Dim Outputfile As String = mcpfad & "\versions\" & versionid & "\" & versionid & ".jar"
+        Dim CacheOutputfile As String = mcpfad & "\cache\versions\" & versionid & "\" & versionid & ".jar"
+        Dim OutputfileJSON As String = mcpfad & "\versions\" & versionid & "\" & versionid & ".json"
+        Dim CacheOutputfileJSON As String = mcpfad & "\cache\versions\" & versionid & "\" & versionid & ".json"
+        Dim CacheDirectoryname As String = IO.Path.GetDirectoryName(CacheOutputfile)
+        Dim Directoryname As String = IO.Path.GetDirectoryName(Outputfile)
+        If IO.File.Exists(Outputfile) = False Then
 
-            Dim VersionsURl As String = "https://s3.amazonaws.com/Minecraft.Download/versions/" & lastversionID & "/" & lastversionID & ".jar"
-            Dim VersionsJSONURL As String = "https://s3.amazonaws.com/Minecraft.Download/versions/" & lastversionID & "/" & lastversionID & ".json"
-            Dim Outputfile As String = mcpfad & "\versions\" & lastversionID & "\" & lastversionID & ".jar"
-            Dim CacheOutputfile As String = mcpfad & "\cache\versions\" & lastversionID & "\" & lastversionID & ".jar"
-            Dim OutputfileJSON As String = mcpfad & "\versions\" & lastversionID & "\" & lastversionID & ".json"
-            Dim CacheOutputfileJSON As String = mcpfad & "\cache\versions\" & lastversionID & "\" & lastversionID & ".json"
-            Dim CacheDirectoryname As String = IO.Path.GetDirectoryName(CacheOutputfile)
-            Dim Directoryname As String = IO.Path.GetDirectoryName(Outputfile)
-            If IO.File.Exists(Outputfile) = False Then
-
-                If IO.Directory.Exists(CacheDirectoryname) = False Then
-                    IO.Directory.CreateDirectory(CacheDirectoryname)
-                End If
-
-                Write("Lade Minecraft Version " & lastversionID & " herunter")
-                Try
-                    wcversionsdownload.DownloadFileAsync(New Uri(VersionsURl), CacheOutputfile)
-                Catch ex As Exception
-                    Write("Fehler beim herunterladen von Minecraft " & lastversionID & " :" & vbNewLine & ex.Message & vbNewLine)
-                End Try
-
-                While wcversionsdownload.IsBusy
-                    DoEvents()
-                End While
-
-                If IO.Directory.Exists(Directoryname) = False Then
-                    IO.Directory.CreateDirectory(Directoryname)
-                End If
-
-                IO.File.Move(CacheOutputfile, Outputfile)
-
+            If IO.Directory.Exists(CacheDirectoryname) = False Then
+                IO.Directory.CreateDirectory(CacheDirectoryname)
             End If
 
-            If IO.File.Exists(OutputfileJSON) = False Then
+            Write("Lade Minecraft Version " & versionid & " herunter")
+            Try
+                wcversionsdownload.DownloadFileAsync(New Uri(VersionsURl), CacheOutputfile)
+            Catch ex As Exception
+                Write("Fehler beim herunterladen von Minecraft " & versionid & " :" & vbNewLine & ex.Message & vbNewLine)
+            End Try
 
+            While wcversionsdownload.IsBusy
+                DoEvents()
+            End While
 
-                If IO.Directory.Exists(CacheDirectoryname) = False Then
-                    IO.Directory.CreateDirectory(CacheDirectoryname)
-                End If
-                pb_download.Maximum = 100
-                wcversionsdownload.DownloadFileAsync(New Uri(VersionsJSONURL), CacheOutputfileJSON)
-                While wcversionsdownload.IsBusy
-                    DoEvents()
-                End While
-
-                If IO.Directory.Exists(Directoryname) = False Then
-                    IO.Directory.CreateDirectory(Directoryname)
-                End If
-
-                IO.File.Move(CacheOutputfileJSON, OutputfileJSON)
+            If IO.Directory.Exists(Directoryname) = False Then
+                IO.Directory.CreateDirectory(Directoryname)
             End If
-            Parse_VersionsInfo()
+
+            IO.File.Move(CacheOutputfile, Outputfile)
+
         End If
+
+        If IO.File.Exists(OutputfileJSON) = False Then
+
+
+            If IO.Directory.Exists(CacheDirectoryname) = False Then
+                IO.Directory.CreateDirectory(CacheDirectoryname)
+            End If
+            pb_download.Maximum = 100
+            wcversionsdownload.DownloadFileAsync(New Uri(VersionsJSONURL), CacheOutputfileJSON)
+            While wcversionsdownload.IsBusy
+                DoEvents()
+            End While
+
+            If IO.Directory.Exists(Directoryname) = False Then
+                IO.Directory.CreateDirectory(Directoryname)
+            End If
+
+            IO.File.Move(CacheOutputfileJSON, OutputfileJSON)
+        End If
+        Parse_VersionsInfo()
     End Sub
+
+    Function Login(username As String, password As String) As Session
+        Dim session As Session = Client.Session.DoLogin(username, password)
+        Return session
+    End Function
 
     Sub DoEvents()
         Me.Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
@@ -642,12 +656,11 @@ Public Class MainWindow
 
     End Sub
 
-    Sub Start_MC()
+    Async Sub Start_MC()
         ' Anwendungspfad setzen -> hier liegt es im Anwendungsordner
         If Startcmd() = Nothing Then
-            Dim result As MessageBoxResult = MessageBox.Show("Du musst Java installieren, um Minecraft zu spielen. Jetzt herunterladen?", "Java fehlt", MessageBoxButton.OKCancel)
-
-            If result = MessageBoxResult.OK Then
+            Dim result As MessageDialogResult = Await Me.ShowMessageAsync("Java nicht vorhanden", "Du musst Java installieren, um Minecraft zu spielen. Jetzt herunterladen?", MessageDialogStyle.AffirmativeAndNegative)
+            If result = MessageDialogResult.Affirmative Then
                 Process.Start("http://java.com/de/download")
             End If
             Exit Sub
@@ -718,9 +731,7 @@ Public Class MainWindow
 
     Sub Parse_VersionsInfo()
         Dim o As String = File.ReadAllText(versionsJSON)
-        If o.Contains("${arch}") Then
-            o = o.Replace("${arch}", GetJavaArch.ToString)
-        End If
+        o = o.Replace("${arch}", GetJavaArch.ToString)
         VersionsInfos = JsonConvert.DeserializeObject(Of VersionsInfo)(o)
         VersionsInfos.JObject = JObject.Parse(o)
     End Sub
@@ -799,9 +810,9 @@ Public Class MainWindow
                         DownloadLibraries()
                     End If
                 Else
-                        Write("Library existiert bereits: " & librarypath.FullName)
-                        librariesdownloadindex += 1
-                        DownloadLibraries()
+                    Write("Library existiert bereits: " & librarypath.FullName)
+                    librariesdownloadindex += 1
+                    DownloadLibraries()
                 End If
             Else
                 librariesdownloadindex += 1
@@ -825,7 +836,7 @@ Public Class MainWindow
             If librariesdownloadtry > 3 Then
                 librariesdownloadfailures += 1
                 Write("---Der Download wurde aufgrund zu vieler Fehlversuche abgebrochen!")
-                IsStarting = False
+                Startinfos.IsStarting = False
                 librariesdownloading = False
                 Exit Sub
             Else
@@ -847,10 +858,10 @@ Public Class MainWindow
 
     Sub DownloadLibrariesfinished()
         librariesdownloading = False
-        If IsStarting = True Then
+        If Startinfos.IsStarting = True Then
             Get_Startinfos()
             Start_MC()
-            IsStarting = False
+            Startinfos.IsStarting = False
         End If
     End Sub
 
@@ -864,7 +875,7 @@ Public Class MainWindow
         Dim windows_natives As String = CStr((jo.SelectToken("libraries[" & i & "].natives.windows")))
         Dim url As String = CStr((jo.SelectToken("libraries[" & i & "].url")))
         Dim extract As JObject = CType(jo.SelectToken("libraries[" & i & "].extract"), JObject)
-        Dim librariesrootURL As String = librariesURL
+        Dim librariesrootURL As String = librariesurl
 
         'ist ein JArray, kann es aber nicht auslesen :(
         'Dim exclude As String = CStr(jo.SelectToken("libraries[" & i & "].extract.exclude"))
@@ -903,7 +914,7 @@ Public Class MainWindow
                     If url <> Nothing Then
                         librariesrootURL = url.ToString
                     Else
-                        librariesrootURL = librariesURL
+                        librariesrootURL = librariesurl
                     End If
 
                     Dim libraryfiles As String = filenametemp1 & filenametemp2 & filenametemp3 & windows_natives & ".jar"
@@ -979,52 +990,54 @@ Public Class MainWindow
     End Sub
 
     Sub Unzip()
-
-        Write("Natives werden entpackt")
-        UnpackDirectory = Path.Combine(mcpfad, "versions", lastversionID, lastversionID & "-natives-" & DateTime.Now.Ticks.ToString)
-        If lb_startedversions.Items.Contains(UnpackDirectory) = False Then
-            lb_startedversions.Items.Add(UnpackDirectory)
-        End If
-        For Each item In VersionsInfos.libraries.Where(Function(p) p.natives IsNot Nothing)
-            With item
-                If .natives IsNot Nothing Then
-                    If .natives.windows <> Nothing Then
-                        Dim librarypath As New FileInfo(IO.Path.Combine(librariesfolder, .path.Replace("/", "\")))
-                        If IO.Directory.Exists(librarypath.DirectoryName) = False Then
-                            IO.Directory.CreateDirectory(librarypath.DirectoryName)
-                        End If
-                        Try
-                            Using zip1 As ZipFile = ZipFile.Read(librarypath.FullName)
-                                Dim e As ZipEntry
-                                ' here, we extract every entry, but we could extract conditionally,
-                                ' based on entry name, size, date, checkbox status, etc.   
-                                For Each e In zip1
-                                    Dim ls As IList(Of String) = .extract.exclude
-                                    For Each file As String In ls
-                                        If e.FileName.StartsWith(file) = False Then
-                                            e.Extract(UnpackDirectory, ExtractExistingFileAction.OverwriteSilently)
-                                        End If
+        Try
+            Write("Natives werden entpackt")
+            UnpackDirectory = Path.Combine(mcpfad, "versions", Startinfos.Version.id, Startinfos.Version.id & "-natives-" & DateTime.Now.Ticks.ToString)
+            If lb_startedversions.Items.Contains(UnpackDirectory) = False Then
+                lb_startedversions.Items.Add(UnpackDirectory)
+            End If
+            For Each item In VersionsInfos.libraries.Where(Function(p) p.natives IsNot Nothing)
+                With item
+                    If .natives IsNot Nothing Then
+                        If .natives.windows <> Nothing Then
+                            Dim librarypath As New FileInfo(IO.Path.Combine(librariesfolder, .path.Replace("/", "\")))
+                            If IO.Directory.Exists(librarypath.DirectoryName) = False Then
+                                IO.Directory.CreateDirectory(librarypath.DirectoryName)
+                            End If
+                            Try
+                                Using zip1 As ZipFile = ZipFile.Read(librarypath.FullName)
+                                    Dim e As ZipEntry
+                                    ' here, we extract every entry, but we could extract conditionally,
+                                    ' based on entry name, size, date, checkbox status, etc.   
+                                    For Each e In zip1
+                                        Dim ls As IList(Of String) = .extract.exclude
+                                        For Each file As String In ls
+                                            If e.FileName.StartsWith(file) = False Then
+                                                e.Extract(UnpackDirectory, ExtractExistingFileAction.OverwriteSilently)
+                                            End If
+                                        Next
                                     Next
-                                Next
-                            End Using
-                        Catch ex As ZipException
-                            Write("Fehler beim entpacken der natives: " & ex.Message)
-                        End Try
+                                End Using
+                            Catch ex As ZipException
+                                Write("Fehler beim entpacken der natives: " & ex.Message)
+                            End Try
+                        End If
                     End If
-                End If
-            End With
-        Next
-
+                End With
+            Next
+        Catch ex As Exception
+            Write("Fehler beim entpacken der natves. Wahrscheinlich wurde die erforderliche Library nicht heruntergeladen")
+        End Try
     End Sub
 
     Sub Get_Startinfos()
         Write("Startinfos werden ausgelesen")
         Unzip()
-        Versionsjar = mcpfad & "\versions\" & lastversionID & "\" & lastversionID & ".jar"
+        Versionsjar = mcpfad & "\versions\" & Startinfos.Version.id & "\" & Startinfos.Version.id & ".jar"
         Dim o As String = IO.File.ReadAllText(versionsJSON)
         Dim jo As JObject = JObject.Parse(o)
-        Dim mainClass As String = (jo.SelectToken("mainClass")).ToString
-        Dim minecraftArguments As String = (jo.SelectToken("minecraftArguments")).ToString
+        Dim mainClass As String = jo("mainClass").ToString
+        Dim minecraftArguments As String = jo("minecraftArguments").ToString
         Dim libraries As String = Nothing
         Dim gamedir As String
         Parse_VersionsInfo()
@@ -1054,12 +1067,19 @@ Public Class MainWindow
         End If
 
         minecraftArguments = minecraftArguments.Replace("${auth_player_name}", tb_username.Text)
-        minecraftArguments = minecraftArguments.Replace("${version_name}", lastversionID)
+        minecraftArguments = minecraftArguments.Replace("${version_name}", Startinfos.Version.id)
         minecraftArguments = minecraftArguments.Replace("${game_directory}", gamedir)
         minecraftArguments = minecraftArguments.Replace("${game_assets}", assets_dir)
         minecraftArguments = minecraftArguments.Replace("${assets_root}", assets_dir)
         minecraftArguments = minecraftArguments.Replace("${assets_index_name}", assets_index_name)
         minecraftArguments = minecraftArguments.Replace("${user_properties}", New JObject().ToString)
+
+        If Startinfos.Server.ServerAdress <> Nothing Then
+            minecraftArguments += " --server " & Startinfos.Server.ServerAdress
+            If Startinfos.Server.ServerPort <> Nothing Then
+                minecraftArguments += " --port " & Startinfos.Server.ServerPort
+            End If
+        End If
 
         Dim natives As String = UnpackDirectory
 
@@ -1096,39 +1116,66 @@ Public Class MainWindow
 
     End Sub
 
-    Public Sub StartMC()
-
-        If IsStarting = True Then
-            MessageBox.Show("Minecraft wird bereits gestartet!", "Achtung", MessageBoxButton.OK, MessageBoxImage.Information)
+    Public Async Sub StartMC()
+        If Startinfos.IsStarting = True Then
+            Await Me.ShowMessageAsync("Achtung", "Minecraft wird bereits gestartet!", MessageDialogStyle.Affirmative, New MetroDialogSettings() With {.AffirmativeButtonText = "Ok"})
         ElseIf cb_profiles.SelectedIndex = -1 Then
-            MessageBox.Show("Wähle bitte ein Profil auswählen!", "Achtung", MessageBoxButton.OK, MessageBoxImage.Information)
+            Await Me.ShowMessageAsync(Nothing, "Wähle bitte ein Profil aus!", MessageDialogStyle.Affirmative, New MetroDialogSettings() With {.AffirmativeButtonText = "Ok"})
         ElseIf tb_username.Text = Nothing Then
-            MessageBox.Show("Gib einen Usernamen ein!", "Fehler", MessageBoxButton.OK, MessageBoxImage.Information)
+            Await Me.ShowMessageAsync(Nothing, "Gib bitte einen Usernamen ein!", MessageDialogStyle.Affirmative, New MetroDialogSettings() With {.AffirmativeButtonText = "Ok"})
         Else
+            'If cb_online_mode.IsChecked = True Then
+            '    If pb_Password.Password = Nothing Then
+            '        MessageBox.Show("Gib ein Password ein!", "Fehler", MessageBoxButton.OK, MessageBoxImage.Information)
+            '        Exit Sub
+            'Else
+            '    Try
+            '        Client.LastLogin.SetLastLogin(New LastLogin() With {
+            '                                      .Username = tb_username.Text,
+            '                                      .Password = pb_Password.Password
+            '                                         })
+            '        Session = Login(tb_username.Text, pb_Password.Password)
+            '    Catch ex As Client.Session.MinecraftAuthenticationException
+            '        'Auf Deutsch übersetzen
+            '        MessageBox.Show(ex.ErrorMessage)
+            '        Exit Sub
+            '    End Try
+            '    End If
+            'End If
+
+            If cb_direct_join.IsChecked = True Then
+                If tb_server_address.Text <> Nothing Then
+                    If tb_server_address.Text.Contains(":") = False Then
+                        Startinfos.Server.ServerAdress = tb_server_address.Text
+                    Else
+                        Dim address As String() = tb_server_address.Text.Split(CChar(":"))
+                        Startinfos.Server.ServerAdress = address(0)
+                        Startinfos.Server.ServerPort = address(1)
+                    End If
+                End If
+            Else
+                Startinfos.Server.ServerAdress = Nothing
+                Startinfos.Server.ServerPort = Nothing
+            End If
+
             If Profiles.lastVersionId(selectedprofile) <> Nothing Then
-                lastversionID = Profiles.lastVersionId(selectedprofile)
+                Startinfos.Version = Versions.versions.Where(Function(p) p.id = Profiles.lastVersionId(selectedprofile)).First
             Else
                 'Wenn snapshots aktiviert sind, dann index 0, sonst latestrelease
                 If Profiles.allowedReleaseTypes(selectedprofile).Count > 0 Then
                     If Profiles.allowedReleaseTypes(selectedprofile).Contains("snapshot") = True Then
                         'Version mit Index 0 auslesen
-                        lastversionID = Versions.latest
+                        Startinfos.Version = Versions.latest_version
                     Else
-                        lastversionID = Versions.latestrelease
+                        Startinfos.Version = Versions.versions.Where(Function(p) p.id = Versions.latest.release).First
                     End If
                 Else
-                    lastversionID = Versions.latestrelease
+                    Startinfos.Version = Versions.versions.Where(Function(p) p.id = Versions.latest.release).First
                 End If
             End If
 
             tb_ausgabe.Clear()
-            IsStarting = True
-            Try
-                If IO.Directory.Exists(mcpfad & "\versions\" & lastversionID & "\" & lastversionID & "-natives") = True Then
-                    IO.Directory.Delete(mcpfad & "\versions\" & lastversionID & "\" & lastversionID & "-natives", True)
-                End If
-            Catch
-            End Try
+            Startinfos.IsStarting = True
             Download_Version()
             'Zuerst die Version wegen den Resources key
             Download_Resources()
@@ -1182,16 +1229,6 @@ Public Class MainWindow
         Dispatcher.Invoke(New WriteA(AddressOf Append), Line & Environment.NewLine)
 
     End Sub
-
-    Public Shared Function CheckServerStatus() As Boolean
-        Dim MinecraftServer As New TcpClient
-        Try
-            MinecraftServer.Connect(serverip, serverport)
-            Return True
-        Catch Ex As Exception
-            Return False
-        End Try
-    End Function
 
     'Public Shared Function JavaCheck() As String
 
@@ -1650,104 +1687,102 @@ Public Class MainWindow
 #Region "Server"
 
     Public Sub Load_Servers()
+        lb_servers.Items.Clear()
         If File.Exists(servers_dat) = True Then
-            Dim selected As Integer = lb_servers.SelectedIndex
-            Dim servers_nbtfile As New fNbt.NbtFile
-            servers_nbtfile.LoadFromFile(servers_dat)
-            Dim servers_tag As NbtList = servers_nbtfile.RootTag.Get(Of NbtList)("servers")
-            Dim lol As NbtCompound = CType(servers_tag.Last, NbtCompound)
-            servers.Clear()
-            lb_servers.Items.Clear()
-            'servers = servers_tag.Select(Function(p) New Server(p.Item("name").StringValue, p.Item("ip").StringValue, Convert.ToBoolean(p.Item("hideAddress").ByteValue), If(p.Item("icon").HasValue, ImageConvert.GetImageStream(ImageConvert.GetImageFromString(p.Item("icon").StringValue)), ImageConvert.GetImageStream(My.Resources.transparent64_64)))).ToList
-            For Each item As NbtCompound In servers_tag
-                Dim name As String = item.Item("name").StringValue
-                Dim ip As String = item.Item("ip").StringValue
-                Dim hideAddress As Boolean = Convert.ToBoolean(item.Item("hideAddress").ByteValue)
-                Dim icon As BitmapSource = Nothing
-                If item.Tags.Select(Function(p) p.Name).Contains("icon") = False Then
-                    'Überarbeiten
-                    icon = ImageConvert.GetImageStream(My.Resources.transparent64_64)
-                Else
-                    icon = ImageConvert.GetImageStream(ImageConvert.GetImageFromString(item.Item("icon").StringValue))
-                End If
-                Dim server As New Server(name, ip, hideAddress, icon)
-                servers.Add(server)
-            Next
-            For Each item As Server In servers
+            lbl_no_servers.Visibility = Windows.Visibility.Collapsed
+            servers = New ServerList()
+            servers.Load()
+            If servers.Servers.Count = 0 Then
+                lbl_no_servers.Visibility = Windows.Visibility.Visible
+            Else
+                lbl_no_servers.Visibility = Windows.Visibility.Collapsed
+            End If
+            '    Dim servers_nbtfile As New fNbt.NbtFile
+            '    servers_nbtfile.LoadFromFile(servers_dat)
+            '    Dim servers_tag As NbtList = servers_nbtfile.RootTag.Get(Of NbtList)("servers")
+            '    Dim lol As NbtCompound = CType(servers_tag.Last, NbtCompound)
+            '    servers.Servers.Clear()
+            '    lb_servers.Items.Clear()
+            '    'servers = servers_tag.Select(Function(p) New Server(p.Item("name").StringValue, p.Item("ip").StringValue, Convert.ToBoolean(p.Item("hideAddress").ByteValue), If(p.Item("icon").HasValue, ImageConvert.GetImageStream(ImageConvert.GetImageFromString(p.Item("icon").StringValue)), ImageConvert.GetImageStream(My.Resources.transparent64_64)))).ToList
+            '    For Each item As NbtCompound In servers_tag
+            '        Dim name As String = item.Item("name").StringValue
+            '        Dim ip As String = item.Item("ip").StringValue
+            '        Dim hideAddress As Boolean = Convert.ToBoolean(item.Item("hideAddress").ByteValue)
+            '        Dim icon As String = Nothing
+            '        If item.Tags.Select(Function(p) p.Name).Contains("icon") = False Then
+            '            'Überarbeiten
+            '            icon = Nothing
+            '        Else
+            '            icon = item.Item("icon").StringValue
+            '        End If
+            '        Dim server As New Server() With {
+            '                .name = name,
+            '                .ip = ip,
+            '                .hideAddress = hideAddress,
+            '                .icon = icon
+            '            }
+            '        servers.Servers.Add(server)
+            '    Next
+            For Each item As ServerList.Server In servers.Servers
                 lb_servers.Items.Add(item)
             Next
-            If selected = -1 Then
+            If lb_servers.SelectedIndex = -1 Then
                 lb_servers.SelectedIndex = 0
             Else
-                lb_servers.SelectedIndex = selected
+                lb_servers.SelectedIndex = lb_servers.SelectedIndex
             End If
-            'Icon tag ist enthalten?!?
+            '    'Icon tag ist enthalten?!?
         Else
-            MessageBox.Show("Die Server Datei existiert nicht!", "Fehler", MessageBoxButton.OK, MessageBoxImage.Information)
+            lbl_no_servers.Visibility = Windows.Visibility.Visible
+            'Es existieren keine Server
+            'MessageBox.Show("Die Server Datei existiert nicht!", "Fehler", MessageBoxButton.OK, MessageBoxImage.Information)
         End If
     End Sub
 
-    Public Function Base64ToImage(base64String As String) As System.Drawing.Image
-        ' Convert Base64 String to byte[]
-        Dim imageBytes As Byte() = Convert.FromBase64String(base64String)
-        Dim ms As New MemoryStream(imageBytes, 0, imageBytes.Length)
-
-        ' Convert byte[] to Image
-        ms.Write(imageBytes, 0, imageBytes.Length)
-        Dim image__1 As System.Drawing.Image = System.Drawing.Image.FromStream(ms, True)
-        Return image__1
-    End Function
-
-    Public Function ImageToBase64(image As System.Drawing.Image, format As System.Drawing.Imaging.ImageFormat) As String
-        Using ms As New MemoryStream()
-            ' Convert Image to byte[]
-            image.Save(ms, format)
-            Dim imageBytes As Byte() = ms.ToArray()
-
-            ' Convert byte[] to Base64 String
-            Dim base64String As String = Convert.ToBase64String(imageBytes)
-            Return base64String
-        End Using
-    End Function
-
     Private Sub Ping_servers()
-
         Dim fThread = New Thread(New ThreadStart(AddressOf ThreadProc))
         fThread.IsBackground = True
         fThread.Start()
-
     End Sub
 
     Private Sub ThreadProc()
-        Parallel.For(0, servers.Count - 1, Sub(b)
-                                               CheckOnline(b)
-                                           End Sub)
+        Try
+            Parallel.For(0, servers.Servers.Count, Sub(b)
+                                                       CheckOnline(b)
+                                                   End Sub)
+        Catch
+        End Try
     End Sub
 
     Private Sub CheckOnline(ByVal i As Integer)
         Try
-            Dim host As String = Nothing
-            Dim port As Integer = Nothing
-            If servers.Item(i).ip.Contains(":") = True Then
-                Dim dpindex As Integer = servers.Item(i).ip.IndexOf(":")
-                port = CInt(servers.Item(i).ip.Substring(dpindex + 1))
-                host = servers.Item(i).ip.Substring(0, dpindex)
-            Else
-                host = servers.Item(i).ip
-                port = 25565
-            End If
             'MessageBox.Show(String.Join(" | ", host, port))
 
-            Dim pinger As New ServerPing(host, port, 0, 15000)
-            servers.Item(i).ServerPing = pinger
+            'Dim pinger As New OldServerPing(host, port, 0, 15000)
+            'servers.Item(i).OldServerPing = pinger
+            'Dispatcher.Invoke(New Action(Sub()
+            '                                 Dim selected As Integer = lb_servers.SelectedIndex
+            '                                 lb_servers.Items.RemoveAt(i)
+            '                                 lb_servers.Items.Insert(i, servers.Servers.Item(i))
+            '                                 lb_servers.SelectedIndex = selected
+            '                             End Sub))
+            servers.Servers.Item(i).DoPing()
+            'MsgBox(servers.Item(i).ServerStatus.Players.MaxPlayers)
             Dispatcher.Invoke(New Action(Sub()
                                              Dim selected As Integer = lb_servers.SelectedIndex
                                              lb_servers.Items.RemoveAt(i)
-                                             lb_servers.Items.Insert(i, servers.Item(i))
+                                             lb_servers.Items.Insert(i, servers.Servers.Item(i))
                                              lb_servers.SelectedIndex = selected
                                          End Sub))
-        Catch
+            servers.Save()
+        Catch null As ArgumentNullException
+            'hostNameOrAddress ist null.
+        Catch socket As SocketException
+            'Beim Auflösen von hostNameOrAddress ist ein Fehler aufgetreten.
+        Catch argument As ArgumentException
+            'hostNameOrAddress ist keine gültige IP-Adresse.
         End Try
+
     End Sub
 
     Private Sub btn_refresh_servers_Click(sender As Object, e As RoutedEventArgs) Handles btn_refresh_servers.Click
@@ -1768,7 +1803,8 @@ Public Class MainWindow
 
     Private Sub btn_edit_servers_Click(sender As Object, e As RoutedEventArgs) Handles btn_edit_servers.Click
         If lb_servers.SelectedIndex <> -1 Then
-            Dim editor As New ServerEditor(lb_servers.SelectedIndex, DirectCast(lb_servers.SelectedItem, Server).name, DirectCast(lb_servers.SelectedItem, Server).ip)
+            Dim server As ServerList.Server = DirectCast(lb_servers.SelectedItem, ServerList.Server)
+            Dim editor As New ServerEditor(lb_servers.SelectedIndex, server)
             Dim result As Boolean?
             editor.ShowDialog()
             result = editor.DialogResult
@@ -1781,19 +1817,14 @@ Public Class MainWindow
 
     Private Sub btn_delete_servers_Click(sender As Object, e As RoutedEventArgs) Handles btn_delete_servers.Click
         If lb_servers.SelectedIndex <> -1 Then
-            If MessageBox.Show("Bist du dir sicher, dass du den Server " & DirectCast(lb_servers.SelectedItem, Server).name & " entgültig löschen willst?", "Server löschen", MessageBoxButton.YesNo, MessageBoxImage.Information) = MessageBoxResult.Yes Then
-                Dim nbtserverfile As New NbtFile
-                nbtserverfile.LoadFromFile(servers_dat)
-                nbtserverfile.RootTag.Get(Of NbtList)("servers").RemoveAt(lb_servers.SelectedIndex)
-                nbtserverfile.SaveToFile(servers_dat, NbtCompression.None)
+            If MessageBox.Show("Bist du dir sicher, dass du den Server " & DirectCast(lb_servers.SelectedItem, ServerList.Server).name & " entgültig löschen willst?", "Server löschen", MessageBoxButton.YesNo, MessageBoxImage.Information) = MessageBoxResult.Yes Then
+                servers.Servers.RemoveAt(lb_servers.SelectedIndex)
+                servers.Save()
                 Load_Servers()
                 Ping_servers()
             End If
         End If
     End Sub
-
-
-
 
 #End Region
 
@@ -1808,7 +1839,7 @@ Public Class MainWindow
 
 End Class
 
-Public Class ImageConvert
+Public Structure ImageConvert
     ''' <summary>
     ''' Konvertiert ein Bild in einen Base64-String
     ''' </summary>
@@ -1859,4 +1890,53 @@ Public Class ImageConvert
 
         Return bi
     End Function
+
+End Structure
+
+Public Class Base64ImageConverter
+    Implements System.Windows.Data.IValueConverter
+
+    Public Function Convert(value As Object, targetType As Type, parameter As Object, culture As System.Globalization.CultureInfo) As Object Implements System.Windows.Data.IValueConverter.Convert
+        Dim s As String = TryCast(value, String)
+
+        If s Is Nothing Then Return Nothing
+
+        Dim bi As New BitmapImage()
+
+        bi.BeginInit()
+        bi.StreamSource = New MemoryStream(System.Convert.FromBase64String(s))
+        bi.EndInit()
+
+        Return bi
+    End Function
+
+    Public Function ConvertBack(value As Object, targetType As Type, parameter As Object, culture As System.Globalization.CultureInfo) As Object Implements IValueConverter.ConvertBack
+        Throw New NotImplementedException()
+    End Function
+
+End Class
+
+Public Class FormattingcodesStringConverter
+    Implements System.Windows.Data.IValueConverter
+
+    Public Function Convert(value As Object, targetType As Type, parameter As Object, culture As System.Globalization.CultureInfo) As Object Implements System.Windows.Data.IValueConverter.Convert
+        Dim s As String = TryCast(value, String)
+
+        If s Is Nothing Then Return Nothing
+
+        For Each item As String In FormattingCodes.Colorcodes
+            s = s.Replace(item, Nothing)
+        Next
+        For Each item As String In FormattingCodes.Formattingcodes
+            s = s.Replace(item, Nothing)
+        Next
+        'Neue Zeile für MotD -> "/n"
+
+        Return s
+    End Function
+
+    Public Function ConvertBack(value As Object, targetType As Type, parameter As Object, culture As System.Globalization.CultureInfo) As Object Implements IValueConverter.ConvertBack
+        Throw New NotImplementedException()
+    End Function
+
 End Class

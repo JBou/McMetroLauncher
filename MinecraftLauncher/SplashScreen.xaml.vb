@@ -2,6 +2,7 @@
 Imports System.IO
 Imports Newtonsoft.Json.Linq
 Imports System.Text
+Imports Newtonsoft.Json
 
 Public Class SplashScreen
     WithEvents wcversionsstring As New WebClient
@@ -37,43 +38,43 @@ Public Class SplashScreen
 
         lbl_Version.Content = "Version " & sVersion
         If internetconnection() = True Then
-        lbl_status.Content = "Lade Versions-Liste herunter"
-        If My.Computer.FileSystem.DirectoryExists(mcpfad & "\cache") = False Then
-            IO.Directory.CreateDirectory(mcpfad & "\cache")
-        End If
+            lbl_status.Content = "Lade Versions-Liste herunter"
+            If My.Computer.FileSystem.DirectoryExists(mcpfad & "\cache") = False Then
+                IO.Directory.CreateDirectory(mcpfad & "\cache")
+            End If
 
-        Dim standartprofile As New JObject(
-New JProperty("profiles",
-New JObject(
-    New JProperty("Default",
-        New JObject(
-            New JProperty("name", "Default"))))),
-New JProperty("selectedProfile", "Default"))
-        Dim o As String
-        If IO.File.Exists(launcher_profiles_json) = False Then
-            o = Nothing
-        Else
-            o = File.ReadAllText(launcher_profiles_json)
-        End If
-        If o = Nothing Then
-            'StandartProfile schreiben
-            File.WriteAllText(launcher_profiles_json, standartprofile.ToString)
-        End If
+            Dim standartprofile As New JObject(
+    New JProperty("profiles",
+    New JObject(
+        New JProperty("Default",
+            New JObject(
+                New JProperty("name", "Default"))))),
+    New JProperty("selectedProfile", "Default"))
+            Dim o As String
+            If IO.File.Exists(launcher_profiles_json) = False Then
+                o = Nothing
+            Else
+                o = File.ReadAllText(launcher_profiles_json)
+            End If
+            If o = Nothing Then
+                'StandartProfile schreiben
+                File.WriteAllText(launcher_profiles_json, standartprofile.ToString)
+            End If
 
-        Try
-            wcversionsstring.DownloadFileAsync(New Uri(Versionsurl), outputjsonversions)
-        Catch
-        End Try
+            Try
+                wcversionsstring.DownloadFileAsync(New Uri(Versionsurl), outputjsonversions)
+            Catch
+            End Try
         Else
-        lbl_statustitle.Content = "Fehler"
-        lbl_status.Content = "Bitte überprüfe deine Internetverbindung!"
+            lbl_statustitle.Content = "Fehler"
+            lbl_status.Content = "Bitte überprüfe deine Internetverbindung!"
         End If
 
     End Sub
 
     Private Sub wcversionsstring_DownloadFileCompleted(sender As Object, e As ComponentModel.AsyncCompletedEventArgs) Handles wcversionsstring.DownloadFileCompleted
         Try
-            Versions.Load()
+            Versions_Load()
             lbl_status.Content = "Lade Mod-Liste herunter"
             wcmodlist.DownloadFileAsync(New Uri(modfileurl), modsfile)
         Catch ex As Exception
@@ -116,5 +117,35 @@ New JProperty("selectedProfile", "Default"))
         End Try
     End Sub
 
+    Sub Versions_Load()
+        Dim o As String = File.ReadAllText(outputjsonversions)
+        GlobalInfos.Versions = JsonConvert.DeserializeObject(Of Versionslist)(o)
+
+        If IO.Directory.Exists(mcpfad & "\versions") = True Then
+            Dim list_versionsdirectories As IEnumerable(Of String) = IO.Directory.GetDirectories(mcpfad & "\versions")
+            Dim list_versions As IList(Of String) = New List(Of String)
+            For Each version As String In list_versionsdirectories
+                Dim versionname As String = IO.Path.GetFileName(version)
+                If GlobalInfos.Versions.versions.Select(Function(p) p.id).Contains(versionname) = False Then
+                    list_versions.Add(versionname)
+                End If
+            Next
+            For Each Version As String In list_versions
+                If File.Exists(mcpfad & "\versions\" & Version & "\" & Version & ".jar") And File.Exists(mcpfad & "\versions\" & Version & "\" & Version & ".json") = True Then
+                    Dim jo As JObject = JObject.Parse(File.ReadAllText(mcpfad & "\versions\" & Version & "\" & Version & ".json"))
+                    If jo("id").ToString = Version Then
+                        Dim versionitem As New Versionslist.Version() With {
+                            .id = jo("id").ToString,
+                            .type = jo("type").ToString,
+                            .time = jo("time").ToString,
+                            .releaseTime = jo("releaseTime").ToString}
+                        GlobalInfos.Versions.versions.Add(versionitem)
+                    Else
+                        'Falsche id wurde gefunden
+                    End If
+                End If
+            Next
+        End If
+    End Sub
 End Class
 
