@@ -99,7 +99,7 @@
               <File Id="Newtonsoft.Json" Name="Newtonsoft.Json.dll" Source="$(var.McMetroLauncher.TargetDir)Newtonsoft.Json.dll" />            
               <File Id="System.Windows.Interactivity" Name="System.Windows.Interactivity.dll" Source="$(var.McMetroLauncher.TargetDir)System.Windows.Interactivity.dll" />           
               <File Id="Ookii.Dialogs.Wpf" Name="Ookii.Dialogs.Wpf.dll" Source="$(var.McMetroLauncher.TargetDir)Ookii.Dialogs.Wpf.dll" />           
-              <File Id="fNbt" Name="fNbt.dll" Source="$(var.McMetroLauncher.TargetDir)fNbt.dll" />           
+              <File Id="fNbt" Name="fNbt.dll" Source="$(var.McMetroLauncher.TargetDir)fNbt.dll" />
             </Component>
 
             <Component Id="ShortCutDeinstall" Guid="{0BA3B1B9-679B-45C0-A6BB-0CEA1C5CDA7F}">
