@@ -1,53 +1,17 @@
-﻿Imports Newtonsoft.Json.Linq
+﻿Imports System.IO
+Imports Newtonsoft.Json.Linq
+Imports Newtonsoft.Json
 
 Public Class Forge
 
-    Public Shared Function Get_Forge() As IList(Of ForgeEintrag)
-        Dim list As IList(Of ForgeEintrag) = New List(Of ForgeEintrag)
-        Dim builds As IList(Of String) = Mods.modsjo("forge").Value(Of JArray).Select(Function(p) p("build").ToString).ToList
-        Dim versions As IList(Of String) = Mods.modsjo("forge").Value(Of JArray).Select(Function(p) p("version").ToString).ToList
-        Dim time As IList(Of String) = Mods.modsjo("forge").Value(Of JArray).Select(Function(p) p("time").ToString).ToList
-        Dim downloadlinks As IList(Of String) = Mods.modsjo("forge").Value(Of JArray).Select(Function(p) p("downloadlink").ToString).ToList
+    Public Shared Forgelist As IList(Of ForgeEintrag) = New List(Of ForgeEintrag)
 
-        For i = 0 To builds.Count - 1
-            Dim frg As New ForgeEintrag(builds.Item(i).ToString, versions.Item(i).ToString, time.Item(i).ToString, downloadlinks.Item(i).ToString)
-            list.Add(frg)
-        Next
-        Return list
-    End Function
-
-    Public Shared Function buildAt(index As Integer) As String
-        Dim forgeinfo As String = Mods.modsjo("forge").ElementAt(index).Value(Of String)("build").ToString
-        Return forgeinfo
-    End Function
-
-    Public Shared Function versionAt(index As Integer) As String
-        Dim forgeinfo As String = Mods.modsjo("forge").ElementAt(index).Value(Of String)("version").ToString
-        Return forgeinfo
-    End Function
-
-    Public Shared Function timeAt(index As Integer) As String
-        Dim forgeinfo As String = Mods.modsjo("forge").ElementAt(index).Value(Of String)("time").ToString
-        Return forgeinfo
-    End Function
-
-    Public Shared Function downloadlinkAt(index As Integer) As String
-        Dim forgeinfo As String = Mods.modsjo("forge").ElementAt(index).Value(Of String)("downloadlink").ToString
-        Return forgeinfo
-    End Function
-
-    Public Shared Function BuildIndex(Build As String) As Integer
-        Dim forgearray As JArray = CType(Mods.modsjo("forge"), JArray)
-        For i = 0 To forgearray.Count - 1
-
-            Dim getforgeBuild As String = buildAt(i)
-            If getforgeBuild = Build Then
-                Return i
-                Exit Function
-            End If
-        Next
-        Throw New InvalidOperationException("Das angegebene ForgeBuild wurde nicht gefunden")
-    End Function
+    Public Shared Sub Load()
+        Dim o As String = File.ReadAllText(modsfile)
+        Dim jo As JObject = JObject.Parse(o)
+        Forgelist = JsonConvert.DeserializeObject(Of IList(Of ForgeEintrag))(jo("forge").ToString)
+        Forgelist = Forgelist.OrderByDescending(Function(p) p.version).ToList
+    End Sub
 
     Public Shared Sub Add(Forge As ForgeEintrag)
         Dim Forgeproperties As JObject = New JObject
@@ -56,7 +20,9 @@ Public Class Forge
         Forgeproperties.Add(New JProperty("time", Forge.time))
         Forgeproperties.Add(New JProperty("downloadlink", Forge.downloadLink))
         Mods.modsjo.Value(Of JArray)("forge").Add(Forgeproperties)
+        Mods.modsjo = JObject.Parse(Mods.modsjo.Value(Of JArray)("forge").OrderByDescending(Function(p) p("version").ToString).ToString)
         IO.File.WriteAllText(modsfile, Mods.modsjo.ToString)
+        Load()
     End Sub
 
     Public Shared Sub Edit(ByVal editedforgeindex As Integer, Forge As ForgeEintrag)
@@ -69,7 +35,7 @@ Public Class Forge
     Public Shared Sub RemoveAt(ByVal index As Integer)
         Mods.modsjo.Value(Of JArray)("forge").RemoveAt(index)
         IO.File.WriteAllText(modsfile, Mods.modsjo.ToString)
-        Get_Forge()
+        Load()
     End Sub
 
 End Class

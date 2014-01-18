@@ -71,17 +71,17 @@ Public Class ProfileEditor
             If Profiles.allowedReleaseTypes(loadedprofile).Contains("snapshot") = True Then
                 cb_snapshots.IsChecked = True
             End If
-            If Profiles.allowedReleaseTypes(loadedprofile).Contains("cb_old_beta") = True Then
+            If Profiles.allowedReleaseTypes(loadedprofile).Contains("old_beta") = True Then
                 cb_old_beta.IsChecked = True
             End If
-            If Profiles.allowedReleaseTypes(loadedprofile).Contains("cb_old_alpha") = True Then
+            If Profiles.allowedReleaseTypes(loadedprofile).Contains("old_alpha") = True Then
                 cb_old_alpha.IsChecked = True
             End If
         End If
         Get_Versions()
         cb_versions.SelectedItem = cb_versions.Items.OfType(Of Versionslist.Version).ToList.Where(Function(p) p.id = Profiles.lastVersionId(loadedprofile)).FirstOrDefault
         If Profiles.javaDir(loadedprofile) = Nothing Then
-            tb_java_executable.Text = MainWindow.Startcmd
+            tb_java_executable.Text = MainWindow.Startcmd(selectedname2Profile(loadedprofile))
         Else
             tb_java_executable.Text = Profiles.javaDir(loadedprofile)
             cb_java_path.IsChecked = True
@@ -99,7 +99,7 @@ Public Class ProfileEditor
         tb_gameDir.Text = mcpfad
         tb_res_height.Text = "480"
         tb_res_width.Text = "854"
-        tb_java_executable.Text = MainWindow.Startcmd
+        tb_java_executable.Text = MainWindow.Startcmd(selectedname2Profile(loadedprofile))
         tb_java_arguments.Text = "-Xmx1G"
 
     End Sub
@@ -123,8 +123,10 @@ Public Class ProfileEditor
 
         If cb_java_path.IsChecked = True Then
             tb_java_executable.IsEnabled = True
+            btn_selectjavadir.IsEnabled = True
         Else
             tb_java_executable.IsEnabled = False
+            btn_selectjavadir.IsEnabled = False
         End If
 
         If cb_java_arguments.IsChecked = True Then
@@ -142,7 +144,8 @@ Public Class ProfileEditor
         End If
     End Sub
 
-    Private Sub ProfileEditor_Loaded(sender As Object, e As RoutedEventArgs) Handles Me.Loaded
+    Private Async Sub ProfileEditor_Loaded(sender As Object, e As RoutedEventArgs) Handles Me.Loaded
+        Await Versions_Load()
         Get_Versions()
         loadedprofile = selectedprofile
         If Newprofile = True Then
@@ -153,33 +156,10 @@ Public Class ProfileEditor
         Check_cb_Status()
     End Sub
 
-    'Private Async Sub cb_snapshots_Click(sender As Object, e As RoutedEventArgs) Handles cb_snapshots.Click, cb_old_beta.Click, cb_old_alpha.Click
-    '    If DirectCast(sender, CheckBox).IsChecked = True Then
-    '        If sender Is cb_old_beta Or sender Is cb_old_alpha Then
-    '            Dim msgtext As String = "Diese Versionen sind sehr veraltet und können unstabil sein. Alle Fehler, Abstürze, fehlende Funktionen oder andere Defekte die du finden könnstest werden in diesen Versionen nicht mehr behoben." & Environment.NewLine & "Es wird stark empfohlen, dass du diese Versionen in einem separatem Verzeichniss spielst, um Datenverlust zu vermeiden. Wir sind nicht verantwortlich für den Schaden an deinen Daten!" & Environment.NewLine & Environment.NewLine & "Bist du dir sicher, dass du fortsetzen möchstest?"
-    '            Dim result As MessageDialogResult = Await Me.ShowMessageAsync("Achtung", msgtext, MessageDialogStyle.AffirmativeAndNegativeAndSingleAuxiliary, New MetroDialogSettings() With {.AffirmativeButtonText = "Ja", .NegativeButtonText = "Nein", .FirstAuxiliaryButtonText = "Abbrechen", .ColorScheme = MetroDialogColorScheme.Accented, .UseAnimations = True})
-
-    '            If result = MessageDialogResult.Affirmative Then
-    '                Get_Versions()
-    '                DirectCast(sender, CheckBox).IsChecked = True
-    '            Else
-    '                DirectCast(sender, CheckBox).IsChecked = False
-    '            End If
-    '        Else
-    '            Get_Versions()
-    '        End If
-    '    Else
-    '        Get_Versions()
-    '    End If
-    '    If cb_versions.SelectedIndex = -1 Then
-    '        cb_versions.SelectedIndex = 0
-    '    End If
-    'End Sub
-
-    Private Sub btn_save_Click(sender As Object, e As RoutedEventArgs) Handles btn_save.Click
+    Private Async Sub btn_save_Click(sender As Object, e As RoutedEventArgs) Handles btn_save.Click
 
         If tb_profile_name.Text = Nothing Then
-            MessageBox.Show("Geben Sie bitte einen Profil Namen ein!", "Namen eingeben", MessageBoxButton.OK, MessageBoxImage.Information)
+            Await Me.ShowMessageAsync("Namen eingeben", "Geben Sie bitte einen Profil Namen ein!", MessageDialogStyle.Affirmative, New MetroDialogSettings() With {.AffirmativeButtonText = "Ok", .ColorScheme = MetroDialogColorScheme.Accented})
             Exit Sub
         Else
 
@@ -200,7 +180,7 @@ Public Class ProfileEditor
                 If cb_versions.SelectedIndex = 0 Then
                     lastVersionId = Nothing
                 Else
-                        lastVersionId = DirectCast(cb_versions.SelectedItem, Versionslist.Version).id
+                    lastVersionId = DirectCast(cb_versions.SelectedItem, Versionslist.Version).id
                 End If
             End If
 
@@ -212,7 +192,7 @@ Public Class ProfileEditor
             End If
             If cb_resolution.IsChecked = True Then
                 If tb_res_height.Text = Nothing Or tb_res_width.Text = Nothing Then
-                    MessageBox.Show("Bitte geben Sie eine gültige Auflösung ein!", "Fehler", MessageBoxButton.OK, MessageBoxImage.Information)
+                    Await Me.ShowMessageAsync("Fehler", "Bitte geben Sie eine gültige Auflösung ein!", MessageDialogStyle.Affirmative, New MetroDialogSettings() With {.AffirmativeButtonText = "Ok", .ColorScheme = MetroDialogColorScheme.Accented})
                     Exit Sub
                 End If
                 resolution_width = tb_res_width.Text
@@ -234,18 +214,27 @@ Public Class ProfileEditor
                 allowedReleaseTypes = Nothing
             End If
 
-            Dim prof As New Profile(name, gameDir, lastVersionId, javaDir, javaArgs, resolution_width, resolution_height, allowedReleaseTypes)
+            Dim prof As New Profiles.Profile() With {
+                .name = name,
+                .gameDir = gameDir,
+                .resolution_height = resolution_height,
+                .resolution_width = resolution_width,
+                .lastVersionId = lastVersionId,
+                .javaDir = javaDir,
+                .javaArgs = javaArgs,
+                .allowedReleaseTypes = allowedReleaseTypes
+                }
 
             If Newprofile = True Then
                 If Profiles.List.Contains(tb_profile_name.Text) = True Then
-                    MessageBox.Show("Dieses Profil existiert bereits!", "Profil existiert bereits", MessageBoxButton.OK, MessageBoxImage.Information)
+                    Await Me.ShowMessageAsync("Profil existiert bereits", "Dieses Profil existiert bereits!", MessageDialogStyle.Affirmative, New MetroDialogSettings() With {.AffirmativeButtonText = "Ok", .ColorScheme = MetroDialogColorScheme.Accented})
                 Else
                     Profiles.Add(prof)
                 End If
 
             Else
                 If Profiles.List.Contains(tb_profile_name.Text.ToString) And tb_profile_name.Text.ToString <> loadedprofile Then
-                    MessageBox.Show("Dieses Profil existiert bereits!", "Profil existiert bereits", MessageBoxButton.OK, MessageBoxImage.Information)
+                    Await Me.ShowMessageAsync("Profil existiert bereits", "Dieses Profil existiert bereits!", MessageDialogStyle.Affirmative, New MetroDialogSettings() With {.AffirmativeButtonText = "Ok", .ColorScheme = MetroDialogColorScheme.Accented})
                 Else
                     Profiles.Edit(loadedprofile, prof)
                 End If
@@ -253,7 +242,7 @@ Public Class ProfileEditor
 
             Me.DialogResult = True
             Me.Close()
-            End If
+        End If
     End Sub
 
     Private Sub btn_selectgamedir_Click(sender As Object, e As RoutedEventArgs) Handles btn_selectgamedir.Click

@@ -1,24 +1,39 @@
 ﻿<Controls:MetroWindow x:Class="Forge_installer"
     xmlns:metro="http://schemas.codeplex.com/elysium"
     xmlns:params="http://schemas.codeplex.com/elysium/params"
-    xmlns:syncfusion="http://schemas.syncfusion.com/wpf"
     xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:Behaviours="clr-namespace:MahApps.Metro.Behaviours;assembly=MahApps.Metro"
     GlowBrush="{DynamicResource AccentColorBrush}"   
     Title="Minecraft Forge" Height="448" Width="660" Icon="favicon.ico" ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
-    
-    <Grid>
-        <ListView x:Name="lst" Margin="10,10,10,59">
-            <ListView.View>
-                <GridView>
-                    <GridViewColumn Header="Build Nummer" DisplayMemberBinding="{Binding Path=build}" Width="130"/>
-                    <GridViewColumn Header="Version" HeaderStringFormat="" DisplayMemberBinding="{Binding Path=version}" Width="130"/>
-                    <GridViewColumn Header="Datum" DisplayMemberBinding="{Binding Path=time}" Width="376"/>
-                </GridView>
-            </ListView.View>
-        </ListView>
-        <Button x:Name="btn_download" Content="Herunterladen und Installieren" Margin="180,0,180,25" VerticalAlignment="Bottom" Height="29"/>
-        <Controls:MetroProgressBar Foreground="{DynamicResource AccentColorBrush}" x:Name="pb_download" Height="10" Margin="10" VerticalAlignment="Bottom" />
-    </Grid>
+    <DockPanel>
+        <Controls:MetroProgressBar Foreground="{DynamicResource AccentColorBrush}" x:Name="pb_download" Height="10" Margin="10" VerticalAlignment="Bottom" DockPanel.Dock="Bottom" />
+        <Controls:MetroAnimatedTabControl>
+            <TabItem Header="Forgeversionen" x:Name="forge_list">
+                <Grid>
+                    <ListView x:Name="lst" Margin="10,10,10,44" BorderThickness="0">
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn Header="Build Nummer" DisplayMemberBinding="{Binding Path=build}" Width="130"/>
+                                <GridViewColumn Header="Version" HeaderStringFormat="" DisplayMemberBinding="{Binding Path=version}" Width="130"/>
+                                <GridViewColumn Header="Datum" DisplayMemberBinding="{Binding Path=time}" Width="376"/>
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                    <Button x:Name="btn_download" Content="Herunterladen und Installieren" Margin="0,0,0,0" Width="300" VerticalAlignment="Bottom" Height="29"/>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Anleitung" x:Name="forge_anleitung">
+                <Grid Margin="10">
+                    <TextBlock Margin="10,15,10,0" FontSize="18" TextWrapping="WrapWithOverflow" Height="50" VerticalAlignment="Top">Nachdem Forge heruntergeladen wurde, öffnet sich ein Fenster. Wähle dort &quot;Install Client&quot; aus und wähle beim Installationspfad folgenden Ordner aus:</TextBlock>
+                    <TextBox x:Name="tb_mcpfad" Margin="10,80,47,0" FontSize="13" Height="32" VerticalAlignment="Top" IsReadOnly="True" Controls:TextboxHelper.SelectAllOnFocus="True" />
+                    <Button x:Name="btn_copy" Margin="0,80,10,0" FontSize="13" Height="32" VerticalAlignment="Top" HorizontalAlignment="Right" Width="32" ToolTip="Pfad in die Zwischenablage kopieren" >
+                        <Image x:Name="btn_copy_image" Source="images/light/appbar.page.copy.png" ToolTip="Pfad in die Zwischenablage kopieren"/>
+                    </Button>
+                    <TextBlock Margin="10,146,10,0" FontSize="18" TextWrapping="WrapWithOverflow" Height="193" VerticalAlignment="Top" Text="Klicke anschließend auf &quot;OK&quot; und es wird Minecraft Forge installiert. Nachdem es einige Dateien heruntergeladen hat und fertig installiert hat, erscheind eine Meldung, dass Forge erfolgreich installiert wurde. Nun wurde ein neues Profil namens &quot;Forge&quot; hinzugefügt und du kannst nun unter dem Tab &quot;Mods&quot; Modifikationen installieren. Du kannst Forge auch einem anderem Profil zuordnen, indem du einfach die Versions im Profileeditor änderst." />
+                </Grid>
+            </TabItem>
+        </Controls:MetroAnimatedTabControl>
+    </DockPanel>
 </Controls:MetroWindow>

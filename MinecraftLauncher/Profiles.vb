@@ -53,6 +53,24 @@ Public Class Profiles
         End If
     End Function
 
+    Public Shared Function launcherVisibilityOnGameClose(profilename As String) As String
+        Load()
+        If PropertyList(profilename).Contains("launcherVisibilityOnGameClose") = True Then
+            Return profilesjo("profiles")(profilename)("launcherVisibilityOnGameClose").ToString
+        Else
+            Return Nothing
+        End If
+    End Function
+
+    Public Shared Function playerUUID(profilename As String) As String
+        Load()
+        If PropertyList(profilename).Contains("playerUUID") = True Then
+            Return profilesjo("profiles")(profilename)("playerUUID").ToString
+        Else
+            Return Nothing
+        End If
+    End Function
+
     Public Shared Function allowedReleaseTypes(profilename As String) As IList(Of String)
         Load()
         If PropertyList(profilename).Contains("allowedReleaseTypes") = True Then
@@ -160,92 +178,101 @@ Public Class Profiles
         IO.File.WriteAllText(launcher_profiles_json, profilesjo.ToString)
     End Sub
 
-End Class
+    Public Class Profile
+        Private _name As String, _gameDir As String, _lastVersionId As String, _javaDir As String,
+            _javaArgs As String, _resolution_width As String, _resolution_height As String, _allowedReleaseTypes As IList(Of String), _playerUUID As String, _launcherVisibilityOnGameClose As String
 
-Public Class Profile
-    Private _name As String, _gameDir As String, _lastVersionId As String, _javaDir As String, _javaArgs As String, _resolution_width As String, _resolution_height As String, _allowedReleaseTypes As IList(Of String)
+        Public Property name As String
+            Get
+                Return _name
+            End Get
+            Set(value As String)
+                _name = value
+            End Set
+        End Property
 
-    Public Property name As String
-        Get
-            Return _name
-        End Get
-        Set(value As String)
-            _name = value
-        End Set
-    End Property
+        Public Property gameDir As String
+            Get
+                Return _gameDir
+            End Get
+            Set(value As String)
+                _gameDir = value
+            End Set
+        End Property
+        Public Property launcherVisibilityOnGameClose As String
+            Get
+                Return _launcherVisibilityOnGameClose
+            End Get
+            Set(value As String)
+                _launcherVisibilityOnGameClose = value
+            End Set
+        End Property
 
-    Public Property gameDir As String
-        Get
-            Return _gameDir
-        End Get
-        Set(value As String)
-            _gameDir = value
-        End Set
-    End Property
+        Public Property playerUUID As String
+            Get
+                Return _playerUUID
+            End Get
+            Set(value As String)
+                _playerUUID = value
+            End Set
+        End Property
 
-    Public Property lastVersionId As String
-        Get
-            Return _lastVersionId
-        End Get
-        Set(value As String)
-            _lastVersionId = value
-        End Set
-    End Property
+        Public Property lastVersionId As String
+            Get
+                Return _lastVersionId
+            End Get
+            Set(value As String)
+                _lastVersionId = value
+            End Set
+        End Property
 
-    Public Property javaDir As String
-        Get
-            Return _javaDir
-        End Get
-        Set(value As String)
-            _javaDir = value
-        End Set
-    End Property
+        Public Property javaDir As String
+            Get
+                Return _javaDir
+            End Get
+            Set(value As String)
+                _javaDir = value
+            End Set
+        End Property
 
-    Public Property javaArgs As String
-        Get
-            Return _javaArgs
-        End Get
-        Set(value As String)
-            _javaArgs = value
-        End Set
-    End Property
+        Public Property javaArgs As String
+            Get
+                Return _javaArgs
+            End Get
+            Set(value As String)
+                _javaArgs = value
+            End Set
+        End Property
 
-    Public Property resolution_width As String
-        Get
-            Return _resolution_width
-        End Get
-        Set(value As String)
-            _resolution_width = value
-        End Set
-    End Property
+        Public Property resolution_width As String
+            Get
+                Return _resolution_width
+            End Get
+            Set(value As String)
+                _resolution_width = value
+            End Set
+        End Property
 
-    Public Property resolution_height As String
-        Get
-            Return _resolution_height
-        End Get
-        Set(value As String)
-            _resolution_height = value
-        End Set
-    End Property
+        Public Property resolution_height As String
+            Get
+                Return _resolution_height
+            End Get
+            Set(value As String)
+                _resolution_height = value
+            End Set
+        End Property
 
 
-    Public Property allowedReleaseTypes As IList(Of String)
-        Get
-            Return _allowedReleaseTypes
-        End Get
-        Set(value As IList(Of String))
-            _allowedReleaseTypes = value
-        End Set
-    End Property
+        Public Property allowedReleaseTypes As IList(Of String)
+            Get
+                Return _allowedReleaseTypes
+            End Get
+            Set(value As IList(Of String))
+                _allowedReleaseTypes = value
+            End Set
+        End Property
 
-    Public Sub New(ByVal name As String, gameDir As String, lastVersionId As String, javaDir As String, javaArgs As String, resolution_width As String, resolution_height As String, allowedReleaseTypes As IList(Of String))
-        Me.name = name
-        Me.gameDir = gameDir
-        Me.lastVersionId = lastVersionId
-        Me.javaDir = javaDir
-        Me.javaArgs = javaArgs
-        Me.resolution_width = resolution_width
-        Me.resolution_height = resolution_height
-        Me.allowedReleaseTypes = allowedReleaseTypes
-    End Sub
+        Public Sub New()
+        End Sub
+    End Class
 End Class

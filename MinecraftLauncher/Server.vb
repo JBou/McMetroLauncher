@@ -185,17 +185,21 @@ Public Class ServerList
                 client.Close()
                 Dim pong = CType(_pong, StatusPingPacket)
                 Dim time = New DateTime(pong.Time)
-                response.Status.Latency = time - sent
+                response.Status.Latency = New TimeSpan(time.Ticks - sent.Ticks)
                 ServerStatus = response.Status
                 ServerStatus.Online = True
-                If icon IsNot Nothing Then
-                    Dim sourcestring As String = response.Status.Icon
+                Dim cleanPath As String = response.Status.Icon
+                If ServerStatus.Icon IsNot Nothing Then
                     Dim removeString As String = "data:image/png;base64,"
-                    Dim index As Integer = sourcestring.IndexOf(removeString)
-                    Dim cleanPath As String = If((index < 0), sourcestring, sourcestring.Remove(index, removeString.Length))
-                    icon = cleanPath
-                    'Write icon to file
+                    If ServerStatus.Icon.StartsWith(removeString) Then
+                        Dim sourcestring As String = cleanPath
+                        Dim index As Integer = sourcestring.IndexOf(removeString)
+                        cleanPath = If((index < 0), sourcestring, sourcestring.Remove(index, removeString.Length))
+                        'Write icon to file
+                    End If
                 End If
+                ServerStatus.Icon = cleanPath
+                icon = cleanPath
             Catch socketex As SocketException
                 client.Close()
                 ServerStatus = New ServerStatus

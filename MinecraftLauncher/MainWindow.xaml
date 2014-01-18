@@ -1,7 +1,6 @@
 ﻿<Controls:MetroWindow  x:Class="MainWindow"
     xmlns:local="clr-namespace:McMetroLauncher"
     xmlns:params="http://schemas.codeplex.com/elysium/params"
-    xmlns:syncfusion="http://schemas.syncfusion.com/wpf"
     xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -24,6 +23,7 @@
 
             <local:Base64ImageConverter x:Key="Base64ImageConverter"/>
             <local:FormattingcodesStringConverter x:Key="FormattingcodesStringConverter"/>
+            <local:Playerlist_Namesstring_Converter x:Key="Playerlist_Namesstring_Converter"/>
 
             <Style x:Key="DescriptionHeaderStyle" TargetType="Label">
                 <Setter Property="FontSize" Value="22" />
@@ -57,6 +57,9 @@
             <Style x:Key="myHeaderStyle" TargetType="{x:Type GridViewColumnHeader}">
                 <Setter Property="Visibility" Value="Collapsed" />
             </Style>
+            <Image x:Key="serverlistcontext_copy_image" Source="images/light/appbar.page.copy.png" Height="30"/>
+            <Image x:Key="serverlistcontext_direct_join_image" Source="images/light/appbar.control.play.png" Height="30"/>
+            <Image x:Key="serverlistcontext_direct_join_image2" Source="images/light/appbar.control.play.png" Height="30"/>
         </ResourceDictionary>
     </Window.Resources>
 
@@ -70,7 +73,7 @@
 
     <Controls:MetroWindow.Flyouts>
         <Controls:FlyoutsControl>
-            <Controls:Flyout x:Name="settingsFlyout" Width="500" Header="Einstellungen" Position="Right">
+            <Controls:Flyout x:Name="settingsFlyout" Width="500" Header="Einstellungen" Position="Right" Theme="Accent">
                 <Controls:MetroContentControl>
                     <Grid Margin="10">
                         <Grid.RowDefinitions>
@@ -108,8 +111,8 @@
         <Grid.RowDefinitions>
             <RowDefinition/>
         </Grid.RowDefinitions>
-        <Controls:MetroAnimatedTabControl x:Name="TabControl_main">
-            <TabItem Header="Minecraft">
+        <Controls:MetroAnimatedTabControl x:Name="TabControl_main" TabIndex="15">
+            <TabItem Header="Minecraft" x:Name="tabitem_Minecraft">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition/>
@@ -117,10 +120,10 @@
                     <Grid.RowDefinitions>
                         <RowDefinition/>
                     </Grid.RowDefinitions>
-                    <TextBox x:Name="tb_ausgabe" VerticalScrollBarVisibility="Auto" AcceptsReturn="True" IsReadOnly="True" VerticalContentAlignment="Top" Margin="10,10,10,95" HorizontalScrollBarVisibility="Auto"/>
+                    <TextBox x:Name="tb_ausgabe" VerticalScrollBarVisibility="Auto" AcceptsReturn="True" IsReadOnly="True" VerticalContentAlignment="Top" Margin="10,10,10,95" HorizontalScrollBarVisibility="Auto" TabIndex="2"/>
                     <ListBox x:Name="Listbox1" HorizontalAlignment="Left" Height="271" Margin="459,10,0,0" VerticalAlignment="Top" Width="473" Visibility="Collapsed"/>
-                    <TextBox x:Name="tb_username" HorizontalAlignment="Right" Height="32" Margin="0,0,138,47" TextWrapping="Wrap" VerticalAlignment="Bottom" Width="148" VerticalContentAlignment="Center"/>
-                    <Button x:Name="btn_startMC" Content="Start" HorizontalAlignment="Right" Margin="0,0,10,10" VerticalAlignment="Bottom" Width="123" Height="69" FontSize="30"/>
+                    <TextBox x:Name="tb_username" HorizontalAlignment="Right" Height="32" Margin="0,0,138,10" TextWrapping="Wrap" VerticalAlignment="Bottom" Width="148" VerticalContentAlignment="Center" TabIndex="10"/>
+                    <Button x:Name="btn_startMC" Content="Start" HorizontalAlignment="Right" Margin="0,0,10,10" VerticalAlignment="Bottom" Width="123" Height="69" FontSize="30" TabIndex="11"/>
                     <Controls:MetroProgressBar Foreground="{DynamicResource AccentColorBrush}" x:Name="pb_download" Height="5" Margin="10,0,10,84" VerticalAlignment="Bottom"/>
                     <ComboBox x:Name="cb_versions" HorizontalAlignment="Left" Margin="348,0,0,47" VerticalAlignment="Bottom" Width="76" Height="32" Visibility="Hidden"/>
                     <ComboBox x:Name="cb_type" HorizontalAlignment="Left" Margin="246,0,0,47" VerticalAlignment="Bottom" Width="97" Height="32" Visibility="Hidden"/>
@@ -129,29 +132,32 @@
                     <ListBox x:Name="lb_startedversions" HorizontalAlignment="Left" Height="271" Margin="866,10,-58,0" VerticalAlignment="Top" Width="134" Visibility="Hidden"/>
                     <ComboBox x:Name="cb_ram" HorizontalAlignment="Right" Margin="0,0,138,10" VerticalAlignment="Bottom" Width="148" Height="32" ToolTip="Nur verfügbar mit Java 64 bit" Visibility="Hidden"/>
                     <Label Content="Ram" HorizontalAlignment="Right" Margin="0,0,291,10" VerticalAlignment="Bottom" Height="32" Width="78" FontSize="15" ToolTip="Nur verfügbar mit Java 64 bit" Visibility="Hidden"/>
-                    <Button x:Name="btn_new_profile" Content="Neu" HorizontalAlignment="Left" Margin="10,0,0,10" VerticalAlignment="Bottom" Width="26" Height="33" MinWidth="50"/>
-                    <Button x:Name="btn_edit_profile" Content="Bearbeiten" HorizontalAlignment="Left" Margin="65,0,0,10" VerticalAlignment="Bottom" Width="89" Height="33"/>
-                    <ComboBox x:Name="cb_profiles" HorizontalAlignment="Left" Margin="10,0,0,48" VerticalAlignment="Bottom" Width="218" Height="31"/>
-                    <Button x:Name="btn_delete_profile" Content="Löschen" HorizontalAlignment="Left" Margin="159,0,0,10" VerticalAlignment="Bottom" Width="69" Height="33"/>
+                    <Button x:Name="btn_new_profile" Content="Neu" HorizontalAlignment="Left" Margin="10,0,0,10" VerticalAlignment="Bottom" Width="26" Height="33" MinWidth="50" TabIndex="4"/>
+                    <Button x:Name="btn_edit_profile" Content="Bearbeiten" HorizontalAlignment="Left" Margin="65,0,0,10" VerticalAlignment="Bottom" Width="89" Height="33" TabIndex="5"/>
+                    <ComboBox x:Name="cb_profiles" HorizontalAlignment="Left" Margin="10,0,0,48" VerticalAlignment="Bottom" Width="218" Height="31" TabIndex="3"/>
+                    <Button x:Name="btn_delete_profile" Content="Löschen" HorizontalAlignment="Left" Margin="159,0,0,10" VerticalAlignment="Bottom" Width="69" Height="33" TabIndex="6"/>
                     <ListBox x:Name="lb_libraries_extract" HorizontalAlignment="Left" Height="271" Margin="648,120,-48,0" VerticalAlignment="Top" Width="342" Visibility="Collapsed"/>
                     <ListBox x:Name="lb_libraries" HorizontalAlignment="Left" Height="271" Margin="-2,120,0,0" VerticalAlignment="Top" Width="320" Visibility="Collapsed"/>
                     <ListBox x:Name="lb_libraries_url" HorizontalAlignment="Left" Height="271" Margin="323,120,0,0" VerticalAlignment="Top" Width="320" Visibility="Collapsed"/>
-                    <PasswordBox x:Name="pb_Password" HorizontalAlignment="Right" Height="32" Margin="0,0,138,10" VerticalAlignment="Bottom" Width="148" VerticalContentAlignment="Center" IsEnabled="False"/>
-                    <CheckBox x:Name="cb_online_mode" HorizontalAlignment="Right" Height="32" Content="Online Mode" Margin="0,0,180,10" VerticalAlignment="Bottom" Width="106" VerticalContentAlignment="Center" IsEnabled="False"/>
-                    <TextBox x:Name="tb_server_address" Controls:TextboxHelper.Watermark="Address" HorizontalAlignment="Right" Height="32" Margin="0,0,291,10" TextWrapping="Wrap" VerticalAlignment="Bottom" Width="148" VerticalContentAlignment="Center"/>
-                    <CheckBox x:Name="cb_direct_join" HorizontalAlignment="Right" Height="32" Content="Direct Join" Margin="0,0,291,47" VerticalAlignment="Bottom" Width="148" VerticalContentAlignment="Center" Padding="6,0,0,0"/>
+                    <PasswordBox x:Name="pb_Password" HorizontalAlignment="Right" Height="32" Margin="0,0,138,10" VerticalAlignment="Bottom" Width="148" VerticalContentAlignment="Center" IsEnabled="False" Visibility="Hidden"/>
+                    <CheckBox x:Name="cb_online_mode" HorizontalAlignment="Right" Height="32" Content="Online Mode" Margin="0,0,180,10" VerticalAlignment="Bottom" Width="106" VerticalContentAlignment="Center" IsEnabled="False" Visibility="Hidden"/>
+                    <TextBox x:Name="tb_server_address" Controls:TextboxHelper.Watermark="Address" HorizontalAlignment="Right" Height="32" Margin="0,0,291,10" TextWrapping="Wrap" VerticalAlignment="Bottom" Width="148" VerticalContentAlignment="Center" TabIndex="8"/>
+                    <CheckBox x:Name="cb_direct_join" HorizontalAlignment="Right" Height="32" Content="Direct Join" Margin="0,0,291,47" VerticalAlignment="Bottom" Width="148" VerticalContentAlignment="Center" Padding="6,0,0,0" FontSize="15" ToolTip="Tritt nach dem Spielstart automatisch dem festgelegten Server bei" TabIndex="7"/>
+                    <Label HorizontalAlignment="Right" Height="32" Content="Username" Margin="0,0,138,47" VerticalAlignment="Bottom" Width="148" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" FontSize="20" Padding="0" TabIndex="9" />
 
 
                 </Grid>
             </TabItem>
             <TabItem Header="Tools">
-                <ScrollViewer VerticalScrollBarVisibility="Auto">
-                    <Grid>
-                        <Button Content="Forge installieren" x:Name="install_forge" Click="forge_installer" Margin="693,30,10,419"/>
-                        <TextBlock TextWrapping="WrapWithOverflow" Margin="245,30,254,419" Foreground="Black" Padding="5" Text="Minecraft Forge ist ein ModLoader mit dem ihr einfacher Mods installieren könnt. Er hilft dabei, dass die Mods untereinander kompatibel sind. Die meisten Mods basieren auf Forge. Du kannst Mods für Forge unter dem Tab &quot;Mods&quot; installieren." />
-                        <Image Margin="30,30,0,0" Height="79" VerticalAlignment="Top" HorizontalAlignment="Left" Width="210" Source="images/forge_banner.png" Stretch="None"/>
-                    </Grid>
-                </ScrollViewer>
+                <Grid Margin="24,37,18,-7" Width="900">
+                    <Button Content="Forge installieren" x:Name="install_forge" Click="forge_installer" Margin="725,0,0,414" Height="74" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="165"/>
+                    <TextBlock TextWrapping="Wrap" Margin="274,18,180,422" Padding="5" Text="Minecraft Forge ist ein ModLoader mit dem ihr einfacher Mods installieren könnt. Er hilft dabei, dass die Mods untereinander kompatibel sind. Die meisten Mods basieren auf Forge. Du kannst Mods für Forge unter dem Tab &quot;Mods&quot; installieren." VerticalAlignment="Center" />
+                    <Image Margin="26,10,0,0" Height="74" VerticalAlignment="Top" HorizontalAlignment="Left" Width="243" Source="images/forge_banner.png"/>
+                    <TextBlock TextWrapping="Wrap" Margin="274,110,180,318" Padding="5" Text="Mit den Technic Launcher kannst du viele bekannte Modpacks spielen wie z.B. Tekkit, Hexxit, Volt.... Auserdem kannst du eigene Modpacks hinzufügen und spielen. Diese findest du auf http://technicpack.net." VerticalAlignment="Center" Height="70" />
+                    <Button Content="Herunterladen" x:Name="btn_download_techniclauncher" Click="download_techniclauncher" Margin="725,0,0,355" Height="35" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="165"/>
+                    <Button Content="Starten" x:Name="btn_start_techniclauncher"  Click="start_techniclauncher" Margin="725,0,0,318" Height="35" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="165"/>
+                    <Image Margin="10,94,0,0" Height="91" VerticalAlignment="Top" HorizontalAlignment="Left" Width="259" Source="images/tl.png"/>
+                </Grid>
             </TabItem>
             <TabItem Header="Mods" Margin="4,0,-4,0">
                 <Grid>
@@ -230,13 +236,90 @@
             </TabItem>
             <TabItem Header="Server">
                 <Grid>
-                    <Label Margin="10,10,10,47" Width="900" VerticalAlignment="Top" HorizontalAlignment="Center" BorderThickness="0" Content="Server, dessen Version älter als 1.7 ist, werden als &quot;Offline&quot; angezeigt " HorizontalContentAlignment="Center"  />
+                    <Label Margin="10,10,10,47" Width="900" VerticalAlignment="Top" HorizontalAlignment="Center" BorderThickness="0" Content="Server, dessen Version älter als 1.7 ist, werden als &quot;Offline&quot; angezeigt, Rechtsklick für mehr Optionen" HorizontalContentAlignment="Center" Background="{x:Null}" Foreground="Red" FontWeight="Bold"  />
                     <ListView x:Name="lb_servers" Margin="21,42,21,47" Width="900" HorizontalAlignment="Center" BorderThickness="0" >
+                        <ListView.Resources>
+                            <ContextMenu StaysOpen="true" x:Key="ServerlistContextMenu">
+                                <MenuItem Header="Server Addresse kopieren" Name="context_copy_server_address" Click="copy_server_address" Icon="{DynamicResource serverlistcontext_copy_image}" />
+                                <MenuItem Header="Direct Join (Auto)" Name="context_join_server_from_list_auto" Click="join_server_from_list_auto" Icon="{DynamicResource serverlistcontext_direct_join_image}" >
+                                    <MenuItem.Style>
+                                        <Style BasedOn="{StaticResource MetroMenuItem}" TargetType="MenuItem" >
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding ServerStatus.Online}" Value="False">
+                                                    <Setter Property="Visibility" Value="Collapsed" />
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding ServerStatus.Online}" Value="True">
+                                                    <Setter Property="Visibility" Value="Visible" />
+                                                    <Setter Property="Header">
+                                                        <Setter.Value>
+                                                            <MultiBinding StringFormat="{}Direct Join (Version: {0})">
+                                                                <Binding Path="ServerStatus.Version.Name" />
+                                                            </MultiBinding>
+                                                        </Setter.Value>
+                                                    </Setter>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </MenuItem.Style>
+                                </MenuItem>
+                                <MenuItem Header="Direct Join (Manuell)" Name="context_join_server_from_list" Click="join_server_from_list" Icon="{DynamicResource serverlistcontext_direct_join_image2}"/>
+                            </ContextMenu>
+                        </ListView.Resources>
                         <ListView.ItemContainerStyle>
-                            <Style TargetType="{x:Type ListViewItem}"
-        						BasedOn="{StaticResource MetroListViewItem}">
+                            <Style TargetType="{x:Type ListViewItem}" BasedOn="{StaticResource MetroListViewItem}">
                                 <Setter Property="Height" Value="80" />
-                                <Setter Property="ToolTip" Value="{Binding ip}"/>
+                                <Setter Property="ContextMenu" Value="{StaticResource ServerlistContextMenu}" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding ServerStatus.Online}" Value="False">
+                                        <Setter Property="ToolTip">
+                                            <Setter.Value>
+                                                <StackPanel>
+                                                    <TextBlock>
+                                                        <TextBlock.Text>
+                                                            <Binding Path="ip" />
+                                                        </TextBlock.Text>
+                                                    </TextBlock>
+                                                    <TextBlock>
+                                                        <TextBlock Text="Offline" Foreground="Red" />
+                                                    </TextBlock>
+                                                </StackPanel>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding ServerStatus.Online}" Value="True">
+                                        <Setter Property="ToolTip">
+                                            <Setter.Value>
+                                                <StackPanel>
+                                                    <TextBlock>
+                                                        <TextBlock.Text>
+                                                            <MultiBinding xml:space="preserve" StringFormat="{}Addresse: {0}">
+                                                                <Binding Path="ip" />
+                                                            </MultiBinding>
+                                                        </TextBlock.Text>
+                                                    </TextBlock>
+                                                    <TextBlock>
+                                                        <TextBlock Text="Online" Foreground="Green" />
+                                                    </TextBlock>
+                                                    <TextBlock>
+                                                        <TextBlock.Text>
+                                                            <MultiBinding xml:space="preserve" StringFormat="{}Version: {0}&#10;Players:&#10;{1}">
+                                                                <Binding Path="ServerStatus.Version.Name" />
+                                                                <!--<Binding Path="ServerStatus.Latency" />-->
+                                                                <Binding Path="ServerStatus.Players.Players" Converter="{StaticResource Playerlist_Namesstring_Converter}" />
+                                                            </MultiBinding>
+                                                        </TextBlock.Text>
+                                                    </TextBlock>
+                                                </StackPanel>
+
+                                                <!--<MultiBinding xml:space="preserve" StringFormat="{}{0}&#10;Version: {1}">
+                                                    <Binding Path="ip" />
+                                                    <Binding Path="ServerStatus.Version" />
+                                                </MultiBinding>-->
+
+                                            </Setter.Value>
+                                        </Setter>
+                                    </DataTrigger>
+                                </Style.Triggers>
                             </Style>
                         </ListView.ItemContainerStyle>
                         <ListView.View>
@@ -295,13 +378,6 @@
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>
-                                <!--<GridViewColumn Header="Status" Width="100">
-                                    <GridViewColumn.CellTemplate>
-                                        <DataTemplate>
-                                            
-                                        </DataTemplate>
-                                    </GridViewColumn.CellTemplate>
-                                </GridViewColumn>-->
                             </GridView>
                         </ListView.View>
                     </ListView>

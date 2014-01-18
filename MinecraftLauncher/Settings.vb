@@ -6,7 +6,7 @@ Imports MahApps
 Public Class Settings
     Private Shared SettingsFile As New FileInfo(Path.Combine(Applicationdata.FullName, "Settings.xml"))
 
-    Private Shared _Username As String, _mcpfad As String, _accent As String, _Theme As String
+    Private Shared _Username As String, _mcpfad As String, _accent As String, _Theme As String, _ServerAddress As String, _DirectJoin As Boolean
 
     Public Shared Property mcpfad As String
         Get
@@ -32,6 +32,24 @@ Public Class Settings
         End Get
         Set(value As String)
             _Theme = value
+        End Set
+    End Property
+
+    Public Shared Property ServerAddress As String
+        Get
+            Return _ServerAddress
+        End Get
+        Set(value As String)
+            _ServerAddress = value
+        End Set
+    End Property
+
+    Public Shared Property DirectJoin As Boolean
+        Get
+            Return _DirectJoin
+        End Get
+        Set(value As Boolean)
+            _DirectJoin = value
         End Set
     End Property
 
@@ -72,6 +90,10 @@ Public Class Settings
                         Accent = document.ReadInnerXml
                     Case "Theme"
                         Theme = document.ReadInnerXml
+                    Case "ServerAddress"
+                        ServerAddress = document.ReadInnerXml
+                    Case "DirectJoin"
+                        DirectJoin = Convert.ToBoolean(document.ReadInnerXml)
                 End Select
 
             End If
@@ -114,6 +136,14 @@ Public Class Settings
 
                 .WriteStartElement("Theme")
                 .WriteString(Theme)
+                .WriteEndElement()
+
+                .WriteStartElement("ServerAddress")
+                .WriteString(ServerAddress)
+                .WriteEndElement()
+
+                .WriteStartElement("DirectJoin")
+                .WriteString(DirectJoin.ToString)
                 .WriteEndElement()
 
                 .WriteEndElement()

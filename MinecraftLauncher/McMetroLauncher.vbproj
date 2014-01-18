@@ -124,8 +124,9 @@
     <Reference Include="Ionic.Zip">
       <HintPath>..\libraries\Ionic.Zip.dll</HintPath>
     </Reference>
-    <Reference Include="MahApps.Metro">
-      <HintPath>..\libraries\MahApps.Metro.dll</HintPath>
+    <Reference Include="MahApps.Metro, Version=0.11.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\Documents\GitHub\MahApps.Metro\MahApps.Metro\bin\Debug\NET45\MahApps.Metro.dll</HintPath>
     </Reference>
     <Reference Include="MahApps.Metro.Resources">
       <HintPath>..\libraries\MahApps.Metro.Resources.dll</HintPath>
@@ -328,6 +329,18 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="images\forge_banner.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="images\light\appbar.page.copy.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="images\dark\appbar.page.copy.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="images\light\appbar.control.play.png" />
+    <Resource Include="images\dark\appbar.control.play.png" />
+    <Content Include="images\logo_technic_launcher.png" />
+    <Resource Include="images\tl.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
 </Project>
