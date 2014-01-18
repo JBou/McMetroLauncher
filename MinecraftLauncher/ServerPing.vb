@@ -3,8 +3,12 @@ Imports System.Linq
 Imports System.Net.Sockets
 Imports System.Text
 Imports System.Text.RegularExpressions
+Imports Newtonsoft.Json
+Imports System.Drawing
+Imports System.Windows.Media.Imaging
+Imports System.IO
 
-Public Class ServerPing
+Public Class OldServerPing
     Const NonNumericRegex As String = "[^.0-9]"
 
     ''' <summary>

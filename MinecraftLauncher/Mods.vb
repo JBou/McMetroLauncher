@@ -45,6 +45,7 @@ Public Class Mods
                 End If
                 list.Add(New ForgeMod(Mods.NameAt(version, i), Mods.AutorAt(version, i), version, Mods.descriptionAt(version, i), Mods.downloadlinkAt(version, i), Mods.videoAt(version, i), Mods.websiteAt(version, i), Mods.idAt(version, i), extension, Mods.needed_modsAt(version, i), installed))
             Next
+            list = list.OrderBy(Function(p) p.name).ToList
             Return list
         Else
             Return New List(Of ForgeMod)
@@ -130,6 +131,7 @@ Public Class Mods
             modtoken(ForgeMod.version).Replace(modarray)
         End If
         modsjo("forgemods").Replace(modtoken)
+        Mods.modsjo = JObject.Parse(Mods.modsjo.Value(Of JArray)("mods").OrderBy(Function(p) p("name").ToString).ToString)
         File.WriteAllText(modsfile, modsjo.ToString)
     End Sub
 
@@ -184,7 +186,7 @@ Public Class Mods
         For Each version As String In Get_ModVersions()
             modsjo.Value(Of JObject)("forgemods").Property(version).OrderByDescending(Function(p) p("name").ToString)
         Next
-        MessageBox.Show(modsjo.ToString)
+        'MessageBox.Show(modsjo.ToString)
     End Sub
 
     Public Shared Function All_Needed_Mods(ByVal Modname As String, Version As String) As IList(Of String)
@@ -222,8 +224,8 @@ Public Class Mods
 
     Public Shared Function modfolder_filenames() As IList(Of String)
         If IO.Directory.Exists(modsfolder) = True Then
-            MessageBox.Show(String.Join(" | ", IO.Directory.EnumerateFiles(modsfolder)))
-            MessageBox.Show(String.Join(" | ", IO.Directory.GetFiles(modsfolder)))
+            'MessageBox.Show(String.Join(" | ", IO.Directory.EnumerateFiles(modsfolder)))
+            'MessageBox.Show(String.Join(" | ", IO.Directory.GetFiles(modsfolder)))
             Return IO.Directory.EnumerateFiles(modsfolder).ToList
         Else
             Return Nothing

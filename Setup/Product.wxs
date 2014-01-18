@@ -106,7 +106,6 @@
               <Shortcut Id="DeinstallShortCut" Name="$(var.Name) deinstallieren" Target="[System64Folder]msiexec.exe" Arguments="/x [ProductCode]" Icon="Icon.exe"/>
               <RegistryValue Root="HKCU" Key="Software\$(var.Name)" Name="installed" Type="integer" Value="1" KeyPath="yes"/>
             </Component>
-          
         </Directory>
       </Directory>  
       
@@ -126,6 +125,30 @@
       <!-- Wird benötigt um den Desktop Shortcut anlegen zu können -->
       <Directory Id="DesktopFolder" Name="Desktop" />
     </Directory>
+
+    <DirectoryRef Id="TARGETDIR">
+      <Component Id="RegistryEntries" Guid="{54FE49BB-EFB5-4C87-828C-A50AE5C62215}">
+        <RegistryKey  Root="HKCR"
+                      Key="mclauncher"
+                      Action="createAndRemoveOnUninstall">
+          <RegistryValue Type="string" Value="URL:McMetroLauncher protocol" />
+          <RegistryValue Type="string" Name="URL Protocol" Value=""/>
+        </RegistryKey>
+        <RegistryKey  Root="HKCR"
+                      Key="mclauncher\Shell"
+                      Action="createAndRemoveOnUninstall">
+        </RegistryKey>
+        <RegistryKey  Root="HKCR"
+                      Key="mclauncher\Shell\open"
+                      Action="createAndRemoveOnUninstall">
+        </RegistryKey>
+        <RegistryKey  Root="HKCR"
+                      Key="mclauncher\Shell\open\command"
+                      Action="createAndRemoveOnUninstall">
+          <RegistryValue Type="string" Value="&quot;[#MyApplicationFile]&quot; %1" />
+        </RegistryKey>
+      </Component>
+    </DirectoryRef>
     
     <!-- Feature Bereich hier als Basistemplate nur ein Feature (Alles installieren)
         Siehe auch http://wix.sourceforge.net/manual-wix3/wix_xsd_feature.htm
@@ -136,6 +159,7 @@
       <ComponentRef Id="libraries" />
       <ComponentRef Id="ShortCutDeinstall"/>
       <ComponentRef Id="ShortCutComponent" />
+      <ComponentRef Id="RegistryEntries" />
     </Feature>
     
     <!-- Das was nun folgt ist schon ein wenig Finetuning CustomActions

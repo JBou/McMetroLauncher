@@ -100,29 +100,43 @@
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="fNbt">
-      <HintPath>..\..\..\libraries\fNbt_v0.6.0\fNbt.dll</HintPath>
+    <Reference Include="BouncyCastle.Crypto">
+      <HintPath>..\libraries\BouncyCastle.Crypto.dll</HintPath>
     </Reference>
-    <Reference Include="GrayscaleEffect, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\GitHub\MahApps.Metro\Lib\GrayscaleEffect.dll</HintPath>
+    <Reference Include="Craft.Net">
+      <HintPath>..\libraries\Craft.Net.dll</HintPath>
+    </Reference>
+    <Reference Include="Craft.Net.Anvil">
+      <HintPath>..\libraries\Craft.Net.Anvil.dll</HintPath>
+    </Reference>
+    <Reference Include="Craft.Net.Client">
+      <HintPath>..\libraries\Craft.Net.Client.dll</HintPath>
+    </Reference>
+    <Reference Include="Craft.Net.Common">
+      <HintPath>..\libraries\Craft.Net.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="fNbt">
+      <HintPath>..\libraries\fNbt.dll</HintPath>
+    </Reference>
+    <Reference Include="GrayscaleEffect">
+      <HintPath>..\libraries\GrayscaleEffect.dll</HintPath>
     </Reference>
     <Reference Include="Ionic.Zip">
-      <HintPath>..\packages\DotNetZip.1.9.1.8\lib\net20\Ionic.Zip.dll</HintPath>
+      <HintPath>..\libraries\Ionic.Zip.dll</HintPath>
     </Reference>
-    <Reference Include="MahApps.Metro, Version=0.0.0.999, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="MahApps.Metro, Version=0.11.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\GitHub\MahApps.Metro\MahApps.Metro\bin\Debug\NET45\MahApps.Metro.dll</HintPath>
+      <HintPath>..\..\..\..\Documents\GitHub\MahApps.Metro\MahApps.Metro\bin\Debug\NET45\MahApps.Metro.dll</HintPath>
     </Reference>
-    <Reference Include="MahApps.Metro.Resources, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="MahApps.Metro.Resources">
+      <HintPath>..\libraries\MahApps.Metro.Resources.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\GitHub\MahApps.Metro\MahApps.Metro.Resources\bin\Debug\MahApps.Metro.Resources.dll</HintPath>
-    </Reference>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\packages\Newtonsoft.Json.5.0.6\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\libraries\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="Ookii.Dialogs.Wpf">
-      <HintPath>..\..\..\libraries\Ookii.Dialogs.Wpf.dll</HintPath>
+      <HintPath>..\libraries\Ookii.Dialogs.Wpf.dll</HintPath>
     </Reference>
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
@@ -133,7 +147,7 @@
     <Reference Include="System.Web.Services" />
     <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\GitHub\MahApps.Metro\MahApps.Metro\bin\Debug\NET45\System.Windows.Interactivity.dll</HintPath>
+      <HintPath>..\libraries\System.Windows.Interactivity.dll</HintPath>
     </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System" />
@@ -154,6 +168,7 @@
     <Compile Include="Forge_installer.xaml.vb">
       <DependentUpon>Forge_installer.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Formattingcodes.vb" />
     <Compile Include="JSONAPI.vb" />
     <Compile Include="My Project\Resources.Designer.vb">
       <AutoGen>True</AutoGen>
@@ -264,7 +279,9 @@
     <Resource Include="Resources\Entypo.ttf" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Entypo-license.txt" />
@@ -309,6 +326,21 @@
     <Resource Include="images\dark\appbar.refresh.png" />
     <Resource Include="images\light\appbar.delete.png" />
     <Resource Include="images\light\appbar.refresh.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="images\forge_banner.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="images\light\appbar.page.copy.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="images\dark\appbar.page.copy.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="images\light\appbar.control.play.png" />
+    <Resource Include="images\dark\appbar.control.play.png" />
+    <Content Include="images\logo_technic_launcher.png" />
+    <Resource Include="images\tl.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
 </Project>

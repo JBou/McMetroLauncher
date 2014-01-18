@@ -1,5 +1,7 @@
 ﻿Imports System.Net
 Imports Ionic.Zip
+Imports MahApps.Metro.Controls.Dialogs
+Imports MahApps.Metro
 
 Class Forge_installer
     Private List As New List(Of ForgeEintrag)
@@ -12,7 +14,7 @@ Class Forge_installer
     Public Sub Load_Forge()
         lst.Items.Clear()
         List.Clear()
-        For Each item As ForgeEintrag In Forge.Get_Forge
+        For Each item As ForgeEintrag In Forge.Forgelist
             'MessageBox.Show(String.Join(" | ", item.build, item.version, item.time, item.downloadLink))
             lst.Items.Add(item)
             List.Add(item)
@@ -20,15 +22,22 @@ Class Forge_installer
     End Sub
 
     Private Sub ForgeManager_Loaded(sender As Object, e As RoutedEventArgs) Handles Me.Loaded
+        If ThemeManager.DetectTheme(Application.Current).Item1 = Theme.Light Then
+            btn_copy_image.Source = ImageConvert.GetImageStream(My.Resources.appbar_page_copy)
+        Else
+            btn_copy_image.Source = ImageConvert.GetImageStream(My.Resources.appbar_page_copy_dark)
+        End If
         Load_Forge()
+        tb_mcpfad.Text = mcpfad
     End Sub
 
-    Private Sub btn_download_Click(sender As Object, e As RoutedEventArgs) Handles btn_download.Click
+    Private Async Sub btn_download_Click(sender As Object, e As RoutedEventArgs) Handles btn_download.Click
         If lst.SelectedIndex = -1 Then
-            MessageBox.Show("Bitte wähle eine Forge Version Aus!", "Fehler", MessageBoxButton.OK, MessageBoxImage.Error)
+            Await Me.ShowMessageAsync(Nothing, "Bitte wähle eine Forge Version Aus!", MessageDialogStyle.Affirmative, New MetroDialogSettings() With {.AffirmativeButtonText = "Ok", .ColorScheme = MetroDialogColorScheme.Accented})
         ElseIf wc.IsBusy = True Then
             wc.CancelAsync()
         Else
+            forge_anleitung.IsSelected = True
             Dim url As New Uri(DirectCast(lst.SelectedItem, ForgeEintrag).downloadLink)
             Dim ls As IList(Of String) = url.Segments
             filename = cachefolder & "\" & ls.Last
@@ -43,6 +52,10 @@ Class Forge_installer
             'wc.DownloadFileAsync(New Uri(url), filename)
             ''Installieren
         End If
+    End Sub
+
+    Private Sub btn_copy_Click(sender As Object, e As RoutedEventArgs) Handles btn_copy.Click
+        Clipboard.SetText(tb_mcpfad.Text)
     End Sub
 
     Private Sub wc_DownloadFileCompleted(sender As Object, e As ComponentModel.AsyncCompletedEventArgs) Handles wc.DownloadFileCompleted
@@ -81,5 +94,9 @@ Class Forge_installer
                 e.Extract(UnpackDirectory, ExtractExistingFileAction.OverwriteSilently)
             Next
         End Using
+    End Sub
+
+    Private Sub Button_Click(sender As Object, e As RoutedEventArgs)
+        Process.Start("http://java.com/download")
     End Sub
 End Class
