@@ -1104,7 +1104,7 @@ Public Class MainWindow
                 Startinfos.Server.ServerPort = Nothing
             End If
 
-            If Startinfos.Version IsNot Nothing Then
+            If Startinfos.Version Is Nothing Then
                 If Startinfos.Profile.lastVersionId <> Nothing Then
                     Startinfos.Version = Versions.versions.Where(Function(p) p.id = Startinfos.Profile.lastVersionId).First
                 Else
@@ -1768,9 +1768,7 @@ Public Class MainWindow
                                              Else
                                                  Startinfos.Version = Versions.versions.Where(Function(p) p.id = Version).FirstOrDefault
                                              End If
-                                             Startinfos.Profile = New Profiles.Profile() With {
-                                                     .lastVersionId = Startinfos.Version.id
-                                                 }
+                                             Startinfos.Profile = New Profiles.Profile() 
                                              StartMC()
                                          End If
                                      End Function))
