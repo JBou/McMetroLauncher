@@ -153,10 +153,13 @@
                     <Button Content="Forge installieren" x:Name="install_forge" Click="forge_installer" Margin="725,0,0,414" Height="74" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="165"/>
                     <TextBlock TextWrapping="Wrap" Margin="274,18,180,422" Padding="5" Text="Minecraft Forge ist ein ModLoader mit dem ihr einfacher Mods installieren könnt. Er hilft dabei, dass die Mods untereinander kompatibel sind. Die meisten Mods basieren auf Forge. Du kannst Mods für Forge unter dem Tab &quot;Mods&quot; installieren." VerticalAlignment="Center" />
                     <Image Margin="26,10,0,0" Height="74" VerticalAlignment="Top" HorizontalAlignment="Left" Width="243" Source="images/forge_banner.png"/>
-                    <TextBlock TextWrapping="Wrap" Margin="274,110,180,318" Padding="5" Text="Mit den Technic Launcher kannst du viele bekannte Modpacks spielen wie z.B. Tekkit, Hexxit, Volt.... Auserdem kannst du eigene Modpacks hinzufügen und spielen. Diese findest du auf http://technicpack.net." VerticalAlignment="Center" Height="70" />
-                    <Button Content="Herunterladen" x:Name="btn_download_techniclauncher" Click="download_techniclauncher" Margin="725,0,0,355" Height="35" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="165"/>
-                    <Button Content="Starten" x:Name="btn_start_techniclauncher"  Click="start_techniclauncher" Margin="725,0,0,318" Height="35" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="165"/>
-                    <Image Margin="10,94,0,0" Height="91" VerticalAlignment="Top" HorizontalAlignment="Left" Width="259" Source="images/tl.png"/>
+                    <TextBlock TextWrapping="Wrap" Margin="274,283,180,145" Padding="5" Text="Mit den Technic Launcher kannst du viele bekannte Modpacks spielen wie z.B. Tekkit, Hexxit, Volt.... Auserdem kannst du eigene Modpacks hinzufügen und spielen. Diese findest du auf http://technicpack.net." VerticalAlignment="Center" Height="70" />
+                    <Button Content="Herunterladen" x:Name="btn_download_techniclauncher" Click="download_techniclauncher" Margin="725,0,0,182" Height="35" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="165"/>
+                    <Button Content="Starten" x:Name="btn_start_techniclauncher"  Click="start_techniclauncher" Margin="725,0,0,145" Height="35" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="165"/>
+                    <Image Margin="10,267,0,0" Height="91" VerticalAlignment="Top" HorizontalAlignment="Left" Width="259" Source="images/tl.png"/>
+                    <Button Content="LiteLoader installieren" x:Name="install_forge_Copy" Click="forge_installer" Margin="725,0,0,323" Height="74" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="165"/>
+                    <TextBlock TextWrapping="Wrap" Margin="274,109,180,331" Padding="5" Text="Minecraft Forge ist ein ModLoader mit dem ihr einfacher Mods installieren könnt. Er hilft dabei, dass die Mods untereinander kompatibel sind. Die meisten Mods basieren auf Forge. Du kannst Mods für Forge unter dem Tab &quot;Mods&quot; installieren." VerticalAlignment="Center" />
+                    <Image Margin="25,89,0,0" Height="83" VerticalAlignment="Top" HorizontalAlignment="Left" Width="243" Source="images/liteloader_header_xmas.png"/>
                 </Grid>
             </TabItem>
             <TabItem Header="Mods" Margin="4,0,-4,0">

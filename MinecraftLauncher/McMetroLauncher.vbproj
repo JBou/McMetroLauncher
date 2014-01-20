@@ -339,6 +339,7 @@
   <ItemGroup>
     <Resource Include="images\light\appbar.control.play.png" />
     <Resource Include="images\dark\appbar.control.play.png" />
+    <Resource Include="images\liteloader_header_xmas.png" />
     <Content Include="images\logo_technic_launcher.png" />
     <Resource Include="images\tl.png" />
   </ItemGroup>

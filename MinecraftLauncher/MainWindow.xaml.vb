@@ -742,87 +742,97 @@ Public Class MainWindow
     End Function
 
     Async Sub DownloadLibraries()
-        pb_download.Value = librariesdownloadindex
-        If librariesdownloadindex < Startinfos.Versionsinfo.libraries.Count Then
-            Currentlibrary = Startinfos.Versionsinfo.libraries.Item(librariesdownloadindex)
-            Dim allowdownload As Boolean = True
-            If Currentlibrary.rules Is Nothing Then
-                allowdownload = True
-            Else
-                If Currentlibrary.rules.Select(Function(p) p.action).Contains("allow") Then
-                    If Currentlibrary.rules.Where(Function(p) p.action = "allow").First.os IsNot Nothing Then
-                        If Currentlibrary.rules.Where(Function(p) p.action = "allow").First.os.name = "windows" Then
-                            allowdownload = True
-                        Else
-                            allowdownload = False
-                        End If
-                    End If
-                ElseIf Currentlibrary.rules.Select(Function(p) p.action).Contains("disallow") Then
-                    If Currentlibrary.rules.Where(Function(p) p.action = "disallow").First.os IsNot Nothing Then
-                        If Currentlibrary.rules.Where(Function(p) p.action = "disallow").First.os.name = "windows" Then
-                            allowdownload = False
-                        Else
-                            allowdownload = True
-                        End If
-                    End If
-                End If
-            End If
-            If allowdownload = True Then
-                Dim todownload As Boolean = True
-                Dim url As String = Nothing
-                If Startinfos.Versionsinfo.JObject("libraries").Item(librariesdownloadindex).Value(Of JObject).Properties.Select(Function(p) p.Name).Contains("url") = False Then
-                    url = librariesurl & Currentlibrary.path
+        Try
+            pb_download.Value = librariesdownloadindex
+            If librariesdownloadindex < Startinfos.Versionsinfo.libraries.Count Then
+                Currentlibrary = Startinfos.Versionsinfo.libraries.Item(librariesdownloadindex)
+                Dim allowdownload As Boolean = True
+                If Currentlibrary.rules Is Nothing Then
+                    allowdownload = True
                 Else
-                    url = Startinfos.Versionsinfo.JObject("libraries").Item(librariesdownloadindex).Value(Of String)("url") & Currentlibrary.path
+                    If Currentlibrary.rules.Select(Function(p) p.action).Contains("allow") Then
+                        If Currentlibrary.rules.Where(Function(p) p.action = "allow").First.os IsNot Nothing Then
+                            If Currentlibrary.rules.Where(Function(p) p.action = "allow").First.os.name = "windows" Then
+                                allowdownload = True
+                            Else
+                                allowdownload = False
+                            End If
+                        End If
+                    ElseIf Currentlibrary.rules.Select(Function(p) p.action).Contains("disallow") Then
+                        If Currentlibrary.rules.Where(Function(p) p.action = "disallow").First.os IsNot Nothing Then
+                            If Currentlibrary.rules.Where(Function(p) p.action = "disallow").First.os.name = "windows" Then
+                                allowdownload = False
+                            Else
+                                allowdownload = True
+                            End If
+                        End If
+                    End If
                 End If
-                Dim librarypath As New FileInfo(IO.Path.Combine(librariesfolder, Currentlibrary.path.Replace("/", "\")))
-
-                'libraryurl & ".sha1" enthält hash
-                Dim a As New WebClient()
-                'Hash herunterladen
-                If librarypath.Directory.Exists = False Then
-                    librarypath.Directory.Create()
-                End If
-                Await a.DownloadFileTaskAsync(New Uri(url & ".sha1"), librarypath.FullName & ".sha1")
-                Currentlibrarysha1 = File.ReadAllText(librarypath.FullName & ".sha1")
-                If librarypath.Exists Then
-                    If SHA1FileHash(librarypath.FullName).ToLower = Currentlibrarysha1 Then
-                        todownload = False
+                If allowdownload = True Then
+                    Dim todownload As Boolean = True
+                    Dim url As String = Nothing
+                    If Startinfos.Versionsinfo.JObject("libraries").Item(librariesdownloadindex).Value(Of JObject).Properties.Select(Function(p) p.Name).Contains("url") = False Then
+                        url = librariesurl & Currentlibrary.path
                     Else
-                        todownload = True
+                        url = Startinfos.Versionsinfo.JObject("libraries").Item(librariesdownloadindex).Value(Of String)("url") & Currentlibrary.path
                     End If
-                Else
-                    '*********************************************************Wenn library nicht existiert und library url ist files.minecraftforge.net, dann Meldung zum erneuten installireren von Forge zeigen.
-                    todownload = True
-                End If
-                If todownload = True Then
-                    'Download
+                    Dim librarypath As New FileInfo(IO.Path.Combine(librariesfolder, Currentlibrary.path.Replace("/", "\")))
+
+                    'libraryurl & ".sha1" enthält hash
+                    Dim a As New WebClient()
+                    'Hash herunterladen
                     If librarypath.Directory.Exists = False Then
                         librarypath.Directory.Create()
                     End If
-                    If Currentlibrarysha1.Length > 0 Then
-                        wc_libraries.DownloadFileAsync(New Uri(url), librarypath.FullName)
-                        Write("Library wird heruntergeladen (Versuch " & librariesdownloadtry & "): " & librarypath.FullName)
-                    Else
-                        If librarypath.Exists Then
-                            Write("Library konnte nicht auf Hash überprüft werden und wird übersprungen, in der Annahme, dass die lokale Datei gut ist: " & librarypath.FullName)
+                    Try
+                        Await a.DownloadFileTaskAsync(New Uri(url & ".sha1"), librarypath.FullName & ".sha1")
+                    Catch e As Exception
+                        Currentlibrarysha1 = Nothing
+                    End Try
+                    Currentlibrarysha1 = File.ReadAllText(librarypath.FullName & ".sha1")
+                    If librarypath.Exists Then
+                        If SHA1FileHash(librarypath.FullName).ToLower = Currentlibrarysha1 Then
+                            todownload = False
+                        Else
+                            todownload = True
                         End If
+                    Else
+                        '*********************************************************Wenn library nicht existiert und library url ist files.minecraftforge.net, dann Meldung zum erneuten installireren von Forge zeigen.
+                        todownload = True
+                    End If
+                    If todownload = True Then
+                        'Download
+                        If librarypath.Directory.Exists = False Then
+                            librarypath.Directory.Create()
+                        End If
+                        If Currentlibrarysha1.Length > 0 Then
+                            wc_libraries.DownloadFileAsync(New Uri(url), librarypath.FullName)
+                            Write("Library wird heruntergeladen (Versuch " & librariesdownloadtry & "): " & librarypath.FullName)
+                        Else
+                            If librarypath.Exists Then
+                                Write("Library konnte nicht auf Hash überprüft werden und wird übersprungen, in der Annahme, dass die lokale Datei gut ist: " & librarypath.FullName)
+                            Else
+                                Write("---Library konnte nicht heruntergeladen werden: " & librarypath.FullName & Environment.NewLine & "---Falls du gerade Forge gestartet hast, installiere es erneut!")
+                            End If
+                            librariesdownloadindex += 1
+                            DownloadLibraries()
+                        End If
+                    Else
+                        Write("Library existiert bereits: " & librarypath.FullName)
                         librariesdownloadindex += 1
                         DownloadLibraries()
                     End If
                 Else
-                    Write("Library existiert bereits: " & librarypath.FullName)
                     librariesdownloadindex += 1
                     DownloadLibraries()
                 End If
             Else
-                librariesdownloadindex += 1
-                DownloadLibraries()
+                'Downloads fertig
+                DownloadLibrariesfinished()
             End If
-        Else
-            'Downloads fertig
-            DownloadLibrariesfinished()
-        End If
+        Catch Ex As Exception
+            Write("Fehler:" & Ex.Message)
+        End Try
     End Sub
 
     Private Sub wc_libraries_DownloadFileCompleted(sender As Object, e As System.ComponentModel.AsyncCompletedEventArgs) Handles wc_libraries.DownloadFileCompleted
@@ -1746,32 +1756,35 @@ Public Class MainWindow
     End Sub
 
     Sub StartThread()
-        Dispatcher.Invoke(New Action(Async Function()
-                                         If lb_servers.SelectedIndex <> -1 Then
-                                             tabitem_Minecraft.IsSelected = True
-                                             Dim ip As String = DirectCast(lb_servers.SelectedItem, ServerList.Server).ip
-                                             Dim Version As String = DirectCast(lb_servers.SelectedItem, ServerList.Server).ServerStatus.Version.Name
-                                             If Startinfos.Server.JustStarted = False Then
-                                                 If ip.Contains(":") = False Then
-                                                     Startinfos.Server.ServerAdress = ip
-                                                 Else
-                                                     Dim address As String() = ip.Split(CChar(":"))
-                                                     Startinfos.Server.ServerAdress = address(0)
-                                                     Startinfos.Server.ServerPort = address(1)
+        Try
+            Dispatcher.Invoke(New Action(Async Function()
+                                             If lb_servers.SelectedIndex <> -1 Then
+                                                 tabitem_Minecraft.IsSelected = True
+                                                 Dim ip As String = DirectCast(lb_servers.SelectedItem, ServerList.Server).ip
+                                                 Dim Version As String = DirectCast(lb_servers.SelectedItem, ServerList.Server).ServerStatus.Version.Name
+                                                 If Startinfos.Server.JustStarted = False Then
+                                                     If ip.Contains(":") = False Then
+                                                         Startinfos.Server.ServerAdress = ip
+                                                     Else
+                                                         Dim address As String() = ip.Split(CChar(":"))
+                                                         Startinfos.Server.ServerAdress = address(0)
+                                                         Startinfos.Server.ServerPort = address(1)
+                                                     End If
+                                                     Startinfos.Server.JustStarted = True
                                                  End If
-                                                 Startinfos.Server.JustStarted = True
+                                                 Await Versions_Load()
+                                                 '1.6.2-1.7.4
+                                                 If Version.Contains("-") = True Then
+                                                     Startinfos.Version = Versions.versions.Where(Function(p) p.id = Version.Split(CChar("-"))(1)).FirstOrDefault
+                                                 Else
+                                                     Startinfos.Version = Versions.versions.Where(Function(p) p.id = Version).FirstOrDefault
+                                                 End If
+                                                 Startinfos.Profile = New Profiles.Profile()
+                                                 StartMC()
                                              End If
-                                             Await Versions_Load()
-                                             '1.6.2-1.7.4
-                                             If Version.Contains("-") = True Then
-                                                 Startinfos.Version = Versions.versions.Where(Function(p) p.id = Version.Split(CChar("-"))(1)).FirstOrDefault
-                                             Else
-                                                 Startinfos.Version = Versions.versions.Where(Function(p) p.id = Version).FirstOrDefault
-                                             End If
-                                             Startinfos.Profile = New Profiles.Profile() 
-                                             StartMC()
-                                         End If
-                                     End Function))
+                                         End Function))
+        Catch
+        End Try
     End Sub
 
 #End Region

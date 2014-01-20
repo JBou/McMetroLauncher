@@ -29,22 +29,24 @@ Public Class Mods
     Public Shared Function Get_Mods(ByVal version As String, modsfolder As String) As IList(Of ForgeMod)
         If modsjo("forgemods").HasValues = True Then
             Dim list As IList(Of ForgeMod) = New List(Of ForgeMod)
-            For i = 0 To modsjo("forgemods")(version).Value(Of JArray).Count - 1
-                Dim installed As Boolean
-                Dim Struktur As String
-                Dim extension As String = Mods.extensionAt(version, i)
-                If version >= "1.6.4" = True Then
-                    Struktur = version & "\" & Mods.idAt(version, i) & "." & extension
-                Else
-                    Struktur = version & "-" & Mods.idAt(version, i) & "." & extension
-                End If
-                If File.Exists(modsfolder & "\" & Struktur) = True Then
-                    installed = True
-                Else
-                    installed = False
-                End If
-                list.Add(New ForgeMod(Mods.NameAt(version, i), Mods.AutorAt(version, i), version, Mods.descriptionAt(version, i), Mods.downloadlinkAt(version, i), Mods.videoAt(version, i), Mods.websiteAt(version, i), Mods.idAt(version, i), extension, Mods.needed_modsAt(version, i), installed))
-            Next
+            If modsjo.Value(Of JObject)("forgemods").Properties.Select(Function(p) p.Name).Contains(version) Then
+                For i = 0 To modsjo("forgemods")(version).Value(Of JArray).Count - 1
+                    Dim installed As Boolean
+                    Dim Struktur As String
+                    Dim extension As String = Mods.extensionAt(version, i)
+                    If version >= "1.6.4" = True Then
+                        Struktur = version & "\" & Mods.idAt(version, i) & "." & extension
+                    Else
+                        Struktur = version & "-" & Mods.idAt(version, i) & "." & extension
+                    End If
+                    If File.Exists(modsfolder & "\" & Struktur) = True Then
+                        installed = True
+                    Else
+                        installed = False
+                    End If
+                    list.Add(New ForgeMod(Mods.NameAt(version, i), Mods.AutorAt(version, i), version, Mods.descriptionAt(version, i), Mods.downloadlinkAt(version, i), Mods.videoAt(version, i), Mods.websiteAt(version, i), Mods.idAt(version, i), extension, Mods.needed_modsAt(version, i), installed))
+                Next
+            End If
             Return list
         Else
             Return New List(Of ForgeMod)
