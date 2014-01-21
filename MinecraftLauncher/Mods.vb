@@ -10,7 +10,7 @@ Public Class Mods
     Public Shared Sub Load()
 
         Dim standartprofile As New JObject(
-                New JProperty("forgemods",
+                New JProperty("mods",
                     New JObject))
         If IO.File.Exists(modsfile) = False Then
             o = Nothing
@@ -27,9 +27,9 @@ Public Class Mods
     End Sub
 
     Public Shared Function Get_Mods(ByVal version As String, modsfolder As String) As IList(Of ForgeMod)
-        If modsjo("forgemods").HasValues = True Then
+        If modsjo("mods").HasValues = True Then
             Dim list As IList(Of ForgeMod) = New List(Of ForgeMod)
-            For i = 0 To modsjo("forgemods")(version).Value(Of JArray).Count - 1
+            For i = 0 To modsjo("mods")(version).Value(Of JArray).Count - 1
                 Dim installed As Boolean
                 Dim Struktur As String
                 Dim extension As String = Mods.extensionAt(version, i)
@@ -43,7 +43,7 @@ Public Class Mods
                 Else
                     installed = False
                 End If
-                list.Add(New ForgeMod(Mods.NameAt(version, i), Mods.AutorAt(version, i), version, Mods.descriptionAt(version, i), Mods.downloadlinkAt(version, i), Mods.videoAt(version, i), Mods.websiteAt(version, i), Mods.idAt(version, i), extension, Mods.needed_modsAt(version, i), installed))
+                list.Add(New ForgeMod(Mods.NameAt(version, i), Mods.AutorAt(version, i), version, Mods.descriptionAt(version, i), Mods.downloadlinkAt(version, i), Mods.videoAt(version, i), Mods.websiteAt(version, i), Mods.idAt(version, i), extension,Mods.typeAt(version, i), Mods.needed_modsAt(version, i), installed))
             Next
             list = list.OrderBy(Function(p) p.name).ToList
             Return list
@@ -54,57 +54,62 @@ Public Class Mods
     End Function
 
     Public Shared Function NameAt(ByVal version As String, index As Integer) As String
-        Dim versionsinfo As String = modsjo("forgemods")(version).ElementAt(index).Value(Of String)("name").ToString
+        Dim versionsinfo As String = modsjo("mods")(version).ElementAt(index).Value(Of String)("name").ToString
         Return versionsinfo
     End Function
 
     Public Shared Function AutorAt(ByVal version As String, index As Integer) As String
-        Dim versionsinfo As String = modsjo("forgemods")(version).ElementAt(index).Value(Of String)("autor").ToString
+        Dim versionsinfo As String = modsjo("mods")(version).ElementAt(index).Value(Of String)("autor").ToString
         Return versionsinfo
     End Function
 
     Public Shared Function descriptionAt(ByVal version As String, index As Integer) As String
-        Dim versionsinfo As String = modsjo("forgemods")(version).ElementAt(index).Value(Of String)("description").ToString
+        Dim versionsinfo As String = modsjo("mods")(version).ElementAt(index).Value(Of String)("description").ToString
         Return versionsinfo
     End Function
 
     Public Shared Function websiteAt(ByVal version As String, index As Integer) As String
-        Dim versionsinfo As String = modsjo("forgemods")(version).ElementAt(index).Value(Of String)("website").ToString
+        Dim versionsinfo As String = modsjo("mods")(version).ElementAt(index).Value(Of String)("website").ToString
         Return versionsinfo
     End Function
 
     Public Shared Function downloadlinkAt(ByVal version As String, index As Integer) As String
-        Dim versionsinfo As String = modsjo("forgemods")(version).ElementAt(index).Value(Of String)("downloadlink").ToString
+        Dim versionsinfo As String = modsjo("mods")(version).ElementAt(index).Value(Of String)("downloadlink").ToString
         Return versionsinfo
     End Function
 
     Public Shared Function idAt(ByVal version As String, index As Integer) As String
-        Dim versionsinfo As String = modsjo("forgemods")(version).ElementAt(index).Value(Of String)("id").ToString
+        Dim versionsinfo As String = modsjo("mods")(version).ElementAt(index).Value(Of String)("id").ToString
         Return versionsinfo
     End Function
 
     Public Shared Function extensionAt(ByVal version As String, index As Integer) As String
-        Dim versionsinfo As String = modsjo("forgemods")(version).ElementAt(index).Value(Of String)("extension").ToString
+        Dim versionsinfo As String = modsjo("mods")(version).ElementAt(index).Value(Of String)("extension").ToString
+        Return versionsinfo
+    End Function
+
+    Public Shared Function typeAt(ByVal version As String, index As Integer) As String
+        Dim versionsinfo As String = modsjo("mods")(version).ElementAt(index).Value(Of String)("type").ToString
         Return versionsinfo
     End Function
 
     Public Shared Function videoAt(ByVal version As String, index As Integer) As String
-        Dim versionsinfo As String = modsjo("forgemods")(version).ElementAt(index).Value(Of String)("video").ToString
+        Dim versionsinfo As String = modsjo("mods")(version).ElementAt(index).Value(Of String)("video").ToString
         Return versionsinfo
     End Function
 
     Public Shared Function Get_ModVersions() As IList(Of String)
-        Dim modtoken As JObject = modsjo("forgemods").Value(Of JObject)()
+        Dim modtoken As JObject = modsjo("mods").Value(Of JObject)()
         Dim modversions As List(Of String) = modtoken.Properties().ToList.Select(Function(p) p.Name).ToList()
         Return modversions
     End Function
 
     Public Shared Sub Add(ByVal ForgeMod As ForgeMod)
-        Dim modtoken As JObject = modsjo("forgemods").Value(Of JObject)()
+        Dim modtoken As JObject = modsjo("mods").Value(Of JObject)()
         Dim modversions As List(Of String) = modtoken.Properties().[Select](Function(p) p.Name).ToList
         Dim modarray As JArray
         If modversions.Contains(ForgeMod.version) = True Then
-            modarray = CType(modsjo("forgemods")(ForgeMod.version), JArray)
+            modarray = CType(modsjo("mods")(ForgeMod.version), JArray)
         Else
             modarray = New JArray
         End If
@@ -118,6 +123,7 @@ Public Class Mods
         modproperties.Add(New JProperty("website", ForgeMod.Website))
         modproperties.Add(New JProperty("id", ForgeMod.id))
         modproperties.Add(New JProperty("extension", ForgeMod.extension))
+        modproperties.Add(New JProperty("type", ForgeMod.type))
 
         If ForgeMod.needed_mods.Count > 0 Then
             modproperties.Add(New JProperty("needed_mods", New JArray(ForgeMod.needed_mods.Select(Function(p) p.ToString))))
@@ -130,18 +136,18 @@ Public Class Mods
         Else
             modtoken(ForgeMod.version).Replace(modarray)
         End If
-        modsjo("forgemods").Replace(modtoken)
+        modsjo("mods").Replace(modtoken)
         Mods.modsjo = JObject.Parse(Mods.modsjo.Value(Of JArray)("mods").OrderBy(Function(p) p("name").ToString).ToString)
         File.WriteAllText(modsfile, modsjo.ToString)
     End Sub
 
     Public Shared Sub Edit(ByVal editedmodindex As Integer, editedmodversion As String, ForgeMod As ForgeMod)
-        modsjo("forgemods").Value(Of JArray)(editedmodversion).RemoveAt(editedmodindex)
+        modsjo("mods").Value(Of JArray)(editedmodversion).RemoveAt(editedmodindex)
         IO.File.WriteAllText(modsfile, modsjo.ToString)
         Add(ForgeMod)
 
         'Dim modproperties As JObject = New JObject
-        'Dim modarray As JArray = CType(modsjo("forgemods")(editedmodversion), JArray)
+        'Dim modarray As JArray = CType(modsjo("mods")(editedmodversion), JArray)
         'modproperties.Add(New JProperty("name", ForgeMod.name))
         'modproperties.Add(New JProperty("autor", ForgeMod.autor))
         'modproperties.Add(New JProperty("description", ForgeMod.description))
@@ -155,12 +161,12 @@ Public Class Mods
         'modarray.Add(modproperties)
         ''modarray.OrderByDescending(Function(p) p("name").ToString)
         'Dim versionstoken As New JProperty(editedmodversion, modarray)
-        'modsjo("forgemods").Value(Of JObject).Property(editedmodversion).Replace(versionstoken)
+        'modsjo("mods").Value(Of JObject).Property(editedmodversion).Replace(versionstoken)
         'File.WriteAllText(modsfile, modsjo.ToString)
     End Sub
 
     Public Shared Function Name(ByVal Modname As String, Version As String) As Integer
-        Dim modarray As JArray = CType(modsjo("forgemods")(Version), JArray)
+        Dim modarray As JArray = CType(modsjo("mods")(Version), JArray)
         For i = 0 To modarray.Count - 1
 
             Dim getmodname As String = NameAt(Version, i)
@@ -173,18 +179,18 @@ Public Class Mods
     End Function
 
     Public Shared Sub RemoveAt(ByVal modversion As String, modindex As Integer)
-        modsjo("forgemods").Value(Of JArray)(modversion).RemoveAt(modindex)
-        If modsjo("forgemods")(modversion).Count = 0 Then
-            modsjo.Value(Of JObject)("forgemods").Property(modversion).Remove()
+        modsjo("mods").Value(Of JArray)(modversion).RemoveAt(modindex)
+        If modsjo("mods")(modversion).Count = 0 Then
+            modsjo.Value(Of JObject)("mods").Property(modversion).Remove()
         End If
         File.WriteAllText(modsfile, modsjo.ToString)
         Get_ModVersions()
     End Sub
 
     Public Shared Sub Order()
-        modsjo.Value(Of JObject)("forgemods").Properties.OrderByDescending(Function(p) p.Name.ToString)
+        modsjo.Value(Of JObject)("mods").Properties.OrderByDescending(Function(p) p.Name.ToString)
         For Each version As String In Get_ModVersions()
-            modsjo.Value(Of JObject)("forgemods").Property(version).OrderByDescending(Function(p) p("name").ToString)
+            modsjo.Value(Of JObject)("mods").Property(version).OrderByDescending(Function(p) p("name").ToString)
         Next
         'MessageBox.Show(modsjo.ToString)
     End Sub
@@ -212,9 +218,9 @@ Public Class Mods
     End Sub
 
     Public Shared Function needed_modsAt(ByVal version As String, index As Integer) As IList(Of String)
-        Dim list As IList(Of String) = modsjo("forgemods")(version).ElementAt(index).Value(Of JObject)().Properties().Select(Function(p) p.Name).ToList
+        Dim list As IList(Of String) = modsjo("mods")(version).ElementAt(index).Value(Of JObject)().Properties().Select(Function(p) p.Name).ToList
         If list.Contains("needed_mods") = True Then
-            Dim ja As JArray = modsjo("forgemods")(version).ElementAt(index).Value(Of JArray)("needed_mods")
+            Dim ja As JArray = modsjo("mods")(version).ElementAt(index).Value(Of JArray)("needed_mods")
             Dim versionsinfo As IList(Of String) = ja.Values(Of String).ToList
             Return versionsinfo
         Else
@@ -234,7 +240,7 @@ Public Class Mods
 End Class
 
 Public Class ForgeMod
-    Private _name As String, _autor As String, _version As String, _video As String, _description As String, _downloadlink As String, _website As String, _id As String, _extension As String, _needed_mods As IList(Of String), _installed As Boolean
+    Private _name As String, _autor As String, _version As String, _video As String, _description As String, _downloadlink As String, _website As String, _id As String, _extension As String, _type As String, _needed_mods As IList(Of String), _installed As Boolean
 
     Public Property name As String
         Get
@@ -317,6 +323,15 @@ Public Class ForgeMod
         End Set
     End Property
 
+    Public Property type As String
+        Get
+            Return _type
+        End Get
+        Set(value As String)
+            _type = value
+        End Set
+    End Property
+
     Public Property website As String
         Get
             Return _website
@@ -336,7 +351,7 @@ Public Class ForgeMod
         End Set
     End Property
 
-    Public Sub New(name As String, autor As String, version As String, description As String, downloadlink As String, video As String, website As String, id As String, extension As String, needed_mods As IList(Of String), installed As Boolean)
+    Public Sub New(name As String, autor As String, version As String, description As String, downloadlink As String, video As String, website As String, id As String, extension As String, type As String, needed_mods As IList(Of String), installed As Boolean)
         Me.name = name
         Me.description = description
         Me.downloadlink = downloadlink
@@ -345,6 +360,7 @@ Public Class ForgeMod
         Me.website = website
         Me.id = id
         Me.extension = extension
+        Me.type = type
         Me.needed_mods = needed_mods
         Me.autor = autor
         Me.installed = installed

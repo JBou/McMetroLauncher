@@ -89,10 +89,11 @@ Public Class SplashScreen
         End Try
     End Sub
 
-    Private Sub wcmodlist_DownloadFileCompleted(sender As Object, e As ComponentModel.AsyncCompletedEventArgs) Handles wcmodlist.DownloadFileCompleted
+    Private Async Sub wcmodlist_DownloadFileCompleted(sender As Object, e As ComponentModel.AsyncCompletedEventArgs) Handles wcmodlist.DownloadFileCompleted
         Try
             Mods.Load()
-            Forge.Load()
+            Await Forge.Load()
+            Await LiteLoader.Load()
             lbl_status.Content = "Prüfe auf Updates"
             wcversion.DownloadStringAsync(New Uri(versionurl))
         Catch ex As Exception

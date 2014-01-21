@@ -6,14 +6,14 @@ Public Class Forge
 
     Public Shared Forgelist As IList(Of ForgeEintrag) = New List(Of ForgeEintrag)
 
-    Public Shared Sub Load()
+    Public Shared Async Function Load() As Task
         Dim o As String = File.ReadAllText(modsfile)
         Dim jo As JObject = JObject.Parse(o)
-        Forgelist = JsonConvert.DeserializeObject(Of IList(Of ForgeEintrag))(jo("forge").ToString)
+        Forgelist = Await JsonConvert.DeserializeObjectAsync(Of IList(Of ForgeEintrag))(jo("forge").ToString)
         Forgelist = Forgelist.OrderByDescending(Function(p) p.version).ToList
-    End Sub
+    End Function
 
-    Public Shared Sub Add(Forge As ForgeEintrag)
+    Public Shared Async Function Add(Forge As ForgeEintrag) As Task
         Dim Forgeproperties As JObject = New JObject
         Forgeproperties.Add(New JProperty("build", Forge.build))
         Forgeproperties.Add(New JProperty("version", Forge.version))
@@ -22,21 +22,21 @@ Public Class Forge
         Mods.modsjo.Value(Of JArray)("forge").Add(Forgeproperties)
         Mods.modsjo = JObject.Parse(Mods.modsjo.Value(Of JArray)("forge").OrderByDescending(Function(p) p("version").ToString).ToString)
         IO.File.WriteAllText(modsfile, Mods.modsjo.ToString)
-        Load()
-    End Sub
+        Await Load()
+    End Function
 
-    Public Shared Sub Edit(ByVal editedforgeindex As Integer, Forge As ForgeEintrag)
+    Public Shared Async Function Edit(ByVal editedforgeindex As Integer, Forge As ForgeEintrag) As Task
         Mods.modsjo.Value(Of JArray)("forge").RemoveAt(editedforgeindex)
         'Mods.modsjo.Value(Of JArray)("forge").OrderByDescending(Function(p) p("name").ToString)
         IO.File.WriteAllText(modsfile, Mods.modsjo.ToString)
-        Add(Forge)
-    End Sub
+        Await Add(Forge)
+    End Function
 
-    Public Shared Sub RemoveAt(ByVal index As Integer)
+    Public Shared Async Function RemoveAt(ByVal index As Integer) As Task
         Mods.modsjo.Value(Of JArray)("forge").RemoveAt(index)
         IO.File.WriteAllText(modsfile, Mods.modsjo.ToString)
-        Load()
-    End Sub
+        Await Load()
+    End Function
 
 End Class
 

@@ -72,6 +72,7 @@
             For Each item As String In DirectCast(lb_mods.SelectedItem, ForgeMod).needed_mods
                 lb_needed_mods.Items.Add(item)
             Next
+            lbl_type.Content = "Type: " & DirectCast(lb_mods.SelectedItem, ForgeMod).type
         End If
         'If lb_mods.SelectedIndex <> -1 Then
         '    lbl_name.Content = Mods.NameAt(cb_modversions.SelectedItem.ToString, lb_mods.SelectedIndex)

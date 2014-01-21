@@ -1468,6 +1468,13 @@ Public Class MainWindow
                 btn_list_delete_mod.IsEnabled = False
                 img_installed.Visibility = Windows.Visibility.Hidden
             End If
+            If DirectCast(lb_mods.SelectedItem, ForgeMod).type = "forge" Then
+                lbl_type.Content = "Vorraussetzung: Minecraft Forge (Tools->Forge)"
+            ElseIf DirectCast(lb_mods.SelectedItem, ForgeMod).type = "liteloader" Then
+                lbl_type.Content = "Vorraussetzung: LiteLoader (Tools->LiteLoader)"
+            Else
+                lbl_type.Content = "Type: " & DirectCast(lb_mods.SelectedItem, ForgeMod).type
+            End If
         End If
 
 
@@ -1798,7 +1805,7 @@ Public Class MainWindow
         End If
     End Sub
 
-    Private Sub cb_direct_join_Checked(sender As Object, e As RoutedEventArgs) Handles cb_direct_join.Checked
+    Private Sub cb_direct_join_Click(sender As Object, e As RoutedEventArgs) Handles cb_direct_join.Click
         Settings.DirectJoin = cb_direct_join.IsChecked.Value
         Settings.Save()
     End Sub
@@ -1813,6 +1820,45 @@ Public Class MainWindow
         Dim frg As New Forge_installer
         frg.ShowDialog()
     End Sub
+
+    Sub liteloader_installer()
+        Dim frg As New LiteLoader_installer
+        frg.Show()
+    End Sub
+
+    Private Async Sub download_feedthebeast()
+        'Zuerst die Website auslesen, um den neuesten Link zu bekommen
+        'Dim str As String = Await New WebClient().DownloadStringTaskAsync("")
+        Dim url As New Uri(Mods.modsjo("downloads")("feedthebeast").Value(Of String)("url"))
+        Dim filename As String = Mods.modsjo("downloads")("feedthebeast").Value(Of String)("filename")
+        Dim path As New FileInfo(IO.Path.Combine(mcpfad, "tools", filename))
+        If path.Directory.Exists = False Then
+            path.Directory.Create()
+        End If
+        Try
+            btn_start_feedthebeast.IsEnabled = False
+            'progressbar lädt herunter
+            Await New WebClient().DownloadFileTaskAsync(url, path.FullName)
+            btn_start_feedthebeast.IsEnabled = True
+        Catch ex As Exception
+            Try
+                If path.Exists Then
+                    path.Delete()
+                End If
+            Catch
+            End Try
+            btn_start_feedthebeast.IsEnabled = False
+            Me.ShowMessageAsync("Fehler", ex.Message, MessageDialogStyle.Affirmative, New MetroDialogSettings() With {.AffirmativeButtonText = "Ok", .ColorScheme = MetroDialogColorScheme.Accented})
+        End Try
+    End Sub
+
+    Private Sub start_feedthebeast()
+        Dim filename As String = Mods.modsjo("downloads")("feedthebeast").Value(Of String)("filename")
+        Dim path As New FileInfo(IO.Path.Combine(mcpfad, "tools", filename))
+        Process.Start(path.FullName)
+        'TechnicLauncher starten
+    End Sub
+
     Private Async Sub download_techniclauncher()
         'Zuerst die Website auslesen, um den neuesten Link zu bekommen
         'Dim str As String = Await New WebClient().DownloadStringTaskAsync("")
@@ -1849,13 +1895,20 @@ Public Class MainWindow
     Sub Check_Tools_Downloaded()
         'For Each item As Stirng in
         'TechnicLauncher
-        Dim filename As String = Mods.modsjo("downloads")("techniclauncher").Value(Of String)("filename").ToString
-        If File.Exists(Path.Combine(mcpfad, "tools", filename)) = True Then
+        Dim technicfilename As String = Mods.modsjo("downloads")("techniclauncher").Value(Of String)("filename").ToString
+        Dim feedthebeastfilename As String = Mods.modsjo("downloads")("feedthebeast").Value(Of String)("filename").ToString
+        If File.Exists(Path.Combine(mcpfad, "tools", technicfilename)) = True Then
             btn_start_techniclauncher.IsEnabled = True
         Else
             btn_start_techniclauncher.IsEnabled = False
         End If
+        If File.Exists(Path.Combine(mcpfad, "tools", feedthebeastfilename)) = True Then
+            btn_start_feedthebeast.IsEnabled = True
+        Else
+            btn_start_feedthebeast.IsEnabled = False
+        End If
     End Sub
+
 #End Region
 End Class
 

@@ -1,41 +1,37 @@
-﻿Imports System.Net
-Imports Ionic.Zip
-Imports MahApps.Metro.Controls.Dialogs
+﻿Imports Newtonsoft.Json
+Imports Newtonsoft.Json.Linq
 Imports MahApps.Metro
+Imports MahApps.Metro.Controls.Dialogs
+Imports System.Net
 
-Class Forge_installer
-    Private List As New List(Of ForgeEintrag)
+Public Class LiteLoader_installer
+
     WithEvents wc As New WebClient
     Private filename As String
 
-    Public Sub Load_Forge()
-        lst.Items.Clear()
-        List.Clear()
-        For Each item As ForgeEintrag In Forge.Forgelist
-            'MessageBox.Show(String.Join(" | ", item.build, item.version, item.time, item.downloadLink))
-            lst.Items.Add(item)
-            List.Add(item)
-        Next
-    End Sub
-
-    Private Sub ForgeManager_Loaded(sender As Object, e As RoutedEventArgs) Handles Me.Loaded
+    Private Async Sub ForgeManager_Loaded(sender As Object, e As RoutedEventArgs) Handles Me.Loaded
         If ThemeManager.DetectTheme(Application.Current).Item1 = Theme.Light Then
             btn_copy_image.Source = ImageConvert.GetImageStream(My.Resources.appbar_page_copy)
         Else
             btn_copy_image.Source = ImageConvert.GetImageStream(My.Resources.appbar_page_copy_dark)
         End If
-        Load_Forge()
+        If LiteLoader.List Is Nothing Then
+            Await LiteLoader.Load()
+        End If
+        For Each item As LiteLoader.LiteLoaderEintrag In LiteLoader.List
+            lst.Items.Add(item)
+        Next
         tb_mcpfad.Text = mcpfad
     End Sub
 
     Private Async Sub btn_download_Click(sender As Object, e As RoutedEventArgs) Handles btn_download.Click
         If lst.SelectedIndex = -1 Then
-            Await Me.ShowMessageAsync(Nothing, "Bitte wähle eine Forge Version Aus!", MessageDialogStyle.Affirmative, New MetroDialogSettings() With {.AffirmativeButtonText = "Ok", .ColorScheme = MetroDialogColorScheme.Accented})
+            Await Me.ShowMessageAsync(Nothing, "Bitte wähle eine LiteLoader Version Aus!", MessageDialogStyle.Affirmative, New MetroDialogSettings() With {.AffirmativeButtonText = "Ok", .ColorScheme = MetroDialogColorScheme.Accented})
         ElseIf wc.IsBusy = True Then
             wc.CancelAsync()
         Else
             forge_anleitung.IsSelected = True
-            Dim url As New Uri(DirectCast(lst.SelectedItem, ForgeEintrag).downloadLink)
+            Dim url As New Uri(DirectCast(lst.SelectedItem, LiteLoader.LiteLoaderEintrag).DownloadLink)
             Dim ls As IList(Of String) = url.Segments
             filename = cachefolder & "\" & ls.Last
             wc.DownloadFileAsync(url, filename)
@@ -80,4 +76,50 @@ Class Forge_installer
     Private Sub wc_DownloadProgressChanged(sender As Object, e As DownloadProgressChangedEventArgs) Handles wc.DownloadProgressChanged
         pb_download.Value = e.ProgressPercentage
     End Sub
+
+End Class
+
+Public Class LiteLoader
+    Public Shared List As IList(Of LiteLoader.LiteLoaderEintrag)
+    Public Shared Async Function Load() As Task
+        If Mods.modsjo Is Nothing Then
+            Mods.Load()
+        End If
+        If Mods.modsjo.Properties.Select(Function(p) p.Name).Contains("liteloader") Then
+            List = Await JsonConvert.DeserializeObjectAsync(Of IList(Of LiteLoader.LiteLoaderEintrag))(Mods.modsjo("liteloader").ToString)
+        Else
+            List = New List(Of LiteLoader.LiteLoaderEintrag)
+        End If
+    End Function
+    Public Class LiteLoaderEintrag
+        Private m_version As String, m_downloadlink As String
+        <JsonProperty("version")>
+        Public Property Version As String
+            Get
+                Return m_version
+            End Get
+            Set(value As String)
+                m_version = value
+            End Set
+        End Property
+        <JsonProperty("downloadlink")>
+        Public Property DownloadLink As String
+            Get
+                Return m_downloadlink
+            End Get
+            Set(value As String)
+                m_downloadlink = value
+            End Set
+        End Property
+
+        Public Sub New()
+
+        End Sub
+
+        Public Sub New(Version As String, Downloadlink As String)
+            Me.Version = Version
+            Me.DownloadLink = Downloadlink
+        End Sub
+
+    End Class
 End Class

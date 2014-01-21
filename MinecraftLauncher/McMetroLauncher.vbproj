@@ -170,6 +170,9 @@
     </Compile>
     <Compile Include="Formattingcodes.vb" />
     <Compile Include="JSONAPI.vb" />
+    <Compile Include="LiteLoader_installer.xaml.vb">
+      <DependentUpon>LiteLoader_installer.xaml</DependentUpon>
+    </Compile>
     <Compile Include="My Project\Resources.Designer.vb">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -207,6 +210,10 @@
       <DependentUpon>Application.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="LiteLoader_installer.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -337,6 +344,7 @@
     <Resource Include="images\dark\appbar.page.copy.png" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="images\web-ftb-logo_0.png" />
     <Resource Include="images\light\appbar.control.play.png" />
     <Resource Include="images\dark\appbar.control.play.png" />
     <Resource Include="images\liteloader_header_xmas.png" />

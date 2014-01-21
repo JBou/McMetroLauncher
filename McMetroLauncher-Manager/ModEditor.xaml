@@ -9,40 +9,33 @@
     Title="Mod Editor" Height="540" Width="874" Icon="favicon.ico" ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
 
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="57*"/>
-            <RowDefinition Height="16*"/>
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="564*"/>
-            <ColumnDefinition Width="293*"/>
-            <ColumnDefinition Width="11*"/>
-        </Grid.ColumnDefinitions>
 
-        <Rectangle HorizontalAlignment="Left" Height="388" Margin="0,12,0,0" Stroke="#FF00A2FF" VerticalAlignment="Top" Width="294" Grid.Column="1" Grid.ColumnSpan="2" Grid.RowSpan="2"/>
+        <Rectangle HorizontalAlignment="Left" Height="349" Margin="564,10,0,0" Stroke="#FF00A2FF" VerticalAlignment="Top" Width="294"/>
 
-        <Label Content="Name:" HorizontalAlignment="Left" Margin="10,15,0,0" VerticalAlignment="Top" Height="26" Width="119" Padding="0" VerticalContentAlignment="Center" FontSize="13"/>
-        <TextBox x:Name="tb_name" HorizontalAlignment="Left" Height="26" Margin="134,15,0,0" VerticalAlignment="Top" Width="425" MaxLines="1"/>
-        <Label x:Name="lbl_description" Content="Beschreibung:" HorizontalAlignment="Left" Margin="10,0,0,283" VerticalAlignment="Bottom" Width="119" Height="28" VerticalContentAlignment="Center" Padding="0,5,5,5" FontSize="13"/>
-        <TextBox x:Name="tb_description" HorizontalAlignment="Left" VerticalContentAlignment="Top" Height="260" Margin="134,86,0,0" VerticalAlignment="Top" Width="425" AcceptsReturn="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto"/>
-        <TextBox x:Name="tb_downloadlink" HorizontalAlignment="Left" Height="26" Margin="134,0,0,47" VerticalAlignment="Bottom" Width="724" MaxLines="1" Grid.ColumnSpan="3" Grid.Row="1"/>
-        <ComboBox x:Name="cb_versions" HorizontalAlignment="Left" Margin="466,46,0,0" VerticalAlignment="Top" Width="93" Height="35"/>
-        <Label x:Name="lbl_website" Content="Website:" HorizontalAlignment="Left" Margin="10,0,0,80" VerticalAlignment="Bottom" Width="119" Height="26" VerticalContentAlignment="Center" Padding="0,-1,0,0" FontSize="13" Grid.Row="1"/>
-        <TextBox x:Name="tb_website" HorizontalAlignment="Left" Height="26" Margin="134,0,0,80" VerticalAlignment="Bottom" Width="724" MaxLines="1" Grid.ColumnSpan="3" Grid.Row="1"/>
-        <Button x:Name="btn_save" Content="Speichern" HorizontalAlignment="Left" Margin="177,0,0,9" VerticalAlignment="Bottom" Width="117" Height="34" Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="2" />
-        <TextBox x:Name="tb_video" HorizontalAlignment="Left" Height="26" Margin="134,0,0,12" VerticalAlignment="Bottom" Width="602" MaxLines="1" Grid.ColumnSpan="2" Grid.Row="1"/>
-        <Label x:Name="lbl_video" Content="Video:" HorizontalAlignment="Left" Margin="10,0,0,12" VerticalAlignment="Bottom" Width="119" Height="26" VerticalContentAlignment="Center" Padding="0,-1,0,0" FontSize="13" Grid.Row="1"/>
-        <Label x:Name="lbl_download" Content="Download:" HorizontalAlignment="Left" Margin="10,0,0,47" VerticalAlignment="Bottom" Width="119" Height="26" VerticalContentAlignment="Center" Padding="0,-1,0,0" FontSize="13" Grid.Row="1"/>
-        <ListBox x:Name="lb_needed_mods" HorizontalAlignment="Left" Height="256" Margin="10,58,0,0" VerticalAlignment="Top" Width="273" Grid.Column="1"/>
-        <Label Content="Vorrausgesetzte Mods:" HorizontalAlignment="Left" Margin="0,10,0,0" VerticalAlignment="Top" Width="294" HorizontalContentAlignment="Center" Foreground="#FF00B9FF" FontSize="25" Grid.Column="1" Grid.ColumnSpan="2" Height="43"/>
-        <Button x:Name="btn_add_needed_mod" Content="Hinzufügen" Grid.Column="1" HorizontalAlignment="Left" Margin="152,356,0,0" VerticalAlignment="Top" Width="131" Height="33"/>
-        <ComboBox x:Name="cb_needed_mods" HorizontalAlignment="Left" Margin="10,319,0,0" VerticalAlignment="Top" Width="273" Height="32" Grid.Column="1"/>
-        <Button x:Name="btn_delete_needed_mod" Content="Entfernen" Grid.Column="1" HorizontalAlignment="Left" Margin="10,356,0,0" VerticalAlignment="Top" Width="131" Height="33"/>
-        <Label x:Name="lbl_version" Content="" HorizontalAlignment="Left" Margin="466,46,0,0" VerticalAlignment="Top" Width="88" FontSize="18" Foreground="#FF00AEFF" HorizontalContentAlignment="Right" Height="34"/>
-        <Label Content="Autor:" HorizontalAlignment="Left" Margin="10,51,0,0" VerticalAlignment="Top" Height="26" Width="119" Padding="0" VerticalContentAlignment="Center" FontSize="13"/>
-        <TextBox x:Name="tb_autor" HorizontalAlignment="Left" Height="26" Margin="134,51,0,0" VerticalAlignment="Top" Width="327" MaxLines="1"/>
-        <Label Content="ID:" HorizontalAlignment="Left" Margin="10,0,0,111" VerticalAlignment="Bottom" Width="119" Height="29" VerticalContentAlignment="Center" Padding="0,-1,0,0" FontSize="13" Grid.RowSpan="2"/>
-        <TextBox x:Name="tb_filename" HorizontalAlignment="Left" Height="29" Margin="134,0,0,111" VerticalAlignment="Bottom" Width="351" MaxLines="1" Grid.RowSpan="2"/>
-        <ComboBox x:Name="cb_extension" HorizontalAlignment="Left" Margin="490,371,0,0" VerticalAlignment="Top" Width="69" Height="29" Grid.RowSpan="2" />
+        <Label Content="Name:" HorizontalAlignment="Left" Margin="10,16,0,0" VerticalAlignment="Top" Height="26" Width="119" Padding="0" VerticalContentAlignment="Center" FontSize="13"/>
+        <TextBox x:Name="tb_name" HorizontalAlignment="Left" Height="36" Margin="134,10,0,0" VerticalAlignment="Top" Width="420" MaxLines="1"/>
+        <Label x:Name="lbl_description" Content="Beschreibung:" HorizontalAlignment="Left" Margin="10,0,0,391" VerticalAlignment="Bottom" Width="119" Height="28" VerticalContentAlignment="Center" Padding="0,5,5,5" FontSize="13"/>
+        <TextBox x:Name="tb_description" HorizontalAlignment="Left" VerticalContentAlignment="Top" Height="269" Margin="134,90,0,0" VerticalAlignment="Top" Width="425" AcceptsReturn="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto"/>
+        <TextBox x:Name="tb_downloadlink" HorizontalAlignment="Left" Height="26" Margin="134,0,0,47" VerticalAlignment="Bottom" Width="724" MaxLines="1"/>
+        <ComboBox x:Name="cb_versions" HorizontalAlignment="Left" Margin="466,50,0,0" VerticalAlignment="Top" Width="93" Height="35"/>
+        <Label x:Name="lbl_website" Content="Website:" HorizontalAlignment="Left" Margin="10,0,0,80" VerticalAlignment="Bottom" Width="119" Height="26" VerticalContentAlignment="Center" Padding="0,-1,0,0" FontSize="13"/>
+        <TextBox x:Name="tb_website" HorizontalAlignment="Left" Height="26" Margin="134,0,0,80" VerticalAlignment="Bottom" Width="724" MaxLines="1"/>
+        <Button x:Name="btn_save" Content="Speichern" HorizontalAlignment="Left" Margin="741,0,0,9" VerticalAlignment="Bottom" Width="117" Height="34" />
+        <TextBox x:Name="tb_video" HorizontalAlignment="Left" Height="26" Margin="134,0,0,12" VerticalAlignment="Bottom" Width="602" MaxLines="1"/>
+        <Label x:Name="lbl_video" Content="Video:" HorizontalAlignment="Left" Margin="10,0,0,12" VerticalAlignment="Bottom" Width="119" Height="26" VerticalContentAlignment="Center" Padding="0,-1,0,0" FontSize="13"/>
+        <Label x:Name="lbl_download" Content="Download:" HorizontalAlignment="Left" Margin="10,0,0,47" VerticalAlignment="Bottom" Width="119" Height="26" VerticalContentAlignment="Center" Padding="0,-1,0,0" FontSize="13"/>
+        <ListBox x:Name="lb_needed_mods" HorizontalAlignment="Left" Height="198" Margin="574,58,0,0" VerticalAlignment="Top" Width="273"/>
+        <Label Content="Vorrausgesetzte Mods:" HorizontalAlignment="Left" Margin="564,10,0,0" VerticalAlignment="Top" Width="294" HorizontalContentAlignment="Center" Foreground="#FF00B9FF" FontSize="25" Height="43"/>
+        <Button x:Name="btn_add_needed_mod" Content="Hinzufügen" HorizontalAlignment="Left" Margin="716,313,0,0" VerticalAlignment="Top" Width="131" Height="33"/>
+        <ComboBox x:Name="cb_needed_mods" HorizontalAlignment="Left" Margin="574,276,0,0" VerticalAlignment="Top" Width="273" Height="32"/>
+        <Button x:Name="btn_delete_needed_mod" Content="Entfernen" HorizontalAlignment="Left" Margin="574,313,0,0" VerticalAlignment="Top" Width="131" Height="33"/>
+        <Label x:Name="lbl_version" Content="" HorizontalAlignment="Left" Margin="466,50,0,0" VerticalAlignment="Top" Width="88" FontSize="18" Foreground="#FF00AEFF" HorizontalContentAlignment="Right" Height="34"/>
+        <Label Content="Autor:" HorizontalAlignment="Left" Margin="10,54,0,0" VerticalAlignment="Top" Height="26" Width="119" Padding="0" VerticalContentAlignment="Center" FontSize="13"/>
+        <TextBox x:Name="tb_autor" HorizontalAlignment="Left" Height="33" Margin="134,51,0,0" VerticalAlignment="Top" Width="327" MaxLines="1"/>
+        <Label Content="ID:" HorizontalAlignment="Left" Margin="10,0,0,111" VerticalAlignment="Bottom" Width="119" Height="29" VerticalContentAlignment="Center" Padding="0,-1,0,0" FontSize="13"/>
+        <Label Content="Type:" HorizontalAlignment="Left" Margin="574,0,0,112" VerticalAlignment="Bottom" Width="65" Height="35" VerticalContentAlignment="Center" Padding="0,-1,0,0" FontSize="13"/>
+        <TextBox x:Name="tb_filename" HorizontalAlignment="Left" Height="29" Margin="134,0,0,111" VerticalAlignment="Bottom" Width="351" MaxLines="1"/>
+        <ComboBox x:Name="cb_extension" HorizontalAlignment="Left" Margin="490,371,0,0" VerticalAlignment="Top" Width="69" Height="29" />
+        <ComboBox x:Name="cb_type" HorizontalAlignment="Left" Margin="654,364,0,0" VerticalAlignment="Top" Width="203" Height="35"/>
     </Grid>
 </Controls:MetroWindow>

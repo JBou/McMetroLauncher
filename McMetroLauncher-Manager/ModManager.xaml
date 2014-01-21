@@ -34,11 +34,12 @@
         <Label Content="Download:" HorizontalAlignment="Left" Margin="352,316,0,0" VerticalAlignment="Top"/>
         <Label x:Name="lbl_downloadlink" HorizontalAlignment="Left" Height="31" Margin="446,313,0,0"  VerticalAlignment="Top" Width="630"/>
         <Label Content="Website:" HorizontalAlignment="Left" Margin="352,286,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="lbl_type" HorizontalAlignment="Left" Margin="877,246,0,0" VerticalAlignment="Top" Width="199" Height="35" VerticalContentAlignment="Center"/>
         <Label x:Name="lbl_website" HorizontalAlignment="Left" Height="31" Margin="446,286,0,0"  VerticalAlignment="Top" Width="630"/>
         <ComboBox x:Name="cb_modversions" HorizontalAlignment="Left" Margin="10,8,0,0" VerticalAlignment="Top" Width="337" Height="31"/>
         <Label x:Name="lbl_video" HorizontalAlignment="Left" Height="31" Margin="446,339,0,0"  VerticalAlignment="Top" Width="630"/>
-        <ListBox x:Name="lb_needed_mods" HorizontalAlignment="Left" Height="215" Margin="877,66,0,0" VerticalAlignment="Top" Width="199"/>
-        <Label Content="Vorrausgesetzte Mods:" HorizontalAlignment="Left" Margin="877,26,0,0" VerticalAlignment="Top" Width="199" HorizontalContentAlignment="Center" Foreground="#FF00B9FF" FontSize="18" Height="35"/>
+        <ListBox x:Name="lb_needed_mods" HorizontalAlignment="Left" Height="197" Margin="877,44,0,0" VerticalAlignment="Top" Width="199"/>
+        <Label Content="Vorrausgesetzte Mods:" HorizontalAlignment="Left" Margin="877,4,0,0" VerticalAlignment="Top" Width="199" HorizontalContentAlignment="Center" Foreground="#FF00B9FF" FontSize="18" Height="35"/>
         <Label x:Name="lbl_autor" HorizontalAlignment="Left" Height="23" Margin="401,38,0,0"  VerticalAlignment="Top" Width="471" FontSize="14" Padding="5,0" VerticalContentAlignment="Center"/>
 
     </Grid>

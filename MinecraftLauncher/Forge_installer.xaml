@@ -26,12 +26,12 @@
             </TabItem>
             <TabItem Header="Anleitung" x:Name="forge_anleitung">
                 <Grid Margin="10">
-                    <TextBlock Margin="10,15,10,0" FontSize="18" TextWrapping="WrapWithOverflow" Height="50" VerticalAlignment="Top">Nachdem Forge heruntergeladen wurde, öffnet sich ein Fenster. Wähle dort &quot;Install Client&quot; aus und wähle beim Installationspfad folgenden Ordner aus:</TextBlock>
+                    <TextBlock Margin="10,15,10,0" FontSize="18" TextWrapping="WrapWithOverflow" Height="50" VerticalAlignment="Top" Text="Nachdem Forge heruntergeladen wurde, öffnet sich ein Fenster. Wähle dort &quot;Install Client&quot; aus und wähle beim Installationspfad folgenden Ordner aus:" />
                     <TextBox x:Name="tb_mcpfad" Margin="10,80,47,0" FontSize="13" Height="32" VerticalAlignment="Top" IsReadOnly="True" Controls:TextboxHelper.SelectAllOnFocus="True" />
                     <Button x:Name="btn_copy" Margin="0,80,10,0" FontSize="13" Height="32" VerticalAlignment="Top" HorizontalAlignment="Right" Width="32" ToolTip="Pfad in die Zwischenablage kopieren" >
                         <Image x:Name="btn_copy_image" Source="images/light/appbar.page.copy.png" ToolTip="Pfad in die Zwischenablage kopieren"/>
                     </Button>
-                    <TextBlock Margin="10,146,10,0" FontSize="18" TextWrapping="WrapWithOverflow" Height="193" VerticalAlignment="Top" Text="Klicke anschließend auf &quot;OK&quot; und es wird Minecraft Forge installiert. Nachdem es einige Dateien heruntergeladen hat und fertig installiert hat, erscheind eine Meldung, dass Forge erfolgreich installiert wurde. Nun wurde ein neues Profil namens &quot;Forge&quot; hinzugefügt und du kannst nun unter dem Tab &quot;Mods&quot; Modifikationen installieren. Du kannst Forge auch einem anderem Profil zuordnen, indem du einfach die Versions im Profileeditor änderst." />
+                    <TextBlock Margin="10,146,10,0" FontSize="18" TextWrapping="WrapWithOverflow" Height="193" VerticalAlignment="Top" Text="Klicke anschließend auf &quot;OK&quot; und es wird Minecraft Forge installiert. Nachdem es einige Dateien heruntergeladen hat und fertig installiert hat, erscheint eine Meldung, dass Forge erfolgreich installiert wurde. Nun wurde ein neues Profil namens &quot;Forge&quot; hinzugefügt und du kannst nun unter dem Tab &quot;Mods&quot; Modifikationen installieren. Du kannst Forge auch einem anderem Profil zuordnen, indem du einfach die Versions im Profileeditor änderst." />
                 </Grid>
             </TabItem>
         </Controls:MetroAnimatedTabControl>

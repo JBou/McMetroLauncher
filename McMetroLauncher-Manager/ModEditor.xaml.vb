@@ -53,6 +53,7 @@ Public Class ModEditor
             lb_needed_mods.Items.Add(item)
         Next
         cb_extension.SelectedItem = Mods.extensionAt(loadedversion, loadedmodindex)
+        cb_type.SelectedItem = Mods.typeAt(loadedversion, loadedmodindex)
     End Sub
 
     Private Sub btn_save_Click(sender As Object, e As RoutedEventArgs) Handles btn_save.Click
@@ -61,7 +62,7 @@ Public Class ModEditor
         If tb_description.Text = Nothing Or tb_downloadlink.Text = Nothing Or tb_name.Text = Nothing Or tb_video.Text = Nothing Or tb_website.Text = Nothing Or tb_autor.Text = Nothing Then
             MessageBox.Show("Bitte fülle alle Felder aus!", "Fehler", MessageBoxButton.OK, MessageBoxImage.Information)
         Else
-            Dim frgMod As New ForgeMod(tb_name.Text, tb_autor.Text, cb_versions.SelectedItem.ToString, tb_description.Text, tb_downloadlink.Text, tb_video.Text, tb_website.Text, tb_filename.Text, cb_extension.SelectedItem.ToString, lb_needed_mods.Items.Cast(Of String)().ToList, False)
+            Dim frgMod As New ForgeMod(tb_name.Text, tb_autor.Text, cb_versions.SelectedItem.ToString, tb_description.Text, tb_downloadlink.Text, tb_video.Text, tb_website.Text, tb_filename.Text, cb_extension.SelectedItem.ToString, cb_type.SelectedItem.ToString, lb_needed_mods.Items.Cast(Of String)().ToList, False)
             If NewMod = True Then
                 'Shauen ob es bereits existiert
                 If Mods.Get_Mods(cb_versions.SelectedItem.ToString, modsfolder).Select(Function(p) p.name.ToString).Contains(tb_name.Text.ToString) Then
@@ -106,10 +107,14 @@ Public Class ModEditor
     Private Sub ModEditor_Loaded(sender As Object, e As RoutedEventArgs) Handles Me.Loaded
         cb_extension.Items.Add("jar")
         cb_extension.Items.Add("zip")
+        cb_extension.Items.Add("litemod")
+        cb_type.Items.Add("forge")
+        cb_type.Items.Add("liteloader")
         Get_Versions()
         If NewMod = True Then
             cb_versions.SelectedIndex = 0
             cb_extension.SelectedIndex = 0
+            cb_type.SelectedIndex = 0
         Else
             Load_ModInfos()
             lbl_version.Content = loadedversion
