@@ -40,65 +40,43 @@ Public Class SplashScreen
 
         lbl_Version.Content = "Version " & sVersion
         If internetconnection() = True Then
-            If Check_Updates() = True Then
-                Dim updater As New Updater
-                updater.Show()
-            Else
 
-                lbl_status.Content = "Lade Versions-Liste herunter"
-                If My.Computer.FileSystem.DirectoryExists(mcpfad & "\cache") = False Then
-                    IO.Directory.CreateDirectory(mcpfad & "\cache")
-                End If
-
-                Dim standartprofile As New JObject(
-                    New JProperty("profiles",
-                    New JObject(
-                        New JProperty("Default",
-                            New JObject(
-                                New JProperty("name", "Default"))))),
-                    New JProperty("selectedProfile", "Default"))
-                Dim o As String
-                If IO.File.Exists(launcher_profiles_json) = False Then
-                    o = Nothing
-                Else
-                    o = File.ReadAllText(launcher_profiles_json)
-                End If
-                If o = Nothing Then
-                    'StandartProfile schreiben
-                    File.WriteAllText(launcher_profiles_json, standartprofile.ToString)
-                End If
-
-                Try
-                    wcversionsstring.DownloadFileAsync(New Uri(Versionsurl), outputjsonversions)
-                Catch
-                End Try
+            lbl_status.Content = "Lade Versions-Liste herunter"
+            If My.Computer.FileSystem.DirectoryExists(mcpfad & "\cache") = False Then
+                IO.Directory.CreateDirectory(mcpfad & "\cache")
             End If
+
+            Dim standartprofile As New JObject(
+                New JProperty("profiles",
+                New JObject(
+                    New JProperty("Default",
+                        New JObject(
+                            New JProperty("name", "Default"))))),
+                New JProperty("selectedProfile", "Default"))
+            Dim o As String
+            If IO.File.Exists(launcher_profiles_json) = False Then
+                o = Nothing
+            Else
+                o = File.ReadAllText(launcher_profiles_json)
+            End If
+            If o = Nothing Then
+                'StandartProfile schreiben
+                File.WriteAllText(launcher_profiles_json, standartprofile.ToString)
+            End If
+
+            Try
+                Try
+                    lbl_status.Content = "Prüfe auf Updates"
+                    wcversion.DownloadStringAsync(New Uri(versionurl))
+                Catch ex As Exception
+                    MessageBox.Show(ex.Message)
+                End Try
+            Catch
+            End Try
         Else
-            lbl_statustitle.Content = "Fehler"
-            lbl_status.Content = "Bitte überprüfe deine Internetverbindung!"
+        lbl_statustitle.Content = "Fehler"
+        lbl_status.Content = "Bitte überprüfe deine Internetverbindung!"
         End If
-    End Sub
-
-    Private Async Sub wcversionsstring_DownloadFileCompleted(sender As Object, e As ComponentModel.AsyncCompletedEventArgs) Handles wcversionsstring.DownloadFileCompleted
-        Try
-            Await Versions_Load()
-            lbl_status.Content = "Lade Mod-Liste herunter"
-            wcmodlist.DownloadFileAsync(New Uri(modfileurl), modsfile)
-        Catch ex As Exception
-            MessageBox.Show(ex.Message)
-        End Try
-    End Sub
-
-    Private Async Sub wcmodlist_DownloadFileCompleted(sender As Object, e As ComponentModel.AsyncCompletedEventArgs) Handles wcmodlist.DownloadFileCompleted
-        Try
-            Mods.Load()
-            Await Forge.Load()
-            Await LiteLoader.Load()
-            lbl_status.Content = "Prüfe auf Updates"
-            wcversion.DownloadStringAsync(New Uri(versionurl))
-        Catch ex As Exception
-            MessageBox.Show(ex.Message)
-        End Try
     End Sub
 
     Private Sub wcversion_DownloadFileCompleted(sender As Object, e As DownloadStringCompletedEventArgs) Handles wcversion.DownloadStringCompleted
@@ -112,7 +90,32 @@ Public Class SplashScreen
 
     Private Sub wcchangelog_DownloadFileCompleted(sender As Object, e As DownloadStringCompletedEventArgs) Handles wcchangelog.DownloadStringCompleted
         changelog = e.Result
-        Start()
+        If Check_Updates() = True Then
+            Dim updater As New Updater
+            updater.Show()
+        Else
+            Try
+                wcversionsstring.DownloadFileAsync(New Uri(Versionsurl), outputjsonversions)
+            Catch ex As Exception
+                MessageBox.Show(ex.Message)
+            End Try
+        End If
+    End Sub
+
+    Private Async Sub wcversionsstring_DownloadFileCompleted(sender As Object, e As ComponentModel.AsyncCompletedEventArgs) Handles wcversionsstring.DownloadFileCompleted
+        Await Versions_Load()
+        lbl_status.Content = "Lade Mod-Liste herunter"
+        wcmodlist.DownloadFileAsync(New Uri(modfileurl), modsfile)
+    End Sub
+
+    Private Async Sub wcmodlist_DownloadFileCompleted(sender As Object, e As ComponentModel.AsyncCompletedEventArgs) Handles wcmodlist.DownloadFileCompleted
+        Try
+            Mods.Load()
+            Await Forge.Load()
+            Await LiteLoader.Load()
+            Start()
+        Catch
+        End Try
     End Sub
 
     Sub Start()
