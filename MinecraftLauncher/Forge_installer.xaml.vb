@@ -4,17 +4,13 @@ Imports MahApps.Metro.Controls.Dialogs
 Imports MahApps.Metro
 
 Class Forge_installer
-    Private List As New List(Of ForgeEintrag)
     WithEvents wc As New WebClient
     Private filename As String
 
     Public Sub Load_Forge()
         lst.Items.Clear()
-        List.Clear()
-        For Each item As ForgeEintrag In Forge.Forgelist
-            'MessageBox.Show(String.Join(" | ", item.build, item.version, item.time, item.downloadLink))
+        For Each item As Forge.Forgeeintrag In Forge.ForgeList
             lst.Items.Add(item)
-            List.Add(item)
         Next
     End Sub
 
@@ -35,19 +31,11 @@ Class Forge_installer
             wc.CancelAsync()
         Else
             forge_anleitung.IsSelected = True
-            Dim url As New Uri(DirectCast(lst.SelectedItem, ForgeEintrag).downloadLink)
+            Dim url As New Uri(DirectCast(lst.SelectedItem, Forge.Forgeeintrag).downloadlink)
             Dim ls As IList(Of String) = url.Segments
             filename = cachefolder & "\" & ls.Last
             wc.DownloadFileAsync(url, filename)
             btn_download.Content = "Abbrechen"
-
-            'Dim dateiendung As String = "zip"
-            'version = DirectCast(lst.SelectedItem, ForgeEintrag).version
-            'build = DirectCast(lst.SelectedItem, ForgeEintrag).build
-            'profilename = String.Format("{1}-Forge{2}", version, build)
-            'filename = String.Format("{1}\{2}.{3}", cachefolder, profilename, dateiendung)
-            'wc.DownloadFileAsync(New Uri(url), filename)
-            ''Installieren
         End If
     End Sub
 
@@ -61,18 +49,6 @@ Class Forge_installer
         Else
             pb_download.IsIndeterminate = True
             Process.Start(filename)
-            ''Entpacken... und installieren
-            'UnzipForge(filename)
-            ''Profiles hinzufügen
-            'Dim profile As New Profile(profilename, Nothing, version, Nothing, Nothing, Nothing, Nothing, Nothing)
-            'If Profiles.List.Contains(profilename) = True Then
-            '    Profiles.Edit(profilename, profile)
-            'Else
-            '    Profiles.Add(profile)
-            'End If
-            'pb_download.IsIndeterminate = False
-            'pb_download.Value = pb_download.Maximum
-            'downloading = False
         End If
         btn_download.Content = "Herunterladen und Installieren"
     End Sub

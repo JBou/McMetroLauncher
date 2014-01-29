@@ -15,10 +15,10 @@ Public Class LiteLoader_installer
         Else
             btn_copy_image.Source = ImageConvert.GetImageStream(My.Resources.appbar_page_copy_dark)
         End If
-        If LiteLoader.List Is Nothing Then
+        If LiteLoader.LiteLoaderList Is Nothing Then
             Await LiteLoader.Load()
         End If
-        For Each item As LiteLoader.LiteLoaderEintrag In LiteLoader.List
+        For Each item As LiteLoader.LiteloaderEintrag In LiteLoader.LiteLoaderList
             lst.Items.Add(item)
         Next
         tb_mcpfad.Text = mcpfad
@@ -77,49 +77,4 @@ Public Class LiteLoader_installer
         pb_download.Value = e.ProgressPercentage
     End Sub
 
-End Class
-
-Public Class LiteLoader
-    Public Shared List As IList(Of LiteLoader.LiteLoaderEintrag)
-    Public Shared Async Function Load() As Task
-        If Mods.modsjo Is Nothing Then
-            Mods.Load()
-        End If
-        If Mods.modsjo.Properties.Select(Function(p) p.Name).Contains("liteloader") Then
-            List = Await JsonConvert.DeserializeObjectAsync(Of IList(Of LiteLoader.LiteLoaderEintrag))(Mods.modsjo("liteloader").ToString)
-        Else
-            List = New List(Of LiteLoader.LiteLoaderEintrag)
-        End If
-    End Function
-    Public Class LiteLoaderEintrag
-        Private m_version As String, m_downloadlink As String
-        <JsonProperty("version")>
-        Public Property Version As String
-            Get
-                Return m_version
-            End Get
-            Set(value As String)
-                m_version = value
-            End Set
-        End Property
-        <JsonProperty("downloadlink")>
-        Public Property DownloadLink As String
-            Get
-                Return m_downloadlink
-            End Get
-            Set(value As String)
-                m_downloadlink = value
-            End Set
-        End Property
-
-        Public Sub New()
-
-        End Sub
-
-        Public Sub New(Version As String, Downloadlink As String)
-            Me.Version = Version
-            Me.DownloadLink = Downloadlink
-        End Sub
-
-    End Class
 End Class

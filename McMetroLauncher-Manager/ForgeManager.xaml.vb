@@ -1,5 +1,4 @@
 ﻿Public Class ForgeManager
-    Private List As New List(Of ForgeEintrag)
 
     Private Sub btn_add_Click(sender As Object, e As RoutedEventArgs) Handles btn_add.Click
         If lst.SelectedIndex = -1 Then
@@ -7,8 +6,6 @@
         Else
             Dim frm_Forgeeditor As New ForgeEditor
             Dim result As Boolean?
-            frm_Forgeeditor.NewForge = True
-            frm_Forgeeditor.loadedindex = Nothing
             frm_Forgeeditor.ShowDialog()
             result = frm_Forgeeditor.DialogResult
             If result = True Then
@@ -19,11 +16,8 @@
 
     Public Sub Load_Forge()
         lst.Items.Clear()
-        List.Clear()
-        For Each item As ForgeEintrag In Forge.Get_Forge
-            'MessageBox.Show(String.Join(" | ", item.build, item.version, item.time, item.downloadLink))
+        For Each item As Forge.Forgeeintrag In Forge.ForgeList
             lst.Items.Add(item)
-            List.Add(item)
         Next
     End Sub
 
@@ -36,11 +30,12 @@
         Load_Forge()
     End Sub
 
-    Private Sub btn_delete_Click(sender As Object, e As RoutedEventArgs) Handles btn_delete.Click
+    Private Async Sub btn_delete_Click(sender As Object, e As RoutedEventArgs) Handles btn_delete.Click
         If lst.SelectedIndex = -1 Then
             MessageBox.Show("Bitte wähle eine Forge Version Aus!", "Fehler", MessageBoxButton.OK, MessageBoxImage.Error)
         Else
-            Forge.RemoveAt(lst.SelectedIndex)
+            Forge.ForgeList.RemoveAt(lst.SelectedIndex)
+            Await Forge.SavetoFile(modsfile)
             Load_Forge()
         End If
     End Sub
@@ -49,10 +44,8 @@
         If lst.SelectedIndex = -1 Then
             MessageBox.Show("Bitte wähle eine Forge Version Aus!", "Fehler", MessageBoxButton.OK, MessageBoxImage.Error)
         Else
-            Dim frm_Forgeeditor As New ForgeEditor
+            Dim frm_Forgeeditor As New ForgeEditor(DirectCast(lst.SelectedItem, Forge.Forgeeintrag), lst.SelectedIndex)
             Dim result As Boolean?
-            frm_Forgeeditor.NewForge = False
-            frm_Forgeeditor.loadedindex = lst.SelectedIndex
             frm_Forgeeditor.ShowDialog()
             result = frm_Forgeeditor.DialogResult
             If result = True Then

@@ -90,7 +90,6 @@
       <DependentUpon>Application.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Forge.vb" />
     <Compile Include="ForgeEditor.xaml.vb">
       <DependentUpon>ForgeEditor.xaml</DependentUpon>
     </Compile>

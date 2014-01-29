@@ -10,9 +10,9 @@
     <DockPanel>
         <Controls:MetroProgressBar Foreground="{DynamicResource AccentColorBrush}" x:Name="pb_download" Height="10" Margin="10" VerticalAlignment="Bottom" DockPanel.Dock="Bottom" />
         <Controls:MetroAnimatedTabControl>
-            <TabItem Header="Forgeversionen" x:Name="forge_list">
+            <TabItem Header="LiteLoader Versionen" x:Name="liteloader_list">
                 <Grid>
-                    <ListBox x:Name="lst" Margin="10,10,10,44" BorderThickness="0" DisplayMemberPath="Version" />
+                    <ListBox x:Name="lst" Margin="10,10,10,44" BorderThickness="0" DisplayMemberPath="version" />
                     <Button x:Name="btn_download" Content="Herunterladen und Installieren" Margin="0,0,0,0" Width="300" VerticalAlignment="Bottom" Height="29"/>
                 </Grid>
             </TabItem>

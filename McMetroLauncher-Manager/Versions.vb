@@ -1,58 +1,101 @@
-﻿Imports System.Net
-Imports System.IO
-Imports System.Xml.Linq
+﻿Imports System.IO
 Imports Newtonsoft.Json
 Imports Newtonsoft.Json.Linq
-Imports System.Globalization
-Imports System.Net.Sockets
 
-Public Class Versions
-    Public Shared o As String
-    Public Shared versionsjo As JObject
-
-    Public Shared Sub Load()
-        o = File.ReadAllText(outputjsonversions)
-        versionsjo = JObject.Parse(o)
-        versionsidlist = versionsjo("versions").Select(Function(p) p("id").ToString).ToList()
-        versiontypelist = versionsjo("versions").Select(Function(p) p("type").ToString).ToList()
+Public Class Versionslist
+    Public Sub New()
+        versions = New List(Of Version)
+        latest = New Latestversion
     End Sub
+    Public ReadOnly Property latest_version() As Version
+        Get
+            If versions.Count > 0 Then
+                Return versions.First
+            Else
+                Return Nothing
+            End If
+        End Get
+    End Property
+    Public Property latest() As Latestversion
+        Get
+            Return m_latest
+        End Get
+        Set(value As Latestversion)
+            m_latest = value
+        End Set
+    End Property
+    Private m_latest As Latestversion
+    Public Property versions() As List(Of Version)
+        Get
+            Return m_versions
+        End Get
+        Set(value As List(Of Version))
+            m_versions = value
+        End Set
+    End Property
+    Private m_versions As List(Of Version)
+    Public Class Latestversion
+        Public Sub New()
 
-    Public Shared Function latestrelease() As String
-        Load()
-        Return versionsjo("latest")("release").ToString
-    End Function
-
-    Public Shared Function latestsnapshot() As String
-        Load()
-        Return versionsjo("latest")("snapshot").ToString
-    End Function
-
-    Public Shared Function latest() As String
-        Load()
-        Return versionsjo("versions")(0)("id").ToString
-    End Function
-
-    Public Shared Function Versions(version As releasetypes) As IList(Of String)
-        Load()
-        Dim versionslist As New List(Of String)
-        If version = releasetypes.all Then
-            Return versionsidlist
-        Else
-            For i = 0 To versionsidlist.Count - 1
-                If versiontypelist.Item(i).ToString = version.ToString Then
-                    versionslist.Add(versionsidlist.Item(i).ToString)
-                End If
-            Next
-            Return versionslist
-        End If
-    End Function
-
-    Public Enum releasetypes
-        all
-        release
-        snapshot
-        old_beta
-        old_alpha
-    End Enum
+        End Sub
+        Public Property snapshot() As String
+            Get
+                Return m_snapshot
+            End Get
+            Set(value As String)
+                m_snapshot = value
+            End Set
+        End Property
+        Private m_snapshot As String
+        Public Property release() As String
+            Get
+                Return m_release
+            End Get
+            Set(value As String)
+                m_release = value
+            End Set
+        End Property
+        Private m_release As String
+    End Class
+    Public Class Version
+        Public Sub New()
+        End Sub
+        Public Property id() As String
+            Get
+                Return m_id
+            End Get
+            Set(value As String)
+                m_id = value
+            End Set
+        End Property
+        Private m_id As String
+        Public Property time() As String
+            Get
+                Return m_time
+            End Get
+            Set(value As String)
+                m_time = value
+            End Set
+        End Property
+        Private m_time As String
+        Public Property releaseTime() As String
+            Get
+                Return m_releaseTime
+            End Get
+            Set(value As String)
+                m_releaseTime = value
+            End Set
+        End Property
+        Private m_releaseTime As String
+        Public Property type() As String
+            Get
+                Return m_type
+            End Get
+            Set(value As String)
+                m_type = value
+            End Set
+        End Property
+        Private m_type As String
+    End Class
 
 End Class

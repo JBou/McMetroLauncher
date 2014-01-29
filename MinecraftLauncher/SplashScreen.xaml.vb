@@ -115,8 +115,10 @@ Public Class SplashScreen
             Await Modifications.Load()
             Await Forge.Load()
             Await LiteLoader.Load()
+            Downloads.Load()
             Start()
-        Catch
+        Catch ex As Exception
+            MessageBox.Show(ex.Message & Environment.NewLine & ex.StackTrace)
         End Try
     End Sub
 
@@ -127,57 +129,57 @@ Public Class SplashScreen
     End Sub
 
     Sub StartThread()
-        Dispatcher.Invoke(New Action(Async Function()
-                                         'AccentColors = ThemeManager.DefaultAccents.Select(Function(p) p.Name)
-                                         ' create accent color menu items for the demo
-                                         AccentColors = ThemeManager.DefaultAccents.Select(Function(a) New AccentColorMenuData() With { _
-                                                 .Name = a.Name,
-                                                 .ColorBrush = New SolidColorBrush(CType(Windows.Media.ColorConverter.ConvertFromString(a.Resources("AccentColorBrush").ToString), System.Windows.Media.Color))
-                                         }).ToList
-                                         ShowWindowCommandsOnTop = False
-                                         Try
-                                             Dim Main As New MainWindow
-                                             Me.Hide()
+        Try
+            Dispatcher.Invoke(New Action(Async Function()
+                                             'AccentColors = ThemeManager.DefaultAccents.Select(Function(p) p.Name)
+                                             ' create accent color menu items for the demo
+                                             AccentColors = ThemeManager.DefaultAccents.Select(Function(a) New AccentColorMenuData() With { _
+                                                     .Name = a.Name,
+                                                     .ColorBrush = New SolidColorBrush(CType(Windows.Media.ColorConverter.ConvertFromString(a.Resources("AccentColorBrush").ToString), System.Windows.Media.Color))
+                                             }).ToList
+                                             ShowWindowCommandsOnTop = False
+                                                 Dim Main As New MainWindow
+                                                 Me.Hide()
 
 
-                                             Main.tb_modsfolder.Text = modsfolder
-                                             Await Main.Load_ModVersions()
-                                             Main.Get_Profiles()
-                                             Main.Menuitem_accent.ItemsSource = AccentColors
-                                             Settings.Load()
-                                             Main.cb_direct_join.IsChecked = Settings.DirectJoin
-                                             Main.tb_server_address.Text = Settings.ServerAddress
-                                             Main.tb_username.Text = Settings.Username
-                                             If Settings.Accent <> Nothing Then
-                                                 Main.ChangeAccent(Settings.Accent)
-                                             End If
-                                             If Settings.Theme = "Dark" Then
-                                                 Main.ThemeDark()
-                                             Else
-                                                 Main.ThemeLight()
-                                             End If
-                                             'LastLogin = Client.LastLogin.GetLastLogin
-                                             'If LastLogin IsNot Nothing Then
-                                             '    If LastLogin.Username <> Nothing Then
-                                             '        tb_username.Text = LastLogin.Username
-                                             '    End If
-                                             '    If LastLogin.Password <> Nothing Then
-                                             '        pb_Password.Password = LastLogin.Password
-                                             '    End If
-                                             'End If
-                                             Main.Load_Servers()
-                                             Main.Ping_servers()
-                                             Main.Check_Tools_Downloaded()
+                                                 Main.tb_modsfolder.Text = modsfolder
+                                                 Await Main.Load_ModVersions()
+                                                 Main.Get_Profiles()
+                                                 Main.Menuitem_accent.ItemsSource = AccentColors
+                                                 Settings.Load()
+                                                 Main.cb_direct_join.IsChecked = Settings.DirectJoin
+                                                 Main.tb_server_address.Text = Settings.ServerAddress
+                                                 Main.tb_username.Text = Settings.Username
+                                                 If Settings.Accent <> Nothing Then
+                                                     Main.ChangeAccent(Settings.Accent)
+                                                 End If
+                                                 If Settings.Theme = "Dark" Then
+                                                     Main.ThemeDark()
+                                                 Else
+                                                     Main.ThemeLight()
+                                                 End If
+                                                 'LastLogin = Client.LastLogin.GetLastLogin
+                                                 'If LastLogin IsNot Nothing Then
+                                                 '    If LastLogin.Username <> Nothing Then
+                                                 '        tb_username.Text = LastLogin.Username
+                                                 '    End If
+                                                 '    If LastLogin.Password <> Nothing Then
+                                                 '        pb_Password.Password = LastLogin.Password
+                                                 '    End If
+                                                 'End If
+                                                 Main.Load_Servers()
+                                                 Main.Ping_servers()
+                                                 Main.Check_Tools_Downloaded()
 
 
-                                             Main.InitializeComponent()
-                                             'Finally Show The MainWindow
-                                             Main.Show()
-                                             Me.Close()
-                                         Catch ex As Exception
-                                             MessageBox.Show(ex.Message)
-                                         End Try
-                                     End Function))
+                                                 Main.InitializeComponent()
+                                                 'Finally Show The MainWindow
+                                                 Main.Show()
+                                                 Me.Close()
+                                         End Function))
+        Catch ex As Exception
+            MessageBox.Show(ex.Message & Environment.NewLine & ex.StackTrace)
+        End Try
     End Sub
 
 End Class

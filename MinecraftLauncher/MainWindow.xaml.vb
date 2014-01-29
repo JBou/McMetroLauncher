@@ -36,7 +36,6 @@ Public Module GlobalInfos
     Public Async Function Versions_Load() As Task
         Dim o As String = File.ReadAllText(outputjsonversions)
         GlobalInfos.Versions = Await JsonConvert.DeserializeObjectAsync(Of Versionslist)(o)
-
         If IO.Directory.Exists(mcpfad & "\versions") = True Then
             Dim list_versionsdirectories As IEnumerable(Of String) = IO.Directory.GetDirectories(mcpfad & "\versions")
             Dim list_versions As IList(Of String) = New List(Of String)
@@ -149,7 +148,6 @@ Public Module GlobalInfos
         Private Shared m_isstarting As Boolean
 
     End Class
-
 
     Public AccentColors As List(Of AccentColorMenuData)
     Public ReadOnly Property AssemblyVersion As String
@@ -1654,19 +1652,19 @@ Public Class MainWindow
             Else
                 tb_description.Text = selected.descriptions.First.text
             End If
-            If selected.installed = True Then
-                img_installed.Visibility = Windows.Visibility.Visible
-                btn_list_delete_mod.IsEnabled = True
-            Else
-                btn_list_delete_mod.IsEnabled = False
-                img_installed.Visibility = Windows.Visibility.Hidden
-            End If
+            'If selected.installed = True Then
+            '    img_installed.Visibility = Windows.Visibility.Visible
+            '    btn_list_delete_mod.IsEnabled = True
+            'Else
+            '    btn_list_delete_mod.IsEnabled = False
+            '    img_installed.Visibility = Windows.Visibility.Hidden
+            'End If
             If selected.type = "forge" Then
                 lbl_type.Content = "Vorraussetzung: Minecraft Forge (Tools->Forge)"
             ElseIf selected.type = "liteloader" Then
                 lbl_type.Content = "Vorraussetzung: LiteLoader (Tools->LiteLoader)"
             Else
-                lbl_type.Content = "Type: " & DirectCast(lb_mods.SelectedItem, ForgeMod).type
+                lbl_type.Content = "Type: " & DirectCast(lb_mods.SelectedItem, Modifications.Mod).type
             End If
         End If
 
@@ -2099,8 +2097,8 @@ Public Class MainWindow
     Private Async Sub download_feedthebeast()
         'Zuerst die Website auslesen, um den neuesten Link zu bekommen
         'Dim str As String = Await New WebClient().DownloadStringTaskAsync("")
-        Dim url As New Uri(Mods.modsjo("downloads")("feedthebeast").Value(Of String)("url"))
-        Dim filename As String = Mods.modsjo("downloads")("feedthebeast").Value(Of String)("filename")
+        Dim url As New Uri(Downloads.Downloadsjo("feedthebeast").Value(Of String)("url"))
+        Dim filename As String = Downloads.Downloadsjo("feedthebeast").Value(Of String)("filename")
         Dim path As New FileInfo(IO.Path.Combine(mcpfad, "tools", filename))
         If path.Directory.Exists = False Then
             path.Directory.Create()
@@ -2123,7 +2121,7 @@ Public Class MainWindow
     End Sub
 
     Private Sub start_feedthebeast()
-        Dim filename As String = Mods.modsjo("downloads")("feedthebeast").Value(Of String)("filename")
+        Dim filename As String = Downloads.Downloadsjo("feedthebeast").Value(Of String)("filename")
         Dim path As New FileInfo(IO.Path.Combine(mcpfad, "tools", filename))
         Process.Start(path.FullName)
         'TechnicLauncher starten
@@ -2132,8 +2130,8 @@ Public Class MainWindow
     Private Async Sub download_techniclauncher()
         'Zuerst die Website auslesen, um den neuesten Link zu bekommen
         'Dim str As String = Await New WebClient().DownloadStringTaskAsync("")
-        Dim url As New Uri(Mods.modsjo("downloads")("techniclauncher").Value(Of String)("url"))
-        Dim filename As String = Mods.modsjo("downloads")("techniclauncher").Value(Of String)("filename")
+        Dim url As New Uri(Downloads.Downloadsjo("techniclauncher").Value(Of String)("url"))
+        Dim filename As String = Downloads.Downloadsjo("techniclauncher").Value(Of String)("filename")
         Dim path As New FileInfo(IO.Path.Combine(mcpfad, "tools", filename))
         If path.Directory.Exists = False Then
             path.Directory.Create()
@@ -2156,7 +2154,7 @@ Public Class MainWindow
     End Sub
 
     Private Sub start_techniclauncher()
-        Dim filename As String = Mods.modsjo("downloads")("techniclauncher").Value(Of String)("filename")
+        Dim filename As String = Downloads.Downloadsjo("techniclauncher").Value(Of String)("filename")
         Dim path As New FileInfo(IO.Path.Combine(mcpfad, "tools", filename))
         Process.Start(path.FullName)
         'TechnicLauncher starten
@@ -2165,8 +2163,8 @@ Public Class MainWindow
     Sub Check_Tools_Downloaded()
         'For Each item As Stirng in
         'TechnicLauncher
-        Dim technicfilename As String = Mods.modsjo("downloads")("techniclauncher").Value(Of String)("filename").ToString
-        Dim feedthebeastfilename As String = Mods.modsjo("downloads")("feedthebeast").Value(Of String)("filename").ToString
+        Dim technicfilename As String = Downloads.Downloadsjo("techniclauncher").Value(Of String)("filename").ToString
+        Dim feedthebeastfilename As String = Downloads.Downloadsjo("feedthebeast").Value(Of String)("filename").ToString
         If File.Exists(Path.Combine(mcpfad, "tools", technicfilename)) = True Then
             btn_start_techniclauncher.IsEnabled = True
         Else

@@ -33,7 +33,9 @@ Public Class ModEditor
     End Sub
 
     Sub Get_Versions()
-        cb_versions.ItemsSource = Versions.Versions(Versions.releasetypes.release)
+        For Each item As Versionslist.Version In Versions.versions.Where(Function(p) p.type = "release")
+            cb_versions.Items.Add(item.id)
+        Next
         If NewMod = True Then
             cb_versions.SelectedIndex = 0
         Else
