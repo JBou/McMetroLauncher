@@ -91,6 +91,7 @@ Public Class SplashScreen
     Private Sub wcchangelog_DownloadFileCompleted(sender As Object, e As DownloadStringCompletedEventArgs) Handles wcchangelog.DownloadStringCompleted
         changelog = e.Result
         If Check_Updates() = True Then
+            lbl_status.Content = "Update gefunden"
             Dim updater As New Updater
             updater.Show()
         Else
@@ -110,7 +111,8 @@ Public Class SplashScreen
 
     Private Async Sub wcmodlist_DownloadFileCompleted(sender As Object, e As ComponentModel.AsyncCompletedEventArgs) Handles wcmodlist.DownloadFileCompleted
         Try
-            Mods.Load()
+            'Mods.Load()
+            Await Modifications.Load()
             Await Forge.Load()
             Await LiteLoader.Load()
             Start()
@@ -125,7 +127,7 @@ Public Class SplashScreen
     End Sub
 
     Sub StartThread()
-        Dispatcher.Invoke(New Action(Sub()
+        Dispatcher.Invoke(New Action(Async Function()
                                          'AccentColors = ThemeManager.DefaultAccents.Select(Function(p) p.Name)
                                          ' create accent color menu items for the demo
                                          AccentColors = ThemeManager.DefaultAccents.Select(Function(a) New AccentColorMenuData() With { _
@@ -139,7 +141,7 @@ Public Class SplashScreen
 
 
                                              Main.tb_modsfolder.Text = modsfolder
-                                             Main.Load_ModVersions()
+                                             Await Main.Load_ModVersions()
                                              Main.Get_Profiles()
                                              Main.Menuitem_accent.ItemsSource = AccentColors
                                              Settings.Load()
@@ -175,7 +177,7 @@ Public Class SplashScreen
                                          Catch ex As Exception
                                              MessageBox.Show(ex.Message)
                                          End Try
-                                     End Sub))
+                                     End Function))
     End Sub
 
 End Class

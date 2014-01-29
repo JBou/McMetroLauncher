@@ -124,8 +124,7 @@
     <Reference Include="Ionic.Zip">
       <HintPath>..\libraries\Ionic.Zip.dll</HintPath>
     </Reference>
-    <Reference Include="MahApps.Metro, Version=0.11.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="MahApps.Metro">
       <HintPath>..\..\..\..\Documents\GitHub\MahApps.Metro\MahApps.Metro\bin\Debug\NET45\MahApps.Metro.dll</HintPath>
     </Reference>
     <Reference Include="MahApps.Metro.Resources">

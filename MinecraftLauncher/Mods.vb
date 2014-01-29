@@ -2,6 +2,213 @@
 Imports Newtonsoft.Json.Linq
 Imports System.IO
 
+
+Public Structure Modifications
+    Public Shared ModList As IList(Of Modifications.Mod)
+    Private Shared list_dependencies As IList(Of String) = New List(Of String)
+
+    Public Shared Async Function Load() As Task
+        Dim o As String = File.ReadAllText(modsfile)
+        Dim jo As JObject = JObject.Parse(o)
+        ModList = Await JsonConvert.DeserializeObjectAsync(Of IList(Of Modifications.Mod))(jo("mods").ToString)
+    End Function
+
+    Public Shared Async Function List_all_Mod_Vesions() As Task(Of IList(Of String))
+        If ModList Is Nothing Then
+            Await Load()
+        End If
+        Dim list As IList(Of String) = New List(Of String)
+        For Each item As [Mod] In ModList
+            For Each version As String In item.versions.Select(Function(p) p.version.ToString)
+                If list.Contains(version) = False Then
+                    list.Add(version)
+                End If
+            Next
+        Next
+        Return list
+    End Function
+
+    Public Shared Function Dependencies(ByVal Mod_id As String, Version As String) As IList(Of String)
+        list_dependencies.Clear()
+        Get_dependencies(Mod_id, Version)
+        If list_dependencies.Count > 0 Then
+            Return list_dependencies
+        Else
+            Return New List(Of String)
+        End If
+    End Function
+
+    Private Shared Sub Get_dependencies(ByVal Mod_id As String, Version As String)
+        'Dim ls As IList(Of String) = Mods.needed_modsAt(Version, Mods.Name(Modname, Version))
+        If ModList.Where(Function(p) p.id = Mod_id).First.versions.Where(Function(p) p.version = Version).First.dependencies IsNot Nothing Then
+            Dim ls As IList(Of String) = ModList.Where(Function(p) p.id = Mod_id).First.versions.Where(Function(p) p.version = Version).First.dependencies
+            If ls.Count > 0 Then
+                For Each item As String In ls
+                    If list_dependencies.Contains(item) = False Then
+                        list_dependencies.Add(item)
+                    End If
+                    Get_dependencies(item, Version)
+                Next
+            End If
+        End If
+    End Sub
+
+
+    Public Class [Mod]
+        Public Sub New()
+
+        End Sub
+
+        Public Property name() As String
+            Get
+                Return m_name
+            End Get
+            Set(value As String)
+                m_name = value
+            End Set
+        End Property
+        Private m_name As String
+        Public Property autor() As String
+            Get
+                Return m_autor
+            End Get
+            Set(value As String)
+                m_autor = value
+            End Set
+        End Property
+        Private m_autor As String
+        Public Property descriptions() As List(Of Description)
+            Get
+                Return m_description
+            End Get
+            Set(value As List(Of Description))
+                m_description = value
+            End Set
+        End Property
+        Private m_description As List(Of Description)
+        Public Property versions() As List(Of Version)
+            Get
+                Return m_versions
+            End Get
+            Set(value As List(Of Version))
+                m_versions = value
+            End Set
+        End Property
+        Private m_versions As List(Of Version)
+        Public Property video() As String
+            Get
+                Return m_video
+            End Get
+            Set(value As String)
+                m_video = value
+            End Set
+        End Property
+        Private m_video As String
+        Public Property website() As String
+            Get
+                Return m_website
+            End Get
+            Set(value As String)
+                m_website = value
+            End Set
+        End Property
+        Private m_website As String
+        Public Property id() As String
+            Get
+                Return m_id
+            End Get
+            Set(value As String)
+                m_id = value
+            End Set
+        End Property
+        Private m_id As String
+        Public Property extension() As String
+            Get
+                Return m_extension
+            End Get
+            Set(value As String)
+                m_extension = value
+            End Set
+        End Property
+        Private m_extension As String
+        Public Property type() As String
+            Get
+                Return m_type
+            End Get
+            Set(value As String)
+                m_type = value
+            End Set
+        End Property
+        Private m_type As String
+        Public Property installed() As Boolean
+            Get
+                Return m_installed
+            End Get
+            Set(value As Boolean)
+                m_installed = value
+            End Set
+        End Property
+        Private m_installed As Boolean
+        Public Class Description
+            Public Property id() As String
+                Get
+                    Return m_id
+                End Get
+                Set(value As String)
+                    m_id = value
+                End Set
+            End Property
+            Private m_id As String
+            Public Property text() As String
+                Get
+                    Return m_text
+                End Get
+                Set(value As String)
+                    m_text = value
+                End Set
+            End Property
+            Private m_text As String
+        End Class
+        Public Class Version
+            Public Property version() As String
+                Get
+                    Return m_version
+                End Get
+                Set(value As String)
+                    m_version = value
+                End Set
+            End Property
+            Private m_version As String
+            Public Property dependencies() As IList(Of String)
+                Get
+                    Return m_dependencies
+                End Get
+                Set(value As IList(Of String))
+                    m_dependencies = value
+                End Set
+            End Property
+            Private m_dependencies As IList(Of String)
+            Public Property downloadlink() As String
+                Get
+                    Return m_downloadlink
+                End Get
+                Set(value As String)
+                    m_downloadlink = value
+                End Set
+            End Property
+            Private m_downloadlink As String
+        End Class
+    End Class
+
+
+End Structure
+
+
+
+
+
+
+
 Public Class Mods
     Public Shared o As String
     Public Shared modsjo As JObject

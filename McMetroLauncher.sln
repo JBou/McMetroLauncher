@@ -2,7 +2,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
 VisualStudioVersion = 12.0.21005.1
-MinimumVisualStudioVersion = 10.0.40219.1
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "McMetroLauncher", "MinecraftLauncher\McMetroLauncher.vbproj", "{D9B5CFB9-BB76-4842-9D76-F55AFEDC4EB8}"
 	ProjectSection(ProjectDependencies) = postProject
 		{5B1710D2-5DC8-4754-91B2-19165DE49B3D} = {5B1710D2-5DC8-4754-91B2-19165DE49B3D}

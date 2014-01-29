@@ -218,7 +218,7 @@ Public Module GlobalInfos
     End Property
 
     Public Versionsurl As String = "http://s3.amazonaws.com/Minecraft.Download/versions/versions.json"
-    Public modfileurl As String = Website & "/download/modlist.json"
+    Public modfileurl As String = Website & "/download/newmodlist.json"
     Public versionurl As String = Website & "/mcmetrolauncher/version.txt"
     Public changelogurl As String = Website & "/mcmetrolauncher/changelog.txt"
 
@@ -265,11 +265,12 @@ Public Class MainWindow
     '*************Minecraft Prozess*************
     WithEvents mc As New Process
     '**************Mods Download****************
+    Private modsdownloadingversion As String
     Private moddownloading As Boolean = False
-    Private modsdownloadlist As IList(Of ForgeMod) = New List(Of ForgeMod)
+    Private modsdownloadlist As IList(Of Modifications.Mod) = New List(Of Modifications.Mod)
     Private modsdownloadindex As Integer
     Private Modsfilename As String
-    Private modslist As IList(Of ForgeMod)
+    Private modslist As IList(Of Modifications.Mod)
     '************Resources Download*************
     Private resourcesdownloading As Boolean
     Private resourcesindexes As resourcesindex
@@ -1314,123 +1315,301 @@ Public Class MainWindow
     End Sub
 
 #Region "Mods"
-    Private Async Sub btn_downloadmod_Click(sender As Object, e As RoutedEventArgs) Handles btn_downloadmod.Click
-        If moddownloading = True Then
-            Await Me.ShowMessageAsync("Download läuft", "Eine Mod wird bereits heruntergeladen. Warte bitte, bis diese fertig ist!", MessageDialogStyle.Affirmative, New MetroDialogSettings() With {.AffirmativeButtonText = "Ok", .ColorScheme = MetroDialogColorScheme.Accented})
-        Else
-            btn_resetmodsfoler.IsEnabled = False
-            btn_selectmodsfolder.IsEnabled = False
-            btn_refresh.IsEnabled = False
-            btn_downloadmod.IsEnabled = False
-            moddownloading = True
-            lbl_mods_status.Content = Nothing
-            modsdownloadlist.Clear()
-            For Each selectedmod As ForgeMod In lb_mods.SelectedItems
-                modsdownloadlist.Add(selectedmod)
-                For Each item As String In Mods.All_Needed_Mods(selectedmod.name, cb_modversions.SelectedItem.ToString)
-                    Dim moditem As ForgeMod = modslist.Where(Function(p) p.name = item).First
-                    If modsdownloadlist.Contains(moditem) = False Then
-                        modsdownloadlist.Add(moditem)
-                    End If
-                Next
-            Next
-            modsdownloadindex = 0
-            download_mod()
-        End If
-    End Sub
+    'Private Async Sub btn_downloadmod_Click(sender As Object, e As RoutedEventArgs) Handles btn_downloadmod.Click
+    '    If moddownloading = True Then
+    '        Await Me.ShowMessageAsync("Download läuft", "Eine Mod wird bereits heruntergeladen. Warte bitte, bis diese fertig ist!", MessageDialogStyle.Affirmative, New MetroDialogSettings() With {.AffirmativeButtonText = "Ok", .ColorScheme = MetroDialogColorScheme.Accented})
+    '    Else
+    '        btn_resetmodsfoler.IsEnabled = False
+    '        btn_selectmodsfolder.IsEnabled = False
+    '        btn_refresh.IsEnabled = False
+    '        btn_downloadmod.IsEnabled = False
+    '        moddownloading = True
+    '        lbl_mods_status.Content = Nothing
+    '        modsdownloadlist.Clear()
+    '        For Each selectedmod As ForgeMod In lb_mods.SelectedItems
+    '            modsdownloadlist.Add(selectedmod)
+    '            For Each item As String In Mods.All_Needed_Mods(selectedmod.name, cb_modversions.SelectedItem.ToString)
+    '                Dim moditem As ForgeMod = modslist.Where(Function(p) p.name = item).First
+    '                If modsdownloadlist.Contains(moditem) = False Then
+    '                    modsdownloadlist.Add(moditem)
+    '                End If
+    '            Next
+    '        Next
+    '        modsdownloadindex = 0
+    '        download_mod()
+    '    End If
+    'End Sub
 
-    Private Async Sub download_mod()
-        If modsdownloadindex < modsdownloadlist.Count Then
-            If tb_modsfolder.Text.Contains(IO.Path.GetInvalidPathChars) = True Then
-                Await Me.ShowMessageAsync("Fehler", "Der Pfad des Mods Ordner enthält ungültige Zeichen", MessageDialogStyle.Affirmative, New MetroDialogSettings() With {.AffirmativeButtonText = "Ok", .ColorScheme = MetroDialogColorScheme.Accented})
-            Else
-                Dim Version As String = modsdownloadlist.Item(modsdownloadindex).version
-                Dim path As String = tb_modsfolder.Text
-                Dim name As String = modsdownloadlist.Item(modsdownloadindex).name
-                Dim url As New Uri(modsdownloadlist.Item(modsdownloadindex).downloadlink)
-                lbl_mods_status.Content = modsdownloadindex + 1 & " / " & modsdownloadlist.Count & " " & name
-                If Version >= "1.6.4" = True Then
-                    Modsfilename = Version & "\" & modsdownloadlist.Item(modsdownloadindex).id & "." & modsdownloadlist.Item(modsdownloadindex).extension
-                Else
-                    Modsfilename = Version & "-" & modsdownloadlist.Item(modsdownloadindex).id & "." & modsdownloadlist.Item(modsdownloadindex).extension
-                End If
-                'If url.Host = "mega.co.nz" Then
-                '    'AddHandler Megalib.DownloadProgress, AddressOf DownloadProgress
-                '    'AddHandler Megalib.DownloadFinished, AddressOf DownloadModFinished
-                '    'Megalib.download_url(Mods.downloadlinkAt(Version, Mods.Name(name, Version)), path)
-                'Else
-                Try
-                    If IO.Directory.Exists(IO.Path.GetDirectoryName(cachefolder & "\" & Modsfilename)) = False Then
-                        IO.Directory.CreateDirectory((IO.Path.GetDirectoryName(cachefolder & "\" & Modsfilename)))
-                    End If
-                    wcmod.DownloadFileAsync(url, cachefolder & "\" & Modsfilename)
-                Catch ex As Exception
-                    lbl_mods_status.Content = ex.Message
-                    Me.ShowMessageAsync("Fehler", ex.Message, MessageDialogStyle.Affirmative, New MetroDialogSettings() With {.AffirmativeButtonText = "Ok", .ColorScheme = MetroDialogColorScheme.Accented})
-                    Mod_Download_finished()
-                    Exit Sub
-                End Try
-                'End If
-                modsdownloadindex += 1
-                Dim selected As Integer = lb_mods.SelectedIndex
-                Load_Mods()
-                lb_mods.SelectedIndex = selected
-            End If
-        Else
-            lbl_mods_status.Content = "Erfolgreich installiert"
-            Mod_Download_finished()
-        End If
-    End Sub
+    'Private Async Sub download_mod()
+    '    If modsdownloadindex < modsdownloadlist.Count Then
+    '        If tb_modsfolder.Text.Contains(IO.Path.GetInvalidPathChars) = True Then
+    '            Await Me.ShowMessageAsync("Fehler", "Der Pfad des Mods Ordner enthält ungültige Zeichen", MessageDialogStyle.Affirmative, New MetroDialogSettings() With {.AffirmativeButtonText = "Ok", .ColorScheme = MetroDialogColorScheme.Accented})
+    '        Else
+    '            Dim Version As String = modsdownloadlist.Item(modsdownloadindex).version
+    '            Dim path As String = tb_modsfolder.Text
+    '            Dim name As String = modsdownloadlist.Item(modsdownloadindex).name
+    '            Dim url As New Uri(modsdownloadlist.Item(modsdownloadindex).downloadlink)
+    '            lbl_mods_status.Content = modsdownloadindex + 1 & " / " & modsdownloadlist.Count & " " & name
+    '            If Version >= "1.6.4" = True Then
+    '                Modsfilename = Version & "\" & modsdownloadlist.Item(modsdownloadindex).id & "." & modsdownloadlist.Item(modsdownloadindex).extension
+    '            Else
+    '                Modsfilename = Version & "-" & modsdownloadlist.Item(modsdownloadindex).id & "." & modsdownloadlist.Item(modsdownloadindex).extension
+    '            End If
+    '            'If url.Host = "mega.co.nz" Then
+    '            '    'AddHandler Megalib.DownloadProgress, AddressOf DownloadProgress
+    '            '    'AddHandler Megalib.DownloadFinished, AddressOf DownloadModFinished
+    '            '    'Megalib.download_url(Mods.downloadlinkAt(Version, Mods.Name(name, Version)), path)
+    '            'Else
+    '            Try
+    '                If IO.Directory.Exists(IO.Path.GetDirectoryName(cachefolder & "\" & Modsfilename)) = False Then
+    '                    IO.Directory.CreateDirectory((IO.Path.GetDirectoryName(cachefolder & "\" & Modsfilename)))
+    '                End If
+    '                wcmod.DownloadFileAsync(url, cachefolder & "\" & Modsfilename)
+    '            Catch ex As Exception
+    '                lbl_mods_status.Content = ex.Message
+    '                Me.ShowMessageAsync("Fehler", ex.Message, MessageDialogStyle.Affirmative, New MetroDialogSettings() With {.AffirmativeButtonText = "Ok", .ColorScheme = MetroDialogColorScheme.Accented})
+    '                Mod_Download_finished()
+    '                Exit Sub
+    '            End Try
+    '            'End If
+    '            modsdownloadindex += 1
+    '            Dim selected As Integer = lb_mods.SelectedIndex
+    '            Load_Mods()
+    '            lb_mods.SelectedIndex = selected
+    '        End If
+    '    Else
+    '        lbl_mods_status.Content = "Erfolgreich installiert"
+    '        Mod_Download_finished()
+    '    End If
+    'End Sub
 
-    Private Sub wcmod_DownloadFileCompleted(sender As Object, e As System.ComponentModel.AsyncCompletedEventArgs) Handles wcmod.DownloadFileCompleted
-        If e.Cancelled = True Then
-            lbl_mods_status.Content = "Abgebrochen"
-            Mod_Download_finished()
-        Else
-            Try
-                Dim path As String = tb_modsfolder.Text & "\" & Modsfilename
-                If IO.Directory.Exists(IO.Path.GetDirectoryName(path)) = False Then
-                    IO.Directory.CreateDirectory((IO.Path.GetDirectoryName(path)))
-                End If
-                My.Computer.FileSystem.MoveFile(cachefolder & "\" & Modsfilename, path)
-            Catch
-            End Try
-            download_mod()
-        End If
-    End Sub
+    'Private Sub wcmod_DownloadFileCompleted(sender As Object, e As System.ComponentModel.AsyncCompletedEventArgs) Handles wcmod.DownloadFileCompleted
+    '    If e.Cancelled = True Then
+    '        lbl_mods_status.Content = "Abgebrochen"
+    '        Mod_Download_finished()
+    '    Else
+    '        Try
+    '            Dim path As String = tb_modsfolder.Text & "\" & Modsfilename
+    '            If IO.Directory.Exists(IO.Path.GetDirectoryName(path)) = False Then
+    '                IO.Directory.CreateDirectory((IO.Path.GetDirectoryName(path)))
+    '            End If
+    '            My.Computer.FileSystem.MoveFile(cachefolder & "\" & Modsfilename, path)
+    '        Catch
+    '        End Try
+    '        download_mod()
+    '    End If
+    'End Sub
 
-    Private Sub Mod_Download_finished()
-        moddownloading = False
-        btn_resetmodsfoler.IsEnabled = True
-        btn_selectmodsfolder.IsEnabled = True
-        btn_refresh.IsEnabled = True
-        btn_downloadmod.IsEnabled = True
-        Dim selected As Integer = lb_mods.SelectedIndex
-        Load_Mods()
-        lb_mods.SelectedIndex = selected
-    End Sub
+    'Private Sub Mod_Download_finished()
+    '    moddownloading = False
+    '    btn_resetmodsfoler.IsEnabled = True
+    '    btn_selectmodsfolder.IsEnabled = True
+    '    btn_refresh.IsEnabled = True
+    '    btn_downloadmod.IsEnabled = True
+    '    Dim selected As Integer = lb_mods.SelectedIndex
+    '    Load_Mods()
+    '    lb_mods.SelectedIndex = selected
+    'End Sub
 
-    Public Sub Load_ModVersions()
+    'Public Sub Load_ModVersions()
+    '    cb_modversions.Items.Clear()
+    '    Dim modversionslist As IList(Of String) = Mods.Get_ModVersions
+    '    For Each Modversion As String In modversionslist
+    '        cb_modversions.Items.Add(Modversion)
+    '    Next
+    '    cb_modversions.SelectedIndex = 0
+    'End Sub
+
+    'Public Sub Load_Mods()
+    '    Try
+    '        lb_mods.Items.Clear()
+    '        modslist = Mods.Get_Mods(cb_modversions.SelectedItem.ToString, tb_modsfolder.Text)
+    '        Filter_Mods()
+    '    Catch
+    '    End Try
+    'End Sub
+
+    'Private Sub Filter_Mods()
+    '    lb_mods.Items.Clear()
+    '    For Each Moditem As ForgeMod In modslist
+    '        If Moditem.name.ToLower.Contains(tb_search_mods.Text.ToLower) = True Then
+    '            lb_mods.Items.Add(Moditem)
+    '        End If
+    '    Next
+    '    If lb_mods.Items.Count >= 1 Then
+    '        lb_mods.SelectedIndex = 0
+    '    End If
+    'End Sub
+
+    'Private Sub cb_modversions_SelectionChanged(sender As Object, e As SelectionChangedEventArgs) Handles cb_modversions.SelectionChanged
+    '    Load_Mods()
+    'End Sub
+
+    'Private Sub lb_mods_SelectionChanged(sender As Object, e As SelectionChangedEventArgs) Handles lb_mods.SelectionChanged
+    '    'Load_Modinfos
+    '    If lb_mods.SelectedIndex <> -1 Then
+    '        'If DirectCast(lb_mods.SelectedItem, ForgeMod).installed = True Then
+    '        '    Dim c As New ImageSourceConverter()
+    '        '    img_installed.Source = CType(c.ConvertFrom(My.Resources.check_green), ImageSource)
+    '        'Else
+    '        '    img_installed.Source = Nothing
+    '        'End If
+    '        If lb_mods.SelectedItems.Count > 1 Then
+    '            btn_downloadmod.Content = lb_mods.SelectedItems.Count & " Installieren"
+    '        Else
+    '            btn_downloadmod.Content = "Installieren"
+    '        End If
+    '        lbl_name.Content = DirectCast(lb_mods.SelectedItem, ForgeMod).name
+    '        lbl_autor.Content = DirectCast(lb_mods.SelectedItem, ForgeMod).autor
+    '        tb_description.Text = DirectCast(lb_mods.SelectedItem, ForgeMod).description
+    '        If DirectCast(lb_mods.SelectedItem, ForgeMod).installed = True Then
+    '            img_installed.Visibility = Windows.Visibility.Visible
+    '            btn_list_delete_mod.IsEnabled = True
+    '        Else
+    '            btn_list_delete_mod.IsEnabled = False
+    '            img_installed.Visibility = Windows.Visibility.Hidden
+    '        End If
+    '        If DirectCast(lb_mods.SelectedItem, ForgeMod).type = "forge" Then
+    '            lbl_type.Content = "Vorraussetzung: Minecraft Forge (Tools->Forge)"
+    '        ElseIf DirectCast(lb_mods.SelectedItem, ForgeMod).type = "liteloader" Then
+    '            lbl_type.Content = "Vorraussetzung: LiteLoader (Tools->LiteLoader)"
+    '        Else
+    '            lbl_type.Content = "Type: " & DirectCast(lb_mods.SelectedItem, ForgeMod).type
+    '        End If
+    '    End If
+
+
+    '    'If lb_mods.SelectedIndex <> -1 Then
+    '    '    lbl_name.Content = Mods.NameAt(cb_modversions.SelectedItem.ToString, lb_mods.SelectedIndex)
+    '    '    tb_description.Text = Mods.descriptionAt(cb_modversions.SelectedItem.ToString, lb_mods.SelectedIndex)
+    '    '    mod_website = Mods.websiteAt(cb_modversions.SelectedItem.ToString, lb_mods.SelectedIndex)
+    '    '    mod_video = Mods.videoAt(cb_modversions.SelectedItem.ToString, lb_mods.SelectedIndex)
+    '    '    mod_downloadlink = Mods.downloadlinkAt(cb_modversions.SelectedItem.ToString, lb_mods.SelectedIndex)
+    '    'End If
+    'End Sub
+
+    'Private Sub wcmod_DownloadProgressChanged(sender As Object, e As DownloadProgressChangedEventArgs) Handles wcmod.DownloadProgressChanged
+    '    ' Do all the ui thread updates here
+    '    Me.Dispatcher.Invoke(
+    '        DispatcherPriority.Normal,
+    '        New Action(Sub()
+
+    '                       ' Do all the ui thread updates here
+    '                       pb_mods_download.Value = e.ProgressPercentage
+
+    '                   End Sub))
+    'End Sub
+
+    'Private Sub btn_website_Click(sender As Object, e As RoutedEventArgs) Handles btn_website.Click
+    '    Process.Start(DirectCast(lb_mods.SelectedItem, ForgeMod).website)
+    'End Sub
+
+    'Private Sub btn_video_Click(sender As Object, e As RoutedEventArgs) Handles btn_video.Click
+    '    Process.Start(DirectCast(lb_mods.SelectedItem, ForgeMod).video)
+    'End Sub
+
+    'Private Sub btn_resetmodsfoler_Click(sender As Object, e As RoutedEventArgs) Handles btn_resetmodsfoler.Click
+    '    tb_modsfolder.Text = modsfolder
+    'End Sub
+
+    'Private Sub btn_selectmodsfolder_Click(sender As Object, e As RoutedEventArgs) Handles btn_selectmodsfolder.Click
+    '    If Directory.Exists(modsfolder) = False Then
+    '        Directory.CreateDirectory(modsfolder)
+    '    End If
+    '    Dim fd As New VistaFolderBrowserDialog
+    '    fd.UseDescriptionForTitle = True
+    '    fd.Description = "Mods Ordner auswählen"
+    '    fd.RootFolder = Environment.SpecialFolder.MyComputer
+    '    fd.SelectedPath = modsfolder
+    '    fd.ShowNewFolderButton = True
+    '    If fd.ShowDialog = True Then
+    '        tb_modsfolder.Text = fd.SelectedPath
+    '    End If
+    'End Sub
+
+    'Private Sub RefreshMods()
+    '    'For Each item As ForgeMod In modslist
+    '    '    Dim Struktur As String
+    '    '    Dim Version As String
+    '    '    Version = cb_versions.SelectedItem.ToString
+    '    '    If Version >= "1.6.4" = True Then
+    '    '        Struktur = Version & "\" & item.id & "." & item.extension
+    '    '    Else
+    '    '        Struktur = Version & "-" & item.id & "." & item.extension
+    '    '    End If
+    '    '    If File.Exists(modsfolder & "\" & Struktur) = True Then
+    '    '        item.installed = True
+    '    '    Else
+    '    '        item.installed = False
+    '    '    End If
+    '    'Next
+
+    '    'For Each item As ForgeMod In lb_mods.Items
+    '    '    Dim Struktur As String
+    '    '    Dim Version As String
+    '    '    Version = cb_versions.SelectedItem.ToString
+    '    '    If Version >= "1.6.4" = True Then
+    '    '        Struktur = Version & "\" & item.id & "." & item.extension
+    '    '    Else
+    '    '        Struktur = Version & "-" & item.id & "." & item.extension
+    '    '    End If
+    '    '    If File.Exists(modsfolder & "\" & Struktur) = True Then
+    '    '        item.installed = True
+    '    '    Else
+    '    '        item.installed = False
+    '    '    End If
+    '    'Next
+    '    Try
+    '        Dim selectedversion As String = cb_modversions.SelectedItem.ToString
+    '        Dim selectedmod As Integer = lb_mods.SelectedIndex
+    '        Dim SelectedItems As IList = lb_mods.SelectedItems
+    '        Load_ModVersions()
+    '        'Funktioniert nicht
+    '        For Each item In SelectedItems
+    '            lb_mods.SelectedItems.Add(item)
+    '        Next
+    '        cb_modversions.SelectedItem = selectedversion
+    '        lb_mods.SelectedIndex = selectedmod
+    '    Catch
+    '    End Try
+    'End Sub
+
+    'Private Sub tb_search_mods_TextChanged(sender As Object, e As TextChangedEventArgs) Handles tb_search_mods.TextChanged
+    '    Filter_Mods()
+    'End Sub
+
+    'Private Sub btn_list_delete_mod_Click(sender As Object, e As RoutedEventArgs) Handles btn_list_delete_mod.Click
+    '    Dim Version As String = DirectCast(lb_mods.SelectedItem, ForgeMod).version
+    '    Dim Struktur As String
+    '    If Version >= "1.6.4" = True Then
+    '        Struktur = Version & "\" & DirectCast(lb_mods.SelectedItem, ForgeMod).id & "." & DirectCast(lb_mods.SelectedItem, ForgeMod).extension
+    '    Else
+    '        Struktur = Version & "-" & DirectCast(lb_mods.SelectedItem, ForgeMod).id & "." & DirectCast(lb_mods.SelectedItem, ForgeMod).extension
+    '    End If
+    '    If File.Exists(tb_modsfolder.Text & "\" & Struktur) = True Then
+    '        File.Delete(tb_modsfolder.Text & "\" & Struktur)
+    '    End If
+    '    Dim selected As Integer = lb_mods.SelectedIndex
+    '    Load_Mods()
+    '    lb_mods.SelectedIndex = selected
+    'End Sub
+
+    'Private Sub tb_modsfolder_TextChanged(sender As Object, e As TextChangedEventArgs) Handles tb_modsfolder.TextChanged
+    '    RefreshMods()
+    'End Sub
+
+    '*********Done*********
+    Public Async Function Load_ModVersions() As Task
         cb_modversions.Items.Clear()
-        Dim modversionslist As IList(Of String) = Mods.Get_ModVersions
+        Dim modversionslist As IList(Of String) = Await Modifications.List_all_Mod_Vesions
         For Each Modversion As String In modversionslist
             cb_modversions.Items.Add(Modversion)
         Next
         cb_modversions.SelectedIndex = 0
-    End Sub
-
-    Public Sub Load_Mods()
-        Try
-            lb_mods.Items.Clear()
-            modslist = Mods.Get_Mods(cb_modversions.SelectedItem.ToString, tb_modsfolder.Text)
-            Filter_Mods()
-        Catch
-        End Try
-    End Sub
-
+    End Function
     Private Sub Filter_Mods()
         lb_mods.Items.Clear()
-        For Each Moditem As ForgeMod In modslist
+        For Each Moditem As Modifications.Mod In Modifications.ModList
             If Moditem.name.ToLower.Contains(tb_search_mods.Text.ToLower) = True Then
                 lb_mods.Items.Add(Moditem)
             End If
@@ -1439,11 +1618,18 @@ Public Class MainWindow
             lb_mods.SelectedIndex = 0
         End If
     End Sub
-
     Private Sub cb_modversions_SelectionChanged(sender As Object, e As SelectionChangedEventArgs) Handles cb_modversions.SelectionChanged
-        Load_Mods()
+        Filter_Mods()
     End Sub
-
+    Private Sub tb_search_mods_TextChanged(sender As Object, e As TextChangedEventArgs) Handles tb_search_mods.TextChanged
+        Filter_Mods()
+    End Sub
+    Private Sub btn_website_Click(sender As Object, e As RoutedEventArgs) Handles btn_website.Click
+        Process.Start(DirectCast(lb_mods.SelectedItem, Modifications.Mod).website)
+    End Sub
+    Private Sub btn_video_Click(sender As Object, e As RoutedEventArgs) Handles btn_video.Click
+        Process.Start(DirectCast(lb_mods.SelectedItem, Modifications.Mod).video)
+    End Sub
     Private Sub lb_mods_SelectionChanged(sender As Object, e As SelectionChangedEventArgs) Handles lb_mods.SelectionChanged
         'Load_Modinfos
         If lb_mods.SelectedIndex <> -1 Then
@@ -1458,19 +1644,26 @@ Public Class MainWindow
             Else
                 btn_downloadmod.Content = "Installieren"
             End If
-            lbl_name.Content = DirectCast(lb_mods.SelectedItem, ForgeMod).name
-            lbl_autor.Content = DirectCast(lb_mods.SelectedItem, ForgeMod).autor
-            tb_description.Text = DirectCast(lb_mods.SelectedItem, ForgeMod).description
-            If DirectCast(lb_mods.SelectedItem, ForgeMod).installed = True Then
+            Dim selected As Modifications.Mod = DirectCast(lb_mods.SelectedItem, Modifications.Mod)
+            lbl_name.Content = selected.name
+            lbl_autor.Content = selected.autor
+            If selected.descriptions.Select(Function(p) p.id).Contains("de") Then
+                tb_description.Text = selected.descriptions.Where(Function(p) p.id = "de").First.text
+            ElseIf selected.descriptions.Select(Function(p) p.id).Contains("en") Then
+                tb_description.Text = selected.descriptions.Where(Function(p) p.id = "en").First.text
+            Else
+                tb_description.Text = selected.descriptions.First.text
+            End If
+            If selected.installed = True Then
                 img_installed.Visibility = Windows.Visibility.Visible
                 btn_list_delete_mod.IsEnabled = True
             Else
                 btn_list_delete_mod.IsEnabled = False
                 img_installed.Visibility = Windows.Visibility.Hidden
             End If
-            If DirectCast(lb_mods.SelectedItem, ForgeMod).type = "forge" Then
+            If selected.type = "forge" Then
                 lbl_type.Content = "Vorraussetzung: Minecraft Forge (Tools->Forge)"
-            ElseIf DirectCast(lb_mods.SelectedItem, ForgeMod).type = "liteloader" Then
+            ElseIf selected.type = "liteloader" Then
                 lbl_type.Content = "Vorraussetzung: LiteLoader (Tools->LiteLoader)"
             Else
                 lbl_type.Content = "Type: " & DirectCast(lb_mods.SelectedItem, ForgeMod).type
@@ -1486,47 +1679,7 @@ Public Class MainWindow
         '    mod_downloadlink = Mods.downloadlinkAt(cb_modversions.SelectedItem.ToString, lb_mods.SelectedIndex)
         'End If
     End Sub
-
-    Private Sub wcmod_DownloadProgressChanged(sender As Object, e As DownloadProgressChangedEventArgs) Handles wcmod.DownloadProgressChanged
-        ' Do all the ui thread updates here
-        Me.Dispatcher.Invoke(
-            DispatcherPriority.Normal,
-            New Action(Sub()
-
-                           ' Do all the ui thread updates here
-                           pb_mods_download.Value = e.ProgressPercentage
-
-                       End Sub))
-    End Sub
-
-    Private Sub btn_website_Click(sender As Object, e As RoutedEventArgs) Handles btn_website.Click
-        Process.Start(DirectCast(lb_mods.SelectedItem, ForgeMod).website)
-    End Sub
-
-    Private Sub btn_video_Click(sender As Object, e As RoutedEventArgs) Handles btn_video.Click
-        Process.Start(DirectCast(lb_mods.SelectedItem, ForgeMod).video)
-    End Sub
-
-    Private Sub btn_resetmodsfoler_Click(sender As Object, e As RoutedEventArgs) Handles btn_resetmodsfoler.Click
-        tb_modsfolder.Text = modsfolder
-    End Sub
-
-    Private Sub btn_selectmodsfolder_Click(sender As Object, e As RoutedEventArgs) Handles btn_selectmodsfolder.Click
-        If Directory.Exists(modsfolder) = False Then
-            Directory.CreateDirectory(modsfolder)
-        End If
-        Dim fd As New VistaFolderBrowserDialog
-        fd.UseDescriptionForTitle = True
-        fd.Description = "Mods Ordner auswählen"
-        fd.RootFolder = Environment.SpecialFolder.MyComputer
-        fd.SelectedPath = modsfolder
-        fd.ShowNewFolderButton = True
-        If fd.ShowDialog = True Then
-            tb_modsfolder.Text = fd.SelectedPath
-        End If
-    End Sub
-
-    Private Sub RefreshMods()
+    Private Async Function RefreshMods() As Task
         'For Each item As ForgeMod In modslist
         '    Dim Struktur As String
         '    Dim Version As String
@@ -1562,7 +1715,7 @@ Public Class MainWindow
             Dim selectedversion As String = cb_modversions.SelectedItem.ToString
             Dim selectedmod As Integer = lb_mods.SelectedIndex
             Dim SelectedItems As IList = lb_mods.SelectedItems
-            Load_ModVersions()
+            Await Load_ModVersions()
             'Funktioniert nicht
             For Each item In SelectedItems
                 lb_mods.SelectedItems.Add(item)
@@ -1571,31 +1724,148 @@ Public Class MainWindow
             lb_mods.SelectedIndex = selectedmod
         Catch
         End Try
+    End Function
+    Private Sub btn_resetmodsfoler_Click(sender As Object, e As RoutedEventArgs) Handles btn_resetmodsfoler.Click
+        tb_modsfolder.Text = modsfolder
     End Sub
-
-    Private Sub tb_search_mods_TextChanged(sender As Object, e As TextChangedEventArgs) Handles tb_search_mods.TextChanged
-        Filter_Mods()
+    Private Sub btn_selectmodsfolder_Click(sender As Object, e As RoutedEventArgs) Handles btn_selectmodsfolder.Click
+        If Directory.Exists(modsfolder) = False Then
+            Directory.CreateDirectory(modsfolder)
+        End If
+        Dim fd As New VistaFolderBrowserDialog
+        fd.UseDescriptionForTitle = True
+        fd.Description = "Mods Ordner auswählen"
+        fd.RootFolder = Environment.SpecialFolder.MyComputer
+        fd.SelectedPath = modsfolder
+        fd.ShowNewFolderButton = True
+        If fd.ShowDialog = True Then
+            tb_modsfolder.Text = fd.SelectedPath
+        End If
     End Sub
-
+    Private Async Sub tb_modsfolder_TextChanged(sender As Object, e As TextChangedEventArgs) Handles tb_modsfolder.TextChanged
+        Await RefreshMods()
+    End Sub
     Private Sub btn_list_delete_mod_Click(sender As Object, e As RoutedEventArgs) Handles btn_list_delete_mod.Click
-        Dim Version As String = DirectCast(lb_mods.SelectedItem, ForgeMod).version
+        Dim Version As String = DirectCast(lb_mods.SelectedItem, Modifications.Mod).versions.Where(Function(p) p.version = cb_modversions.SelectedItem.ToString).First.version
+        Delete_Mod(Version)
+    End Sub
+    Public Sub Delete_Mod(Version As String)
         Dim Struktur As String
         If Version >= "1.6.4" = True Then
-            Struktur = Version & "\" & DirectCast(lb_mods.SelectedItem, ForgeMod).id & "." & DirectCast(lb_mods.SelectedItem, ForgeMod).extension
+            Struktur = Version & "\" & Version & "-" & DirectCast(lb_mods.SelectedItem, Modifications.Mod).id & "." & DirectCast(lb_mods.SelectedItem, Modifications.Mod).extension
         Else
-            Struktur = Version & "-" & DirectCast(lb_mods.SelectedItem, ForgeMod).id & "." & DirectCast(lb_mods.SelectedItem, ForgeMod).extension
+            Struktur = Version & "-" & DirectCast(lb_mods.SelectedItem, Modifications.Mod).id & "." & DirectCast(lb_mods.SelectedItem, Modifications.Mod).extension
         End If
         If File.Exists(tb_modsfolder.Text & "\" & Struktur) = True Then
             File.Delete(tb_modsfolder.Text & "\" & Struktur)
         End If
         Dim selected As Integer = lb_mods.SelectedIndex
-        Load_Mods()
+        Filter_Mods()
         lb_mods.SelectedIndex = selected
     End Sub
-
-    Private Sub tb_modsfolder_TextChanged(sender As Object, e As TextChangedEventArgs) Handles tb_modsfolder.TextChanged
-        RefreshMods()
+    Private Async Sub btn_downloadmod_Click(sender As Object, e As RoutedEventArgs) Handles btn_downloadmod.Click
+        If moddownloading = True Then
+            Await Me.ShowMessageAsync("Download läuft", "Eine Mod wird bereits heruntergeladen. Warte bitte, bis diese fertig ist!", MessageDialogStyle.Affirmative, New MetroDialogSettings() With {.AffirmativeButtonText = "Ok", .ColorScheme = MetroDialogColorScheme.Accented})
+        Else
+            modsdownloadingversion = cb_modversions.SelectedItem.ToString
+            btn_resetmodsfoler.IsEnabled = False
+            btn_selectmodsfolder.IsEnabled = False
+            btn_refresh.IsEnabled = False
+            btn_downloadmod.IsEnabled = False
+            moddownloading = True
+            lbl_mods_status.Content = Nothing
+            modsdownloadlist.Clear()
+            For Each selectedmod As Modifications.Mod In lb_mods.SelectedItems
+                modsdownloadlist.Add(selectedmod)
+                    For Each item As String In Modifications.Dependencies(selectedmod.id, modsdownloadingversion)
+                        Dim moditem As Modifications.Mod = Modifications.ModList.Where(Function(p) p.id = item).First
+                        If modsdownloadlist.Select(Function(p) p.id).Contains(moditem.id) = False Then
+                            modsdownloadlist.Add(moditem)
+                        End If
+                    Next
+            Next
+            modsdownloadindex = 0
+            download_mod()
+        End If
     End Sub
+    Private Async Sub download_mod()
+        If modsdownloadindex < modsdownloadlist.Count Then
+            If tb_modsfolder.Text.Contains(IO.Path.GetInvalidPathChars) = True Then
+                Await Me.ShowMessageAsync("Fehler", "Der Pfad des Mods Ordner enthält ungültige Zeichen", MessageDialogStyle.Affirmative, New MetroDialogSettings() With {.AffirmativeButtonText = "Ok", .ColorScheme = MetroDialogColorScheme.Accented})
+            Else
+                Dim path As String = tb_modsfolder.Text
+                Dim name As String = modsdownloadlist.Item(modsdownloadindex).name
+                Dim url As New Uri(modsdownloadlist.Item(modsdownloadindex).versions.Where(Function(p) p.version = modsdownloadingversion).First.downloadlink)
+                lbl_mods_status.Content = modsdownloadindex + 1 & " / " & modsdownloadlist.Count & " " & name
+                If modsdownloadingversion >= "1.6.4" = True Then
+                    Modsfilename = modsdownloadingversion & "\" & modsdownloadingversion & "-" & modsdownloadlist.Item(modsdownloadindex).id & "." & modsdownloadlist.Item(modsdownloadindex).extension
+                Else
+                    Modsfilename = modsdownloadingversion & "-" & modsdownloadlist.Item(modsdownloadindex).id & "." & modsdownloadlist.Item(modsdownloadindex).extension
+                End If
+                Try
+                    If IO.Directory.Exists(IO.Path.GetDirectoryName(cachefolder & "\" & Modsfilename)) = False Then
+                        IO.Directory.CreateDirectory((IO.Path.GetDirectoryName(cachefolder & "\" & Modsfilename)))
+                    End If
+                    wcmod.DownloadFileAsync(url, cachefolder & "\" & Modsfilename)
+                Catch ex As Exception
+                    lbl_mods_status.Content = ex.Message
+                    Me.ShowMessageAsync("Fehler", ex.Message, MessageDialogStyle.Affirmative, New MetroDialogSettings() With {.AffirmativeButtonText = "Ok", .ColorScheme = MetroDialogColorScheme.Accented})
+                    Mod_Download_finished()
+                    Exit Sub
+                End Try
+                'End If
+                modsdownloadindex += 1
+                Dim selected As Integer = lb_mods.SelectedIndex
+                Filter_Mods()
+                lb_mods.SelectedIndex = selected
+            End If
+        Else
+            lbl_mods_status.Content = "Erfolgreich installiert"
+            Mod_Download_finished()
+        End If
+    End Sub
+    Private Sub wcmod_DownloadFileCompleted(sender As Object, e As System.ComponentModel.AsyncCompletedEventArgs) Handles wcmod.DownloadFileCompleted
+        If e.Cancelled = True Then
+            lbl_mods_status.Content = "Abgebrochen"
+            Mod_Download_finished()
+        Else
+            Try
+                Dim path As String = tb_modsfolder.Text & "\" & Modsfilename
+                If IO.Directory.Exists(IO.Path.GetDirectoryName(path)) = False Then
+                    IO.Directory.CreateDirectory((IO.Path.GetDirectoryName(path)))
+                End If
+                My.Computer.FileSystem.MoveFile(cachefolder & "\" & Modsfilename, path)
+            Catch
+            End Try
+            download_mod()
+        End If
+    End Sub
+    Private Sub Mod_Download_finished()
+        moddownloading = False
+        btn_resetmodsfoler.IsEnabled = True
+        btn_selectmodsfolder.IsEnabled = True
+        btn_refresh.IsEnabled = True
+        btn_downloadmod.IsEnabled = True
+        Dim selected As Integer = lb_mods.SelectedIndex
+        Filter_Mods()
+        lb_mods.SelectedIndex = selected
+    End Sub
+    Private Sub wcmod_DownloadProgressChanged(sender As Object, e As DownloadProgressChangedEventArgs) Handles wcmod.DownloadProgressChanged
+        ' Do all the ui thread updates here
+        Me.Dispatcher.Invoke(
+            DispatcherPriority.Normal,
+            New Action(Sub()
+
+                           ' Do all the ui thread updates here
+                           pb_mods_download.Value = e.ProgressPercentage
+
+                       End Sub))
+    End Sub
+
+    '********TODO************
+    '****************************************************************************************************************************************************
+    '*****************Mod Installed ohne property machen.... und errors beim downloadfinished auswerten, auch beim splashscreen**************************
+    '****************************************************************************************************************************************************
 
 #End Region
 
