@@ -73,7 +73,14 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="ModVersionEditor.xaml.vb">
+      <DependentUpon>ModVersionEditor.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Versions.vb" />
+    <Page Include="ModVersionEditor.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="ForgeEditor.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

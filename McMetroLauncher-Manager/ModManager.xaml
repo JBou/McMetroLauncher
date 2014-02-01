@@ -1,4 +1,5 @@
 ﻿<Controls:MetroWindow
+    xmlns:local="clr-namespace:McMetroLauncher_Manager"
     xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
     xmlns:metro="http://schemas.codeplex.com/elysium"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -10,6 +11,7 @@
     Title="ModManager" Height="444" Width="1092" Icon="favicon.ico" ResizeMode="NoResize">
 
     <Window.Resources>
+        <local:Dependencies_String_Converter x:Key="Dependencies_String_Converter"/>
         <Style x:Key="myHeaderStyle" TargetType="{x:Type GridViewColumnHeader}">
             <Setter Property="Visibility" Value="Collapsed" />
         </Style>
@@ -17,30 +19,60 @@
 
     <Grid>
         <Button x:Name="btn_add" Content="Neu" HorizontalAlignment="Left" Margin="866,375,0,0" VerticalAlignment="Top" Width="210" Height="30"/>
-        <TextBox x:Name="tb_description" Margin="352,66,214,134" Width="520" AcceptsReturn="True" IsReadOnly="True" TextWrapping="Wrap" VerticalContentAlignment="Top" VerticalScrollBarVisibility="Auto"/>
-        <Label x:Name="lbl_name" HorizontalAlignment="Left" Height="23" Margin="401,10,0,0"  VerticalAlignment="Top" Width="471" FontSize="14" Padding="5,0" VerticalContentAlignment="Center"/>
+        <TextBox x:Name="tb_description" Margin="352,76,214,134" Width="520" AcceptsReturn="True" IsReadOnly="True" TextWrapping="Wrap" VerticalContentAlignment="Top" VerticalScrollBarVisibility="Auto"/>
+        <Label x:Name="lbl_name" HorizontalAlignment="Left" Height="23" Margin="401,16,0,0"  VerticalAlignment="Top" Width="471" FontSize="14" Padding="5,0" VerticalContentAlignment="Center"/>
         <Button x:Name="btn_edit" Content="Bearbeiten" HorizontalAlignment="Left" Margin="609,375,0,0" VerticalAlignment="Top" Width="210" Height="30"/>
         <Button x:Name="btn_delete" Content="Entfernen" HorizontalAlignment="Left" Margin="352,375,0,0" VerticalAlignment="Top" Width="210" Height="30"/>
-        <Label Content="Name:" HorizontalAlignment="Left" Margin="352,9,0,0" VerticalAlignment="Top"/>
-        <Label Content="Autor:" HorizontalAlignment="Left" Margin="352,35,0,0" VerticalAlignment="Top"/>
-        <Label Content="Video:" HorizontalAlignment="Left" Margin="352,342,0,0" VerticalAlignment="Top"/>
-        <ListView x:Name="lb_mods" HorizontalAlignment="Left" Height="359" Margin="10,44,0,0" VerticalAlignment="Top" Width="337" BorderThickness="0">
+        <Label Content="Name:" HorizontalAlignment="Left" Margin="352,15,0,0" VerticalAlignment="Top"/>
+        <Label Content="Description:" HorizontalAlignment="Left" Margin="710,45,0,0" VerticalAlignment="Top" Width="78"/>
+        <ComboBox x:Name="cb_descriptions" DisplayMemberPath="id" HorizontalAlignment="Left" Margin="793,45,0,0" VerticalAlignment="Top" Width="79"/>
+        <Label Content="Autor:" HorizontalAlignment="Left" Margin="352,45,0,0" VerticalAlignment="Top"/>
+        <ListView x:Name="lb_mods" HorizontalAlignment="Left" Height="393" Margin="10,10,0,0" VerticalAlignment="Top" Width="337" BorderThickness="0">
             <ListView.View>
                 <GridView ColumnHeaderContainerStyle="{StaticResource myHeaderStyle}" AllowsColumnReorder="False">
                     <GridViewColumn DisplayMemberBinding="{Binding Path=name}"/>
                 </GridView>
             </ListView.View>
         </ListView>
-        <Label Content="Download:" HorizontalAlignment="Left" Margin="352,316,0,0" VerticalAlignment="Top"/>
-        <Label x:Name="lbl_downloadlink" HorizontalAlignment="Left" Height="31" Margin="446,313,0,0"  VerticalAlignment="Top" Width="630"/>
+        <Label Content="Type:" HorizontalAlignment="Left" Margin="352,342,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="lbl_type" HorizontalAlignment="Left" Height="31" Margin="412,342,0,0"  VerticalAlignment="Top" Width="174"/>
+        <Label Content="Extension:" HorizontalAlignment="Left" Margin="909,343,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="lbl_extension" HorizontalAlignment="Left" Height="31" Margin="977,342,0,0"  VerticalAlignment="Top" Width="99"/>
         <Label Content="Website:" HorizontalAlignment="Left" Margin="352,286,0,0" VerticalAlignment="Top"/>
-        <Label x:Name="lbl_type" HorizontalAlignment="Left" Margin="877,246,0,0" VerticalAlignment="Top" Width="199" Height="35" VerticalContentAlignment="Center"/>
-        <Label x:Name="lbl_website" HorizontalAlignment="Left" Height="31" Margin="446,286,0,0"  VerticalAlignment="Top" Width="630"/>
-        <ComboBox x:Name="cb_modversions" HorizontalAlignment="Left" Margin="10,8,0,0" VerticalAlignment="Top" Width="337" Height="31"/>
-        <Label x:Name="lbl_video" HorizontalAlignment="Left" Height="31" Margin="446,339,0,0"  VerticalAlignment="Top" Width="630"/>
-        <ListBox x:Name="lb_needed_mods" HorizontalAlignment="Left" Height="197" Margin="877,44,0,0" VerticalAlignment="Top" Width="199"/>
-        <Label Content="Vorrausgesetzte Mods:" HorizontalAlignment="Left" Margin="877,4,0,0" VerticalAlignment="Top" Width="199" HorizontalContentAlignment="Center" Foreground="#FF00B9FF" FontSize="18" Height="35"/>
-        <Label x:Name="lbl_autor" HorizontalAlignment="Left" Height="23" Margin="401,38,0,0"  VerticalAlignment="Top" Width="471" FontSize="14" Padding="5,0" VerticalContentAlignment="Center"/>
+        <Label x:Name="lbl_website" HorizontalAlignment="Left" Height="31" Margin="412,286,0,0"  VerticalAlignment="Top" Width="664" />
+        <ListBox x:Name="lb_versions" DisplayMemberPath="version" HorizontalAlignment="Left" Height="237" Margin="877,44,0,0" VerticalAlignment="Top" Width="199">
+            <ListBox.ItemContainerStyle>
+                <Style TargetType="ListBoxItem" BasedOn="{StaticResource MetroListBoxItem}">
+                    <Setter Property="ToolTip">
+                        <Setter.Value>
+                            <StackPanel>
+                                <TextBlock>
+                                    <TextBlock.Text>
+                                        <MultiBinding xml:space="preserve" StringFormat="{}Version: {0}&#10;Downloadlink: {1}">
+                                              <Binding Path="version" />
+                                              <Binding Path="downloadlink" />
+                                        </MultiBinding>
+                                    </TextBlock.Text>
+                                </TextBlock>
+                                <TextBlock>
+                                    <TextBlock.Text>
+                                        <MultiBinding StringFormat="{}{0}">
+                                            <Binding Path="dependencies" Converter="{StaticResource Dependencies_String_Converter}" />
+                                        </MultiBinding>
+                                    </TextBlock.Text>
+                                </TextBlock>
+                            </StackPanel>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </ListBox.ItemContainerStyle>
+        </ListBox>
+        <Label Content="Versionen:" HorizontalAlignment="Left" Margin="877,4,0,0" VerticalAlignment="Top" Width="199" HorizontalContentAlignment="Center" Foreground="{StaticResource AccentColorBrush}" FontSize="18" Height="35"/>
+        <Label x:Name="lbl_autor" HorizontalAlignment="Left" Height="23" Margin="401,48,0,0"  VerticalAlignment="Top" Width="304" FontSize="14" Padding="5,0" VerticalContentAlignment="Center" RenderTransformOrigin="0.5,0.5" />
+        <Label Content="Video:" HorizontalAlignment="Left" Margin="352,316,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="lbl_video" HorizontalAlignment="Left" Height="31" Margin="412,313,0,0"  VerticalAlignment="Top" Width="664"/>
+        <Label Content="ID:" HorizontalAlignment="Left" Margin="591,344,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="lbl_ID" HorizontalAlignment="Left" Height="31" Margin="620,342,0,0"  VerticalAlignment="Top" Width="284"/>
 
     </Grid>
 </Controls:MetroWindow>

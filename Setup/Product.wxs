@@ -100,6 +100,10 @@
               <File Id="System.Windows.Interactivity" Name="System.Windows.Interactivity.dll" Source="$(var.McMetroLauncher.TargetDir)System.Windows.Interactivity.dll" />           
               <File Id="Ookii.Dialogs.Wpf" Name="Ookii.Dialogs.Wpf.dll" Source="$(var.McMetroLauncher.TargetDir)Ookii.Dialogs.Wpf.dll" />           
               <File Id="fNbt" Name="fNbt.dll" Source="$(var.McMetroLauncher.TargetDir)fNbt.dll" />
+              <File Id="Craft.Net" Name="Craft.Net.dll" Source="$(var.McMetroLauncher.TargetDir)Craft.Net.dll" />
+              <File Id="Craft.Net.Common" Name="Craft.Net.Common.dll" Source="$(var.McMetroLauncher.TargetDir)Craft.Net.Common.dll" />
+              <File Id="Craft.Net.Client" Name="Craft.Net.Client.dll" Source="$(var.McMetroLauncher.TargetDir)Craft.Net.Client.dll" />
+              <File Id="Craft.Net.Anvil" Name="Craft.Net.Anvil.dll" Source="$(var.McMetroLauncher.TargetDir)Craft.Net.Anvil.dll" />
             </Component>
 
             <Component Id="ShortCutDeinstall" Guid="{0BA3B1B9-679B-45C0-A6BB-0CEA1C5CDA7F}">

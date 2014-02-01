@@ -99,8 +99,8 @@ Public Class ForgeEditor
                 Forge.ForgeList.Item(loadedindex) = frg
             End If
             Await Forge.SavetoFile(modsfile)
+            DialogResult = True
+            Me.Close()
         End If
-        DialogResult = True
-        Me.Close()
     End Sub
 End Class

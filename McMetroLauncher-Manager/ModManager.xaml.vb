@@ -9,16 +9,14 @@
         Await Load_Mods()
     End Sub
 
-    Async Function Load_Mods() As Task
+    Private Async Function Load_Mods() As Task
         lb_mods.Items.Clear()
         Await Modifications.Load()
-        lb_mods.ItemsSource = Modifications.ModList
-    End Function
-
-    Private Async Sub cb_modversions_SelectionChanged(sender As Object, e As SelectionChangedEventArgs) Handles cb_modversions.SelectionChanged
-        Await Load_Mods()
+        For Each item As Modifications.Mod In Modifications.ModList
+            lb_mods.Items.Add(item)
+        Next
         lb_mods.SelectedIndex = 0
-    End Sub
+    End Function
 
     'Private Async Sub btn_add_Click(sender As Object, e As RoutedEventArgs) Handles btn_add.Click
     '    Dim ModsEditor As New ModEditor
@@ -82,5 +80,83 @@
     '        Load_Versions()
     '        Load_Mods()
     '    End Sub
+
+    Private Sub lb_mods_SelectionChanged(sender As Object, e As SelectionChangedEventArgs) Handles lb_mods.SelectionChanged
+        If lb_mods.SelectedIndex <> -1 Then
+            lbl_name.Content = DirectCast(lb_mods.SelectedItem, Modifications.Mod).name
+            'tb_description.Text = DirectCast(lb_mods.SelectedItem, ForgeMod).description
+            lbl_website.Content = DirectCast(lb_mods.SelectedItem, Modifications.Mod).website
+            lbl_video.Content = DirectCast(lb_mods.SelectedItem, Modifications.Mod).video
+            lbl_autor.Content = DirectCast(lb_mods.SelectedItem, Modifications.Mod).autor
+            lbl_ID.Content = DirectCast(lb_mods.SelectedItem, Modifications.Mod).id
+            lbl_extension.Content = DirectCast(lb_mods.SelectedItem, Modifications.Mod).extension
+            lbl_type.Content = DirectCast(lb_mods.SelectedItem, Modifications.Mod).type
+            lb_versions.Items.Clear()
+            For Each item As Modifications.Mod.Version In DirectCast(lb_mods.SelectedItem, Modifications.Mod).versions
+                lb_versions.Items.Add(item)
+            Next
+            lb_versions.SelectedIndex = 0
+            cb_descriptions.Items.Clear()
+            For Each item As Modifications.Mod.Description In DirectCast(lb_mods.SelectedItem, Modifications.Mod).descriptions
+                cb_descriptions.Items.Add(item)
+            Next
+            cb_descriptions.SelectedIndex = 0
+        End If
+    End Sub
+
+    Private Sub cb_descriptions_SelectionChanged(sender As Object, e As SelectionChangedEventArgs) Handles cb_descriptions.SelectionChanged
+        If cb_descriptions.SelectedIndex <> -1 Then
+            tb_description.Text = DirectCast(cb_descriptions.SelectedItem, Modifications.Mod.Description).text
+        End If
+    End Sub
+
+    Private Async Sub btn_edit_Click(sender As Object, e As RoutedEventArgs) Handles btn_edit.Click
+        If lb_mods.SelectedIndex = -1 Then
+            MessageBox.Show("Bitte wähle eine Mod aus!", "Fehler", MessageBoxButton.OK, MessageBoxImage.Error)
+        Else
+            Dim frm_ModEditor As New ModEditor(DirectCast(lb_mods.SelectedItem, Modifications.Mod), lb_mods.SelectedIndex)
+            Dim result As Boolean?
+            frm_ModEditor.ShowDialog()
+            result = frm_ModEditor.DialogResult
+            If result = True Then
+                Await Load_Mods()
+            End If
+        End If
+    End Sub
+
+    Private Async Sub btn_add_Click(sender As Object, e As RoutedEventArgs) Handles btn_add.Click
+        If lb_mods.SelectedIndex = -1 Then
+            MessageBox.Show("Bitte wähle eine Mod aus!", "Fehler", MessageBoxButton.OK, MessageBoxImage.Error)
+        Else
+            Dim frm_ModEditor As New ModEditor()
+            Dim result As Boolean?
+            frm_ModEditor.ShowDialog()
+            result = frm_ModEditor.DialogResult
+            If result = True Then
+                Await Load_Mods()
+            End If
+        End If
+    End Sub
+
+    Private Sub btn_delete_Click(sender As Object, e As RoutedEventArgs) Handles btn_delete.Click
+
+    End Sub
+End Class
+
+
+Public Class Dependencies_String_Converter
+    Implements System.Windows.Data.IValueConverter
+
+    Public Function Convert(value As Object, targetType As Type, parameter As Object, culture As System.Globalization.CultureInfo) As Object Implements System.Windows.Data.IValueConverter.Convert
+        Dim s As IList(Of String) = TryCast(value, IList(Of String))
+        If s Is Nothing Then Return Nothing
+        Dim dependecies As String = String.Join(Environment.NewLine, s)
+        Dim returnstring As String = String.Join(Environment.NewLine, "Dependencies:", dependecies)
+        Return returnstring
+    End Function
+
+    Public Function ConvertBack(value As Object, targetType As Type, parameter As Object, culture As System.Globalization.CultureInfo) As Object Implements IValueConverter.ConvertBack
+        Throw New NotImplementedException()
+    End Function
 
 End Class
