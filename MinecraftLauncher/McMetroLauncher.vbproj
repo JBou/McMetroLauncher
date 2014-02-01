@@ -167,7 +167,6 @@
       <DependentUpon>Forge_installer.xaml</DependentUpon>
     </Compile>
     <Compile Include="Formattingcodes.vb" />
-    <Compile Include="JSONAPI.vb" />
     <Compile Include="LiteLoader_installer.xaml.vb">
       <DependentUpon>LiteLoader_installer.xaml</DependentUpon>
     </Compile>
@@ -321,7 +320,6 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="SimpleCommand.vb" />
     <Resource Include="images\transparent64_64.png" />
     <Resource Include="images\check_green.png" />
     <Resource Include="minecraft_block.png" />

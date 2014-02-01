@@ -7,7 +7,7 @@ Module GlobalInfos
     Public Webspace As String = "http://youyougabbo.square7.ch/"
     Public Versionsurl As String = "http://s3.amazonaws.com/Minecraft.Download/versions/versions.json"
     Public mcpfad As String = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\.minecraft"
-    Public modsfile As String = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) & "\newmodlist.json"
+    Public modsfile As String = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) & "\modlist.json"
     Public outputjsonversions As String = mcpfad & "\cache\versions.json"
     Public modsfolder As String = mcpfad & "\mods"
     Public cachefolder As String = mcpfad & "\cache"

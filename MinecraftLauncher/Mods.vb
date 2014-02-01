@@ -14,6 +14,7 @@ Public Structure Modifications
         ModList = ModList.OrderBy(Function(p) p.name).ToList
         For i = 0 To ModList.Count - 1
             ModList.Item(i).versions = ModList.Item(i).versions.OrderByDescending(Function(p) p.version).ToList()
+            ModList.Item(i).descriptions = ModList.Item(i).descriptions.OrderBy(Function(p) p.id).ToList()
         Next
         Dim strModList As JArray = JArray.Parse(Await JsonConvert.SerializeObjectAsync(ModList, Formatting.Indented, New JsonSerializerSettings() With {.NullValueHandling = NullValueHandling.Ignore, .DefaultValueHandling = DefaultValueHandling.Ignore}))
         Dim o As String = File.ReadAllText(Filename)

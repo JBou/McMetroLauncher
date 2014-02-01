@@ -244,7 +244,7 @@ Public Module GlobalInfos
     End Property
 
     Public Versionsurl As String = "http://s3.amazonaws.com/Minecraft.Download/versions/versions.json"
-    Public modfileurl As String = Website & "download/newmodlist.json"
+    Public modfileurl As String = Website & "download/modlist.json"
     Public versionurl As String = Website & "mcmetrolauncher/version.txt"
     Public changelogurl As String = Website & "mcmetrolauncher/changelog.txt"
 
