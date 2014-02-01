@@ -7,10 +7,14 @@ Public Structure Modifications
     Public Shared ModList As IList(Of Modifications.Mod)
     Private Shared list_dependencies As IList(Of String) = New List(Of String)
 
-    Async Function SavetoFile(Filename As String) As Task
+    Public Shared Async Function SavetoFile(filename As String) As Task
         If ModList Is Nothing Then
             Exit Function
         End If
+        ModList = ModList.OrderBy(Function(p) p.name).ToList
+        For i = 0 To ModList.Count - 1
+            ModList.Item(i).versions = ModList.Item(i).versions.OrderByDescending(Function(p) p.version).ToList()
+        Next
         Dim strModList As String = Await JsonConvert.SerializeObjectAsync(ModList)
         Dim o As String = File.ReadAllText(Filename)
         Dim jo As JObject = JObject.Parse(o)
@@ -23,6 +27,29 @@ Public Structure Modifications
         Dim jo As JObject = JObject.Parse(o)
         ModList = Await JsonConvert.DeserializeObjectAsync(Of IList(Of Modifications.Mod))(jo("mods").ToString)
     End Function
+
+    Public Shared Sub Check_installed(modsfolder As String)
+        For i = 0 To ModList.Count - 1
+            With ModList.Item(i)
+                Dim versions As IList(Of Modifications.Mod.Version) = New List(Of Modifications.Mod.Version)
+                For Each version As Modifications.Mod.Version In .versions
+                    Dim filename As String = Nothing
+                    If version.version >= "1.6.4" Then
+                        filename = version.version & "\" & version.version & "-" & .id & "." & .extension
+                    Else
+                        filename = version.version & "-" & .id & "." & .extension
+                    End If
+                    If File.Exists(Path.Combine(modsfolder, filename)) Then
+                        version.installed = True
+                    Else
+                        version.installed = False
+                    End If
+                    versions.Add(version)
+                Next
+                ModList.Item(i).versions = versions
+            End With
+        Next
+    End Sub
 
     Public Shared Async Function List_all_Mod_Vesions() As Task(Of IList(Of String))
         If ModList Is Nothing Then
@@ -39,9 +66,9 @@ Public Structure Modifications
         Return list
     End Function
 
-    Public Shared Function Dependencies(ByVal Mod_id As String, Version As String) As IList(Of String)
+    Public Shared Function Dependencies(ByVal modid As String, version As String) As IList(Of String)
         list_dependencies.Clear()
-        Get_dependencies(Mod_id, Version)
+        Get_dependencies(modid, version)
         If list_dependencies.Count > 0 Then
             Return list_dependencies
         Else
@@ -49,16 +76,16 @@ Public Structure Modifications
         End If
     End Function
 
-    Private Shared Sub Get_dependencies(ByVal Mod_id As String, Version As String)
+    Private Shared Sub Get_dependencies(ByVal mod_id As String, version As String)
         'Dim ls As IList(Of String) = Mods.needed_modsAt(Version, Mods.Name(Modname, Version))
-        If ModList.Where(Function(p) p.id = Mod_id).First.versions.Where(Function(p) p.version = Version).First.dependencies IsNot Nothing Then
-            Dim ls As IList(Of String) = ModList.Where(Function(p) p.id = Mod_id).First.versions.Where(Function(p) p.version = Version).First.dependencies
+        If ModList.Where(Function(p) p.id = mod_id).First.versions.Where(Function(p) p.version = version).First.dependencies IsNot Nothing Then
+            Dim ls As IList(Of String) = ModList.Where(Function(p) p.id = mod_id).First.versions.Where(Function(p) p.version = version).First.dependencies
             If ls.Count > 0 Then
                 For Each item As String In ls
                     If list_dependencies.Contains(item) = False Then
                         list_dependencies.Add(item)
                     End If
-                    Get_dependencies(item, Version)
+                    Get_dependencies(item, version)
                 Next
             End If
         End If
@@ -66,7 +93,8 @@ Public Structure Modifications
 
     Public Class [Mod]
         Public Sub New()
-
+            Me.descriptions = New List(Of Description)
+            Me.versions = New List(Of Version)
         End Sub
 
         Public Property name() As String
@@ -87,24 +115,24 @@ Public Structure Modifications
             End Set
         End Property
         Private m_autor As String
-        Public Property descriptions() As List(Of Description)
+        Public Property descriptions() As IList(Of Description)
             Get
                 Return m_description
             End Get
-            Set(value As List(Of Description))
+            Set(value As IList(Of Description))
                 m_description = value
             End Set
         End Property
-        Private m_description As List(Of Description)
-        Public Property versions() As List(Of Version)
+        Private m_description As IList(Of Description)
+        Public Property versions() As IList(Of Version)
             Get
                 Return m_versions
             End Get
-            Set(value As List(Of Version))
+            Set(value As IList(Of Version))
                 m_versions = value
             End Set
         End Property
-        Private m_versions As List(Of Version)
+        Private m_versions As IList(Of Version)
         Public Property video() As String
             Get
                 Return m_video
@@ -151,6 +179,9 @@ Public Structure Modifications
         End Property
         Private m_type As String
         Public Class Description
+            Public Sub New()
+
+            End Sub
             Public Property id() As String
                 Get
                     Return m_id
@@ -171,6 +202,9 @@ Public Structure Modifications
             Private m_text As String
         End Class
         Public Class Version
+            Public Sub New()
+
+            End Sub
             Public Property version() As String
                 Get
                     Return m_version
@@ -198,6 +232,15 @@ Public Structure Modifications
                 End Set
             End Property
             Private m_downloadlink As String
+            Public Property installed() As Boolean
+                Get
+                    Return m_installed
+                End Get
+                Set(value As Boolean)
+                    m_installed = value
+                End Set
+            End Property
+            Private m_installed As Boolean
         End Class
     End Class
 End Structure
@@ -210,6 +253,7 @@ Public Structure Forge
         If ForgeList Is Nothing Then
             Exit Function
         End If
+        ForgeList = ForgeList.OrderByDescending(Function(p) p.build).ToList
         Dim strModList As String = Await JsonConvert.SerializeObjectAsync(ForgeList)
         Dim o As String = File.ReadAllText(Filename)
         Dim jo As JObject = JObject.Parse(o)
@@ -275,6 +319,7 @@ Public Structure LiteLoader
         If LiteLoaderList Is Nothing Then
             Exit Function
         End If
+        LiteLoaderList = LiteLoaderList.OrderByDescending(Function(p) p.version).ToList
         Dim strModList As String = Await JsonConvert.SerializeObjectAsync(LiteLoaderList)
         Dim o As String = File.ReadAllText(Filename)
         Dim jo As JObject = JObject.Parse(o)

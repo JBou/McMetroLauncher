@@ -23,8 +23,8 @@
 
             <local:Base64ImageConverter x:Key="Base64ImageConverter"/>
             <local:FormattingcodesStringConverter x:Key="FormattingcodesStringConverter"/>
+            <local:MODS_installed_imageConverter x:Key="MODS_installed_imageConverter" />
             <local:Playerlist_Namesstring_Converter x:Key="Playerlist_Namesstring_Converter"/>
-
             <Style x:Key="DescriptionHeaderStyle" TargetType="Label">
                 <Setter Property="FontSize" Value="22" />
                 <Setter Property="HorizontalAlignment" Value="Center" />
@@ -181,18 +181,7 @@
                                 <GridViewColumn>
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
-                                            <Image Width="15">
-                                                <Image.Style>
-                                                    <Style TargetType="{x:Type Image}">
-                                                        <Style.Triggers>
-                                                            <DataTrigger Binding="{Binding installed}" Value="True">
-                                                                <Setter Property="Source" Value="images/check_green.png"/>
-                                                            </DataTrigger>
-                                                            <DataTrigger Binding="{Binding installed}" Value="False"/>
-                                                        </Style.Triggers>
-                                                    </Style>
-                                                </Image.Style>
-                                            </Image>
+                                            <Image Width="15" Source="{Binding versions, Converter={StaticResource MODS_installed_imageConverter}}"/>
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>
