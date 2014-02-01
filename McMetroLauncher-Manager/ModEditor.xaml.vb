@@ -194,8 +194,8 @@ Public Class ModEditor
                 .name = tb_name.Text,
                 .type = cb_type.SelectedItem.ToString,
                 .versions = lb_versions.Items.Cast(Of Modifications.Mod.Version)().ToList,
-                .video = tb_name.Text,
-                .website = tb_name.Text}
+                .video = tb_video.Text,
+                .website = tb_website.Text}
             If NewMod = True Then
                 'Shauen ob es bereits existiert
                 If Modifications.ModList.Select(Function(p) p.id).Contains(Modification.id) Then
