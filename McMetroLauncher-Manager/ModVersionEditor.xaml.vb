@@ -85,7 +85,8 @@ Public Class ModVersionEditor
         Else
             modVersion = New Modifications.Mod.Version With {
                 .version = cb_versions.SelectedItem.ToString,
-                .downloadlink = tb_downloadlink.Text}
+                .downloadlink = tb_downloadlink.Text,
+                .dependencies = lb_depedencies.Items.Cast(Of String)().ToList}
             If NewVersion = True Then
                 'Shauen ob es bereits existiert
                 If Moditem.versions.Select(Function(p) p.version).Contains(cb_versions.SelectedItem.ToString) Then
