@@ -8,7 +8,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d" 
     x:Class="ModManager"
     GlowBrush="{DynamicResource AccentColorBrush}"  
-    Title="ModManager" Height="444" Width="1092" Icon="favicon.ico" ResizeMode="NoResize">
+    Title="ModManager" Height="444" Width="1092" Icon="favicon.ico" ResizeMode="CanMinimize" WindowStartupLocation="CenterScreen">
 
     <Window.Resources>
         <local:Dependencies_String_Converter x:Key="Dependencies_String_Converter"/>

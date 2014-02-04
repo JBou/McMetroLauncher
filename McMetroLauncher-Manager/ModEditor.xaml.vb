@@ -199,7 +199,7 @@ Public Class ModEditor
             If NewMod = True Then
                 'Shauen ob es bereits existiert
                 If Modifications.ModList.Select(Function(p) p.id).Contains(Modification.id) Then
-                    MessageBox.Show("Dieses Forge Build existiert bereits!", "Fehler", MessageBoxButton.OK, MessageBoxImage.Information)
+                    MessageBox.Show("Diese Mod existiert bereits!", "Fehler", MessageBoxButton.OK, MessageBoxImage.Information)
                     Exit Sub
                 Else
                     Modifications.ModList.Add(Modification)

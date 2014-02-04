@@ -28,7 +28,6 @@ Public Class OldServerPing
     End Sub
 
 
-
     ''' <summary>
     ''' Refresh the data about this server.
     ''' </summary>

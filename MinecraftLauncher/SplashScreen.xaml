@@ -16,7 +16,7 @@
             ShowMinButton="False" 
             Height="450" 
             Width="450" 
-            Icon="favicon.ico" ShowIconOnTitleBar="False">
+            Icon="favicon.ico" ShowIconOnTitleBar="False" Topmost="True">
 
     <Grid>
 

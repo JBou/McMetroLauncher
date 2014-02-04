@@ -6,7 +6,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     GlowBrush="{DynamicResource AccentColorBrush}" 
-    Title="Forge Editor" Height="407.149" Width="520.627" Icon="favicon.ico" ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
+    Title="Forge Editor" Height="407.149" Width="520.627" Icon="favicon.ico" ResizeMode="CanMinimize" WindowStartupLocation="CenterScreen">
 
     <Grid>
         <Grid.RowDefinitions>
