@@ -259,7 +259,7 @@ Public Structure Forge
         If ForgeList Is Nothing Then
             Exit Function
         End If
-        ForgeList = ForgeList.OrderByDescending(Function(p) p.version).ToList
+        ForgeList = ForgeList.OrderByDescending(Function(p) New Version(p.build)).ToList
         Dim strModList As JArray = JArray.Parse(Await JsonConvert.SerializeObjectAsync(ForgeList))
         Dim o As String = File.ReadAllText(Filename)
         Dim jo As JObject = JObject.Parse(o)

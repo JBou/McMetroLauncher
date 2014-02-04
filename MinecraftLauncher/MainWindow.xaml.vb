@@ -1375,13 +1375,14 @@ Public Class MainWindow
             Else
                 tb_description.Text = selected.descriptions.First.text
             End If
-            If selected.type = "forge" Then
-                lbl_type.Content = "Vorraussetzung: Minecraft Forge (Tools->Forge)"
-            ElseIf selected.type = "liteloader" Then
-                lbl_type.Content = "Vorraussetzung: LiteLoader (Tools->LiteLoader)"
-            Else
-                lbl_type.Content = "Type: " & DirectCast(lb_mods.SelectedItem, Modifications.Mod).type
-            End If
+            Select Case selected.type
+                Case "forge"
+                    lbl_type.Content = "Vorraussetzung: Minecraft Forge (Tools->Forge)"
+                Case "liteloader"
+                    lbl_type.Content = "Vorraussetzung: LiteLoader (Tools->LiteLoader)"
+                Case Else
+                    lbl_type.Content = "Type: " & DirectCast(lb_mods.SelectedItem, Modifications.Mod).type
+            End Select
         End If
 
 

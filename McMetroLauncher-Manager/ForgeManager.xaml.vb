@@ -1,16 +1,12 @@
 ﻿Public Class ForgeManager
 
     Private Sub btn_add_Click(sender As Object, e As RoutedEventArgs) Handles btn_add.Click
-        If lst.SelectedIndex = -1 Then
-            MessageBox.Show("Bitte wähle eine Forge Version Aus!", "Fehler", MessageBoxButton.OK, MessageBoxImage.Error)
-        Else
-            Dim frm_Forgeeditor As New ForgeEditor
-            Dim result As Boolean?
-            frm_Forgeeditor.ShowDialog()
-            result = frm_Forgeeditor.DialogResult
-            If result = True Then
-                Load_Forge()
-            End If
+        Dim frm_Forgeeditor As New ForgeEditor
+        Dim result As Boolean?
+        frm_Forgeeditor.ShowDialog()
+        result = frm_Forgeeditor.DialogResult
+        If result = True Then
+            Load_Forge()
         End If
     End Sub
 

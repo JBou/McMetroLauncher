@@ -22,7 +22,7 @@ Public Class ForgeEditor
     End Sub
 
     Sub Load_ModInfos()
-        tb_build.Text = ForgeEintrag.build
+        tb_build.Text = ForgeEintrag.build.ToString
         tb_time.Text = ForgeEintrag.time
         tb_downloadlink.Text = ForgeEintrag.downloadlink
     End Sub
