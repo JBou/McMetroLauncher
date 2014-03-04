@@ -120,7 +120,13 @@
                     <Grid.RowDefinitions>
                         <RowDefinition/>
                     </Grid.RowDefinitions>
-                    <TextBox x:Name="tb_ausgabe" VerticalScrollBarVisibility="Auto" AcceptsReturn="True" IsReadOnly="True" VerticalContentAlignment="Top" Margin="10,10,10,95" HorizontalScrollBarVisibility="Auto" TabIndex="2"/>
+                    <RichTextBox x:Name="tb_ausgabe" VerticalScrollBarVisibility="Auto" IsReadOnly="True" VerticalContentAlignment="Top" Margin="10,10,10,95" HorizontalScrollBarVisibility="Auto" TabIndex="2">
+                        <RichTextBox.Resources>
+                            <Style TargetType="{x:Type Paragraph}">
+                                <Setter Property="Margin" Value="0"/>
+                            </Style>
+                        </RichTextBox.Resources>
+                    </RichTextBox>
                     <ListBox x:Name="Listbox1" HorizontalAlignment="Left" Height="271" Margin="459,10,0,0" VerticalAlignment="Top" Width="473" Visibility="Collapsed"/>
                     <TextBox x:Name="tb_username" HorizontalAlignment="Right" Height="32" Margin="0,0,138,10" TextWrapping="Wrap" VerticalAlignment="Bottom" Width="148" VerticalContentAlignment="Center" TabIndex="10"/>
                     <Button x:Name="btn_startMC" Content="Start" HorizontalAlignment="Right" Margin="0,0,10,10" VerticalAlignment="Bottom" Width="123" Height="69" FontSize="30" TabIndex="11"/>

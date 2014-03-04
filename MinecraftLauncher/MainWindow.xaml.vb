@@ -24,6 +24,7 @@ Imports Craft.Net
 Imports Craft.Net.Client
 Imports System.Threading.Tasks
 Imports System.ComponentModel
+Imports System.Windows.Media
 
 #End Region
 Public Module GlobalInfos
@@ -193,6 +194,7 @@ Public Module GlobalInfos
     Public UnpackDirectory As String
     Public Arguments As String
     Public Delegate Sub WriteA(ByVal Text As String)
+    Public Delegate Sub WriteColored(ByVal Text As String, Color As Brush)
     Public cachefolder As String = mcpfad & "\cache"
     Public modsfolder As String = mcpfad & "\mods"
     Public downloadfilepath As String
@@ -1146,7 +1148,7 @@ Public Class MainWindow
                     End If
                 End If
             End If
-            tb_ausgabe.Clear()
+            Clear()
             Startinfos.IsStarting = True
             Download_Version()
             End If
@@ -1156,6 +1158,13 @@ Public Class MainWindow
         StartMC()
     End Sub
 
+    Private Sub mc_ErrorDataReceived(sender As Object, e As DataReceivedEventArgs) Handles mc.ErrorDataReceived
+        Try
+            Write(e.Data)
+        Catch ex As Exception
+        End Try
+    End Sub
+
     Private Sub p_OutputDataReceived(ByVal sender As Object, ByVal e As DataReceivedEventArgs) Handles mc.OutputDataReceived
         Try
             Write(e.Data)
@@ -1163,13 +1172,21 @@ Public Class MainWindow
         End Try
     End Sub
 
-    Public Sub Append(ByVal Line As String)
 
+    Public Sub Append(ByVal Line As String, Color As Brush)
         Me.Dispatcher.Invoke(New Action(Sub()
-                                            tb_ausgabe.AppendText(Line)
+                                            Dim tr As New TextRange(tb_ausgabe.Document.ContentEnd, tb_ausgabe.Document.ContentEnd)
+                                            tr.Text = Line & Environment.NewLine
+                                            tr.ApplyPropertyValue(TextElement.ForegroundProperty, Color)
                                             tb_ausgabe.ScrollToEnd()
                                         End Sub))
-        'Log schreiben
+    End Sub
+    Public Sub Append(ByVal Line As String)
+        Me.Dispatcher.Invoke(New Action(Sub()
+                                            Dim tr As New TextRange(tb_ausgabe.Document.ContentEnd, tb_ausgabe.Document.ContentEnd)
+                                            tr.Text = Line & Environment.NewLine
+                                            tb_ausgabe.ScrollToEnd()
+                                        End Sub))
     End Sub
 
     ''' <summary>
@@ -1178,28 +1195,19 @@ Public Class MainWindow
     ''' <param name="Line">Die Zeile, die geschrieben werden soll</param>
     ''' <remarks></remarks>
     Public Sub Write(ByVal Line As String)
-        Dispatcher.Invoke(New WriteA(AddressOf Append), Line & Environment.NewLine)
+        Dispatcher.Invoke(New WriteA(AddressOf Append), Line)
     End Sub
 
-    'Public Shared Function JavaCheck() As String
+    Public Sub WriteError(ByVal Line As String)
+        Dispatcher.Invoke(New WriteColored(AddressOf Append), "[ERROR] " & Line, Brushes.Red)
+    End Sub
 
-    '    If IO.Directory.Exists(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles) & "\Java\jre7") = True Then
-    '        Return "64"
-    '    ElseIf IO.Directory.Exists(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86) & "\Java\jre7") = True Then
-    '        Return "32"
-    '    Else
-    '        Return Nothing
-    '    End If
-
-    'End Function
-
-    'Public Shared Function JavaPath() As String
-    '    If JavaCheck() = "64" Then
-    '        Return "C:\Program Files\Java\jre7\bin\javaw.exe"
-    '    Else
-    '        Return "C:\Program Files (x86)\Java\jre7\bin\javaw.exe"
-    '    End If
-    'End Function
+    Public Sub Clear()
+        Me.Dispatcher.Invoke(New Action(Sub()
+                                            tb_ausgabe.SelectAll()
+                                            tb_ausgabe.Selection.Text = Environment.NewLine
+                                        End Sub))
+    End Sub
 
     Public Shared Function Startcmd(profile As Profiles.Profile) As String
         If profile.javaDir <> Nothing Then
@@ -1929,6 +1937,7 @@ Public Class MainWindow
     End Sub
 
 #End Region
+
 End Class
 
 #Region "Converters"
