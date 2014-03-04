@@ -7,6 +7,7 @@ Imports Ookii.Dialogs.Wpf
 Imports MahApps.Metro
 Imports MahApps.Metro.Controls
 Imports MahApps.Metro.Controls.Dialogs
+Imports McMetroLauncher.Profiles
 
 Public Class ProfileEditor
     Private loadedprofile As String
@@ -43,66 +44,71 @@ Public Class ProfileEditor
         End If
     End Sub
 
-    Sub Load_ProfileInfos()
-        If Profiles.name(loadedprofile) = Nothing Then
+    Async Function Load_ProfileInfos() As Task
+        Dim profile As Profile = Await Profiles.FromName(loadedprofile)
+        If profile.name = Nothing Then
             tb_profile_name.Text = mcpfad
         Else
-            tb_profile_name.Text = Profiles.name(loadedprofile)
+            tb_profile_name.Text = profile.name
         End If
-        If Profiles.resolution_height(loadedprofile) = Nothing Then
-            tb_res_height.Text = "480"
-        Else
-            tb_res_height.Text = Profiles.resolution_height(loadedprofile)
-            cb_resolution.IsChecked = True
+        If profile.resolution IsNot Nothing Then
+            If profile.resolution.height = Nothing Then
+                tb_res_height.Text = "480"
+            Else
+                tb_res_height.Text = profile.resolution.height
+                cb_resolution.IsChecked = True
+            End If
+            If profile.resolution.width = Nothing Then
+                tb_res_width.Text = "854"
+            Else
+                tb_res_width.Text = profile.resolution.width
+                cb_resolution.IsChecked = True
+            End If
         End If
-        If Profiles.resolution_width(loadedprofile) = Nothing Then
-            tb_res_width.Text = "854"
-        Else
-            tb_res_width.Text = Profiles.resolution_width(loadedprofile)
-            cb_resolution.IsChecked = True
-        End If
-        If Profiles.gameDir(loadedprofile) = Nothing Then
+        If profile.gameDir = Nothing Then
             tb_gameDir.Text = mcpfad
         Else
-            tb_gameDir.Text = Profiles.gameDir(loadedprofile)
+            tb_gameDir.Text = profile.gameDir
             cb_game_directory.IsChecked = True
         End If
-        If Profiles.allowedReleaseTypes(loadedprofile).Count > 0 Then
-            If Profiles.allowedReleaseTypes(loadedprofile).Contains("snapshot") = True Then
-                cb_snapshots.IsChecked = True
-            End If
-            If Profiles.allowedReleaseTypes(loadedprofile).Contains("old_beta") = True Then
-                cb_old_beta.IsChecked = True
-            End If
-            If Profiles.allowedReleaseTypes(loadedprofile).Contains("old_alpha") = True Then
-                cb_old_alpha.IsChecked = True
+        If profile.allowedReleaseTypes IsNot Nothing Then
+            If profile.allowedReleaseTypes.Count > 0 Then
+                If profile.allowedReleaseTypes.Contains("snapshot") = True Then
+                    cb_snapshots.IsChecked = True
+                End If
+                If profile.allowedReleaseTypes.Contains("old_beta") = True Then
+                    cb_old_beta.IsChecked = True
+                End If
+                If profile.allowedReleaseTypes.Contains("old_alpha") = True Then
+                    cb_old_alpha.IsChecked = True
+                End If
             End If
         End If
         Get_Versions()
-        cb_versions.SelectedItem = cb_versions.Items.OfType(Of Versionslist.Version).ToList.Where(Function(p) p.id = Profiles.lastVersionId(loadedprofile)).FirstOrDefault
-        If Profiles.javaDir(loadedprofile) = Nothing Then
-            tb_java_executable.Text = MainWindow.Startcmd(selectedname2Profile(loadedprofile))
+        cb_versions.SelectedItem = cb_versions.Items.OfType(Of Versionslist.Version).ToList.Where(Function(p) p.id = profile.lastVersionId).FirstOrDefault
+        If profile.javaDir = Nothing Then
+            tb_java_executable.Text = MainWindow.Startcmd(Await Profiles.FromName(loadedprofile))
         Else
-            tb_java_executable.Text = Profiles.javaDir(loadedprofile)
+            tb_java_executable.Text = profile.javaDir
             cb_java_path.IsChecked = True
         End If
-        If Profiles.javaArgs(loadedprofile) = Nothing Then
+        If profile.javaArgs = Nothing Then
             tb_java_arguments.Text = "-Xmx1G"
         Else
-            tb_java_arguments.Text = Profiles.javaArgs(loadedprofile)
+            tb_java_arguments.Text = profile.javaArgs
             cb_java_arguments.IsChecked = True
         End If
 
-    End Sub
+    End Function
 
-    Sub StandardValues()
+    Async Function StandardValues() As Task
         tb_gameDir.Text = mcpfad
         tb_res_height.Text = "480"
         tb_res_width.Text = "854"
-        tb_java_executable.Text = MainWindow.Startcmd(selectedname2Profile(loadedprofile))
+        tb_java_executable.Text = MainWindow.Startcmd(Await Profiles.FromName(loadedprofile))
         tb_java_arguments.Text = "-Xmx1G"
 
-    End Sub
+    End Function
 
     Private Sub tb_res_PreviewTextInput(ByVal sender As System.Object, ByVal e As System.Windows.Input.TextCompositionEventArgs) Handles tb_res_height.PreviewTextInput, tb_res_width.PreviewTextInput
         If Not Char.IsNumber(CChar(e.Text)) Then e.Handled = True
@@ -149,9 +155,9 @@ Public Class ProfileEditor
         Get_Versions()
         loadedprofile = selectedprofile
         If Newprofile = True Then
-            StandardValues()
+            Await StandardValues()
         Else
-            Load_ProfileInfos()
+            Await Load_ProfileInfos()
         End If
         Check_cb_Status()
     End Sub
@@ -217,8 +223,10 @@ Public Class ProfileEditor
             Dim prof As New Profiles.Profile() With {
                 .name = name,
                 .gameDir = gameDir,
-                .resolution_height = resolution_height,
-                .resolution_width = resolution_width,
+                .resolution = New Profiles.Profile.cls_Resolution With {
+                                    .height = resolution_height,
+                                    .width = resolution_width
+                },
                 .lastVersionId = lastVersionId,
                 .javaDir = javaDir,
                 .javaArgs = javaArgs,
@@ -229,14 +237,14 @@ Public Class ProfileEditor
                 If Profiles.List.Contains(tb_profile_name.Text) = True Then
                     Await Me.ShowMessageAsync("Profil existiert bereits", "Dieses Profil existiert bereits!", MessageDialogStyle.Affirmative, New MetroDialogSettings() With {.AffirmativeButtonText = "Ok", .ColorScheme = MetroDialogColorScheme.Accented})
                 Else
-                    Profiles.Add(prof)
+                    Await Profiles.Add(prof)
                 End If
 
             Else
                 If Profiles.List.Contains(tb_profile_name.Text.ToString) And tb_profile_name.Text.ToString <> loadedprofile Then
                     Await Me.ShowMessageAsync("Profil existiert bereits", "Dieses Profil existiert bereits!", MessageDialogStyle.Affirmative, New MetroDialogSettings() With {.AffirmativeButtonText = "Ok", .ColorScheme = MetroDialogColorScheme.Accented})
                 Else
-                    Profiles.Edit(loadedprofile, prof)
+                    Await Profiles.Edit(loadedprofile, prof)
                 End If
             End If
 
@@ -249,7 +257,7 @@ Public Class ProfileEditor
         Dim fd As New VistaFolderBrowserDialog
         fd.Description = "Spiel Pfad auswählen"
         fd.RootFolder = Environment.SpecialFolder.MyComputer
-        fd.SelectedPath = modsfolder
+        fd.SelectedPath = mcpfad
         fd.ShowNewFolderButton = True
         If fd.ShowDialog = True Then
             tb_gameDir.Text = fd.SelectedPath
@@ -280,8 +288,8 @@ Public Class ProfileEditor
         p.Start()
     End Sub
 
-    Private Async Sub cb_old_alpha_PreviewMouseDown(sender As Object, e As MouseButtonEventArgs) Handles cb_snapshots.PreviewMouseDown, cb_old_beta.PreviewMouseDown, cb_old_alpha.PreviewMouseDown
-        If DirectCast(sender, CheckBox).IsChecked = False Then
+    Private Async Sub cb_old_alpha_PreviewMouseDown(sender As Object, e As RoutedEventArgs) Handles cb_snapshots.Checked, cb_old_beta.Checked, cb_old_alpha.Checked, cb_snapshots.Unchecked, cb_old_beta.Unchecked, cb_old_alpha.Unchecked
+        If DirectCast(sender, CheckBox).IsChecked = True Then
             If sender Is cb_old_beta Or sender Is cb_old_alpha Then
                 Dim msgtext As String = "Diese Versionen sind sehr veraltet und können unstabil sein. Alle Fehler, Abstürze, fehlende Funktionen oder andere Defekte die du finden könnstest werden in diesen Versionen nicht mehr behoben." & Environment.NewLine & "Es wird stark empfohlen, dass du diese Versionen in einem separatem Verzeichniss spielst, um Datenverlust zu vermeiden. Wir sind nicht verantwortlich für den Schaden an deinen Daten!" & Environment.NewLine & Environment.NewLine & "Bist du dir sicher, dass du fortsetzen möchstest?"
                 Dim result As MessageDialogResult = Await Me.ShowMessageAsync("Achtung", msgtext, MessageDialogStyle.AffirmativeAndNegativeAndSingleAuxiliary, New MetroDialogSettings() With {.AffirmativeButtonText = "Ja", .NegativeButtonText = "Nein", .FirstAuxiliaryButtonText = "Abbrechen", .ColorScheme = MetroDialogColorScheme.Accented, .UseAnimations = True})
@@ -302,4 +310,5 @@ Public Class ProfileEditor
             cb_versions.SelectedIndex = 0
         End If
     End Sub
+
 End Class

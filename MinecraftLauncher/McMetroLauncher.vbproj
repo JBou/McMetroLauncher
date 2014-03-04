@@ -176,7 +176,6 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="VersionsInfo.vb" />
-    <Compile Include="MainWindow-libraries-subs.xaml.vb" />
     <Compile Include="MainWindow.xaml.vb">
       <DependentUpon>MainWindow.xaml</DependentUpon>
     </Compile>

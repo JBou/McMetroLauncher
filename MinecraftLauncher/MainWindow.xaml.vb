@@ -23,6 +23,8 @@ Imports System.Security.Cryptography
 Imports Craft.Net
 Imports Craft.Net.Client
 Imports System.Threading.Tasks
+Imports System.ComponentModel
+
 #End Region
 Public Module GlobalInfos
 #Region "Functions/Subs"
@@ -61,21 +63,6 @@ Public Module GlobalInfos
                 End If
             Next
         End If
-    End Function
-    Public Function selectedname2Profile(profilename As String) As Profiles.Profile
-        Dim Profile As New Profiles.Profile() With {
-            .allowedReleaseTypes = Profiles.allowedReleaseTypes(profilename),
-            .gameDir = Profiles.gameDir(profilename),
-            .javaArgs = Profiles.javaArgs(profilename),
-            .javaDir = Profiles.javaDir(profilename),
-            .lastVersionId = Profiles.lastVersionId(profilename),
-            .launcherVisibilityOnGameClose = Profiles.launcherVisibilityOnGameClose(profilename),
-            .name = Profiles.name(profilename),
-            .playerUUID = Profiles.playerUUID(profilename),
-            .resolution_height = Profiles.resolution_height(profilename),
-            .resolution_width = Profiles.resolution_width(profilename)
-        }
-        Return Profile
     End Function
     Public Function GetJavaPath() As String
         Dim environmentPath As String = Environment.GetEnvironmentVariable("JAVA_HOME")
@@ -206,8 +193,8 @@ Public Module GlobalInfos
     Public UnpackDirectory As String
     Public Arguments As String
     Public Delegate Sub WriteA(ByVal Text As String)
-    Public modsfolder As String = mcpfad & "\mods"
     Public cachefolder As String = mcpfad & "\cache"
+    Public modsfolder As String = mcpfad & "\mods"
     Public downloadfilepath As String
     Public servers As ServerList = New ServerList
     Public Applicationdata As New DirectoryInfo(Path.Combine(Appdata.FullName, "McMetroLauncher"))
@@ -297,6 +284,7 @@ Public Class MainWindow
     Private modsdownloadindex As Integer
     Private Modsfilename As String
     Private modslist As IList(Of Modifications.Mod)
+    Private modsfolderPath As String
     '************Resources Download*************
     Private resourcesdownloading As Boolean
     Private resourcesindexes As resourcesindex
@@ -314,6 +302,7 @@ Public Class MainWindow
     Private assets_index_name As String
     '******************Others*******************
 #End Region
+
     Sub ThemeLight()
         Dim theme = ThemeManager.DetectTheme(Application.Current)
         ThemeManager.ChangeTheme(Application.Current, theme.Item2, MahApps.Metro.Theme.Light)
@@ -445,14 +434,18 @@ Public Class MainWindow
         Profiles.Load()
         Dim selectedprofile As String = jo("selectedProfile").ToString
         cb_profiles.Items.Clear()
+        cb_mods_profilename.Items.Clear()
         For Each Profile As String In Profiles.List
             cb_profiles.Items.Add(Profile)
+            cb_mods_profilename.Items.Add(Profile)
         Next
         If jo.Properties.Select(Function(p) p.Name).Contains("selectedProfile") = True Then
             cb_profiles.SelectedItem = selectedprofile
+            cb_mods_profilename.SelectedItem = selectedprofile
         Else
             jo.Add(New JProperty("selectedProfile"))
             cb_profiles.SelectedIndex = 0
+            cb_mods_profilename.SelectedIndex = 0
         End If
 
         If Profiles.List.Count = 0 Then
@@ -494,11 +487,11 @@ Public Class MainWindow
             End If
             wcindexes.DownloadFileAsync(New Uri(indexesurl(assets_index_name)), cacheindexesfile(assets_index_name).FullName)
         Else
-            Parse_Resources()
+            Await Parse_Resources()
         End If
     End Sub
 
-    Sub downloadindexesfinished(sender As Object, e As System.ComponentModel.AsyncCompletedEventArgs)
+    Async Sub downloadindexesfinished(sender As Object, e As System.ComponentModel.AsyncCompletedEventArgs)
         Try
             If indexesfile(assets_index_name).Directory.Exists = False Then
                 indexesfile(assets_index_name).Directory.Create()
@@ -509,10 +502,10 @@ Public Class MainWindow
             cacheindexesfile(assets_index_name).CopyTo(indexesfile(assets_index_name).FullName, True)
         Catch
         End Try
-        Parse_Resources()
+        Await Parse_Resources()
     End Sub
 
-    Sub Parse_Resources()
+    Async Function Parse_Resources() As Task
         pb_download.IsIndeterminate = False
         Write("Lade Resourcen herunter")
         Dim indexjo As JObject = JObject.Parse(File.ReadAllText(indexesfile(assets_index_name).FullName))
@@ -523,23 +516,30 @@ Public Class MainWindow
         Else
             virtual = Convert.ToBoolean(indexjo("virtual"))
         End If
-
-        For i = 0 To indexjo("objects").Values.Count - 1
-            Dim keys As List(Of JProperty) = indexjo.Value(Of JObject)("objects").Properties.ToList
-            Dim key As String = keys.Item(i).Name
-            'indexjo.Values(Of JProperty)("objects").ElementAt(i).ToString()
-            Dim hash As String = keys.Item(i).Value.Value(Of String)("hash")
-            Dim size As Integer = CInt(keys.Item(i).Value.Value(Of String)("size"))
-            Dim item As New resourcesindexobject(key, hash, size)
-            indexesobjects.Add(item)
-        Next
+        Dim Parsethreadfinished As Boolean = False
+        Dim fThread = New Thread(New ThreadStart(Sub()
+                                                     For i = 0 To indexjo("objects").Values.Count - 1
+                                                         Dim keys As List(Of JProperty) = indexjo.Value(Of JObject)("objects").Properties.ToList
+                                                         Dim key As String = keys.Item(i).Name
+                                                         'indexjo.Values(Of JProperty)("objects").ElementAt(i).ToString()
+                                                         Dim hash As String = keys.Item(i).Value.Value(Of String)("hash")
+                                                         Dim size As Integer = CInt(keys.Item(i).Value.Value(Of String)("size"))
+                                                         Dim item As New resourcesindexobject(key, hash, size)
+                                                         indexesobjects.Add(item)
+                                                     Next
+                                                     Parsethreadfinished = True
+                                                 End Sub))
+        fThread.Start()
+        While Parsethreadfinished = False
+            Await Task.Delay(10)
+        End While
         resourcesindexes = New resourcesindex(virtual, indexesobjects)
         pb_download.Maximum = resourcesindexes.objects.Count
         resourcesdownloadindex = 0
         resourcesdownloadtry = 1
         resourcesdownloading = True
         DownloadResources()
-    End Sub
+    End Function
 
     Sub DownloadResources()
         pb_download.Value = resourcesdownloadindex
@@ -868,7 +868,30 @@ Public Class MainWindow
             End If
             For Each item In Startinfos.Versionsinfo.libraries.Where(Function(p) p.natives IsNot Nothing)
                 With item
-                    If .natives IsNot Nothing Then
+                    'Rules überprüfen
+                    Dim allowdownload As Boolean = True
+                    If .rules Is Nothing Then
+                        allowdownload = True
+                    Else
+                        If .rules.Select(Function(p) p.action).Contains("allow") Then
+                            If .rules.Where(Function(p) p.action = "allow").First.os IsNot Nothing Then
+                                If .rules.Where(Function(p) p.action = "allow").First.os.name = "windows" Then
+                                    allowdownload = True
+                                Else
+                                    allowdownload = False
+                                End If
+                            End If
+                        ElseIf .rules.Select(Function(p) p.action).Contains("disallow") Then
+                            If .rules.Where(Function(p) p.action = "disallow").First.os IsNot Nothing Then
+                                If .rules.Where(Function(p) p.action = "disallow").First.os.name = "windows" Then
+                                    allowdownload = False
+                                Else
+                                    allowdownload = True
+                                End If
+                            End If
+                        End If
+                    End If
+                    If .natives IsNot Nothing And allowdownload = True Then
                         If .natives.windows <> Nothing Then
                             Dim librarypath As New FileInfo(IO.Path.Combine(librariesfolder, .path.Replace("/", "\")))
                             If IO.Directory.Exists(librarypath.DirectoryName) = False Then
@@ -896,108 +919,115 @@ Public Class MainWindow
                 End With
             Next
         Catch ex As Exception
-            Write("Fehler beim entpacken der natves. Wahrscheinlich wurde die erforderliche Library nicht heruntergeladen")
+            Write("Fehler beim entpacken der natives. Wahrscheinlich wurde die erforderliche Library nicht heruntergeladen")
         End Try
     End Sub
 
     Async Sub Get_Startinfos()
         Write("Startinfos werden ausgelesen")
         Unzip()
-        Versionsjar = mcpfad & "\versions\" & Startinfos.Version.id & "\" & Startinfos.Version.id & ".jar"
+
         Dim mainClass As String = Startinfos.Versionsinfo.mainClass
-        'Split by Space --> (Chr(32))
         Dim minecraftArguments As List(Of String) = Startinfos.Versionsinfo.minecraftArguments.Split(Chr(32)).ToList
         Dim libraries As String = Nothing
-        Dim gamedir As String
-        If Startinfos.Versionsinfo Is Nothing Then
-            Await Parse_VersionsInfo(Startinfos.Version)
-        End If
-        For i = 0 To Startinfos.Versionsinfo.libraries.Count - 1
-            Dim librarytemp As Library = Startinfos.Versionsinfo.libraries.Item(i)
-            If librarytemp.natives Is Nothing Then
-                libraries &= Path.Combine(librariesfolder, librarytemp.path.Replace("/", "\") & ";")
-            Else
-                If librarytemp.natives.windows IsNot Nothing Then
-                    libraries &= Path.Combine(librariesfolder, librarytemp.path.Replace("/", "\") & ";")
-                End If
-            End If
-        Next
-
-        If Startinfos.Profile.gameDir <> Nothing Then
-            gamedir = Startinfos.Profile.gameDir
-        Else
-            gamedir = mcpfad
-        End If
-
-        If IO.Directory.Exists(gamedir) = False Then
-            IO.Directory.CreateDirectory(gamedir)
-        End If
-        Dim assets_dir As String = assetspath
-        If resourcesindexes.virtual = True Then
-            assets_dir = Path.Combine(assetspath, "virtual", assets_index_name)
-        End If
+        Dim gamedir As String = Nothing
         Dim argumentreplacements As List(Of String()) = New List(Of String())
-        argumentreplacements.Add(New String() {"${auth_player_name}", tb_username.Text})
-        argumentreplacements.Add(New String() {"${version_name}", Startinfos.Version.id})
-        argumentreplacements.Add(New String() {"${game_directory}", gamedir})
-        argumentreplacements.Add(New String() {"${game_assets}", assets_dir})
-        argumentreplacements.Add(New String() {"${assets_root}", assets_dir})
-        argumentreplacements.Add(New String() {"${assets_index_name}", assets_index_name})
-        argumentreplacements.Add(New String() {"${user_properties}", New JObject().ToString})
-
-        For Each item As String() In argumentreplacements
-            For i = 0 To minecraftArguments.Count - 1
-                minecraftArguments.Item(i) = minecraftArguments.Item(i).Replace(item(0), item(1))
-            Next
-        Next
-
-        If Startinfos.Server.ServerAdress <> Nothing Then
-            minecraftArguments.Add("--server")
-            minecraftArguments.Add(Startinfos.Server.ServerAdress)
-            If Startinfos.Server.ServerPort <> Nothing Then
-                minecraftArguments.Add("--port")
-                minecraftArguments.Add(Startinfos.Server.ServerPort)
-            End If
-        End If
-
         Dim natives As String = UnpackDirectory
+        Dim javaargs As String = Nothing
+        Dim height As String = Nothing
+        Dim width As String = Nothing
 
-        Dim javaargs As String
-        Dim height As String
-        Dim width As String
 
-        If Startinfos.Profile.javaArgs <> Nothing Then
-            javaargs = Startinfos.Profile.javaArgs
-        Else
-            'javaargs = "-Xmx" & RamCheck() & "M"
-            javaargs = "-Xmx" & "1024" & "M"
-        End If
+        Dim Parsethreadfinished As Boolean = False
+        Dim fThread = New Thread(New ThreadStart(Async Sub()
+                                                     Versionsjar = mcpfad & "\versions\" & Startinfos.Version.id & "\" & Startinfos.Version.id & ".jar"
+                                                     'Split by Space --> (Chr(32))
+                                                     If Startinfos.Versionsinfo Is Nothing Then
+                                                         Await Parse_VersionsInfo(Startinfos.Version)
+                                                     End If
+                                                     For i = 0 To Startinfos.Versionsinfo.libraries.Count - 1
+                                                         Dim librarytemp As Library = Startinfos.Versionsinfo.libraries.Item(i)
+                                                         If librarytemp.natives Is Nothing Then
+                                                             libraries &= Path.Combine(librariesfolder, librarytemp.path.Replace("/", "\") & ";")
+                                                         Else
+                                                             If librarytemp.natives.windows IsNot Nothing Then
+                                                                 libraries &= Path.Combine(librariesfolder, librarytemp.path.Replace("/", "\") & ";")
+                                                             End If
+                                                         End If
+                                                     Next
 
-        If Startinfos.Profile.resolution_height <> Nothing Then
-            height = " --height " & Startinfos.Profile.resolution_height
-        Else
-            height = Nothing
-        End If
+                                                     If Startinfos.Profile.gameDir <> Nothing Then
+                                                         gamedir = Startinfos.Profile.gameDir
+                                                     Else
+                                                         gamedir = mcpfad
+                                                     End If
 
-        If Startinfos.Profile.resolution_width <> Nothing Then
-            width = " --width " & Startinfos.Profile.resolution_width
-        Else
-            width = Nothing
-        End If
+                                                     If IO.Directory.Exists(gamedir) = False Then
+                                                         IO.Directory.CreateDirectory(gamedir)
+                                                     End If
+                                                     Dim assets_dir As String = assetspath
+                                                     If resourcesindexes.virtual = True Then
+                                                         assets_dir = Path.Combine(assetspath, "virtual", assets_index_name)
+                                                     End If
+                                                     argumentreplacements.Add(New String() {"${auth_player_name}", Settings.Username})
+                                                     argumentreplacements.Add(New String() {"${version_name}", Startinfos.Version.id})
+                                                     argumentreplacements.Add(New String() {"${game_directory}", gamedir})
+                                                     argumentreplacements.Add(New String() {"${game_assets}", assets_dir})
+                                                     argumentreplacements.Add(New String() {"${assets_root}", assets_dir})
+                                                     argumentreplacements.Add(New String() {"${assets_index_name}", assets_index_name})
+                                                     argumentreplacements.Add(New String() {"${user_properties}", New JObject().ToString})
 
-        Arguments = javaargs & " -Djava.library.path=" & natives & " -cp " & libraries & Versionsjar & " " & mainClass & " " & String.Join(Chr(32), minecraftArguments) & height & width
+                                                     For Each item As String() In argumentreplacements
+                                                         For i = 0 To minecraftArguments.Count - 1
+                                                             minecraftArguments.Item(i) = minecraftArguments.Item(i).Replace(item(0), item(1))
+                                                         Next
+                                                     Next
 
-        'MessageBox.Show(Arguments)
+                                                     If Startinfos.Server.ServerAdress <> Nothing Then
+                                                         minecraftArguments.Add("--server")
+                                                         minecraftArguments.Add(Startinfos.Server.ServerAdress)
+                                                         If Startinfos.Server.ServerPort <> Nothing Then
+                                                             minecraftArguments.Add("--port")
+                                                             minecraftArguments.Add(Startinfos.Server.ServerPort)
+                                                         End If
+                                                     End If
 
+                                                     If Startinfos.Profile.javaArgs <> Nothing Then
+                                                         javaargs = Startinfos.Profile.javaArgs
+                                                     Else
+                                                         'javaargs = "-Xmx" & RamCheck() & "M"
+                                                         javaargs = "-Xmx" & "1024" & "M"
+                                                     End If
+
+                                                     If Startinfos.Profile.resolution.height <> Nothing Then
+                                                         Height = " --height " & Startinfos.Profile.resolution.height
+                                                     Else
+                                                         Height = Nothing
+                                                     End If
+
+                                                     If Startinfos.Profile.resolution.width <> Nothing Then
+                                                         Width = " --width " & Startinfos.Profile.resolution.width
+                                                     Else
+                                                         Width = Nothing
+                                                     End If
+
+                                                     Arguments = javaargs & " -Djava.library.path=" & Natives & " -cp " & libraries & Versionsjar & " " & mainClass & " " & String.Join(Chr(32), minecraftArguments) & Height & Width
+                                                     Parsethreadfinished = True
+                                                 End Sub))
+        fThread.Start()
+        While Parsethreadfinished = False
+            Await Task.Delay(10)
+            Write("True")
+        End While
         'StartArgumente und mainclass ... von JSON IO.File
         'Überprüfen, ob username eingegeben wurde!
         'Libraries zum Start hinzufügen!
         If Startinfos.IsStarting = True Then
-            Start_MC_Process()
+            Start_MC_Process(mainClass & " " & String.Join(Chr(32), minecraftArguments) & height & width)
         End If
     End Sub
 
-    Async Sub Start_MC_Process()
+    Async Sub Start_MC_Process(Optional Teil_Arguments As String = Nothing)
         ' Anwendungspfad setzen -> hier liegt es im Anwendungsordner
         If Startcmd(Startinfos.Profile) = Nothing Then
             Dim result As MessageDialogResult = Await Me.ShowMessageAsync("Java nicht vorhanden", "Du musst Java installieren, um Minecraft zu spielen. Jetzt herunterladen?", MessageDialogStyle.AffirmativeAndNegative)
@@ -1006,9 +1036,8 @@ Public Class MainWindow
             End If
             Exit Sub
         End If
-
-        Write("Starte Minecraft: " & Startcmd(Startinfos.Profile) & Environment.NewLine & Arguments)
-        Write("Java " & GetJavaArch.ToString & " Bit")
+        If Teil_Arguments = Nothing Then Teil_Arguments = Arguments
+        Write("Starte Minecraft (Java " & GetJavaArch.ToString & " Bit): " & Teil_Arguments)
         mc = New Process()
         With mc.StartInfo
             .FileName = Startcmd(Startinfos.Profile)
@@ -1039,7 +1068,6 @@ Public Class MainWindow
 
     Public Sub StartfromServerlist()
         If Startinfos.Server.JustStarted = False Then
-            'Durch Serverinfos umtauschen
             If tb_server_address.Text.Contains(":") = False Then
                 Startinfos.Server.ServerAdress = tb_server_address.Text
             Else
@@ -1060,7 +1088,7 @@ Public Class MainWindow
             Await Me.ShowMessageAsync(Nothing, "Gib bitte einen Usernamen ein!", MessageDialogStyle.Affirmative, New MetroDialogSettings() With {.AffirmativeButtonText = "Ok", .ColorScheme = MetroDialogColorScheme.Accented})
         Else
             If Startinfos.Profile Is Nothing Then
-                Startinfos.Profile = selectedname2Profile(selectedprofile)
+                Startinfos.Profile = Await Profiles.FromName(selectedprofile)
             End If
             'If cb_online_mode.IsChecked = True Then
             '    If pb_Password.Password = Nothing Then
@@ -1080,24 +1108,26 @@ Public Class MainWindow
             '    End Try
             '    End If
             'End If
-
-            If cb_direct_join.IsChecked = True Then
-                If tb_server_address.Text <> Nothing Then
-                    If Startinfos.Server.JustStarted = False Then
-                        If tb_server_address.Text.Contains(":") = False Then
-                            Startinfos.Server.ServerAdress = tb_server_address.Text
-                        Else
-                            Dim address As String() = tb_server_address.Text.Split(CChar(":"))
-                            Startinfos.Server.ServerAdress = address(0)
-                            Startinfos.Server.ServerPort = address(1)
+            If Startinfos.Server.JustStarted = False Then
+                If cb_direct_join.IsChecked = True Then
+                    If tb_server_address.Text <> Nothing Then
+                        If Startinfos.Server.JustStarted = False Then
+                            If tb_server_address.Text.Contains(":") = False Then
+                                Startinfos.Server.ServerAdress = tb_server_address.Text
+                            Else
+                                Dim address As String() = tb_server_address.Text.Split(CChar(":"))
+                                Startinfos.Server.ServerAdress = address(0)
+                                Startinfos.Server.ServerPort = address(1)
+                            End If
+                            Startinfos.Server.JustStarted = True
                         End If
-                        Startinfos.Server.JustStarted = True
                     End If
+                Else
+                    Startinfos.Server.ServerAdress = Nothing
+                    Startinfos.Server.ServerPort = Nothing
                 End If
-            Else
-                Startinfos.Server.ServerAdress = Nothing
-                Startinfos.Server.ServerPort = Nothing
             End If
+
 
             If Startinfos.Version Is Nothing Then
                 If Startinfos.Profile.lastVersionId <> Nothing Then
@@ -1133,30 +1163,13 @@ Public Class MainWindow
         End Try
     End Sub
 
-    Private Sub p_ErrorDataReceived(ByVal sender As Object, ByVal e As DataReceivedEventArgs) Handles mc.ErrorDataReceived
-        Try
-            Write(e.Data)
-        Catch ex As Exception
-        End Try
-    End Sub
-
     Public Sub Append(ByVal Line As String)
-        'Wenn zu viel Text in der Textbox ist, dann den obersten löschen
-        If tb_ausgabe.LineCount >= 700 Then
-        End If
 
-        Me.Dispatcher.Invoke(
-    DispatcherPriority.Send,
-    New Action(Sub()
-
-                   ' Do all the ui thread updates here
-                   'tb_ausgabe.Text &= Line
-                   tb_ausgabe.AppendText(Line)
-                   tb_ausgabe.ScrollToEnd()
-
-               End Sub))
+        Me.Dispatcher.Invoke(New Action(Sub()
+                                            tb_ausgabe.AppendText(Line)
+                                            tb_ausgabe.ScrollToEnd()
+                                        End Sub))
         'Log schreiben
-
     End Sub
 
     ''' <summary>
@@ -1165,9 +1178,7 @@ Public Class MainWindow
     ''' <param name="Line">Die Zeile, die geschrieben werden soll</param>
     ''' <remarks></remarks>
     Public Sub Write(ByVal Line As String)
-
         Dispatcher.Invoke(New WriteA(AddressOf Append), Line & Environment.NewLine)
-
     End Sub
 
     'Public Shared Function JavaCheck() As String
@@ -1197,13 +1208,13 @@ Public Class MainWindow
             Return Path.Combine(GetJavaPath(), "bin", "java.exe")
         End If
     End Function
-    Public Shared Function GetJavaVersionInformation() As String
+    Public Shared Async Function GetJavaVersionInformation() As Task(Of String)
         Try
             Dim profile As Profiles.Profile = Nothing
             If Startinfos.IsStarting = True Then
                 profile = Startinfos.Profile
             Else
-                profile = selectedname2Profile(selectedprofile)
+                profile = Await Profiles.FromName(selectedprofile)
             End If
             Dim procStartInfo As New System.Diagnostics.ProcessStartInfo(Startcmd(profile), "-version")
 
@@ -1220,9 +1231,9 @@ Public Class MainWindow
             Return Nothing
         End Try
     End Function
-    Public Shared Function GetJavaArch() As Integer
-
-        If GetJavaVersionInformation.Contains("64-Bit") Then
+    Public Shared Async Function GetJavaArch() As Task(Of Integer)
+        Dim version As String = Await GetJavaVersionInformation()
+        If version.Contains("64-Bit") Then
             Return 64
         Else
             Return 32
@@ -1283,7 +1294,7 @@ Public Class MainWindow
             Dim jo As JObject = JObject.Parse(o)
             jo("selectedProfile") = selectedprofile
             IO.File.WriteAllText(launcher_profiles_json, jo.ToString)
-
+            cb_mods_profilename.SelectedItem = cb_profiles.SelectedItem
         Catch
         End Try
     End Sub
@@ -1326,7 +1337,7 @@ Public Class MainWindow
     End Function
     Private Sub Filter_Mods()
         lb_mods.Items.Clear()
-        Modifications.Check_installed(tb_modsfolder.Text)
+        Modifications.Check_installed(modsfolderPath)
         Dim mods_with_selectedversion As IList(Of Modifications.Mod) = Modifications.ModList.Where(Function(p) p.versions.Select(Function(i) i.version).Contains(cb_modversions.SelectedItem.ToString)).ToList
         For Each Moditem As Modifications.Mod In mods_with_selectedversion
             If Moditem.name.ToLower.Contains(tb_search_mods.Text.ToLower) = True Then
@@ -1368,12 +1379,16 @@ Public Class MainWindow
             End If
             lbl_name.Content = selected.name
             lbl_autor.Content = selected.autor
+            cb_mods_description_language.Items.Clear()
+            For Each Language As String In selected.descriptions.Select(Function(p) p.id)
+                cb_mods_description_language.Items.Add(Language)
+            Next
             If selected.descriptions.Select(Function(p) p.id).Contains("de") Then
-                tb_description.Text = selected.descriptions.Where(Function(p) p.id = "de").First.text
+                cb_mods_description_language.SelectedItem = "de"
             ElseIf selected.descriptions.Select(Function(p) p.id).Contains("en") Then
-                tb_description.Text = selected.descriptions.Where(Function(p) p.id = "en").First.text
+                cb_mods_description_language.SelectedItem = "en"
             Else
-                tb_description.Text = selected.descriptions.First.text
+                cb_mods_description_language.SelectedItem = selected.descriptions.First.id
             End If
             Select Case selected.type
                 Case "forge"
@@ -1386,16 +1401,30 @@ Public Class MainWindow
         End If
 
 
-            'If lb_mods.SelectedIndex <> -1 Then
-            '    lbl_name.Content = Mods.NameAt(cb_modversions.SelectedItem.ToString, lb_mods.SelectedIndex)
-            '    tb_description.Text = Mods.descriptionAt(cb_modversions.SelectedItem.ToString, lb_mods.SelectedIndex)
-            '    mod_website = Mods.websiteAt(cb_modversions.SelectedItem.ToString, lb_mods.SelectedIndex)
-            '    mod_video = Mods.videoAt(cb_modversions.SelectedItem.ToString, lb_mods.SelectedIndex)
-            '    mod_downloadlink = Mods.downloadlinkAt(cb_modversions.SelectedItem.ToString, lb_mods.SelectedIndex)
-            'End If
+        'If lb_mods.SelectedIndex <> -1 Then
+        '    lbl_name.Content = Mods.NameAt(cb_modversions.SelectedItem.ToString, lb_mods.SelectedIndex)
+        '    tb_description.Text = Mods.descriptionAt(cb_modversions.SelectedItem.ToString, lb_mods.SelectedIndex)
+        '    mod_website = Mods.websiteAt(cb_modversions.SelectedItem.ToString, lb_mods.SelectedIndex)
+        '    mod_video = Mods.videoAt(cb_modversions.SelectedItem.ToString, lb_mods.SelectedIndex)
+        '    mod_downloadlink = Mods.downloadlinkAt(cb_modversions.SelectedItem.ToString, lb_mods.SelectedIndex)
+        'End If
+    End Sub
+    Private Sub cb_mods_description_language_SelectionChanged(sender As Object, e As SelectionChangedEventArgs) Handles cb_mods_description_language.SelectionChanged
+        If lb_mods.SelectedIndex <> -1 Then
+            If cb_mods_description_language.SelectedIndex <> -1 Then
+                Dim selected As Modifications.Mod = DirectCast(lb_mods.SelectedItem, Modifications.Mod)
+                tb_description.Text = selected.descriptions.Where(Function(p) p.id = cb_mods_description_language.SelectedItem.ToString).First.text
+            End If
+        End If
     End Sub
     Private Async Function RefreshMods() As Task
         Try
+            If rb_mods_profile.IsChecked = True Then
+                Dim profile As Profiles.Profile = Await Profiles.FromName(cb_mods_profilename.SelectedItem.ToString)
+                modsfolderPath = IO.Path.Combine(profile.gameDir, "mods")
+            ElseIf rb_mods_folder.IsChecked = True Then
+                modsfolderPath = tb_modsfolder.Text
+            End If
             Dim selectedversion As String = cb_modversions.SelectedItem.ToString
             Dim selectedmod As Integer = lb_mods.SelectedIndex
             Dim SelectedItems As IList(Of String) = DirectCast(lb_mods.SelectedItems, IList(Of Modifications.Mod)).Select(Function(p) p.id).ToList
@@ -1411,14 +1440,16 @@ Public Class MainWindow
         Catch
         End Try
     End Function
-
     Private Sub btn_resetmodsfoler_Click(sender As Object, e As RoutedEventArgs) Handles btn_resetmodsfoler.Click
         tb_modsfolder.Text = modsfolder
     End Sub
     Private Sub btn_selectmodsfolder_Click(sender As Object, e As RoutedEventArgs) Handles btn_selectmodsfolder.Click
-        If Directory.Exists(modsfolder) = False Then
-            Directory.CreateDirectory(modsfolder)
-        End If
+        Try
+            If Directory.Exists(modsfolder) = False Then
+                Directory.CreateDirectory(modsfolder)
+            End If
+        Catch
+        End Try
         Dim fd As New VistaFolderBrowserDialog
         fd.UseDescriptionForTitle = True
         fd.Description = "Mods Ordner auswählen"
@@ -1429,8 +1460,42 @@ Public Class MainWindow
             tb_modsfolder.Text = fd.SelectedPath
         End If
     End Sub
-    Private Async Sub tb_modsfolder_TextChanged(sender As Object, e As TextChangedEventArgs) Handles tb_modsfolder.TextChanged
-        Await RefreshMods()
+    Private Sub tb_modsfolder_TextChanged(sender As Object, e As TextChangedEventArgs) Handles tb_modsfolder.TextChanged
+        Try
+            If rb_mods_folder.IsChecked = True Then
+                modsfolderPath = tb_modsfolder.Text
+                Filter_Mods()
+            End If
+        Catch
+        End Try
+    End Sub
+    Private Sub rb_mods_folder_Checked(sender As Object, e As RoutedEventArgs) Handles rb_mods_folder.Checked
+        If tb_modsfolder.Text <> Nothing Then
+            modsfolderPath = tb_modsfolder.Text
+            Filter_Mods()
+        End If
+    End Sub
+    Private Async Sub rb_mods_profile_Checked(sender As Object, e As RoutedEventArgs) Handles rb_mods_profile.Checked
+        If cb_mods_profilename.SelectedIndex <> -1 Then
+            Dim profile As Profiles.Profile = Await Profiles.FromName(cb_mods_profilename.SelectedItem.ToString)
+            If profile.gameDir = Nothing Then
+                profile.gameDir = mcpfad
+            End If
+            modsfolderPath = IO.Path.Combine(profile.gameDir, "mods")
+            Filter_Mods()
+        End If
+    End Sub
+    Private Async Sub cb_mods_profilename_SelectionChanged(sender As Object, e As SelectionChangedEventArgs) Handles cb_mods_profilename.SelectionChanged
+        If rb_mods_profile.IsChecked = True Then
+            If cb_mods_profilename.SelectedIndex <> -1 Then
+                Dim profile As Profiles.Profile = Await Profiles.FromName(cb_mods_profilename.SelectedItem.ToString)
+                If profile.gameDir = Nothing Then
+                    profile.gameDir = mcpfad
+                End If
+                modsfolderPath = IO.Path.Combine(profile.gameDir, "mods")
+                Filter_Mods()
+            End If
+        End If
     End Sub
     Private Sub btn_list_delete_mod_Click(sender As Object, e As RoutedEventArgs) Handles btn_list_delete_mod.Click
         Dim Version As String = DirectCast(lb_mods.SelectedItem, Modifications.Mod).versions.Where(Function(p) p.version = cb_modversions.SelectedItem.ToString).First.version
@@ -1463,13 +1528,15 @@ Public Class MainWindow
             lbl_mods_status.Content = Nothing
             modsdownloadlist.Clear()
             For Each selectedmod As Modifications.Mod In lb_mods.SelectedItems
-                modsdownloadlist.Add(selectedmod)
-                For Each item As String In Modifications.Dependencies(selectedmod.id, modsdownloadingversion)
-                    Dim moditem As Modifications.Mod = Modifications.ModList.Where(Function(p) p.id = item).First
-                    If modsdownloadlist.Select(Function(p) p.id).Contains(moditem.id) = False Then
-                        modsdownloadlist.Add(moditem)
-                    End If
-                Next
+                If modsdownloadlist.Select(Function(p) p.id).Contains(selectedmod.id) = False Then
+                    modsdownloadlist.Add(selectedmod)
+                    For Each item As String In Modifications.Dependencies(selectedmod.id, modsdownloadingversion)
+                        Dim moditem As Modifications.Mod = Modifications.ModList.Where(Function(p) p.id = item).First
+                        If modsdownloadlist.Select(Function(p) p.id).Contains(moditem.id) = False Then
+                            modsdownloadlist.Add(moditem)
+                        End If
+                    Next
+                End If
             Next
             modsdownloadindex = 0
             download_mod()
@@ -1477,35 +1544,33 @@ Public Class MainWindow
     End Sub
     Private Async Sub download_mod()
         If modsdownloadindex < modsdownloadlist.Count Then
-            If tb_modsfolder.Text.Contains(IO.Path.GetInvalidPathChars) = True Then
-                Await Me.ShowMessageAsync("Fehler", "Der Pfad des Mods Ordner enthält ungültige Zeichen", MessageDialogStyle.Affirmative, New MetroDialogSettings() With {.AffirmativeButtonText = "Ok", .ColorScheme = MetroDialogColorScheme.Accented})
-            Else
-                Dim path As String = tb_modsfolder.Text
-                Dim name As String = modsdownloadlist.Item(modsdownloadindex).name
-                Dim url As New Uri(modsdownloadlist.Item(modsdownloadindex).versions.Where(Function(p) p.version = modsdownloadingversion).First.downloadlink)
-                lbl_mods_status.Content = modsdownloadindex + 1 & " / " & modsdownloadlist.Count & " " & name
-                If modsdownloadingversion >= "1.6.4" = True Then
-                    Modsfilename = modsdownloadingversion & "\" & modsdownloadingversion & "-" & modsdownloadlist.Item(modsdownloadindex).id & "." & modsdownloadlist.Item(modsdownloadindex).extension
-                Else
-                    Modsfilename = modsdownloadingversion & "-" & modsdownloadlist.Item(modsdownloadindex).id & "." & modsdownloadlist.Item(modsdownloadindex).extension
-                End If
-                Try
-                    If IO.Directory.Exists(IO.Path.GetDirectoryName(cachefolder & "\" & Modsfilename)) = False Then
-                        IO.Directory.CreateDirectory((IO.Path.GetDirectoryName(cachefolder & "\" & Modsfilename)))
-                    End If
-                    wcmod.DownloadFileAsync(url, cachefolder & "\" & Modsfilename)
-                Catch ex As Exception
-                    lbl_mods_status.Content = ex.Message
-                    Me.ShowMessageAsync("Fehler", ex.Message, MessageDialogStyle.Affirmative, New MetroDialogSettings() With {.AffirmativeButtonText = "Ok", .ColorScheme = MetroDialogColorScheme.Accented})
-                    Mod_Download_finished()
-                    Exit Sub
-                End Try
-                'End If
-                modsdownloadindex += 1
-                Dim selected As Integer = lb_mods.SelectedIndex
-                Filter_Mods()
-                lb_mods.SelectedIndex = selected
+            If modsfolderPath.Contains(IO.Path.GetInvalidPathChars) = True Then
+                Await Me.ShowMessageAsync("Fehler", "Der Pfad des Mods Ordners enthält ungültige Zeichen", MessageDialogStyle.Affirmative, New MetroDialogSettings() With {.AffirmativeButtonText = "Ok", .ColorScheme = MetroDialogColorScheme.Accented})
+                Exit Sub
             End If
+            Dim url As New Uri(modsdownloadlist.Item(modsdownloadindex).versions.Where(Function(p) p.version = modsdownloadingversion).First.downloadlink)
+            lbl_mods_status.Content = modsdownloadindex + 1 & " / " & modsdownloadlist.Count & " " & modsdownloadlist.Item(modsdownloadindex).name
+            If modsdownloadingversion >= "1.6.4" = True Then
+                Modsfilename = modsdownloadingversion & "\" & modsdownloadingversion & "-" & modsdownloadlist.Item(modsdownloadindex).id & "." & modsdownloadlist.Item(modsdownloadindex).extension
+            Else
+                Modsfilename = modsdownloadingversion & "-" & modsdownloadlist.Item(modsdownloadindex).id & "." & modsdownloadlist.Item(modsdownloadindex).extension
+            End If
+            Try
+                If IO.Directory.Exists(IO.Path.GetDirectoryName(cachefolder & "\" & Modsfilename)) = False Then
+                    IO.Directory.CreateDirectory((IO.Path.GetDirectoryName(cachefolder & "\" & Modsfilename)))
+                End If
+                wcmod.DownloadFileAsync(url, cachefolder & "\" & Modsfilename)
+            Catch ex As Exception
+                lbl_mods_status.Content = ex.Message
+                Me.ShowMessageAsync("Fehler", ex.Message, MessageDialogStyle.Affirmative, New MetroDialogSettings() With {.AffirmativeButtonText = "Ok", .ColorScheme = MetroDialogColorScheme.Accented})
+                Mod_Download_finished()
+                Exit Sub
+            End Try
+            'End If
+            modsdownloadindex += 1
+            Dim selected As Integer = lb_mods.SelectedIndex
+            Filter_Mods()
+            lb_mods.SelectedIndex = selected
         Else
             lbl_mods_status.Content = "Erfolgreich installiert"
             Mod_Download_finished()
@@ -1517,7 +1582,7 @@ Public Class MainWindow
             Mod_Download_finished()
         Else
             Try
-                Dim path As String = tb_modsfolder.Text & "\" & Modsfilename
+                Dim path As String = modsfolderPath & "\" & Modsfilename
                 If IO.Directory.Exists(IO.Path.GetDirectoryName(path)) = False Then
                     IO.Directory.CreateDirectory((IO.Path.GetDirectoryName(path)))
                 End If
@@ -1548,11 +1613,6 @@ Public Class MainWindow
 
                        End Sub))
     End Sub
-
-    '********TODO************
-    '****************************************************************************************************************************************************
-    '*****************Mod Installed ohne property machen.... und errors beim downloadfinished auswerten, auch beim splashscreen**************************
-    '****************************************************************************************************************************************************
 
 #End Region
 
@@ -1713,43 +1773,45 @@ Public Class MainWindow
         End If
     End Sub
 
-    Sub join_server_from_list_auto()
-        Dim fThread = New Thread(New ThreadStart(AddressOf StartThread))
+    Async Function join_server_from_list_auto() As Task
+        tabitem_Minecraft.IsSelected = True
+        Dim selected As Object = lb_servers.SelectedItem
+        Dim Threadbusy As Boolean = True
+        Dim fThread = New Thread(New ThreadStart(Async Sub()
+                                                     Try
+                                                         'Dispatcher.Invoke(New Action(Async Function()
+                                                         Dim ip As String = DirectCast(selected, ServerList.Server).ip
+                                                         Dim Version As String = DirectCast(selected, ServerList.Server).ServerStatus.Version.Name
+                                                         If Startinfos.Server.JustStarted = False Then
+                                                             If ip.Contains(":") = False Then
+                                                                 Startinfos.Server.ServerAdress = ip
+                                                             Else
+                                                                 Dim address As String() = ip.Split(CChar(":"))
+                                                                 Startinfos.Server.ServerAdress = address(0)
+                                                                 Startinfos.Server.ServerPort = address(1)
+                                                             End If
+                                                             Startinfos.Server.JustStarted = True
+                                                         End If
+                                                         Await Versions_Load()
+                                                         '1.6.2-1.7.4
+                                                         If Version.Contains("-") = True Then
+                                                             Startinfos.Version = Versions.versions.Where(Function(p) p.id = Version.Split(CChar("-"))(1)).FirstOrDefault
+                                                         Else
+                                                             Startinfos.Version = Versions.versions.Where(Function(p) p.id = Version).FirstOrDefault
+                                                         End If
+                                                         Startinfos.Profile = New Profiles.Profile()
+                                                         Threadbusy = False
+                                                     Catch ex As Exception
+                                                         Threadbusy = False
+                                                     End Try
+                                                 End Sub))
         fThread.IsBackground = True
         fThread.Start()
-    End Sub
-
-    Sub StartThread()
-        Try
-            Dispatcher.Invoke(New Action(Async Function()
-                                             If lb_servers.SelectedIndex <> -1 Then
-                                                 tabitem_Minecraft.IsSelected = True
-                                                 Dim ip As String = DirectCast(lb_servers.SelectedItem, ServerList.Server).ip
-                                                 Dim Version As String = DirectCast(lb_servers.SelectedItem, ServerList.Server).ServerStatus.Version.Name
-                                                 If Startinfos.Server.JustStarted = False Then
-                                                     If ip.Contains(":") = False Then
-                                                         Startinfos.Server.ServerAdress = ip
-                                                     Else
-                                                         Dim address As String() = ip.Split(CChar(":"))
-                                                         Startinfos.Server.ServerAdress = address(0)
-                                                         Startinfos.Server.ServerPort = address(1)
-                                                     End If
-                                                     Startinfos.Server.JustStarted = True
-                                                 End If
-                                                 Await Versions_Load()
-                                                 '1.6.2-1.7.4
-                                                 If Version.Contains("-") = True Then
-                                                     Startinfos.Version = Versions.versions.Where(Function(p) p.id = Version.Split(CChar("-"))(1)).FirstOrDefault
-                                                 Else
-                                                     Startinfos.Version = Versions.versions.Where(Function(p) p.id = Version).FirstOrDefault
-                                                 End If
-                                                 Startinfos.Profile = New Profiles.Profile()
-                                                 StartMC()
-                                             End If
-                                         End Function))
-        Catch
-        End Try
-    End Sub
+        While Threadbusy = True
+            Await Task.Delay(10)
+        End While
+        StartMC()
+    End Function
 
 #End Region
 

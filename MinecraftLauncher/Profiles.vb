@@ -6,6 +6,7 @@ Imports Newtonsoft.Json.Linq
 Imports System.Globalization
 Imports Ionic.Zip
 Imports System.Net.Sockets
+Imports System.ComponentModel
 
 Public Class Profiles
     Public Shared o As String
@@ -16,9 +17,10 @@ Public Class Profiles
         profilesjo = JObject.Parse(o)
     End Sub
 
-    Public Shared Function PropertyList(profilename As String) As IList(Of String)
+    Public Shared Async Function FromName(profilename As String) As Task(Of Profile)
         Load()
-        Return profilesjo("profiles").Value(Of JObject)(profilename).Properties.Select(Function(p) p.Name).ToList()
+        Dim profile As Profile = Await JsonConvert.DeserializeObjectAsync(Of Profile)(profilesjo("profiles")(profilename).ToString)
+        Return profile
     End Function
 
     Public Shared Function List() As IList(Of String)
@@ -26,99 +28,7 @@ Public Class Profiles
         Return profilesjo.Value(Of JObject)("profiles").Properties.Select(Function(p) p.Name).ToList()
     End Function
 
-    Public Shared Function name(profilename As String) As String
-        Load()
-        If PropertyList(profilename).Contains("name") = True Then
-            Return profilesjo("profiles")(profilename)("name").ToString
-        Else
-            Return Nothing
-        End If
-    End Function
-
-    Public Shared Function gameDir(profilename As String) As String
-        Load()
-        If PropertyList(profilename).Contains("gameDir") = True Then
-            Return profilesjo("profiles")(profilename)("gameDir").ToString
-        Else
-            Return Nothing
-        End If
-    End Function
-
-    Public Shared Function lastVersionId(profilename As String) As String
-        Load()
-        If PropertyList(profilename).Contains("lastVersionId") = True Then
-            Return profilesjo("profiles")(profilename)("lastVersionId").ToString
-        Else
-            Return Nothing
-        End If
-    End Function
-
-    Public Shared Function launcherVisibilityOnGameClose(profilename As String) As String
-        Load()
-        If PropertyList(profilename).Contains("launcherVisibilityOnGameClose") = True Then
-            Return profilesjo("profiles")(profilename)("launcherVisibilityOnGameClose").ToString
-        Else
-            Return Nothing
-        End If
-    End Function
-
-    Public Shared Function playerUUID(profilename As String) As String
-        Load()
-        If PropertyList(profilename).Contains("playerUUID") = True Then
-            Return profilesjo("profiles")(profilename)("playerUUID").ToString
-        Else
-            Return Nothing
-        End If
-    End Function
-
-    Public Shared Function allowedReleaseTypes(profilename As String) As IList(Of String)
-        Load()
-        If PropertyList(profilename).Contains("allowedReleaseTypes") = True Then
-            Dim ja As JArray = profilesjo("profiles")(profilename).Value(Of JArray)("allowedReleaseTypes")
-            Dim versionsinfo As IList(Of String) = ja.Values(Of String).ToList
-            Return versionsinfo
-        Else
-            Return New List(Of String)
-        End If
-    End Function
-
-    Public Shared Function javaDir(profilename As String) As String
-        Load()
-        If PropertyList(profilename).Contains("javaDir") = True Then
-            Return profilesjo("profiles")(profilename)("javaDir").ToString
-        Else
-            Return Nothing
-        End If
-    End Function
-
-    Public Shared Function javaArgs(profilename As String) As String
-        Load()
-        If PropertyList(profilename).Contains("javaArgs") = True Then
-            Return profilesjo("profiles")(profilename)("javaArgs").ToString
-        Else
-            Return Nothing
-        End If
-    End Function
-
-    Public Shared Function resolution_width(profilename As String) As String
-        Load()
-        If PropertyList(profilename).Contains("resolution") = True Then
-            Return profilesjo("profiles")(profilename)("resolution")("width").ToString
-        Else
-            Return Nothing
-        End If
-    End Function
-
-    Public Shared Function resolution_height(profilename As String) As String
-        Load()
-        If PropertyList(profilename).Contains("resolution") = True Then
-            Return profilesjo("profiles")(profilename)("resolution")("height").ToString
-        Else
-            Return Nothing
-        End If
-    End Function
-
-    Public Shared Sub Add(ByVal Profile As Profile)
+    Public Shared Async Function Add(ByVal Profile As Profile) As Task
         Load()
         Dim Profileproperties As JObject = New JObject(New JProperty("name", Profile.name))
         If Profile.gameDir <> Nothing Then
@@ -133,8 +43,8 @@ Public Class Profiles
         If Profile.javaArgs <> Nothing Then
             Profileproperties.Add(New JProperty("javaArgs", Profile.javaArgs))
         End If
-        If Profile.resolution_height <> Nothing And Profile.resolution_width <> Nothing Then
-            Profileproperties.Add(New JProperty("resolution", New JObject(New JProperty("width", Profile.resolution_width), New JProperty("height", Profile.resolution_height))))
+        If Profile.resolution IsNot Nothing Then
+            Profileproperties.Add(Await JsonConvert.SerializeObjectAsync(Profile.resolution))
         End If
         If Profile.allowedReleaseTypes IsNot Nothing Then
             Profile.allowedReleaseTypes.Insert(0, "release")
@@ -143,9 +53,9 @@ Public Class Profiles
         profilesjo.Value(Of JObject)("profiles").Add(New JProperty(Profile.name, Profileproperties))
         profilesjo("selectedProfile") = Profile.name
         File.WriteAllText(launcher_profiles_json, profilesjo.ToString)
-    End Sub
+    End Function
 
-    Public Shared Sub Edit(editprofilename As String, Profile As Profile)
+    Public Shared Async Function Edit(editprofilename As String, Profile As Profile) As Task
         Load()
         Dim Profileproperties As JObject = New JObject(New JProperty("name", Profile.name))
         If Profile.gameDir <> Nothing Then
@@ -160,8 +70,8 @@ Public Class Profiles
         If Profile.javaArgs <> Nothing Then
             Profileproperties.Add(New JProperty("javaArgs", Profile.javaArgs))
         End If
-        If Profile.resolution_height <> Nothing And Profile.resolution_width <> Nothing Then
-            Profileproperties.Add(New JProperty("resolution", New JObject(New JProperty("width", Profile.resolution_width), New JProperty("height", Profile.resolution_height))))
+        If Profile.resolution IsNot Nothing Then
+            Profileproperties.Add(Await JsonConvert.SerializeObjectAsync(Profile.resolution))
         End If
         If Profile.allowedReleaseTypes IsNot Nothing Then
             Profile.allowedReleaseTypes.Insert(0, "release")
@@ -170,7 +80,7 @@ Public Class Profiles
         profilesjo.Value(Of JObject)("profiles").Property(editprofilename).Replace(New JProperty(Profile.name, Profileproperties))
         profilesjo("selectedProfile") = Profile.name
         File.WriteAllText(launcher_profiles_json, profilesjo.ToString)
-    End Sub
+    End Function
 
     Public Shared Sub Remove(profilename As String)
         Load()
@@ -180,7 +90,8 @@ Public Class Profiles
 
     Public Class Profile
         Private _name As String, _gameDir As String, _lastVersionId As String, _javaDir As String,
-            _javaArgs As String, _resolution_width As String, _resolution_height As String, _allowedReleaseTypes As IList(Of String), _playerUUID As String, _launcherVisibilityOnGameClose As String
+            _javaArgs As String, _resolution As cls_Resolution, _allowedReleaseTypes As IList(Of String),
+            _playerUUID As String, _launcherVisibilityOnGameClose As String
 
         Public Property name As String
             Get
@@ -244,21 +155,12 @@ Public Class Profiles
             End Set
         End Property
 
-        Public Property resolution_width As String
+        Public Property resolution As cls_Resolution
             Get
-                Return _resolution_width
+                Return _resolution
             End Get
-            Set(value As String)
-                _resolution_width = value
-            End Set
-        End Property
-
-        Public Property resolution_height As String
-            Get
-                Return _resolution_height
-            End Get
-            Set(value As String)
-                _resolution_height = value
+            Set(value As cls_Resolution)
+                _resolution = value
             End Set
         End Property
 
@@ -273,6 +175,30 @@ Public Class Profiles
         End Property
 
         Public Sub New()
+            resolution = New cls_Resolution
         End Sub
+
+        Public Class cls_Resolution
+            Private m_height, m_width As String
+            Public Property height As String
+                Get
+                    Return m_height
+                End Get
+                Set(value As String)
+                    m_height = value
+                End Set
+            End Property
+            Public Property width As String
+                Get
+                    Return m_width
+                End Get
+                Set(value As String)
+                    m_width = value
+                End Set
+            End Property
+            Public Sub New()
+
+            End Sub
+        End Class
     End Class
 End Class

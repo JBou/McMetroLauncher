@@ -160,13 +160,13 @@
                     <Button Content="LiteLoader installieren" x:Name="install_liteloader" Click="liteloader_installer" Margin="725,0,0,323" Height="74" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="165"/>
                     <TextBlock TextWrapping="Wrap" Margin="274,101,180,323" Padding="5" Text="LiteLoader ist ein ModLoader der dafür entwickelt wurde, grundlegende Loader Funktionalitaten für Mods anzubieten, die nicht den Spielmechanismus ändern müssen. Er wurde dafür entwickelt, neben Minecraft Forge zu laufen und zwischen LiteLoader und Forge Mods treten keine Konflikte auf." VerticalAlignment="Center" />
                     <Image Margin="25,89,0,0" Height="83" VerticalAlignment="Top" HorizontalAlignment="Left" Width="243" Source="images/liteloader_header_xmas.png"/>
-                    <TextBlock TextWrapping="Wrap" Margin="274,293,180,135" Padding="5" Text="Mit den Technic Launcher kannst du viele bekannte Modpacks spielen wie z.B. Tekkit, Hexxit, Volt.... Auserdem kannst du eigene Modpacks hinzufügen und spielen. Diese findest du auf http://technicpack.net." VerticalAlignment="Center" Height="70" />
+                    <TextBlock TextWrapping="Wrap" Margin="274,293,180,135" Padding="5" Text="Mit den Feed The Beast Launcher kannst du viele bekannte Modpacks spielen wie z.B. Unleashed, Unhinged, FTB Ultimate, Direwolf 20... die sehr viele Mods beinhalten. Mehr Infos findest du auf http://feed-the-beast.com." VerticalAlignment="Center" Height="70" />
                     <Button Content="Herunterladen" x:Name="btn_download_feedthebeast" Click="download_feedthebeast" Margin="725,0,0,172" Height="35" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="165"/>
                     <Button Content="Starten" x:Name="btn_start_feedthebeast"  Click="start_feedthebeast" Margin="725,0,0,135" Height="35" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="165"/>
                     <Image Margin="74,270,0,0" Height="86" VerticalAlignment="Top" HorizontalAlignment="Left" Width="134" Source="images/web-ftb-logo_0.png"/>
                 </Grid>
             </TabItem>
-            <TabItem Header="Mods" Margin="4,0,-4,0">
+            <TabItem Header="Mods">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition/>
@@ -175,7 +175,7 @@
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
 
-                    <ListView x:Name="lb_mods" Margin="10,77,0,23" Width="352" HorizontalAlignment="Left" BorderThickness="0" >
+                    <ListView x:Name="lb_mods" Margin="10,77,0,47" Width="352" HorizontalAlignment="Left" BorderThickness="0" >
                         <ListView.View>
                             <GridView ColumnHeaderContainerStyle="{StaticResource myHeaderStyle}">
                                 <GridViewColumn>
@@ -190,30 +190,35 @@
                             </GridView>
                         </ListView.View>
                     </ListView>
-                    <Label Content="Mods Ordner:" VerticalAlignment="Top" Margin="367,15,489,0"/>
-                    <TextBox x:Name="tb_modsfolder" Margin="367,46,110,0" VerticalAlignment="Top" IsReadOnly="True"/>
-                    <Button x:Name="btn_resetmodsfoler" Margin="0,46,41,0" Content="Standard" HorizontalAlignment="Right" VerticalAlignment="Top" Height="26" />
-                    <Button x:Name="btn_selectmodsfolder" Margin="0,46,10,0" Content="..." HorizontalAlignment="Right" VerticalAlignment="Top" Width="26" Height="26" />
-                    <Image x:Name="img_installed" Height="23" Width="23" Margin="368,80,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Source="images/check_green.png"/>
-                    <Label x:Name="lbl_name" Margin="395,77,110,0" VerticalAlignment="Top" Height="29" FontWeight="Bold" VerticalContentAlignment="Center" Background="#00000000" Foreground="#FF1F94F5" FontSize="15" />
+                    <Label Content="Mods installieren in:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="367,10,0,0" Height="31"/>
+                    <TextBox x:Name="tb_modsfolder" Margin="395,77,110,0" VerticalAlignment="Top" IsReadOnly="True"/>
+                    <Button x:Name="btn_resetmodsfoler" Margin="0,77,41,0" Content="Standard" HorizontalAlignment="Right" VerticalAlignment="Top" Height="26" />
+                    <Button x:Name="btn_selectmodsfolder" Margin="0,77,10,0" Content="..." HorizontalAlignment="Right" VerticalAlignment="Top" Width="26" Height="26" />
+                    <Image x:Name="img_installed" Height="23" Width="23" Margin="367,114,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Source="images/check_green.png"/>
+                    <Label x:Name="lbl_name" Margin="395,108,110,0" VerticalAlignment="Top" Height="29" FontWeight="Bold" VerticalContentAlignment="Center" Background="#00000000" Foreground="#FF1F94F5" FontSize="15" />
                     <Button x:Name="btn_list_delete_mod" Margin="778,0,0,23" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="32" Height="32" Padding="0" >
                         <Image x:Name="btn_list_delete_mod_image" Source="images/light/appbar.delete.png" Margin="0"/>
                     </Button>
                     <Button Foreground="{DynamicResource AccentColorBrush}" x:Name="btn_downloadmod" Content="Installieren" Margin="815,0,10,23" VerticalAlignment="Bottom" Height="32" FontWeight="Bold" FontSize="12"/>
                     <Controls:MetroProgressBar Foreground="{DynamicResource AccentColorBrush}" x:Name="pb_mods_download" Height="8" Margin="10,0,10,10" VerticalAlignment="Bottom"/>
-                    <TextBox x:Name="tb_description" Margin="367,145,10,60" TextWrapping="Wrap" BorderThickness="1" HorizontalScrollBarVisibility="Visible" AcceptsReturn="True" IsReadOnly="True" VerticalContentAlignment="Top" VerticalScrollBarVisibility="Auto"/>
+                    <TextBox x:Name="tb_description" Margin="367,176,10,60" TextWrapping="Wrap" BorderThickness="1" HorizontalScrollBarVisibility="Visible" AcceptsReturn="True" IsReadOnly="True" VerticalContentAlignment="Top" VerticalScrollBarVisibility="Auto"/>
                     <ComboBox x:Name="cb_modversions" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="352" Height="31"/>
                     <Button x:Name="btn_website" Content="Website besuchen" Margin="663,0,0,23" VerticalAlignment="Bottom" Height="32" HorizontalAlignment="Left" Width="110"/>
                     <Button x:Name="btn_video" Content="Video ansehen" Margin="548,0,0,23" VerticalAlignment="Bottom" RenderTransformOrigin="0.489,0.548" HorizontalAlignment="Left" Height="32" Width="110"/>
                     <Button x:Name="btn_play" Content="Play" Margin="192,466,628,24" Visibility="Hidden" />
                     <TextBox x:Name="tb_downloadlink" HorizontalAlignment="Left" Height="26" Margin="362,439,-17,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="597" Visibility="Hidden"/>
-                    <Label x:Name="lbl_mods_status" Content="" HorizontalAlignment="Left" Margin="368,0,0,23" VerticalAlignment="Bottom" Height="32" Width="175"/>
-                    <Label x:Name="lbl_autor" Content="" Margin="517,77,10,0" VerticalAlignment="Top" Height="29" FontWeight="Bold" VerticalContentAlignment="Center" HorizontalContentAlignment="Right" Background="#00000000" Foreground="#FF1F94F5" FontSize="15"/>
-                    <Button x:Name="btn_refresh" Click="RefreshMods" Margin="0,15,10,0" HorizontalAlignment="Right" VerticalAlignment="Top" Width="26" Height="26" Padding="0" >
+                    <Label x:Name="lbl_mods_status" Content="" HorizontalAlignment="Left" Margin="367,0,0,23" VerticalAlignment="Bottom" Height="32" Width="176"/>
+                    <Label x:Name="lbl_autor" Content="" Margin="517,108,10,0" VerticalAlignment="Top" Height="29" FontWeight="Bold" VerticalContentAlignment="Center" HorizontalContentAlignment="Right" Background="#00000000" Foreground="#FF1F94F5" FontSize="15"/>
+                    <Button Visibility="Collapsed" x:Name="btn_refresh" Click="RefreshMods" Margin="0,10,10,0" HorizontalAlignment="Right" VerticalAlignment="Top" Width="26" Height="26" Padding="0" >
                         <Image x:Name="btn_refresh_image" Source="images/light/appbar.refresh.png" Margin="0"/>
                     </Button>
                     <TextBox x:Name="tb_search_mods" Controls:TextboxHelper.ClearTextButton="True" Controls:TextboxHelper.Watermark="Suche" Margin="10,46,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="352" />
-                    <Label x:Name="lbl_type" Margin="368,111,10,0" VerticalAlignment="Top" Height="29" FontWeight="Bold" VerticalContentAlignment="Center" Background="{x:Null}" Foreground="#FFF51F1F" FontSize="15" />
+                    <Label x:Name="lbl_type" Margin="367,142,80,0" VerticalAlignment="Top" Height="29" FontWeight="Bold" VerticalContentAlignment="Center" Background="{x:Null}" Foreground="#FFF51F1F" FontSize="15" />
+                    <ComboBox x:Name="cb_mods_profilename" HorizontalAlignment="Left" Margin="396,46,0,0" VerticalAlignment="Top" Width="262"/>
+                    <RadioButton x:Name="rb_mods_profile" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="367,46,0,0" Height="26" Width="24"/>
+                    <RadioButton x:Name="rb_mods_folder" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="367,77,0,0" Width="23" Height="26" IsChecked="True"/>
+                    <Label Content="SHIFT oder STRG für Mehrfachauswahl" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="10,0,0,23" Height="19" Width="352" Padding="5,0" HorizontalContentAlignment="Center"/>
+                    <ComboBox x:Name="cb_mods_description_language" HorizontalAlignment="Right" Margin="0,142,10,0" VerticalAlignment="Top" Width="65" Height="29"/>
                 </Grid>
             </TabItem>
             <TabItem Header="ResourcePacks" Visibility="Collapsed">
