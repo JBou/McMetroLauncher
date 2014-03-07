@@ -44,33 +44,35 @@ Public Class ServerList
         nbt.SaveToFile(file, NbtCompression.None)
     End Sub
 
-    Public Sub Load()
-        LoadFrom(servers_dat)
-    End Sub
+    Public Async Function Load() As Task
+        Await LoadFrom(servers_dat)
+    End Function
 
-    Public Sub LoadFrom(file As String)
-        Dim nbt = New NbtFile(file)
-        Servers.Clear()
-        For Each server As NbtCompound In TryCast(nbt.RootTag("servers"), NbtList)
-            Dim entry As New Server()
-            If server.Contains("name") Then
-                entry.Name = server("name").StringValue
-            End If
-            If server.Contains("ip") Then
-                entry.Ip = server("ip").StringValue
-            End If
-            If server.Contains("hideAddress") Then
-                entry.HideAddress = server("hideAddress").ByteValue = 1
-            End If
-            If server.Contains("acceptTextures") Then
-                entry.AcceptTextures = server("acceptTextures").ByteValue = 1
-            End If
-            If server.Contains("icon") Then
-                entry.icon = server("icon").StringValue
-            End If
-            Servers.Add(entry)
-        Next
-    End Sub
+    Public Async Function LoadFrom(file As String) As Task
+        Await Task.Run(Sub()
+                           Dim nbt = New NbtFile(file)
+                           Servers.Clear()
+                           For Each server As NbtCompound In TryCast(nbt.RootTag("servers"), NbtList)
+                               Dim entry As New Server()
+                               If server.Contains("name") Then
+                                   entry.name = server("name").StringValue
+                               End If
+                               If server.Contains("ip") Then
+                                   entry.ip = server("ip").StringValue
+                               End If
+                               If server.Contains("hideAddress") Then
+                                   entry.hideAddress = server("hideAddress").ByteValue = 1
+                               End If
+                               If server.Contains("acceptTextures") Then
+                                   entry.AcceptTextures = server("acceptTextures").ByteValue = 1
+                               End If
+                               If server.Contains("icon") Then
+                                   entry.icon = server("icon").StringValue
+                               End If
+                               Servers.Add(entry)
+                           Next
+                       End Sub)
+                       End Function
 
     Public Class Server
         Private _name As String, _ip As String, _hideAddress As Boolean, _icon As String, _serverping As ServerStatus, _AcceptTextures As Boolean

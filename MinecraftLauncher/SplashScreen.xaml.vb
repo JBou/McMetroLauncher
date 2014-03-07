@@ -6,6 +6,8 @@ Imports Newtonsoft.Json
 Imports System.Threading
 Imports MahApps.Metro
 Imports MahApps.Metro.Controls.Dialogs
+Imports System
+Imports System.Reflection
 
 Public Class SplashScreen
     WithEvents wcversionsstring As New WebClient
@@ -114,73 +116,76 @@ Public Class SplashScreen
             Await Forge.Load()
             Await LiteLoader.Load()
             Downloads.Load()
-            Start()
+            Await Start()
         Catch ex As Exception
             MessageBox.Show(ex.Message & Environment.NewLine & ex.StackTrace)
         End Try
     End Sub
 
-    Sub Start()
+    Async Function Start() As Task
         Try
-            Dim fThread = New Thread(New ThreadStart(AddressOf StartThread))
-            fThread.IsBackground = True
-            fThread.Start()
+            Me.Hide()
+            ShowWindowCommandsOnTop = False
+            Await Settings.Load()
+            ' create accent color menu items
+            AccentColors = ThemeManager.DefaultAccents.Select(Function(a) New AccentColorMenuData() With { _
+                    .Name = a.Name,
+                    .ColorBrush = New SolidColorBrush(CType(Windows.Media.ColorConverter.ConvertFromString(a.Resources("AccentColorBrush").ToString), System.Windows.Media.Color))
+            }).ToList
+            Dim Main As New MainWindow
+            If Settings.Settings.WindowState <> Windows.WindowState.Minimized Then
+                Main.WindowState = Settings.Settings.WindowState
+            End If
+            Main.tb_modsfolder.Text = modsfolder
+            Await Main.Load_ModVersions()
+            Main.Get_Profiles()
+            Main.Menuitem_accent.ItemsSource = AccentColors
+            Main.cb_direct_join.IsChecked = Settings.Settings.DirectJoin
+            Main.tb_server_address.Text = Settings.Settings.ServerAddress
+            Main.tb_username.Text = Settings.Settings.Username
+            If Settings.Settings.Accent <> Nothing Then
+                Await Main.ChangeAccent(Settings.Settings.Accent)
+            End If
+            If Settings.Settings.Theme = "Dark" Then
+                Await Main.ThemeDark()
+            Else
+                Await Main.ThemeLight()
+            End If
+            'LastLogin = Client.LastLogin.GetLastLogin
+            'If LastLogin IsNot Nothing Then
+            '    If LastLogin.Username <> Nothing Then
+            '        tb_username.Text = LastLogin.Username
+            '    End If
+            '    If LastLogin.Password <> Nothing Then
+            '        pb_Password.Password = LastLogin.Password
+            '    End If
+            'End If
+            Await Main.Load_Servers()
+            Main.Ping_servers()
+            Main.Check_Tools_Downloaded()
+            Main.InitializeComponent()
+            'Finally Show The MainWindow
+            Main.Show()
+            Me.Close()
+            If Path.Combine(GetJavaPath(), "bin", "java.exe") = Nothing Then
+                Dim result As MessageDialogResult = Await Me.ShowMessageAsync("Java nicht vorhanden", "Du musst Java installieren, um den McMetroLauncher und Minecraft nutzen zu können." & Environment.NewLine & "Ansonsten werden einige Funktionen nicht funktionieren!!" & Environment.NewLine & "Jetzt herunterladen?", MessageDialogStyle.AffirmativeAndNegative)
+                If result = MessageDialogResult.Affirmative Then
+                    Process.Start("http://java.com/de/download")
+                End If
+            End If
         Catch ex As Exception
-            MessageBox.Show(ex.Message & Environment.NewLine & ex.StackTrace)
+            Dim text As String = ex.Message & Environment.NewLine & ex.StackTrace
+            If text.ToLower.Contains("awesomium") Or text.Contains("connectionId") Then
+                text = "Ein Fehler ist aufgetreten!" & Environment.NewLine & "Lade bitte Awesomium herunter: http://awesomium.com/download! Dadurch sollte der Fehler behoben werden." & Environment.NewLine & "Jetzt herunterladen?"
+                Dim result As MessageBoxResult = MessageBox.Show(text, "Achtung", MessageBoxButton.YesNo, MessageBoxImage.Information)
+                If result = MessageBoxResult.Yes Then
+                    'Window download Awesomium öffnen
+                    Process.Start("http://awesomium.com/download")
+                End If
+                Application.Current.Shutdown()
+            Else
+                MessageBox.Show(text)
+            End If
         End Try
-    End Sub
-
-    Sub StartThread()
-        Dispatcher.Invoke(New Action(Async Function()
-                                         'AccentColors = ThemeManager.DefaultAccents.Select(Function(p) p.Name)
-                                         ' create accent color menu items for the demo
-                                         AccentColors = ThemeManager.DefaultAccents.Select(Function(a) New AccentColorMenuData() With { _
-                                                 .Name = a.Name,
-                                                 .ColorBrush = New SolidColorBrush(CType(Windows.Media.ColorConverter.ConvertFromString(a.Resources("AccentColorBrush").ToString), System.Windows.Media.Color))
-                                         }).ToList
-                                         ShowWindowCommandsOnTop = False
-                                         Dim Main As New MainWindow
-                                         Me.Hide()
-                                         Main.tb_modsfolder.Text = modsfolder
-                                         Await Main.Load_ModVersions()
-                                         Main.Get_Profiles()
-                                         Main.Menuitem_accent.ItemsSource = AccentColors
-                                         Settings.Load()
-                                         Main.cb_direct_join.IsChecked = Settings.DirectJoin
-                                         Main.tb_server_address.Text = Settings.ServerAddress
-                                         Main.tb_username.Text = Settings.Username
-                                         If Settings.Accent <> Nothing Then
-                                             Main.ChangeAccent(Settings.Accent)
-                                         End If
-                                         If Settings.Theme = "Dark" Then
-                                             Main.ThemeDark()
-                                         Else
-                                             Main.ThemeLight()
-                                         End If
-                                         'LastLogin = Client.LastLogin.GetLastLogin
-                                         'If LastLogin IsNot Nothing Then
-                                         '    If LastLogin.Username <> Nothing Then
-                                         '        tb_username.Text = LastLogin.Username
-                                         '    End If
-                                         '    If LastLogin.Password <> Nothing Then
-                                         '        pb_Password.Password = LastLogin.Password
-                                         '    End If
-                                         'End If
-                                         Main.Load_Servers()
-                                         Main.Ping_servers()
-                                         Main.Check_Tools_Downloaded()
-                                         Main.InitializeComponent()
-                                         'Finally Show The MainWindow
-                                         Main.Show()
-                                         Me.Close()
-                                         If Path.Combine(GetJavaPath(), "bin", "java.exe") = Nothing Then
-                                             Dim result As MessageDialogResult = Await Me.ShowMessageAsync("Java nicht vorhanden", "Du musst Java installieren, um den McMetroLauncher und Minecraft nutzen zu können." & Environment.NewLine & "Ansonsten werden einige Funktionen nicht funktionieren!!" & Environment.NewLine & "Jetzt herunterladen?", MessageDialogStyle.AffirmativeAndNegative)
-                                             If result = MessageDialogResult.Affirmative Then
-                                                 Process.Start("http://java.com/de/download")
-                                             End If
-                                         End If
-                                     End Function))
-    End Sub
-
+    End Function
 End Class
-

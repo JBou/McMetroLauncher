@@ -28,7 +28,7 @@ Public Class Profiles
         Return profilesjo.Value(Of JObject)("profiles").Properties.Select(Function(p) p.Name).ToList()
     End Function
 
-    Public Shared Async Function Add(ByVal Profile As Profile) As Task
+    Public Shared Sub Add(ByVal Profile As Profile)
         Load()
         Dim Profileproperties As JObject = New JObject(New JProperty("name", Profile.name))
         If Profile.gameDir <> Nothing Then
@@ -44,7 +44,13 @@ Public Class Profiles
             Profileproperties.Add(New JProperty("javaArgs", Profile.javaArgs))
         End If
         If Profile.resolution IsNot Nothing Then
-            Profileproperties.Add(Await JsonConvert.SerializeObjectAsync(Profile.resolution))
+            If Profile.resolution.height = Nothing Then
+                Profile.resolution.height = "480"
+            End If
+            If Profile.resolution.width = Nothing Then
+                Profile.resolution.width = "854"
+            End If
+            Profileproperties.Add(New JProperty("resolution", New JObject(New JProperty("width", Profile.resolution.width), New JProperty("height", Profile.resolution.height))))
         End If
         If Profile.allowedReleaseTypes IsNot Nothing Then
             Profile.allowedReleaseTypes.Insert(0, "release")
@@ -53,9 +59,9 @@ Public Class Profiles
         profilesjo.Value(Of JObject)("profiles").Add(New JProperty(Profile.name, Profileproperties))
         profilesjo("selectedProfile") = Profile.name
         File.WriteAllText(launcher_profiles_json, profilesjo.ToString)
-    End Function
+    End Sub
 
-    Public Shared Async Function Edit(editprofilename As String, Profile As Profile) As Task
+    Public Shared Sub Edit(editprofilename As String, Profile As Profile)
         Load()
         Dim Profileproperties As JObject = New JObject(New JProperty("name", Profile.name))
         If Profile.gameDir <> Nothing Then
@@ -71,7 +77,13 @@ Public Class Profiles
             Profileproperties.Add(New JProperty("javaArgs", Profile.javaArgs))
         End If
         If Profile.resolution IsNot Nothing Then
-            Profileproperties.Add(Await JsonConvert.SerializeObjectAsync(Profile.resolution))
+            If Profile.resolution.height = Nothing Then
+                Profile.resolution.height = "480"
+            End If
+            If Profile.resolution.width = Nothing Then
+                Profile.resolution.width = "854"
+            End If
+            Profileproperties.Add(New JProperty("resolution", New JObject(New JProperty("width", Profile.resolution.width), New JProperty("height", Profile.resolution.height))))
         End If
         If Profile.allowedReleaseTypes IsNot Nothing Then
             Profile.allowedReleaseTypes.Insert(0, "release")
@@ -80,7 +92,7 @@ Public Class Profiles
         profilesjo.Value(Of JObject)("profiles").Property(editprofilename).Replace(New JProperty(Profile.name, Profileproperties))
         profilesjo("selectedProfile") = Profile.name
         File.WriteAllText(launcher_profiles_json, profilesjo.ToString)
-    End Function
+    End Sub
 
     Public Shared Sub Remove(profilename As String)
         Load()

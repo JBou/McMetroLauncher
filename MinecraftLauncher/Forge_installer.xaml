@@ -31,7 +31,7 @@
                     <Button x:Name="btn_copy" Margin="0,80,10,0" FontSize="13" Height="32" VerticalAlignment="Top" HorizontalAlignment="Right" Width="32" ToolTip="Pfad in die Zwischenablage kopieren" >
                         <Image x:Name="btn_copy_image" Source="images/light/appbar.page.copy.png" ToolTip="Pfad in die Zwischenablage kopieren"/>
                     </Button>
-                    <TextBlock Margin="10,146,10,0" FontSize="18" TextWrapping="WrapWithOverflow" Height="193" VerticalAlignment="Top" Text="Klicke anschließend auf &quot;OK&quot; und es wird Minecraft Forge installiert. Nachdem es einige Dateien heruntergeladen hat und fertig installiert hat, erscheint eine Meldung, dass Forge erfolgreich installiert wurde. Nun wurde ein neues Profil namens &quot;Forge&quot; hinzugefügt und du kannst nun unter dem Tab &quot;Mods&quot; Modifikationen installieren. Du kannst Forge auch einem anderem Profil zuordnen, indem du einfach die Versions im Profileeditor änderst." />
+                    <TextBlock Margin="10,146,10,0" FontSize="18" TextWrapping="WrapWithOverflow" Height="193" VerticalAlignment="Top" Text="Klicke anschließend auf &quot;OK&quot; und es wird Minecraft Forge installiert. Nachdem es einige Dateien heruntergeladen hat und fertig installiert hat, erscheint eine Meldung, dass Forge erfolgreich installiert wurde. Nun wurde ein neues Profil namens &quot;Forge&quot; hinzugefügt und du kannst nun unter dem Tab &quot;Mods&quot; Modifikationen installieren. Du kannst Forge auch einem anderem Profil zuordnen, indem du einfach die Version im Profileeditor änderst." />
                 </Grid>
             </TabItem>
         </Controls:MetroAnimatedTabControl>

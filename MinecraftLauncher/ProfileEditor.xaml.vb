@@ -220,13 +220,18 @@ Public Class ProfileEditor
                 allowedReleaseTypes = Nothing
             End If
 
+            Dim res As New Profiles.Profile.cls_Resolution With {
+                                    .height = resolution_height,
+                                    .width = resolution_width
+                }
+            If resolution_height = Nothing And resolution_width = Nothing Then
+                res = Nothing
+            End If
+
             Dim prof As New Profiles.Profile() With {
                 .name = name,
                 .gameDir = gameDir,
-                .resolution = New Profiles.Profile.cls_Resolution With {
-                                    .height = resolution_height,
-                                    .width = resolution_width
-                },
+                .resolution = res,
                 .lastVersionId = lastVersionId,
                 .javaDir = javaDir,
                 .javaArgs = javaArgs,
@@ -237,14 +242,14 @@ Public Class ProfileEditor
                 If Profiles.List.Contains(tb_profile_name.Text) = True Then
                     Await Me.ShowMessageAsync("Profil existiert bereits", "Dieses Profil existiert bereits!", MessageDialogStyle.Affirmative, New MetroDialogSettings() With {.AffirmativeButtonText = "Ok", .ColorScheme = MetroDialogColorScheme.Accented})
                 Else
-                    Await Profiles.Add(prof)
+                    Profiles.Add(prof)
                 End If
 
             Else
                 If Profiles.List.Contains(tb_profile_name.Text.ToString) And tb_profile_name.Text.ToString <> loadedprofile Then
                     Await Me.ShowMessageAsync("Profil existiert bereits", "Dieses Profil existiert bereits!", MessageDialogStyle.Affirmative, New MetroDialogSettings() With {.AffirmativeButtonText = "Ok", .ColorScheme = MetroDialogColorScheme.Accented})
                 Else
-                    Await Profiles.Edit(loadedprofile, prof)
+                    Profiles.Edit(loadedprofile, prof)
                 End If
             End If
 

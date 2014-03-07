@@ -20,7 +20,7 @@
 
     <Grid>
 
-        <Label Content="© 2013 G. Patzleiner" Margin="0,0,10,10" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="205" HorizontalContentAlignment="Right" />
+        <Label Content="Developed by JBou 2013-2014" Margin="0,0,10,10" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="205" HorizontalContentAlignment="Right" />
         <Label x:Name="lbl_statustitle" Content="Launcher wird gestartet..." HorizontalAlignment="Left" Margin="116,319,0,0" VerticalAlignment="Top" Width="318" VerticalContentAlignment="Center" Height="41" FontSize="20" Background="#00000000" Foreground="Black"/>
         <Controls:ProgressRing Foreground="{DynamicResource AccentColorBrush}" IsActive="True" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="51,325,0,0" MinWidth="60" MinHeight="60"/>
         <Label x:Name="lbl_status" Content="" HorizontalAlignment="Left" Margin="116,360,0,0" VerticalAlignment="Top" Width="318" VerticalContentAlignment="Center" Height="25"/>
