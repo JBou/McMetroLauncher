@@ -167,6 +167,9 @@ Public Module GlobalInfos
 
     End Class
 
+    '--------supportedLauncherVersion---------
+    Public Const supportedLauncherVersion As Integer = 13
+
     Public AccentColors As List(Of AccentColorMenuData)
     Public ReadOnly Property AssemblyVersion As String
         Get
@@ -738,6 +741,9 @@ Public Class MainWindow
         End If
         If Startinfos.Versionsinfo Is Nothing Then
             Await Parse_VersionsInfo(Startinfos.Version)
+            If Startinfos.Versionsinfo.minimumLauncherVersion > supportedLauncherVersion Then
+                Write("Diese Minecraft Version wird vom Launcher noch nicht vollständig unterstützt. Es könnte zu Fehlern kommen!", LogLevel.ERROR)
+            End If
         End If
         If Startinfos.IsStarting = True Then
             Download_Resources()
@@ -1129,6 +1135,7 @@ Public Class MainWindow
                 Startinfos.Profile = Await Profiles.FromName(selectedprofile)
             End If
             tabitem_console.IsSelected = True
+
             'If cb_online_mode.IsChecked = True Then
             '    If pb_Password.Password = Nothing Then
             '        MessageBox.Show("Gib ein Password ein!", "Fehler", MessageBoxButton.OK, MessageBoxImage.Information)
@@ -1213,22 +1220,6 @@ Public Class MainWindow
     End Sub
 
 #Region "LOG"
-
-    Dim s2 As String = "§3HiveMC.com §8| §6FUN §aGametypes                                  §c§lHerobrine v2 §r§aand §b§l162 §eSG Lobbies!"
-    Dim s As String = <![CDATA[§nMinecraft Formatting
-§r§00 §11 §22 §33
-§44 §55 §66 §77
-§88 §99 §aa §bb
-§cc §dd §ee §ff
-
-§r§0k §kMinecraft
-§rl §lMinecraft
-§rm §mMinecraft
-§rn §nMinecraft
-§ro §oMinecraft
-§rr §rMinecraft]]>.Value
-    Dim test1 As String = "§cX§nY"
-    Dim test2 As String = "§nX§cY"
 
     Sub WriteText(text As String, rtb As RichTextBox)
         Dim FormattedTextlist As IList(Of FormattingCodes.FormattedText) = FormattingCodes.ParseFormattedtext(text)
