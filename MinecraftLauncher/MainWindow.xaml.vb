@@ -26,6 +26,7 @@ Imports System.Threading.Tasks
 Imports System.ComponentModel
 Imports System.Windows.Media
 Imports System
+Imports System.Windows.Markup
 
 #End Region
 Public Module GlobalInfos
@@ -194,8 +195,8 @@ Public Module GlobalInfos
     Public Versionsjar As String
     Public UnpackDirectory As String
     Public Arguments As String
-    Public Delegate Sub WriteA(ByVal Text As String)
-    Public Delegate Sub WriteColored(ByVal Text As String, Color As Brush)
+    Public Delegate Sub WriteA(ByVal Text As String, rtb As RichTextBox)
+    Public Delegate Sub WriteColored(ByVal Text As String, rtb As RichTextBox, Color As Brush)
     Public cachefolder As String = mcpfad & "\cache"
     Public modsfolder As String = mcpfad & "\mods"
     Public downloadfilepath As String
@@ -536,7 +537,7 @@ Public Class MainWindow
         Else
             Await Parse_Resources()
         End If
-        pb_download_Isindeterminate(False)
+        pb_download_IsIndeterminate(False)
     End Sub
 
     Async Sub downloadindexesfinished(sender As Object, e As System.ComponentModel.AsyncCompletedEventArgs)
@@ -584,7 +585,7 @@ Public Class MainWindow
     End Function
 
     Sub DownloadResources()
-        pb_download_value(resourcesdownloadindex)
+        pb_download_Value(resourcesdownloadindex)
         If resourcesdownloadindex < resourcesindexes.objects.Count Then
             currentresourcesobject = resourcesindexes.objects.Item(resourcesdownloadindex)
             Dim resource As New FileInfo(resourcefile(currentresourcesobject.hash).FullName.Replace("/", "\"))
@@ -771,7 +772,7 @@ Public Class MainWindow
 
     Async Sub DownloadLibraries()
         Try
-            pb_download_value(librariesdownloadindex)
+            pb_download_Value(librariesdownloadindex)
             If librariesdownloadindex < Startinfos.Versionsinfo.libraries.Count Then
                 Currentlibrary = Startinfos.Versionsinfo.libraries.Item(librariesdownloadindex)
                 Dim allowdownload As Boolean = True
@@ -1212,14 +1213,58 @@ Public Class MainWindow
     End Sub
 
 #Region "LOG"
-    Public Sub Append(ByVal Line As String, Optional Color As Brush = Nothing)
+
+    Dim s2 As String = "§3HiveMC.com §8| §6FUN §aGametypes                                  §c§lHerobrine v2 §r§aand §b§l162 §eSG Lobbies!"
+    Dim s As String = <![CDATA[§nMinecraft Formatting
+§r§00 §11 §22 §33
+§44 §55 §66 §77
+§88 §99 §aa §bb
+§cc §dd §ee §ff
+
+§r§0k §kMinecraft
+§rl §lMinecraft
+§rm §mMinecraft
+§rn §nMinecraft
+§ro §oMinecraft
+§rr §rMinecraft]]>.Value
+    Dim test1 As String = "§cX§nY"
+    Dim test2 As String = "§nX§cY"
+
+    Sub WriteText(text As String, rtb As RichTextBox)
+        Dim FormattedTextlist As IList(Of FormattingCodes.FormattedText) = FormattingCodes.ParseFormattedtext(text)
+        'Properties anwenden und Text in die RTB schreiben
+        For Each item As FormattingCodes.FormattedText In FormattedTextlist
+            'TextRange erstellen:
+            Dim Foreground As Brush = New SolidColorBrush(item.Color)
+            Dim tr As New TextRange(rtb.Document.ContentEnd, rtb.Document.ContentEnd)
+            tr.ClearAllProperties()
+            tr.Text = item.Text
+            tr.ApplyPropertyValue(TextElement.ForegroundProperty, Foreground)
+            'Zuerst zurücksetzen:
+            tr.ApplyPropertyValue(TextElement.FontWeightProperty, FontWeights.Normal)
+            tr.ApplyPropertyValue(Inline.TextDecorationsProperty, New TextDecorationCollection())
+            tr.ApplyPropertyValue(TextElement.FontStyleProperty, FontStyles.Normal)
+
+            'TODO: Obfuscated
+            'If textchar.Obfuscated = True Then tr.ApplyPropertyValue(TextElement.FontWeightProperty, FontWeights.Bold)
+            If item.Bold = True Then tr.ApplyPropertyValue(TextElement.FontWeightProperty, FontWeights.Bold)
+            If item.Strikethrough = True Then tr.ApplyPropertyValue(Inline.TextDecorationsProperty, TextDecorations.Strikethrough)
+            'If Strikethrough = True Then tr.ApplyPropertyValue(Inline.TextDecorationsProperty, TextDecorations)
+            If item.Underline = True Then tr.ApplyPropertyValue(Inline.TextDecorationsProperty, TextDecorations.Underline)
+            If item.Italic = True Then tr.ApplyPropertyValue(TextElement.FontStyleProperty, FontStyles.Italic)
+            rtb.ScrollToEnd()
+        Next
+    End Sub
+
+
+    Public Sub Append(ByVal Line As String, rtb As RichTextBox, Optional Color As Brush = Nothing)
         Me.Dispatcher.Invoke(New Action(Sub()
-                                            Dim tr As New TextRange(tb_ausgabe.Document.ContentEnd, tb_ausgabe.Document.ContentEnd)
+                                            Dim tr As New TextRange(rtb.Document.ContentEnd, rtb.Document.ContentEnd)
                                             tr.Text = Line & Environment.NewLine
                                             If Color IsNot Nothing Then
                                                 tr.ApplyPropertyValue(TextElement.ForegroundProperty, Color)
                                             End If
-                                            tb_ausgabe.ScrollToEnd()
+                                            rtb.ScrollToEnd()
                                         End Sub))
     End Sub
     ''' <summary>
@@ -1231,11 +1276,11 @@ Public Class MainWindow
     Public Sub Write(ByVal Line As String, Optional LogLevel As LogLevel = LogLevel.INFO)
         Select Case LogLevel
             Case MainWindow.LogLevel.INFO
-                Dispatcher.Invoke(New WriteA(AddressOf Append), Line)
+                Dispatcher.Invoke(New WriteA(AddressOf Append), Line, tb_ausgabe)
             Case MainWindow.LogLevel.WARNING
-                Dispatcher.Invoke(New WriteColored(AddressOf Append), "[WARNING] " & Line, Brushes.Orange)
+                Dispatcher.Invoke(New WriteColored(AddressOf Append), "[WARNING] " & Line, tb_ausgabe, Brushes.Orange)
             Case MainWindow.LogLevel.ERROR
-                Dispatcher.Invoke(New WriteColored(AddressOf Append), "[ERROR] " & Line, Brushes.Red)
+                Dispatcher.Invoke(New WriteColored(AddressOf Append), "[ERROR] " & Line, tb_ausgabe, Brushes.Red)
         End Select
     End Sub
     Public Enum LogLevel
@@ -1300,7 +1345,7 @@ Public Class MainWindow
     End Function
 
     Private Sub wcversionsdownload_DownloadProgressChanged(sender As Object, e As DownloadProgressChangedEventArgs) Handles wcversionsdownload.DownloadProgressChanged
-        pb_download_value(e.ProgressPercentage)
+        pb_download_Value(e.ProgressPercentage)
     End Sub
 
     Private Sub tb_ausgabe_TextChanged(sender As Object, e As TextChangedEventArgs) Handles tb_ausgabe.TextChanged
@@ -2060,24 +2105,12 @@ Public Class Base64ImageConverter
     End Function
 
 End Class
-
-Public Class FormattingcodesStringConverter
+Public Class FormattingcodesDocumentConverter
     Implements System.Windows.Data.IValueConverter
-
     Public Function Convert(value As Object, targetType As Type, parameter As Object, culture As System.Globalization.CultureInfo) As Object Implements System.Windows.Data.IValueConverter.Convert
         Dim s As String = TryCast(value, String)
-
         If s Is Nothing Then Return Nothing
-
-        For Each item As String In FormattingCodes.Colorcodes
-            s = s.Replace(item, Nothing)
-        Next
-        For Each item As String In FormattingCodes.Formattingcodes
-            s = s.Replace(item, Nothing)
-        Next
-        'Neue Zeile für MotD -> "/n"
-
-        Return s
+        Return FormattingCodes.MinecraftText2Document(s)
     End Function
 
     Public Function ConvertBack(value As Object, targetType As Type, parameter As Object, culture As System.Globalization.CultureInfo) As Object Implements IValueConverter.ConvertBack

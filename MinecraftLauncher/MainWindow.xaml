@@ -21,7 +21,7 @@
             </ResourceDictionary.MergedDictionaries>
 
             <local:Base64ImageConverter x:Key="Base64ImageConverter"/>
-            <local:FormattingcodesStringConverter x:Key="FormattingcodesStringConverter"/>
+            <local:FormattingcodesDocumentConverter x:Key="FormattingcodesDocumentConverter"/>
             <local:MODS_installed_imageConverter x:Key="MODS_installed_imageConverter" />
             <local:Playerlist_Namesstring_Converter x:Key="Playerlist_Namesstring_Converter"/>
             <Style x:Key="DescriptionHeaderStyle" TargetType="Label">
@@ -395,17 +395,22 @@
                                                 <StackPanel>
                                                     <TextBlock Text="{Binding name}" FontSize="20" VerticalAlignment="Top" />
                                                     <!--Description-->
-                                                    <TextBlock FontSize="15">
-                                                        <TextBlock.Style>
-                                                            <Style TargetType="{x:Type TextBlock}">
+                                                    <local:BindableRichTextBox x:Name="serverlist_motd" FontSize="15" IsReadOnly="True" Background="Transparent" BorderBrush="{x:Null}" SelectionBrush="{x:Null}" BorderThickness="0,0,0,0" SelectionOpacity="0" Cursor="Arrow" Focusable="False" IsTabStop="False" TabIndex="0" >
+                                                        <RichTextBox.Resources>
+                                                            <Style TargetType="{x:Type Paragraph}">
+                                                                <Setter Property="Margin" Value="0"/>
+                                                            </Style>
+                                                        </RichTextBox.Resources>
+                                                        <RichTextBox.Style>
+                                                            <Style TargetType="{x:Type local:BindableRichTextBox}">
                                                                 <Style.Triggers>
                                                                     <DataTrigger Binding="{Binding ServerStatus.Online}" Value="True">
-                                                                        <Setter Property="Text" Value="{Binding ServerStatus.Description, Converter={StaticResource FormattingcodesStringConverter}}"/>
+                                                                        <Setter Property="Document"  Value="{Binding ServerStatus.Description, Converter={StaticResource FormattingcodesDocumentConverter}}"/>
                                                                     </DataTrigger>
                                                                 </Style.Triggers>
                                                             </Style>
-                                                        </TextBlock.Style>
-                                                    </TextBlock>
+                                                        </RichTextBox.Style>
+                                                    </local:BindableRichTextBox>
                                                 </StackPanel>
                                             </DockPanel>
                                         </DataTemplate>

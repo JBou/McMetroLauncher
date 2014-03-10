@@ -1,369 +1,257 @@
-﻿' Copyright 2009, 2010, 2011 Matvei Stefarov <me@matvei.org>
-Imports System.Collections.Generic
-Imports System.Text
-
-
+﻿Imports System.Windows.Media
 Public Class FormattingCodes
-    Public Shared Colorcodes As String() = {"§0", "§1", "§2", "§3", "§4", "§5", "§6", "§7", "§8", "§9", "§a", "§b", "§c", "§d", "§e", "§f"}
-    Public Shared Formattingcodes As String() = {"§k", "§l", "§m", "§n", "§n", "§o", "§r"}
-    Public Shared MotD_new_line As String = "\n"
-End Class
-
-''' <summary>
-''' Static class with definitions of Minecraft color codes, parsers/converters, and utilities.
-''' </summary>
-''' 
-Public NotInheritable Class ColorCodes
-    Private Sub New()
-    End Sub
-    Public Const Black As String = "&0",
-        Navy As String = "&1",
-        Green As String = "&2",
-        Teal As String = "&3",
-        Maroon As String = "&4",
-        Purple As String = "&5",
-        Olive As String = "&6",
-        Silver As String = "&7",
-        Gray As String = "&8",
-        Blue As String = "&9",
-        Lime As String = "&a",
-        Aqua As String = "&b",
-        Red As String = "&c",
-        Magenta As String = "&d",
-        Yellow As String = "&e",
-        White As String = "&f"
-
-    ' User-defined color assignments. Set by Config.ApplyConfig.
-    Public Shared Sys As String, Help As String, Say As String, Announcement As String, PM As String, IRC As String, _
-        [Me] As String, Warning As String
-
-    ' Defaults for user-defined colors.
-    Public Const SysDefault As String = Yellow, HelpDefault As String = Lime, SayDefault As String = Green, AnnouncementDefault As String = Green, PMDefault As String = Aqua, IRCDefault As String = Purple, _
-        MeDefault As String = Purple, WarningDefault As String = Red
-
-    Public Shared ReadOnly ColorNames As New SortedList(Of Char, String)() From { _
-        {"0"c, "black"},
-        {"1"c, "navy"},
-        {"2"c, "green"},
-        {"3"c, "teal"},
-        {"4"c, "maroon"},
-        {"5"c, "purple"},
-        {"6"c, "olive"},
-        {"7"c, "silver"},
-        {"8"c, "gray"},
-        {"9"c, "blue"},
-        {"a"c, "lime"},
-        {"b"c, "aqua"},
-        {"c"c, "red"},
-        {"d"c, "magenta"},
-        {"e"c, "yellow"},
-        {"f"c, "white"}
-    }
-
-
-    ''' <summary> Gets color name for hex color code. </summary>
-    ''' <param name="code">Hexadecimal color code (between '0' and 'f')</param>
-    ''' <returns>Lowercase color name</returns>
-    Public Shared Function GetName(code As Char) As String
-        code = [Char].ToLower(code)
-        If IsValidColorCode(code) Then
-            Return ColorNames(code)
-        End If
-        Dim color As String = Parse(code)
-        If color Is Nothing Then
-            Return Nothing
-        End If
-        Return ColorNames(color(1))
-    End Function
-
-
-    ''' <summary> Gets color name for a numeric color code. </summary>
-    ''' <param name="index"> Ordinal numeric color code (between 0 and 15) </param>
-    ''' <returns> Lowercase color name. If input is out of range, returns null. </returns>
-    Public Shared Function GetName(index As Integer) As String
-        If index >= 0 AndAlso index <= 15 Then
-            Return ColorNames.Values(index)
-        Else
-            Return Nothing
-        End If
-    End Function
-
-
-    ''' <summary> Gets color name for a string representation of a color. </summary>
-    ''' <param name="color"> Any parsable string representation of a color. </param>
-    ''' <returns> Lowercase color name.
-    ''' If input is an empty string, returns empty string.
-    ''' If input is null or cannot be parsed, returns null. </returns>
-    Public Shared Function GetName(color As String) As String
-        If color Is Nothing Then
-            Return Nothing
-        ElseIf color.Length = 0 Then
-            Return ""
-        Else
-            Dim parsedColor As String = Parse(color)
-            If parsedColor Is Nothing Then
-                Return Nothing
-            Else
-                Return GetName(parsedColor(1))
-            End If
-        End If
-    End Function
-
-
-
-    ''' <summary> Parses a string to a format readable by Minecraft clients. 
-    ''' an accept color names and color codes (with or without the ampersand). </summary>
-    ''' <param name="code"> Color code character </param>
-    ''' <returns> Two-character color string, readable by Minecraft client.
-    ''' If input is null or cannot be parsed, returns null. </returns>
-    Public Shared Function Parse(code As Char) As String
-        code = Char.ToLower(code)
-        If IsValidColorCode(code) Then
-            Return "&" & code
-        Else
-            Select Case code
-                Case "s"c
-                    Return Sys
-                Case "y"c
-                    Return Say
-                Case "p"c
-                    Return PM
-                Case "r"c
-                    Return Announcement
-                Case "h"c
-                    Return Help
-                Case "w"c
-                    Return Warning
-                Case "m"c
-                    Return [Me]
-                Case "i"c
-                    Return IRC
-                Case Else
-                    Return Nothing
-            End Select
-        End If
-    End Function
-
-
-    ''' <summary> Parses a numeric color code to a string readable by Minecraft clients </summary>
-    ''' <param name="index"> Ordinal numeric color code (between 0 and 15) </param>
-    ''' <returns> Two-character color string, readable by Minecraft client.
-    ''' If input cannot be parsed, returns null. </returns>
-    Public Shared Function Parse(index As Integer) As String
-        If index >= 0 AndAlso index <= 15 Then
-            Return "&" & ColorNames.Keys(index)
-        Else
-            Return Nothing
-        End If
-    End Function
-
-
-    ''' <summary> Parses a string to a format readable by Minecraft clients. 
-    ''' an accept color names and color codes (with or without the ampersand). </summary>
-    ''' <param name="color"> Ordinal numeric color code (between 0 and 15) </param>
-    ''' <returns> Two-character color string, readable by Minecraft client.
-    ''' If input is an empty string, returns empty string.
-    ''' If input is null or cannot be parsed, returns null. </returns>
-    Public Shared Function Parse(color As String) As String
-        If color Is Nothing Then
-            Return Nothing
-        End If
-        color = color.ToLower()
-        Select Case color.Length
-            Case 2
-                If color(0) = "&"c AndAlso IsValidColorCode(color(1)) Then
-                    Return color
+    Public Shared Function ParseFormattedtext(text As String) As IList(Of FormattedText)
+        'http://minecraft.gamepedia.com/Formatting_codes
+        Dim Color As Color = Colors.Black
+        Dim Obfuscated As Boolean = False
+        Dim Bold As Boolean = False
+        Dim Strikethrough As Boolean = False
+        Dim Underline As Boolean = False
+        Dim Italic As Boolean = False
+        Dim FormattedTextlist As IList(Of FormattedText) = New List(Of FormattedText)
+        For i = 0 To text.Length - 1
+            If i > 1 Then
+                If text.ElementAt(i - 2) = "§" Then
+                    Dim substring As String = text.Substring(i - 2, 2)
+                    If Colorcodes.Select(Function(p) p.Code).Contains(substring) Then
+                        Color = Colorcodes.Where(Function(p) p.Code = substring).First.Color
+                        'If a color code is used after a formatting code, the formatting code will be disabled beyond the color code point. 
+                        'For example, §cX§nY displays as XY, whereas §nX§cY displays as XY. 
+                        'Therefore, when using a color code in tandem with a formatting code, ensure the color code is used first and reuse the formatting code when changing colors.
+                        Obfuscated = False
+                        Bold = False
+                        Strikethrough = False
+                        Underline = False
+                        Italic = False
+                    ElseIf substring = "§r" Then
+                        Color = Colors.Black
+                        Obfuscated = False
+                        Bold = False
+                        Strikethrough = False
+                        Underline = False
+                        Italic = False
+                    ElseIf Formattingcodes.Select(Function(p) p.Code).Contains(substring) Then
+                        Select Case substring
+                            Case "§k"
+                                Obfuscated = True
+                            Case "§l"
+                                Bold = True
+                            Case "§m"
+                                Strikethrough = True
+                            Case "§n"
+                                Underline = True
+                            Case "§o"
+                                Italic = True
+                        End Select
+                    End If
                 End If
-                Exit Select
-
-            Case 1
-                Return Parse(color(0))
-
-            Case 0
-                Return ""
-        End Select
-        If ColorNames.ContainsValue(color) Then
-            Return "&" & ColorNames.Keys(ColorNames.IndexOfValue(color))
-        Else
-            Return Nothing
-        End If
-    End Function
-
-
-    Public Shared Function ParseToIndex(color As String) As Integer
-        color = color.ToLower()
-        If color.Length = 2 AndAlso color(0) = "&"c Then
-            If ColorNames.ContainsKey(color(1)) Then
-                Return ColorNames.IndexOfKey(color(1))
-            Else
-                Select Case color
-                    Case "&s"
-                        Return ColorNames.IndexOfKey(Sys(1))
-                    Case "&y"
-                        Return ColorNames.IndexOfKey(Say(1))
-                    Case "&p"
-                        Return ColorNames.IndexOfKey(PM(1))
-                    Case "&r"
-                        Return ColorNames.IndexOfKey(Announcement(1))
-                    Case "&h"
-                        Return ColorNames.IndexOfKey(Help(1))
-                    Case "&w"
-                        Return ColorNames.IndexOfKey(Warning(1))
-                    Case "&m"
-                        Return ColorNames.IndexOfKey([Me](1))
-                    Case "&i"
-                        Return ColorNames.IndexOfKey(IRC(1))
-                    Case Else
-                        Return 15
-                End Select
             End If
-        ElseIf ColorNames.ContainsValue(color) Then
-            Return ColorNames.IndexOfValue(color)
-        Else
-            ' white
-            Return 15
-        End If
+            FormattedTextlist.Add(New FormattedText() With {.Bold = Bold, .Color = Color, .Italic = Italic, .Obfuscated = Obfuscated, .Strikethrough = Strikethrough, .Text = text.ElementAt(i), .Underline = Underline})
+        Next
+        'Color- und  löschen:
+        Dim index As Integer = 0
+        Do Until index > FormattedTextlist.Count - 2
+            Dim str1 As String = FormattedTextlist.ElementAt(index).Text
+            Dim str2 As String = FormattedTextlist.ElementAt(index + 1).Text
+            Dim substring As String = String.Join(Nothing, str1, str2)
+            If Formattingcodes.Select(Function(p) p.Code).Contains(substring) = True Or Colorcodes.Select(Function(p) p.Code).Contains(substring) = True Then
+                FormattedTextlist.RemoveAt(index)
+                FormattedTextlist.RemoveAt(index)
+            Else
+                index += 1
+            End If
+        Loop
+        Return FormattedTextlist
     End Function
+    Public Shared Function MinecraftText2Document(text As String) As FlowDocument
+        Dim document As FlowDocument = New FlowDocument()
+        Dim FormattedTextlist As IList(Of FormattedText) = ParseFormattedtext(text)
+        'Properties anwenden und Text in die RTB schreiben
+        For Each item As FormattingCodes.FormattedText In FormattedTextlist
+            'TextRange erstellen:
+            Dim Foreground As Brush = New SolidColorBrush(item.Color)
+            Dim tr As New TextRange(document.ContentEnd, document.ContentEnd)
+            tr.ClearAllProperties()
+            tr.Text = item.Text
+            tr.ApplyPropertyValue(TextElement.ForegroundProperty, Foreground)
+            'Zuerst zurücksetzen:
+            tr.ApplyPropertyValue(TextElement.FontWeightProperty, FontWeights.Normal)
+            tr.ApplyPropertyValue(Inline.TextDecorationsProperty, New TextDecorationCollection())
+            tr.ApplyPropertyValue(TextElement.FontStyleProperty, FontStyles.Normal)
 
-
-
-    ''' <summary>
-    ''' Checks whether a color code is valid (checks if it's hexadecimal char).
-    ''' </summary>
-    ''' <returns>True is char is valid, otherwise false</returns>
-    Public Shared Function IsValidColorCode(code As Char) As Boolean
-        Return (code >= "0"c AndAlso code <= "9"c) OrElse (code >= "a"c AndAlso code <= "f"c) OrElse (code >= "A"c AndAlso code <= "F"c)
+            'TODO: Obfuscated
+            'If textchar.Obfuscated = True Then tr.ApplyPropertyValue(TextElement.FontWeightProperty, FontWeights.Bold)
+            If item.Bold = True Then tr.ApplyPropertyValue(TextElement.FontWeightProperty, FontWeights.Bold)
+            If item.Strikethrough = True Then tr.ApplyPropertyValue(Inline.TextDecorationsProperty, TextDecorations.Strikethrough)
+            'If Strikethrough = True Then tr.ApplyPropertyValue(Inline.TextDecorationsProperty, TextDecorations)
+            If item.Underline = True Then tr.ApplyPropertyValue(Inline.TextDecorationsProperty, TextDecorations.Underline)
+            If item.Italic = True Then tr.ApplyPropertyValue(TextElement.FontStyleProperty, FontStyles.Italic)
+        Next
+        Return document
     End Function
-
-
-    Public Shared Function ReplacePercentCodes(message As String) As String
-        Dim sb As New StringBuilder(message)
-        sb.Replace("%0", "&0")
-        sb.Replace("%1", "&1")
-        sb.Replace("%2", "&2")
-        sb.Replace("%3", "&3")
-        sb.Replace("%4", "&4")
-        sb.Replace("%5", "&5")
-        sb.Replace("%6", "&6")
-        sb.Replace("%7", "&7")
-        sb.Replace("%8", "&8")
-        sb.Replace("%9", "&9")
-        sb.Replace("%a", "&a")
-        sb.Replace("%b", "&b")
-        sb.Replace("%c", "&c")
-        sb.Replace("%d", "&d")
-        sb.Replace("%e", "&e")
-        sb.Replace("%f", "&f")
-        sb.Replace("%A", "&a")
-        sb.Replace("%B", "&b")
-        sb.Replace("%C", "&c")
-        sb.Replace("%D", "&d")
-        sb.Replace("%E", "&e")
-        sb.Replace("%F", "&f")
-        Return sb.ToString()
-    End Function
-
-
-    'Public Shared Function SubstituteSpecialColors(input As String) As String
-    '    Dim sb As New StringBuilder(input)
-    '    For i As Integer = sb.Length - 1 To 1 Step -1
-    '        If sb(i - 1) = "&"c Then
-    '            Select Case [Char].ToLower(sb(i))
-    '                Case "s"c
-    '                    sb(i) = Sys(1)
-    '                    Exit Select
-    '                Case "y"c
-    '                    sb(i) = Say(1)
-    '                    Exit Select
-    '                Case "p"c
-    '                    sb(i) = PM(1)
-    '                    Exit Select
-    '                Case "r"c
-    '                    sb(i) = Announcement(1)
-    '                    Exit Select
-    '                Case "h"c
-    '                    sb(i) = Help(1)
-    '                    Exit Select
-    '                Case "w"c
-    '                    sb(i) = Warning(1)
-    '                    Exit Select
-    '                Case "m"c
-    '                    sb(i) = [Me](1)
-    '                    Exit Select
-    '                Case "i"c
-    '                    sb(i) = IRC(1)
-    '                    Exit Select
-    '                Case Else
-    '                    If IsValidColorCode(sb(i)) Then
-    '				Continue Select
-    '                    Else
-    '                        sb.Remove(i - 1, 1)
-    '                    End If
-    '                    Exit Select
-    '            End Select
-    '        End If
-    '    Next
-    '    Return sb.ToString()
-    'End Function
-
-#Region "IRC Colors"
-
-    Public Const IRCReset As String = ChrW(3) & ChrW(15)
-    Public Const IRCBold As String = ChrW(2)
-
-    Shared ReadOnly MinecraftToIRCColors As New Dictionary(Of String, IRCColor)() From { _
-        {White, IRCColor.White}, _
-        {Black, IRCColor.Black}, _
-        {Navy, IRCColor.Navy}, _
-        {Green, IRCColor.Green}, _
-        {Red, IRCColor.Red}, _
-        {Maroon, IRCColor.Maroon}, _
-        {Purple, IRCColor.Purple}, _
-        {Olive, IRCColor.Olive}, _
-        {Yellow, IRCColor.Yellow}, _
-        {Lime, IRCColor.Lime}, _
-        {Teal, IRCColor.Teal}, _
-        {Aqua, IRCColor.Aqua}, _
-        {Blue, IRCColor.Blue}, _
-        {Magenta, IRCColor.Magenta}, _
-        {Gray, IRCColor.Gray}, _
-        {Silver, IRCColor.Silver} _
+    Public Shared Colorcodes As IList(Of ColorCode) = New List(Of ColorCode) From
+    {
+        New ColorCode() With {.Name = "Black", .Color = DirectCast(ColorConverter.ConvertFromString("#000000"), Color), .Code = "§0"},
+        New ColorCode() With {.Name = "Dark Blue", .Color = DirectCast(ColorConverter.ConvertFromString("#0000AA"), Color), .Code = "§1"},
+        New ColorCode() With {.Name = "Dark Green", .Color = DirectCast(ColorConverter.ConvertFromString("#00AA00"), Color), .Code = "§2"},
+        New ColorCode() With {.Name = "Dark Aqua", .Color = DirectCast(ColorConverter.ConvertFromString("#00AAAA"), Color), .Code = "§3"},
+        New ColorCode() With {.Name = "Dark Red", .Color = DirectCast(ColorConverter.ConvertFromString("#AA0000"), Color), .Code = "§4"},
+        New ColorCode() With {.Name = "Dark Purple", .Color = DirectCast(ColorConverter.ConvertFromString("#AA00AA"), Color), .Code = "§5"},
+        New ColorCode() With {.Name = "Gold", .Color = DirectCast(ColorConverter.ConvertFromString("#FFAA00"), Color), .Code = "§6"},
+        New ColorCode() With {.Name = "Gray", .Color = DirectCast(ColorConverter.ConvertFromString("#AAAAAA"), Color), .Code = "§7"},
+        New ColorCode() With {.Name = "Dark Gray", .Color = DirectCast(ColorConverter.ConvertFromString("#555555"), Color), .Code = "§8"},
+        New ColorCode() With {.Name = "Blue", .Color = DirectCast(ColorConverter.ConvertFromString("#5555FF"), Color), .Code = "§9"},
+        New ColorCode() With {.Name = "Green", .Color = DirectCast(ColorConverter.ConvertFromString("#55FF55"), Color), .Code = "§a"},
+        New ColorCode() With {.Name = "Aqua", .Color = DirectCast(ColorConverter.ConvertFromString("#55FFFF"), Color), .Code = "§b"},
+        New ColorCode() With {.Name = "Red", .Color = DirectCast(ColorConverter.ConvertFromString("#FF5555"), Color), .Code = "§c"},
+        New ColorCode() With {.Name = "Light Purple", .Color = DirectCast(ColorConverter.ConvertFromString("#FF55FF"), Color), .Code = "§d"},
+        New ColorCode() With {.Name = "Yellow", .Color = DirectCast(ColorConverter.ConvertFromString("#FFFF55"), Color), .Code = "§e"},
+        New ColorCode() With {.Name = "White", .Color = DirectCast(ColorConverter.ConvertFromString("#FFFFFF"), Color), .Code = "§f"}
     }
+    Public Shared Formattingcodes As IList(Of FormattingCode) = New List(Of FormattingCode) From
+{
+    New FormattingCode() With {.Name = "Obfuscated", .Code = "§k"},
+    New FormattingCode() With {.Name = "Bold", .Code = "§l"},
+    New FormattingCode() With {.Name = "Strikethrough", .Code = "§m"},
+    New FormattingCode() With {.Name = "Underline", .Code = "§n"},
+    New FormattingCode() With {.Name = "Italic", .Code = "§o"},
+    New FormattingCode() With {.Name = "Reset", .Code = "§r"}
+}
+    Public Shared MotD_new_line As String = "\n"
 
+    Public Class FormattedText
+        Private m_text As String,
+            m_color As Color,
+            m_Obfuscated As Boolean,
+            m_Bold As Boolean,
+            m_Strikethrough As Boolean,
+            m_Underline As Boolean,
+            m_Italic As Boolean
 
-    Public Shared Function EscapeAmpersands(input As String) As String
-        Return input.Replace("&", "&&")
-    End Function
+        Public Property Text As String
+            Get
+                Return m_text
+            End Get
+            Set(value As String)
+                m_text = value
+            End Set
+        End Property
 
+        Public Property Color As Color
+            Get
+                Return m_color
+            End Get
+            Set(value As Color)
+                m_color = value
+            End Set
+        End Property
+        Public Property Obfuscated As Boolean
+            Get
+                Return m_Obfuscated
+            End Get
+            Set(value As Boolean)
+                m_Obfuscated = value
+            End Set
+        End Property
+        Public Property Bold As Boolean
+            Get
+                Return m_Bold
+            End Get
+            Set(value As Boolean)
+                m_Bold = value
+            End Set
+        End Property
+        Public Property Strikethrough As Boolean
+            Get
+                Return m_Strikethrough
+            End Get
+            Set(value As Boolean)
+                m_Strikethrough = value
+            End Set
+        End Property
+        Public Property Underline As Boolean
+            Get
+                Return m_Underline
+            End Get
+            Set(value As Boolean)
+                m_Underline = value
+            End Set
+        End Property
+        Public Property Italic As Boolean
+            Get
+                Return m_Italic
+            End Get
+            Set(value As Boolean)
+                m_Italic = value
+            End Set
+        End Property
 
-    'Public Shared Function ToIRCColorCodes(input As String) As String
-    '    Dim sb As New StringBuilder(SubstituteSpecialColors(input))
+        Public Sub New()
 
-    '    For Each code As KeyValuePair(Of String, IRCColor) In MinecraftToIRCColors
-    '        sb.Replace(code.Key, ChrW(3) & CInt(code.Value).ToString().PadLeft(2, "0"c))
-    '    Next
-    '    Return sb.ToString()
-    'End Function
+        End Sub
 
-#End Region
+    End Class
+    Public Class ColorCode
+        Private m_name As String,
+            m_color As Color,
+            m_Code As String
+
+        Public Property Name As String
+            Get
+                Return m_name
+            End Get
+            Set(value As String)
+                m_name = value
+            End Set
+        End Property
+
+        Public Property Color As Color
+            Get
+                Return m_color
+            End Get
+            Set(value As Color)
+                m_color = value
+            End Set
+        End Property
+        Public Property Code As String
+            Get
+                Return m_Code
+            End Get
+            Set(value As String)
+                m_Code = value
+            End Set
+        End Property
+
+        Public Sub New()
+
+        End Sub
+
+    End Class
+    Public Class FormattingCode
+        Private m_name As String,
+            m_Code As String
+
+        Public Property Name As String
+            Get
+                Return m_name
+            End Get
+            Set(value As String)
+                m_name = value
+            End Set
+        End Property
+
+        Public Property Code As String
+            Get
+                Return m_Code
+            End Get
+            Set(value As String)
+                m_Code = value
+            End Set
+        End Property
+
+        Public Sub New()
+
+        End Sub
+
+    End Class
 End Class
-
-
-Enum IRCColor
-    White = 0
-    Black
-    Navy
-    Green
-    Red
-    Maroon
-    Purple
-    Olive
-    Yellow
-    Lime
-    Teal
-    Aqua
-    Blue
-    Magenta
-    Gray
-    Silver
-End Enum
