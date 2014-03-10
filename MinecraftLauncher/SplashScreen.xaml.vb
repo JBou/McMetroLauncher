@@ -136,6 +136,8 @@ Public Class SplashScreen
             If Settings.Settings.WindowState <> Windows.WindowState.Minimized Then
                 Main.WindowState = Settings.Settings.WindowState
             End If
+            Main.Webcontrol_news.Visibility = Windows.Visibility.Collapsed
+            Main.Webcontrol_news.WebSession = WebCore.CreateWebSession(New WebPreferences() With {.CustomCSS = Scrollbarcss})
             Main.tb_modsfolder.Text = modsfolder
             Await Main.Load_ModVersions()
             Main.Get_Profiles()

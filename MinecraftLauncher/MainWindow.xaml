@@ -405,7 +405,7 @@
                                                             <Style TargetType="{x:Type local:BindableRichTextBox}">
                                                                 <Style.Triggers>
                                                                     <DataTrigger Binding="{Binding ServerStatus.Online}" Value="True">
-                                                                        <Setter Property="Document"  Value="{Binding ServerStatus.Description, Converter={StaticResource FormattingcodesDocumentConverter}}"/>
+                                                                        <Setter Property="Document"  Value="{Binding ServerStatus.Description, IsAsync=True, Converter={StaticResource FormattingcodesDocumentConverter}}"/>
                                                                     </DataTrigger>
                                                                 </Style.Triggers>
                                                             </Style>

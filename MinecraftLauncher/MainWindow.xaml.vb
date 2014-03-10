@@ -242,6 +242,28 @@ Public Module GlobalInfos
     Public versionurl As String = Website & "mcmetrolauncher/version.txt"
     Public changelogurl As String = Website & "mcmetrolauncher/changelog.txt"
     Public startedversions As IList(Of String) = New List(Of String)
+    'http://www.joomlavision.com/customize-browser-scrollbars-css3/
+    Public Scrollbarcss As String = <![CDATA[
+::-webkit-scrollbar-track
+{
+	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+	border-radius: 0px;
+	background-color: #F5F5F5;
+}
+
+::-webkit-scrollbar
+{
+	width: 12px;
+	background-color: #F5F5F5;
+}
+
+::-webkit-scrollbar-thumb
+{
+	border-radius: 0px;
+	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+	background-color: #555;
+}
+]]>.Value
 End Module
 
 Public Class AccentColorMenuData
@@ -2013,6 +2035,7 @@ Public Class MainWindow
 
     Private Sub Webcontrol_news_LoadingFrameComplete(sender As Object, e As FrameEventArgs) Handles Webcontrol_news.LoadingFrameComplete
         If Webcontrol_news.Source = New Uri("http://mcupdate.tumblr.com/") Then
+            Webcontrol_news.Visibility = Windows.Visibility.Visible
             lbl_news_loading.Visibility = Windows.Visibility.Collapsed
             pb_news_loading.Visibility = Windows.Visibility.Collapsed
         End If
