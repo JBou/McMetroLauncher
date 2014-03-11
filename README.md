@@ -18,15 +18,25 @@ A Minecraft Launcher with nice features and a Modern UI.
 [Patzleiner](http://patzleiner.net)
   Screenshots
 =====================
-![News](/http://patzleiner.net/mcmetrolauncher/images/mcmetrolauncher_news.png)
-![Console](/http://patzleiner.net/mcmetrolauncher/images/mcmetrolauncher_console.png)
-![Tools](/http://patzleiner.net/mcmetrolauncher/images/mcmetrolauncher_tools.png)
-![Mods](/http://patzleiner.net/mcmetrolauncher/images/mcmetrolauncher_mods.png)
-![Servers](/http://patzleiner.net/mcmetrolauncher/images/mcmetrolauncher_servers.png)
-![Server Editor](/http://patzleiner.net/mcmetrolauncher/images/mcmetrolauncher_server_editor.png)
-![Profile Editor](/http://patzleiner.net/mcmetrolauncher/images/mcmetrolauncher_profile_editor.png)
-![Servers Dark Theme](/http://patzleiner.net/mcmetrolauncher/images/mcmetrolauncher_servers_dark.png)
-![Accent Colors](/http://patzleiner.net/mcmetrolauncher/images/mcmetrolauncher_accents.png)
+News:
+![News](http://patzleiner.net/mcmetrolauncher/images/mcmetrolauncher_news.png)
+------------------------------------------------------------
+Console:
+![Console](http://patzleiner.net/mcmetrolauncher/images/mcmetrolauncher_console.png)
+Tools:
+![Tools](http://patzleiner.net/mcmetrolauncher/images/mcmetrolauncher_tools.png)
+Mods:
+![Mods](http://patzleiner.net/mcmetrolauncher/images/mcmetrolauncher_mods.png)
+Servers:
+![Servers](http://patzleiner.net/mcmetrolauncher/images/mcmetrolauncher_servers.png)
+Server Editor:
+![Server Editor](http://patzleiner.net/mcmetrolauncher/images/mcmetrolauncher_server_editor.png)
+Profile Editor:
+![Profile Editor](http://patzleiner.net/mcmetrolauncher/images/mcmetrolauncher_profile_editor.png)
+Servers Dark Theme:
+![Servers Dark Theme](http://patzleiner.net/mcmetrolauncher/images/mcmetrolauncher_servers_dark.png)
+Accent Colors:
+![Accent Colors](http://patzleiner.net/mcmetrolauncher/images/mcmetrolauncher_accents.png)
 
   License
 =====================
