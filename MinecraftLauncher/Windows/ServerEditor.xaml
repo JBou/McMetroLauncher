@@ -3,7 +3,8 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
     GlowBrush="{DynamicResource AccentColorBrush}"   
-    Title="Server Editor" Height="194" Width="426" WindowStartupLocation="CenterScreen">
+    Title="Server Editor" Height="194" Width="426" WindowStartupLocation="CenterScreen"
+    Icon="../images/favicon.ico">
     <Grid>
         <Label x:Name="lbl_Name" Content="Name" Margin="10,10,348,0" VerticalAlignment="Top" Height="32"  />
         <Button x:Name="btn_Save" Content="Speichern" Margin="0,0,10,10" HorizontalAlignment="Right" Width="100" Height="32" VerticalAlignment="Bottom" Click="Save"/>

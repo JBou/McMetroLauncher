@@ -3,7 +3,7 @@
     GlowBrush="{DynamicResource AccentColorBrush}"   
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    Title="Profile Editor" Height="559.187" Width="606.897" Icon="favicon.ico" ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
+    Title="Profile Editor" Height="559.187" Width="606.897" Icon="../images/favicon.ico" ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
 
     <Grid>
         <Grid.ColumnDefinitions>

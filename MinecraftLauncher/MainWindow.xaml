@@ -11,7 +11,7 @@
     GlowBrush="{DynamicResource AccentColorBrush}"            
     Title="McMetroLauncher" Height="600" Width="950"
     DataContext="{Binding RelativeSource={RelativeSource Self}}"
-    ForceCursor="True" MinWidth="950" MinHeight="600" Icon="favicon.ico" ResizeMode="CanResizeWithGrip" UseLayoutRounding="False" ScrollViewer.CanContentScroll="True" AllowsTransparency="False" >
+    ForceCursor="True" MinWidth="950" MinHeight="600" Icon="images/favicon.ico" ResizeMode="CanResizeWithGrip" UseLayoutRounding="False" ScrollViewer.CanContentScroll="True" AllowsTransparency="False" >
 
     <Window.Resources>
         <ResourceDictionary>

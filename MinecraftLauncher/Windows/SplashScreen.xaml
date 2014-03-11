@@ -16,7 +16,7 @@
             ShowMinButton="False" 
             Height="450" 
             Width="450" 
-            Icon="favicon.ico" ShowIconOnTitleBar="False" Topmost="True">
+            Icon="../images/favicon.ico" ShowIconOnTitleBar="False" Topmost="True">
 
     <Grid>
 
@@ -24,7 +24,7 @@
         <Label x:Name="lbl_statustitle" Content="Launcher wird gestartet..." HorizontalAlignment="Left" Margin="116,319,0,0" VerticalAlignment="Top" Width="318" VerticalContentAlignment="Center" Height="41" FontSize="20" Background="#00000000" Foreground="Black"/>
         <Controls:ProgressRing Foreground="{DynamicResource AccentColorBrush}" IsActive="True" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="51,325,0,0" MinWidth="60" MinHeight="60"/>
         <Label x:Name="lbl_status" Content="" HorizontalAlignment="Left" Margin="116,360,0,0" VerticalAlignment="Top" Width="318" VerticalContentAlignment="Center" Height="25"/>
-        <Image Height="285" Margin="10,10,10,126" Width="424" Source="minecraft_block.png"/>
+        <Image Height="285" Margin="10,10,10,126" Width="424" Source="../minecraft_block.png"/>
         <Label x:Name="lbl_Version" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="10,0,0,10" Width="101" Height="26"/>
     </Grid>
 

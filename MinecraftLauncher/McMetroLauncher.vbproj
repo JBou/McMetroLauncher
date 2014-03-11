@@ -71,7 +71,7 @@
     <OptionInfer>On</OptionInfer>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>favicon.ico</ApplicationIcon>
+    <ApplicationIcon>images\favicon.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
     <ManifestCertificateThumbprint>E4048A92FC2D1130D9F12937A305BCB65CDD9C59</ManifestCertificateThumbprint>
@@ -188,12 +188,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="cls_Settings.vb" />
-    <Compile Include="Forge_installer.xaml.vb">
+    <Compile Include="Windows\Forge_installer.xaml.vb">
       <DependentUpon>Forge_installer.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Formattingcodes.vb" />
-    <Compile Include="LiteLoader_installer.xaml.vb">
+    <Compile Include="Models\Formattingcodes.vb" />
+    <Compile Include="Windows\LiteLoader_installer.xaml.vb">
       <DependentUpon>LiteLoader_installer.xaml</DependentUpon>
     </Compile>
     <Compile Include="My Project\Resources.Designer.vb">
@@ -201,33 +200,33 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="BindableRichTextBox.xaml.vb">
+    <Compile Include="Controls\BindableRichTextBox.xaml.vb">
       <DependentUpon>BindableRichTextBox.xaml</DependentUpon>
     </Compile>
-    <Compile Include="VersionsInfo.vb" />
+    <Compile Include="Models\VersionsInfo.vb" />
     <Compile Include="MainWindow.xaml.vb">
       <DependentUpon>MainWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Mods.vb" />
-    <Compile Include="Resources.vb" />
-    <Compile Include="Server.vb" />
-    <Compile Include="ServerEditor.xaml.vb">
+    <Compile Include="Models\Mods.vb" />
+    <Compile Include="Models\Resources.vb" />
+    <Compile Include="Models\Server.vb" />
+    <Compile Include="Windows\ServerEditor.xaml.vb">
       <DependentUpon>ServerEditor.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ServerPing.vb" />
-    <Compile Include="Settings.vb" />
-    <Compile Include="SplashScreen.xaml.vb">
+    <Compile Include="Models\ServerPing.vb" />
+    <Compile Include="Models\Settings.vb" />
+    <Compile Include="Windows\SplashScreen.xaml.vb">
       <DependentUpon>SplashScreen.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Updater.xaml.vb">
+    <Compile Include="Windows\Updater.xaml.vb">
       <DependentUpon>Updater.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Versions.vb" />
-    <Compile Include="Profiles.vb" />
-    <Compile Include="ProfileEditor.xaml.vb">
+    <Compile Include="Models\Versions.vb" />
+    <Compile Include="Models\Profiles.vb" />
+    <Compile Include="Windows\ProfileEditor.xaml.vb">
       <DependentUpon>ProfileEditor.xaml</DependentUpon>
     </Compile>
-    <Page Include="Forge_installer.xaml">
+    <Page Include="Windows\Forge_installer.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -235,7 +234,7 @@
       <DependentUpon>Application.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="LiteLoader_installer.xaml">
+    <Page Include="Windows\LiteLoader_installer.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -243,23 +242,23 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="ServerEditor.xaml">
+    <Page Include="Windows\ServerEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="SplashScreen.xaml">
+    <Page Include="Windows\SplashScreen.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="ProfileEditor.xaml">
+    <Page Include="Windows\ProfileEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Updater.xaml">
+    <Page Include="Windows\Updater.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="BindableRichTextBox.xaml">
+    <Page Include="Controls\BindableRichTextBox.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -310,15 +309,12 @@
       <SubType>Designer</SubType>
       <LastGenOutput>Resources.Designer.vb</LastGenOutput>
     </EmbeddedResource>
-    <None Include="ClassDiagram1.cd" />
-    <None Include="MinecraftLauncher_TemporaryKey.pfx" />
     <None Include="My Project\app.manifest" />
     <None Include="My Project\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.vb</LastGenOutput>
     </None>
     <AppDesigner Include="My Project\" />
-    <None Include="packages.config" />
     <Resource Include="Resources\Entypo.ttf" />
   </ItemGroup>
   <ItemGroup>
@@ -330,13 +326,10 @@
     <Resource Include="Resources\Entypo-license.txt" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Microsoft.Expression.Drawing.xml" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="images\minecraft_block.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="favicon.ico" />
+    <Resource Include="images\favicon.ico" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
@@ -361,7 +354,6 @@
   <ItemGroup>
     <Resource Include="images\transparent64_64.png" />
     <Resource Include="images\check_green.png" />
-    <Resource Include="minecraft_block.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="images\dark\appbar.delete.png" />
@@ -379,6 +371,7 @@
     <Resource Include="images\dark\appbar.page.copy.png" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="minecraft_block.png" />
     <Resource Include="images\web-ftb-logo_0.png" />
     <Resource Include="images\light\appbar.control.play.png" />
     <Resource Include="images\dark\appbar.control.play.png" />
@@ -390,5 +383,6 @@
     <Content Include="images\logo_technic_launcher.png" />
     <Resource Include="images\tl.png" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
 </Project>

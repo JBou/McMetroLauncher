@@ -1,10 +1,10 @@
-﻿Imports Craft.Net.Client
-Imports Craft.Net
+﻿Imports Craft.Net
 Imports System.Net
 Imports Craft.Net.Networking
 Imports System.Net.Sockets
 Imports Craft.Net.Common
 Imports fNbt
+Imports Newtonsoft.Json
 
 Public Class ServerList
     Public Property Servers As IList(Of Server)
@@ -72,7 +72,7 @@ Public Class ServerList
                                Servers.Add(entry)
                            Next
                        End Sub)
-                       End Function
+    End Function
 
     Public Class Server
         Private _name As String, _ip As String, _hideAddress As Boolean, _icon As String, _serverping As ServerStatus, _AcceptTextures As Boolean
@@ -188,7 +188,7 @@ Public Class ServerList
                 Dim pong = CType(_pong, StatusPingPacket)
                 Dim time = New DateTime(pong.Time)
                 response.Status.Latency = New TimeSpan(time.Ticks - sent.Ticks)
-                ServerStatus = response.Status
+                ServerStatus = CType(response.Status, ServerList.ServerStatus)
                 ServerStatus.Online = True
                 Dim cleanPath As String = response.Status.Icon
                 If ServerStatus.Icon IsNot Nothing Then
@@ -217,6 +217,22 @@ Public Class ServerList
         Public Overrides Function ToString() As String
             Return name
         End Function
+    End Class
+
+    Public Class ServerStatus
+        Inherits Craft.Net.ServerStatus
+
+        Private m_online As Boolean
+        <JsonIgnore>
+        Public Property Online As Boolean
+            Get
+                Return m_online
+            End Get
+            Set(value As Boolean)
+                m_online = value
+            End Set
+        End Property
+
     End Class
 
 End Class
