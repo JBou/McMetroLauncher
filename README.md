@@ -18,7 +18,16 @@ A Minecraft Launcher with nice features and a Modern UI.
 [Patzleiner](http://patzleiner.net)
   Screenshots
 =====================
-//TODO: Add Screenshots here
+![News](/http://patzleiner.net/mcmetrolauncher/images/mcmetrolauncher_news.png)
+![Console](/http://patzleiner.net/mcmetrolauncher/images/mcmetrolauncher_console.png)
+![Tools](/http://patzleiner.net/mcmetrolauncher/images/mcmetrolauncher_tools.png)
+![Mods](/http://patzleiner.net/mcmetrolauncher/images/mcmetrolauncher_mods.png)
+![Servers](/http://patzleiner.net/mcmetrolauncher/images/mcmetrolauncher_servers.png)
+![Server Editor](/http://patzleiner.net/mcmetrolauncher/images/mcmetrolauncher_server_editor.png)
+![Profile Editor](/http://patzleiner.net/mcmetrolauncher/images/mcmetrolauncher_profile_editor.png)
+![Servers Dark Theme](/http://patzleiner.net/mcmetrolauncher/images/mcmetrolauncher_servers_dark.png)
+![Accent Colors](/http://patzleiner.net/mcmetrolauncher/images/mcmetrolauncher_accents.png)
+
   License
 =====================
 
