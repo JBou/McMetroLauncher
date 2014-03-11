@@ -337,6 +337,8 @@ Public Class MainWindow
     Public Delegate Sub refresh_pb_download_Value(Value As Double)
     Public Delegate Sub refresh_pb_download_Maximumimum(Value As Double)
     Public Delegate Sub refresh_pb_download_IsIndeterminate(Value As Boolean)
+    Public Delegate Sub refresh_lbl_downloadstatus_Content(Value As String)
+
     Public Sub pb_download_Value(Value As Double)
         pb_download.Dispatcher.Invoke(New refresh_pb_download_Value(AddressOf set_pb_download_value), Value)
     End Sub
@@ -345,6 +347,9 @@ Public Class MainWindow
     End Sub
     Public Sub pb_download_IsIndeterminate(Value As Boolean)
         pb_download.Dispatcher.Invoke(New refresh_pb_download_IsIndeterminate(AddressOf set_pb_download_IsIndeterminate), Value)
+    End Sub
+    Public Sub lbl_downloadstatus_Content(Value As String)
+        lbl_downloadstatus.Dispatcher.Invoke(New refresh_lbl_downloadstatus_Content(AddressOf set_lbl_downloadstatus_Content), Value)
     End Sub
 
     Private Async Function set_pb_download_value(Value As Double) As Task
@@ -362,6 +367,12 @@ Public Class MainWindow
                                         pb_download.IsIndeterminate = Value
                                     End Sub, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.FromCurrentSynchronizationContext())
     End Function
+    Private Async Function set_lbl_downloadstatus_Content(Value As String) As Task
+        Await Task.Factory.StartNew(Sub()
+                                        lbl_downloadstatus.Content = Value
+                                    End Sub, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.FromCurrentSynchronizationContext())
+    End Function
+
 #End Region
     Async Function ThemeLight() As Task
         Dim theme = ThemeManager.DetectTheme(Application.Current)
@@ -699,7 +710,7 @@ Public Class MainWindow
             bytes = e.BytesReceived / 1000000
             Einheit = "MB"
         End If
-        lbl_downloadstatus.Content = String.Format("{0}% - {1} {2} von {3} {4} heruntergeladen", e.ProgressPercentage, Math.Round(bytes, 2), Einheit, Math.Round(totalbytes, 2), Einheit)
+        lbl_downloadstatus_Content(String.Format("{0}% - {1} {2} von {3} {4} heruntergeladen", e.ProgressPercentage, Math.Round(bytes, 2), Einheit, Math.Round(totalbytes, 2), Einheit))
     End Sub
 
     Public Function SHA1FileHash(ByVal sFile As String) As String

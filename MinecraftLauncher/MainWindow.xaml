@@ -267,7 +267,7 @@
                     </ListView>
                 </Grid>
             </TabItem>
-            <TabItem Header="Server" Margin="6,0,-6,0">
+            <TabItem Header="Servers">
                 <Grid>
                     <Label Margin="10,10,10,47" Width="900" VerticalAlignment="Top" HorizontalAlignment="Center" BorderThickness="0" Content="Server, dessen Version älter als 1.7 ist, werden als &quot;Offline&quot; angezeigt, Rechtsklick für mehr Optionen" HorizontalContentAlignment="Center" Background="{x:Null}" Foreground="Red" FontWeight="Bold"  />
                     <ListView x:Name="lb_servers" Margin="21,42,21,47" Width="900" HorizontalAlignment="Center" BorderThickness="0" >
@@ -395,7 +395,7 @@
                                                 <StackPanel>
                                                     <TextBlock Text="{Binding name}" FontSize="20" VerticalAlignment="Top" />
                                                     <!--Description-->
-                                                    <local:BindableRichTextBox x:Name="serverlist_motd" FontSize="15" IsReadOnly="True" Background="Transparent" BorderBrush="{x:Null}" SelectionBrush="{x:Null}" BorderThickness="0,0,0,0" SelectionOpacity="0" Cursor="Arrow" Focusable="False" IsTabStop="False" TabIndex="0" >
+                                                    <local:BindableRichTextBox ContextMenu="{StaticResource ServerlistContextMenu}" x:Name="serverlist_motd" FontSize="15" IsReadOnly="True" Background="Transparent" BorderBrush="{x:Null}" SelectionBrush="{x:Null}" BorderThickness="0,0,0,0" SelectionOpacity="0" Cursor="Arrow" Focusable="False" IsTabStop="False" TabIndex="0" >
                                                         <RichTextBox.Resources>
                                                             <Style TargetType="{x:Type Paragraph}">
                                                                 <Setter Property="Margin" Value="0"/>
