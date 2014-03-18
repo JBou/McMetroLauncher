@@ -137,6 +137,9 @@
     <Reference Include="Craft.Net.Common">
       <HintPath>..\libraries\Craft.Net.Common.dll</HintPath>
     </Reference>
+    <Reference Include="De.TorstenMandelkow.MetroChart">
+      <HintPath>..\libraries\De.TorstenMandelkow.MetroChart.dll</HintPath>
+    </Reference>
     <Reference Include="fNbt">
       <HintPath>..\libraries\fNbt.dll</HintPath>
     </Reference>
@@ -187,6 +190,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Models\MainViewModel.vb" />
     <Compile Include="Windows\Forge_installer.xaml.vb">
       <DependentUpon>Forge_installer.xaml</DependentUpon>
     </Compile>
@@ -209,6 +213,9 @@
     <Compile Include="Models\Mods.vb" />
     <Compile Include="Models\Resources.vb" />
     <Compile Include="Models\Server.vb" />
+    <Compile Include="Windows\Login.xaml.vb">
+      <DependentUpon>Login.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Windows\ServerEditor.xaml.vb">
       <DependentUpon>ServerEditor.xaml</DependentUpon>
     </Compile>
@@ -238,6 +245,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="MainWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\Login.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

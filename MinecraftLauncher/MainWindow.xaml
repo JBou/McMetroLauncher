@@ -8,10 +8,11 @@
     xmlns:Behaviours="clr-namespace:MahApps.Metro.Behaviours;assembly=MahApps.Metro"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:chart="clr-namespace:De.TorstenMandelkow.MetroChart;assembly=De.TorstenMandelkow.MetroChart" 
     GlowBrush="{DynamicResource AccentColorBrush}"            
     Title="McMetroLauncher" Height="600" Width="950"
     DataContext="{Binding RelativeSource={RelativeSource Self}}"
-    ForceCursor="True" MinWidth="950" MinHeight="600" Icon="images/favicon.ico" ResizeMode="CanResizeWithGrip" UseLayoutRounding="False" ScrollViewer.CanContentScroll="True" AllowsTransparency="False" >
+    ForceCursor="True" MinWidth="950" MinHeight="600" Icon="images/favicon.ico" ResizeMode="CanResizeWithGrip" UseLayoutRounding="False" ScrollViewer.CanContentScroll="True" >
 
     <Window.Resources>
         <ResourceDictionary>
@@ -428,17 +429,43 @@
                     </DockPanel>
                 </Grid>
             </TabItem>
+            <TabItem Header="Infos">
+                <Grid>
+                    <StackPanel Orientation="Horizontal" >
+                        <chart:RadialGaugeChart ChartTitle="Arbeitspeicher" Background="White" 
+                                                ChartSubTitle=""
+                                                ChartLegendVisibility="Collapsed">
+                            <chart:RadialGaugeChart.Series >
+                                <chart:ChartSeries DisplayMember="Name"
+                                ItemsSource="{Binding Path=Ram}"
+                                SeriesTitle="Ram"
+                                ValueMember="Count" />
+                            </chart:RadialGaugeChart.Series>
+                        </chart:RadialGaugeChart>
+                        <chart:RadialGaugeChart ChartTitle="CPU" Background="White" 
+                                                ChartSubTitle=""
+                                                ChartLegendVisibility="Collapsed">
+                            <chart:RadialGaugeChart.Series >
+                                <chart:ChartSeries DisplayMember="Name"
+                                    ItemsSource="{Binding Path=CPU}"
+                                    SeriesTitle="CPU"
+                                    ValueMember="Count" />
+                            </chart:RadialGaugeChart.Series>
+                        </chart:RadialGaugeChart>
+                    </StackPanel>
+                </Grid>
+            </TabItem>
         </TabControl>
         <Menu Height="30" VerticalAlignment="Top" HorizontalAlignment="Right" HorizontalContentAlignment="Center">
             <MenuItem Click="Open_Github" Padding="0,0,5,0">
                 <MenuItem.Header>
-                    <StackPanel Orientation="Horizontal">
-                        <Image x:Name="img_github" Height="28" Source="images/light/appbar.social.github.octocat.png" />
-                        <TextBlock Text="Github" VerticalAlignment="Center" />
-                    </StackPanel>
-                </MenuItem.Header>
+                        <StackPanel Orientation="Horizontal">
+                            <Image x:Name="img_github" Height="28" Source="images/light/appbar.social.github.octocat.png" />
+                            <TextBlock Text="Github" VerticalAlignment="Center" />
+                        </StackPanel>
+                    </MenuItem.Header>
             </MenuItem>
-            <MenuItem Click="Open_Github" Padding="0,0,5,0" >
+            <MenuItem Click="Open_Website" Padding="0,0,5,0" >
                 <MenuItem.Header>
                     <StackPanel Orientation="Horizontal">
                         <Image x:Name="img_website" Height="28" Source="images/light/appbar.globe.png" />

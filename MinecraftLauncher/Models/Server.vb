@@ -187,8 +187,15 @@ Public Class ServerList
                 client.Close()
                 Dim pong = CType(_pong, StatusPingPacket)
                 Dim time = New DateTime(pong.Time)
-                response.Status.Latency = New TimeSpan(time.Ticks - sent.Ticks)
-                ServerStatus = CType(response.Status, ServerList.ServerStatus)
+                response.Status.Latency = time - sent
+
+
+                ServerStatus = New ServerStatus
+                ServerStatus.Description = response.Status.Description
+                ServerStatus.Icon = response.Status.Icon
+                ServerStatus.Latency = response.Status.Latency
+                ServerStatus.Players = response.Status.Players
+                ServerStatus.Version = response.Status.Version
                 ServerStatus.Online = True
                 Dim cleanPath As String = response.Status.Icon
                 If ServerStatus.Icon IsNot Nothing Then
@@ -197,7 +204,6 @@ Public Class ServerList
                         Dim sourcestring As String = cleanPath
                         Dim index As Integer = sourcestring.IndexOf(removeString)
                         cleanPath = If((index < 0), sourcestring, sourcestring.Remove(index, removeString.Length))
-                        'Write icon to file
                     End If
                 End If
                 ServerStatus.Icon = cleanPath

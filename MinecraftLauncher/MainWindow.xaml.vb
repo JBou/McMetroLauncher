@@ -374,6 +374,16 @@ Public Class MainWindow
     End Function
 
 #End Region
+
+    Public Sub New()
+
+        ' Dieser Aufruf ist für den Designer erforderlich.
+        InitializeComponent()
+
+        ' Fügen Sie Initialisierungen nach dem InitializeComponent()-Aufruf hinzu.
+        Me.DataContext = New MainViewModel
+    End Sub
+
     Async Function ThemeLight() As Task
         Dim theme = ThemeManager.DetectTheme(Application.Current)
         ThemeManager.ChangeTheme(Application.Current, theme.Item2, MahApps.Metro.Theme.Light)
