@@ -8,7 +8,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d" 
     x:Class="ModManager"
     GlowBrush="{DynamicResource AccentColorBrush}"  
-    Title="ModManager" Height="444" Width="1092" Icon="favicon.ico" ResizeMode="CanMinimize" WindowStartupLocation="CenterScreen">
+    Title="ModManager" Height="475" Width="1100" Icon="favicon.ico" ResizeMode="CanResizeWithGrip" WindowStartupLocation="CenterScreen" MinWidth="1100" MinHeight="475">
 
     <Window.Resources>
         <local:Dependencies_String_Converter x:Key="Dependencies_String_Converter"/>
@@ -18,29 +18,32 @@
     </Window.Resources>
 
     <Grid>
-        <Button x:Name="btn_add" Content="Neu" HorizontalAlignment="Left" Margin="866,375,0,0" VerticalAlignment="Top" Width="210" Height="30"/>
-        <TextBox x:Name="tb_description" Margin="352,76,214,134" Width="520" AcceptsReturn="True" IsReadOnly="True" TextWrapping="Wrap" VerticalContentAlignment="Top" VerticalScrollBarVisibility="Auto"/>
-        <Label x:Name="lbl_name" HorizontalAlignment="Left" Height="23" Margin="401,16,0,0"  VerticalAlignment="Top" Width="471" FontSize="14" Padding="5,0" VerticalContentAlignment="Center"/>
-        <Button x:Name="btn_edit" Content="Bearbeiten" HorizontalAlignment="Left" Margin="609,375,0,0" VerticalAlignment="Top" Width="210" Height="30"/>
-        <Button x:Name="btn_delete" Content="Entfernen" HorizontalAlignment="Left" Margin="352,375,0,0" VerticalAlignment="Top" Width="210" Height="30"/>
-        <Label Content="Name:" HorizontalAlignment="Left" Margin="352,15,0,0" VerticalAlignment="Top"/>
-        <Label Content="Description:" HorizontalAlignment="Left" Margin="710,45,0,0" VerticalAlignment="Top" Width="78"/>
-        <ComboBox x:Name="cb_descriptions" DisplayMemberPath="id" HorizontalAlignment="Left" Margin="793,45,0,0" VerticalAlignment="Top" Width="79"/>
-        <Label Content="Autor:" HorizontalAlignment="Left" Margin="352,45,0,0" VerticalAlignment="Top"/>
-        <ListView x:Name="lb_mods" HorizontalAlignment="Left" Height="393" Margin="10,10,0,0" VerticalAlignment="Top" Width="337" BorderThickness="0">
+        <Button x:Name="btn_add" Content="Neu" HorizontalAlignment="Right" Margin="0,0,524,10" VerticalAlignment="Bottom" Width="210" Height="30"/>
+        <TextBox x:Name="tb_description" Margin="0,76,214,153" Width="520" AcceptsReturn="True" HorizontalAlignment="Right" IsReadOnly="True" TextWrapping="Wrap" VerticalContentAlignment="Top" VerticalScrollBarVisibility="Auto" />
+        <Label x:Name="lbl_name" HorizontalAlignment="Right" Height="30" Margin="0,10,214,0"  VerticalAlignment="Top" Width="471" FontSize="14" Padding="5,0" VerticalContentAlignment="Center"/>
+        <Button x:Name="btn_edit" Content="Bearbeiten" HorizontalAlignment="Right" Margin="0,0,267,10" VerticalAlignment="Bottom" Width="210" Height="30"/>
+        <Button x:Name="btn_delete" Content="Entfernen" HorizontalAlignment="Right" Margin="0,0,10,10" VerticalAlignment="Bottom" Width="210" Height="30"/>
+        <Label Content="Name:" HorizontalAlignment="Right" Margin="0,10,690,0" VerticalAlignment="Top"/>
+        <Label Content="Description:" HorizontalAlignment="Right" Margin="0,45,298,0" VerticalAlignment="Top" Width="78"/>
+        <ComboBox x:Name="cb_descriptions" DisplayMemberPath="id" HorizontalAlignment="Right" Margin="0,45,214,0" VerticalAlignment="Top" Width="79"/>
+        <Label Content="Autor:" HorizontalAlignment="Right" Margin="0,45,690,0" VerticalAlignment="Top" Width="44"/>
+        <ListView x:Name="lb_mods" Margin="10,10,739,10" BorderThickness="0">
             <ListView.View>
-                <GridView ColumnHeaderContainerStyle="{StaticResource myHeaderStyle}" AllowsColumnReorder="False">
+                <!--<GridView ColumnHeaderContainerStyle="{StaticResource myHeaderStyle}" AllowsColumnReorder="False">
                     <GridViewColumn DisplayMemberBinding="{Binding Path=name}"/>
-                </GridView>
+                </GridView>-->
+              <GridView>
+                <GridViewColumn DisplayMemberBinding="{Binding Path=name}" />
+              </GridView>
             </ListView.View>
         </ListView>
-        <Label Content="Type:" HorizontalAlignment="Left" Margin="352,342,0,0" VerticalAlignment="Top"/>
-        <Label x:Name="lbl_type" HorizontalAlignment="Left" Height="31" Margin="412,342,0,0"  VerticalAlignment="Top" Width="174"/>
-        <Label Content="Extension:" HorizontalAlignment="Left" Margin="909,343,0,0" VerticalAlignment="Top"/>
-        <Label x:Name="lbl_extension" HorizontalAlignment="Left" Height="31" Margin="977,342,0,0"  VerticalAlignment="Top" Width="99"/>
-        <Label Content="Website:" HorizontalAlignment="Left" Margin="352,286,0,0" VerticalAlignment="Top"/>
-        <Label x:Name="lbl_website" HorizontalAlignment="Left" Height="31" Margin="412,286,0,0"  VerticalAlignment="Top" Width="664" />
-        <ListBox x:Name="lb_versions" DisplayMemberPath="version" HorizontalAlignment="Left" Height="237" Margin="877,44,0,0" VerticalAlignment="Top" Width="199">
+        <Label Content="Type:" HorizontalAlignment="Right" Margin="0,0,390,45" VerticalAlignment="Bottom" Height="31"/>
+        <Label x:Name="lbl_type" HorizontalAlignment="Right" Height="31" Margin="0,0,182,45"  VerticalAlignment="Bottom" Width="203"/>
+        <Label Content="Extension:" Margin="0,0,114,45" VerticalAlignment="Bottom" Height="31" HorizontalAlignment="Right" />
+        <Label x:Name="lbl_extension" HorizontalAlignment="Right" Height="31" Margin="0,0,10,45"  VerticalAlignment="Bottom" Width="99"/>
+        <Label Content="Website:" HorizontalAlignment="Right" Margin="0,0,669,81" VerticalAlignment="Bottom" Width="65" Height="31"/>
+        <Label x:Name="lbl_website" HorizontalAlignment="Right" Height="31" Margin="0,0,10,117"  VerticalAlignment="Bottom" Width="654" />
+        <ListBox x:Name="lb_versions" DisplayMemberPath="version" HorizontalAlignment="Right" Margin="0,44,10,153" Width="199">
             <ListBox.ItemContainerStyle>
                 <Style TargetType="ListBoxItem" BasedOn="{StaticResource MetroListBoxItem}">
                     <Setter Property="ToolTip">
@@ -67,12 +70,12 @@
                 </Style>
             </ListBox.ItemContainerStyle>
         </ListBox>
-        <Label Content="Versionen:" HorizontalAlignment="Left" Margin="877,4,0,0" VerticalAlignment="Top" Width="199" HorizontalContentAlignment="Center" Foreground="{StaticResource AccentColorBrush}" FontSize="18" Height="35"/>
-        <Label x:Name="lbl_autor" HorizontalAlignment="Left" Height="23" Margin="401,48,0,0"  VerticalAlignment="Top" Width="304" FontSize="14" Padding="5,0" VerticalContentAlignment="Center" RenderTransformOrigin="0.5,0.5" />
-        <Label Content="Video:" HorizontalAlignment="Left" Margin="352,316,0,0" VerticalAlignment="Top"/>
-        <Label x:Name="lbl_video" HorizontalAlignment="Left" Height="31" Margin="412,313,0,0"  VerticalAlignment="Top" Width="664"/>
-        <Label Content="ID:" HorizontalAlignment="Left" Margin="591,344,0,0" VerticalAlignment="Top"/>
-        <Label x:Name="lbl_ID" HorizontalAlignment="Left" Height="31" Margin="620,342,0,0"  VerticalAlignment="Top" Width="284"/>
+        <Label Content="Versionen:" HorizontalAlignment="Right" Margin="0,4,10,0" VerticalAlignment="Top" Width="199" HorizontalContentAlignment="Center" Foreground="{StaticResource AccentColorBrush}" FontSize="18" Height="35"/>
+        <Label x:Name="lbl_autor" HorizontalAlignment="Right" Height="27" Margin="0,44,383,0"  VerticalAlignment="Top" Width="302" FontSize="14" Padding="5,0" VerticalContentAlignment="Center" RenderTransformOrigin="0.5,0.5" />
+        <Label Content="Video:" HorizontalAlignment="Right" Margin="0,0,669,117" VerticalAlignment="Bottom" Width="65" Height="31"/>
+        <Label x:Name="lbl_video" HorizontalAlignment="Right" Height="31" Margin="0,0,10,81"  VerticalAlignment="Bottom" Width="654"/>
+        <Label Content="ID:" HorizontalAlignment="Right" Margin="0,0,669,45" VerticalAlignment="Bottom" Width="65" Height="31"/>
+        <Label x:Name="lbl_ID" HorizontalAlignment="Right" Height="31" Margin="0,0,433,45"  VerticalAlignment="Bottom" Width="231"/>
 
     </Grid>
 </Controls:MetroWindow>

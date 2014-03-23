@@ -1,4 +1,8 @@
-﻿Public Class ModManager
+﻿Imports System.Drawing
+Imports System.IO
+Imports System.Windows.Media
+
+Public Class ModManager
 
     Private Sub ModManager_Closed(sender As Object, e As EventArgs) Handles Me.Closed
         Dim main As New Manager
@@ -16,6 +20,22 @@
             lb_mods.Items.Add(item)
         Next
         lb_mods.SelectedIndex = 0
+        'Für jede version eine Spalte hinzufügen
+        For Each item As String In Await Modifications.List_all_Mod_Vesions
+            'Declare Binding
+            Dim binding As New Binding
+            binding.Path = New PropertyPath("versions")
+            binding.Converter = New Versions_Image_Converter
+            binding.ConverterParameter = item
+            'Declare Celltemplate
+            Dim Img = New FrameworkElementFactory(GetType(Controls.Image))
+            Img.Name = "img"
+            Img.SetBinding(Controls.Image.SourceProperty, New Binding("versions") With {.Converter = New Versions_Image_Converter, .ConverterParameter = item})
+            Img.SetValue(Controls.Image.HeightProperty, 25.0)
+            Img.SetValue(Controls.Image.MarginProperty, New Thickness(0.0))
+            Dim DataTemplate As New DataTemplate() With {.VisualTree = Img}
+            DirectCast(lb_mods.View, GridView).Columns.Add(New GridViewColumn() With {.Header = item, .CellTemplate = DataTemplate, .Width = 35})
+        Next
     End Function
 
     'Private Async Sub btn_add_Click(sender As Object, e As RoutedEventArgs) Handles btn_add.Click
@@ -160,3 +180,37 @@ Public Class Dependencies_String_Converter
     End Function
 
 End Class
+
+Public Class Versions_Image_Converter
+    Implements System.Windows.Data.IValueConverter
+
+    Public Function Convert(value As Object, targetType As Type, parameter As Object, culture As System.Globalization.CultureInfo) As Object Implements System.Windows.Data.IValueConverter.Convert
+        Dim s As IList(Of Modifications.Mod.Version) = TryCast(value, IList(Of Modifications.Mod.Version))
+        If s Is Nothing Then Return Nothing
+        Dim param As String = TryCast(parameter, String)
+        If s.Select(Function(p) p.version).Contains(param) Then
+            Return ImageConvert.GetImageStream(My.Resources.check_green)
+        Else
+            Return Nothing
+        End If
+    End Function
+
+    Public Function ConvertBack(value As Object, targetType As Type, parameter As Object, culture As System.Globalization.CultureInfo) As Object Implements IValueConverter.ConvertBack
+        Throw New NotImplementedException()
+    End Function
+
+End Class
+
+Public Structure ImageConvert
+    Public Shared Function GetImageStream(Image As System.Drawing.Image) As BitmapSource
+        Dim ms As New MemoryStream()
+        Image.Save(ms, System.Drawing.Imaging.ImageFormat.Png)
+        ms.Position = 0
+        Dim bi As New BitmapImage()
+        bi.BeginInit()
+        bi.StreamSource = ms
+        bi.EndInit()
+
+        Return bi
+    End Function
+End Structure

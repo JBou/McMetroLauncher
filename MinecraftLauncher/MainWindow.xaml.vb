@@ -244,24 +244,24 @@ Public Module GlobalInfos
     Public startedversions As IList(Of String) = New List(Of String)
     'http://www.joomlavision.com/customize-browser-scrollbars-css3/
     Public Scrollbarcss As String = <![CDATA[
-::-webkit-scrollbar-track
-{
-	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
-	border-radius: 0px;
-	background-color: #F5F5F5;
+::-webkit-scrollbar {
+width: 15px; // to adjust width
 }
-
-::-webkit-scrollbar
-{
-	width: 12px;
-	background-color: #F5F5F5;
+::-webkit-scrollbar-track {
+background: #FFFFFF;
+-webkit-box-shadow: inset 1px 1px 2px #E0E0E0;   
+border: 1px solid #D8D8D8;  //color of the track of scroll bar
 }
-
-::-webkit-scrollbar-thumb
-{
-	border-radius: 0px;
-	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
-	background-color: #555;
+::-webkit-scrollbar-thumb {
+background: #646464;
+-webkit-box-shadow: inset 1px 1px 2px rgba(155, 155, 155, 0.4);  
+}
+::-webkit-scrollbar-thumb:hover {
+background: #aaaaaa;
+}
+::-webkit-scrollbar-thumb:active {
+background: #888;
+-webkit-box-shadow: inset 1px 1px 2px rgba(0,0,0,0.3);
 }
 ]]>.Value
 End Module
@@ -1652,6 +1652,10 @@ Public Class MainWindow
             btn_selectmodsfolder.IsEnabled = False
             btn_refresh.IsEnabled = False
             btn_downloadmod.IsEnabled = False
+            btn_list_delete_mod_image.IsEnabled = False
+            cb_mods_profilename.IsEnabled = False
+            rb_mods_folder.IsEnabled = False
+            rb_mods_profile.IsEnabled = False
             moddownloading = True
             lbl_mods_status.Content = Nothing
             modsdownloadlist.Clear()
@@ -1726,6 +1730,10 @@ Public Class MainWindow
         btn_selectmodsfolder.IsEnabled = True
         btn_refresh.IsEnabled = True
         btn_downloadmod.IsEnabled = True
+        btn_list_delete_mod_image.IsEnabled = True
+        cb_mods_profilename.IsEnabled = True
+        rb_mods_folder.IsEnabled = True
+        rb_mods_profile.IsEnabled = True
         Dim selected As Integer = lb_mods.SelectedIndex
         Filter_Mods()
         lb_mods.SelectedIndex = selected
