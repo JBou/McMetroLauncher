@@ -22,19 +22,21 @@ Public Class ModManager
         lb_mods.SelectedIndex = 0
         'Für jede version eine Spalte hinzufügen
         For Each item As String In Await Modifications.List_all_Mod_Vesions
-            'Declare Binding
-            Dim binding As New Binding
-            binding.Path = New PropertyPath("versions")
-            binding.Converter = New Versions_Image_Converter
-            binding.ConverterParameter = item
-            'Declare Celltemplate
-            Dim Img = New FrameworkElementFactory(GetType(Controls.Image))
-            Img.Name = "img"
-            Img.SetBinding(Controls.Image.SourceProperty, New Binding("versions") With {.Converter = New Versions_Image_Converter, .ConverterParameter = item})
-            Img.SetValue(Controls.Image.HeightProperty, 25.0)
-            Img.SetValue(Controls.Image.MarginProperty, New Thickness(0.0))
-            Dim DataTemplate As New DataTemplate() With {.VisualTree = Img}
-            DirectCast(lb_mods.View, GridView).Columns.Add(New GridViewColumn() With {.Header = item, .CellTemplate = DataTemplate, .Width = 35})
+            If DirectCast(lb_mods.View, GridView).Columns.Select(Function(p) p.Header).Contains(item) = False Then
+                'Declare Binding
+                Dim binding As New Binding
+                binding.Path = New PropertyPath("versions")
+                binding.Converter = New Versions_Image_Converter
+                binding.ConverterParameter = item
+                'Declare Celltemplate
+                Dim Img = New FrameworkElementFactory(GetType(Controls.Image))
+                Img.Name = "img"
+                Img.SetBinding(Controls.Image.SourceProperty, New Binding("versions") With {.Converter = New Versions_Image_Converter, .ConverterParameter = item})
+                Img.SetValue(Controls.Image.HeightProperty, 25.0)
+                Img.SetValue(Controls.Image.MarginProperty, New Thickness(0.0))
+                Dim DataTemplate As New DataTemplate() With {.VisualTree = Img}
+                DirectCast(lb_mods.View, GridView).Columns.Add(New GridViewColumn() With {.Header = item, .CellTemplate = DataTemplate, .Width = 35})
+            End If
         Next
     End Function
 

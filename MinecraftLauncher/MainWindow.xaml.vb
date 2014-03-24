@@ -890,6 +890,12 @@ Public Class MainWindow
                             If librarypath.Exists Then
                                 Write("Library konnte nicht auf Hash überprüft werden und wird übersprungen, in der Annahme, dass die lokale Datei gut ist: " & librarypath.FullName, LogLevel.WARNING)
                             Else
+                                'http://files.minecraftforge.net/minecraftforge/json
+                                'http://files.minecraftforge.net/minecraftforge/json2
+                                'Link zur Library: %appdata%\.minecraft\libraries\net\minecraftforge\minecraftforge\9.11.1.965\minecraftforge-9.11.1.965.jar
+                                'ist : http://files.minecraftforge.net/maven/net/minecraftforge/forge/1.6.4-9.11.1.965/forge-1.6.4-9.11.1.965-universal.jar
+
+                                'Probieren von anderer Quelle herunterzuladen: http://uk.maven.org/maven2/ oder http://repo.maven.apache.org/maven2/
                                 Write("Library konnte nicht heruntergeladen werden: " & librarypath.FullName & Environment.NewLine & "Falls du gerade Forge gestartet hast, installiere es erneut!", LogLevel.ERROR)
                             End If
                             librariesdownloadindex += 1
@@ -2002,14 +2008,13 @@ Public Class MainWindow
         Dim filename As String = Downloads.Downloadsjo("feedthebeast").Value(Of String)("filename")
         Dim path As New FileInfo(IO.Path.Combine(mcpfad, "tools", filename))
         Process.Start(path.FullName)
-        'TechnicLauncher starten
     End Sub
 
     Private Async Sub download_techniclauncher()
         'Zuerst die Website auslesen, um den neuesten Link zu bekommen
         'Dim str As String = Await New WebClient().DownloadStringTaskAsync("")
-        Dim url As New Uri(Downloads.Downloadsjo("techniclauncher").Value(Of String)("url"))
-        Dim filename As String = Downloads.Downloadsjo("techniclauncher").Value(Of String)("filename")
+        Dim url As String = "http://launcher.technicpack.net/launcher/{0}/TechnicLauncher.jar"
+        Dim filename As String = "TechnicLauncher.jar"
         Dim path As New FileInfo(IO.Path.Combine(mcpfad, "tools", filename))
         If path.Directory.Exists = False Then
             path.Directory.Create()
@@ -2017,6 +2022,8 @@ Public Class MainWindow
         Try
             btn_start_techniclauncher.IsEnabled = False
             'progressbar lädt herunter
+            Dim laststablebuild As String = Await New WebClient().DownloadStringTaskAsync("http://build.technicpack.net/job/TechnicLauncher/Stable/buildNumber")
+            url = String.Format(url, laststablebuild)
             Await New WebClient().DownloadFileTaskAsync(url, path.FullName)
             btn_start_techniclauncher.IsEnabled = True
         Catch ex As Exception
@@ -2026,13 +2033,13 @@ Public Class MainWindow
                 End If
             Catch
             End Try
-            btn_start_techniclauncher.IsEnabled = False
+            btn_start_techniclauncher.IsEnabled = True
             Me.ShowMessageAsync("Fehler", ex.Message, MessageDialogStyle.Affirmative, New MetroDialogSettings() With {.AffirmativeButtonText = "Ok", .ColorScheme = MetroDialogColorScheme.Accented})
         End Try
     End Sub
 
     Private Sub start_techniclauncher()
-        Dim filename As String = Downloads.Downloadsjo("techniclauncher").Value(Of String)("filename")
+        Dim filename As String = "TechnicLauncher.jar"
         Dim path As New FileInfo(IO.Path.Combine(mcpfad, "tools", filename))
         Process.Start(path.FullName)
         'TechnicLauncher starten

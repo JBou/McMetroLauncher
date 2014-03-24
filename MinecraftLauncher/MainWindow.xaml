@@ -432,9 +432,11 @@
             <TabItem Header="Infos">
                 <Grid>
                     <StackPanel Orientation="Horizontal" >
-                        <chart:RadialGaugeChart ChartTitle="Arbeitspeicher" Background="White" 
+                        <chart:RadialGaugeChart ChartTitle="Arbeitspeicher" 
                                                 ChartSubTitle=""
-                                                ChartLegendVisibility="Collapsed">
+                                                ChartLegendVisibility="Collapsed"
+                                                VerticalAlignment="Top"
+                                                Background="Transparent">
                             <chart:RadialGaugeChart.Series >
                                 <chart:ChartSeries DisplayMember="Name"
                                 ItemsSource="{Binding Path=Ram}"
@@ -442,9 +444,12 @@
                                 ValueMember="Count" />
                             </chart:RadialGaugeChart.Series>
                         </chart:RadialGaugeChart>
-                        <chart:RadialGaugeChart ChartTitle="CPU" Background="White" 
+                        <chart:RadialGaugeChart ChartTitle="CPU"
                                                 ChartSubTitle=""
-                                                ChartLegendVisibility="Collapsed">
+                                                ChartLegendVisibility="Collapsed"
+                                                VerticalAlignment="Top"
+                                                Background="Transparent"
+                                                >
                             <chart:RadialGaugeChart.Series >
                                 <chart:ChartSeries DisplayMember="Name"
                                     ItemsSource="{Binding Path=CPU}"
