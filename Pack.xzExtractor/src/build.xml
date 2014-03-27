@@ -1,0 +1,14 @@
+<?xml version="1.0" ?>
+<!-- Configuration of the Ant build system to generate a Jar file -->
+<project name="Pack.xz_Extractor" default="CreateJar">
+    <property name="lib.dir"       value="../lib"/>
+	<target name="CreateJar" description="Create Jar file">
+		<jar jarfile="Pack_xz_Extractor.jar" basedir=".">
+			<manifest>
+				<attribute name="Main-Class" value="Main" />
+			</manifest>
+	        <zipgroupfileset dir="${lib.dir}" includes="**/*.jar" />
+			<fileset dir="../bin" includes="**/*.class" />
+		</jar>
+	</target>
+</project>
