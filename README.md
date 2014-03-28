@@ -2,17 +2,23 @@
 =====================
 A Minecraft Launcher with nice features and a Modern UI.
 
-- Easily install Minecraft Forge, LiteLoader and Forge Mods.
-- add and edit your Servers (Show the Status)
+Functions:
+- Easily install Minecraft Forge, LiteLoader and Forge Mods
+- View your Servers (colored) and add/edit/delete them
 - Play Minecraft
-- Donwload and start TechnicLauncher and Feed the Beast
+- Download and start TechnicLauncher and Feed the Beast
 - Some other nice Features
 - Edit Profiles and Play all Minecraft Versions
+- Automatically downloads missing Forge and other libraries
 
+[Download latest Release](http://patzleiner.net/download/McMetroLauncher.msi)
+----------
 **Currently only avaiable in German and only supports OFFLINE MODE**
 (Online Mode will be supported in the next Updates)
 
-[.NET Framework 4.5](http://www.microsoft.com/de-de/download/details.aspx?id=30653) and [Awesomium SDK](http://awesomium.com/download) is needed to run this Programm!
+[.NET Framework 4.5](http://www.microsoft.com/de-de/download/details.aspx?id=30653) is needed to run this Programm!
+
+Developers need [Awesomium SDK](http://awesomium.com/) and the [Wix Toolset](http://wixtoolset.org/)
   Official Website
 =====================
 [Patzleiner](http://patzleiner.net)
