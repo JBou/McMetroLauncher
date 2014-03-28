@@ -16,7 +16,7 @@ Class Forge_installer
                 list.Add(item)
             End If
         Next
-        list.OrderByDescending(Function(p) p.build)
+        list = list.OrderByDescending(Function(p) p.build).ToList
         For Each item As Forge.ForgeBuild In list
             lst.Items.Add(item)
         Next
