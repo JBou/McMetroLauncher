@@ -91,6 +91,7 @@
               <Shortcut Advertise="yes" Id="DesktopShortCut" Name="$(var.Name)" Directory="DesktopFolder" WorkingDirectory="INSTALLLOCATION" Description="$(var.Name) ausführen" Icon="Icon.exe">
               </Shortcut>
             </File>
+            <RemoveFolder Id="INSTALLLOCATION" On="uninstall"/>
           </Component>
 
           <Component Id="McMetroLauncher.exe.config" Guid="{02C26E13-C9CB-4215-8974-6A5D553E5CF2}">
