@@ -117,10 +117,12 @@
     <Reference Include="Awesomium.Core, Version=1.7.3.0, Culture=neutral, PublicKeyToken=e1a0d7c8071a5214, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\..\..\Program Files (x86)\Awesomium Technologies LLC\Awesomium SDK\1.7.3.0\wrappers\Awesomium.NET\Assemblies\Awesomium.Core.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Awesomium.Windows.Controls, Version=1.7.2.2, Culture=neutral, PublicKeyToken=7a34e179b8b61c39, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\..\..\Program Files (x86)\Awesomium Technologies LLC\Awesomium SDK\1.7.2.2\wrappers\Awesomium.NET\Assemblies\Awesomium.Windows.Controls.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="BouncyCastle.Crypto">
       <HintPath>..\libraries\BouncyCastle.Crypto.dll</HintPath>
@@ -190,7 +192,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Models\Converters.vb" />
+    <Compile Include="Models\Forge.vb" />
     <Compile Include="Models\MainViewModel.vb" />
+    <Compile Include="Models\Unpack.vb" />
     <Compile Include="Windows\Forge_installer.xaml.vb">
       <DependentUpon>Forge_installer.xaml</DependentUpon>
     </Compile>
@@ -377,6 +382,9 @@
     <Resource Include="images\dark\appbar.page.copy.png" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="tools\Pack_xz_Extractor.jar">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Resource Include="minecraft_block.png" />
     <Resource Include="images\web-ftb-logo_0.png" />
     <Resource Include="images\light\appbar.control.play.png" />

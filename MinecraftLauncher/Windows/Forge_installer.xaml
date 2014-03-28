@@ -1,4 +1,5 @@
 ﻿<Controls:MetroWindow x:Class="Forge_installer"
+    xmlns:local="clr-namespace:McMetroLauncher"
     xmlns:metro="http://schemas.codeplex.com/elysium"
     xmlns:params="http://schemas.codeplex.com/elysium/params"
     xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
@@ -7,6 +8,13 @@
     xmlns:Behaviours="clr-namespace:MahApps.Metro.Behaviours;assembly=MahApps.Metro"
     GlowBrush="{DynamicResource AccentColorBrush}"   
     Title="Minecraft Forge" Height="448" Width="660" Icon="../images/favicon.ico" ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
+    
+    <Window.Resources>
+        <ResourceDictionary>
+            <local:Modified_Date_Converter x:Key="Modified_Date_Converter"/>
+        </ResourceDictionary>
+    </Window.Resources>
+    
     <DockPanel>
         <Controls:MetroProgressBar Foreground="{DynamicResource AccentColorBrush}" x:Name="pb_download" Height="10" Margin="10" VerticalAlignment="Bottom" DockPanel.Dock="Bottom" />
         <Controls:MetroAnimatedTabControl>
@@ -15,9 +23,9 @@
                     <ListView x:Name="lst" Margin="10,10,10,44" BorderThickness="0">
                         <ListView.View>
                             <GridView>
-                                <GridViewColumn Header="Build Nummer" DisplayMemberBinding="{Binding Path=build}" Width="130"/>
                                 <GridViewColumn Header="Version" HeaderStringFormat="" DisplayMemberBinding="{Binding Path=version}" Width="130"/>
-                                <GridViewColumn Header="Datum" DisplayMemberBinding="{Binding Path=time}" Width="376"/>
+                                <GridViewColumn Header="Minecraft Version" HeaderStringFormat="" DisplayMemberBinding="{Binding Path=mcversion}" Width="130"/>
+                                <GridViewColumn Header="Datum" DisplayMemberBinding="{Binding Path=modified, Converter={StaticResource Modified_Date_Converter}}" Width="375"/>
                             </GridView>
                         </ListView.View>
                     </ListView>

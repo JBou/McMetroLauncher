@@ -22,7 +22,7 @@ Public Class ServerList
     End Sub
 
     Public Sub Save()
-        SaveTo(servers_dat)
+        SaveTo(servers_dat.FullName)
     End Sub
 
     Public Sub SaveTo(file As String)
@@ -45,7 +45,7 @@ Public Class ServerList
     End Sub
 
     Public Async Function Load() As Task
-        Await LoadFrom(servers_dat)
+        Await LoadFrom(servers_dat.FullName)
     End Function
 
     Public Async Function LoadFrom(file As String) As Task

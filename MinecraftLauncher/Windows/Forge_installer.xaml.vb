@@ -9,7 +9,15 @@ Class Forge_installer
 
     Public Sub Load_Forge()
         lst.Items.Clear()
-        For Each item As Forge.Forgeeintrag In Forge.ForgeList
+        Dim list As IList(Of Forge.ForgeBuild) = New List(Of Forge.ForgeBuild)
+        For Each item As Forge.ForgeBuild In Forge.ForgeList
+            Dim lstitems As IList(Of String) = list.Select(Function(p) p.version).ToList
+            If item.files.Select(Function(o) o.type).Contains("installer") And lstitems.Contains(item.version) = False Then
+                list.Add(item)
+            End If
+        Next
+        list.OrderByDescending(Function(p) p.build)
+        For Each item As Forge.ForgeBuild In list
             lst.Items.Add(item)
         Next
     End Sub
@@ -21,7 +29,7 @@ Class Forge_installer
             btn_copy_image.Source = ImageConvert.GetImageStream(My.Resources.appbar_page_copy_dark)
         End If
         Load_Forge()
-        tb_mcpfad.Text = mcpfad
+        tb_mcpfad.Text = mcpfad.FullName
     End Sub
 
     Private Async Sub btn_download_Click(sender As Object, e As RoutedEventArgs) Handles btn_download.Click
@@ -31,9 +39,19 @@ Class Forge_installer
             wc.CancelAsync()
         Else
             forge_anleitung.IsSelected = True
-            Dim url As New Uri(DirectCast(lst.SelectedItem, Forge.Forgeeintrag).downloadlink)
-            Dim ls As IList(Of String) = url.Segments
-            filename = cachefolder & "\" & ls.Last
+            Dim version As String = DirectCast(lst.SelectedItem, Forge.ForgeBuild).version
+            Dim mcversion As String = DirectCast(lst.SelectedItem, Forge.ForgeBuild).mcversion
+            Dim Legacyforgefile As Boolean = False
+            If Forge.LegacyBuildList.Select(Function(p) p.version).Contains(version) Then
+                Legacyforgefile = True
+            End If
+            Dim url As Uri = Nothing
+            If Legacyforgefile = True Then
+                url = New Uri(String.Format("http://files.minecraftforge.net/minecraftforge/minecraftforge-installer-{0}-{1}.jar", mcversion, version))
+            Else
+                url = New Uri(String.Format("http://files.minecraftforge.net/maven/net/minecraftforge/forge/{0}-{1}/forge-{0}-{1}-installer.jar", mcversion, version))
+            End If
+            filename = IO.Path.Combine(cachefolder.FullName, String.Format("forge-{0}-{1}-installer.jar", mcversion, version))
             wc.DownloadFileAsync(url, filename)
             btn_download.Content = "Abbrechen"
         End If

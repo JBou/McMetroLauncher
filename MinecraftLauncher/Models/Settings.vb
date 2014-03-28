@@ -64,7 +64,7 @@ Public Class Settings
         'End While
     End Function
     Public Shared Async Function Save() As Task
-        If Settings.mcpfad = mcpfad Then
+        If Settings.mcpfad = mcpfad.FullName Then
             Settings.mcpfad = Nothing
         End If
         Dim text As String = Await JsonConvert.SerializeObjectAsync(Settings, Newtonsoft.Json.Formatting.Indented, New JsonSerializerSettings() With {.DefaultValueHandling = DefaultValueHandling.Ignore, .NullValueHandling = NullValueHandling.Ignore})

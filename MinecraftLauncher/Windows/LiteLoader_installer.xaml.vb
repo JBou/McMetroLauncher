@@ -21,7 +21,7 @@ Public Class LiteLoader_installer
         For Each item As LiteLoader.LiteloaderEintrag In LiteLoader.LiteLoaderList
             lst.Items.Add(item)
         Next
-        tb_mcpfad.Text = mcpfad
+        tb_mcpfad.Text = mcpfad.FullName
     End Sub
 
     Private Async Sub btn_download_Click(sender As Object, e As RoutedEventArgs) Handles btn_download.Click
@@ -33,7 +33,7 @@ Public Class LiteLoader_installer
             forge_anleitung.IsSelected = True
             Dim url As New Uri(DirectCast(lst.SelectedItem, LiteLoader.LiteLoaderEintrag).DownloadLink)
             Dim ls As IList(Of String) = url.Segments
-            filename = cachefolder & "\" & ls.Last
+            filename = IO.Path.Combine(cachefolder.FullName, ls.Last)
             wc.DownloadFileAsync(url, filename)
             btn_download.Content = "Abbrechen"
 

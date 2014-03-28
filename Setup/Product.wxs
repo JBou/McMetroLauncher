@@ -4,6 +4,7 @@
   <?define Manufactor = "Patzleiner"?>
   <?define UpgradeGuid = "{DBC552D0-2FCB-4E70-B902-B65E8D7DDF67}"?>
   <?define Name = "McMetroLauncher"?>
+  <?define AwesomiumMergePath = "C:\Program Files (x86)\Awesomium Technologies LLC\Awesomium SDK\1.7.3.0\wrappers\Awesomium.NET\Redistribute\AWENET0173F.msm"?>
 
   <Product
   Id="*"
@@ -12,7 +13,7 @@
   Version="!(bind.FileVersion.MyApplicationFile)"
   Manufacturer="$(var.Manufactor)"
   UpgradeCode="$(var.UpgradeGuid)">
-    
+
     <Package
     InstallerVersion="200"
     Compressed="yes"
@@ -20,30 +21,30 @@
     Manufacturer="$(var.Manufactor)"
     Comments="Danke, dass Sie sich für den $(var.Name) entschieden haben"
   />
-    
+
     <Media
     Id="1"
     Cabinet="media1.cab"
     EmbedCab="yes"
   />
-    
-    <!--Und dieses Icon soll für den Shortcut verwendet werden--> 
+
+    <!--Und dieses Icon soll für den Shortcut verwendet werden-->
     <Icon Id="Icon.exe" SourceFile="$(var.McMetroLauncher.TargetPath)" />
-    
+
     <Property Id="WIXUI_INSTALLDIR" Value="INSTALLDIR" />
-    
+
     <!-- Mehr Infos: http://wix.tramontana.co.hu/tutorial/user-interface/ui-wizardry
     
     http://wixtoolset.org/documentation/manual/v3/wixui/wixui_customizations.html -->
-    
-  <!--<WixVariable Id="WixUILicenseRtf" Value="path\License.rtf" />-->
-  <WixVariable Id="WixUIBannerBmp" Value="Banner.png" />
-  <WixVariable Id="WixUIDialogBmp" Value="Dialog.png" />
-  <!--<WixVariable Id="WixUIExclamationIco" Value="path\exclamation.ico" />-->
-  <!--<WixVariable Id="WixUIInfoIco" Value="path\information.ico" />-->
-  <!--<WixVariable Id="WixUINewIco" Value="path\new.ico" />-->
-  <!--<WixVariable Id="WixUIUpIco" Value="path\up.ico" />-->
-    
+
+    <!--<WixVariable Id="WixUILicenseRtf" Value="path\License.rtf" />-->
+    <WixVariable Id="WixUIBannerBmp" Value="Banner.png" />
+    <WixVariable Id="WixUIDialogBmp" Value="Dialog.png" />
+    <!--<WixVariable Id="WixUIExclamationIco" Value="path\exclamation.ico" />-->
+    <!--<WixVariable Id="WixUIInfoIco" Value="path\information.ico" />-->
+    <!--<WixVariable Id="WixUINewIco" Value="path\new.ico" />-->
+    <!--<WixVariable Id="WixUIUpIco" Value="path\up.ico" />-->
+
     <Property Id="ARPCOMMENTS" Value="$(var.Name)" />
     <Property Id="ARPHELPLINK" Value="http://patzleiner.net" />
     <Property Id="ARPCONTACT" Value="Patzleiner" />
@@ -61,52 +62,59 @@
                       IncludeMaximum="no"
                       Language="1033"
                       Property="UPGRADEFOUND" />
-      <UpgradeVersion Minimum="1.0.0.0" 
+      <UpgradeVersion Minimum="1.0.0.0"
                       Maximum="99.0.0.0"
                       Property="PREVIOUSVERSIONSINSTALLED"
-                      IncludeMinimum="yes" 
+                      IncludeMinimum="yes"
                       IncludeMaximum="no" />
-    </Upgrade>  
+    </Upgrade>
 
-    <Directory Id="TARGETDIR" Name="SourceDir">      
+    <Directory Id="TARGETDIR" Name="SourceDir">
       <Directory Id="ProgramFilesFolder">
-          <Directory Id="INSTALLLOCATION" Name="$(var.Name)" >
-            <!-- Und dahinein packen wir eine Component, in diesem Fall Unser Ausführbares Programm 
+        <Directory Id="INSTALLLOCATION" Name="$(var.Name)" >
+          <!-- Und dahinein packen wir eine Component, in diesem Fall Unser Ausführbares Programm 
                 Jede Component muss eine eindeutige Id bestzen, diese wird weiter unter verwendet um die Component 
                 einem Feature zuzuordnen.
                 Eine Component sollte eine Guid besitzten, damit es später Möglich ist anhand dieser Guid die Datei 
                 eindeutig zu identifizieren, damit man mit dem MS Installer, eine Reparatur einer vorhandenen Installation
                 durchführen kann.
             -->
-            <Component Id="ProductComponent" Guid="{4A5619DF-5841-48EC-8D7C-D368718C6D1A}">
-              <File Id="MyApplicationFile" Name="$(var.McMetroLauncher.TargetFileName)" Source="$(var.McMetroLauncher.TargetPath)" KeyPath="yes">
-                 <!--Dann legen wir doch gleich noch einen Desktop Shortcut für das Projekt an.--> 
-                <Shortcut Advertise="yes" Id="DesktopShortCut" Name="$(var.Name)" Directory="DesktopFolder" WorkingDirectory="INSTALLLOCATION" Description="$(var.Name) ausführen" Icon="Icon.exe">
-                </Shortcut>
-              </File>
-            </Component>
-            
-            <Component Id="McMetroLauncher.exe.config" Guid="{02C26E13-C9CB-4215-8974-6A5D553E5CF2}">
-              <!-- Hier nun die zu installierende Datei der Component hinzufügen -->
-              <File Id="McMetroLauncher.exe.config" Name="McMetroLauncher.exe.config" Source="$(var.McMetroLauncher.TargetDir)McMetroLauncher.exe.config"  />            
-            </Component>
-              
-            <Component Id="libraries" Guid="{D4A5EAE3-E7E3-49F8-A70A-EBEE65CBCABF}">
-              <File Id="GrayscaleEffect" Name="GrayscaleEffect.dll" Source="$(var.McMetroLauncher.TargetDir)GrayscaleEffect.dll" />
-              <File Id="Ionic.Zip" Name="Ionic.Zip.dll" Source="$(var.McMetroLauncher.TargetDir)Ionic.Zip.dll" />            
-              <File Id="MahApps.Metro" Name="MahApps.Metro.dll" Source="$(var.McMetroLauncher.TargetDir)MahApps.Metro.dll" />        
-              <File Id="MahApps.Metro.Resources" Name="MahApps.Metro.Resources.dll" Source="$(var.McMetroLauncher.TargetDir)MahApps.Metro.Resources.dll" />      
-              <File Id="Newtonsoft.Json" Name="Newtonsoft.Json.dll" Source="$(var.McMetroLauncher.TargetDir)Newtonsoft.Json.dll" />            
-              <File Id="System.Windows.Interactivity" Name="System.Windows.Interactivity.dll" Source="$(var.McMetroLauncher.TargetDir)System.Windows.Interactivity.dll" />           
-              <File Id="Ookii.Dialogs.Wpf" Name="Ookii.Dialogs.Wpf.dll" Source="$(var.McMetroLauncher.TargetDir)Ookii.Dialogs.Wpf.dll" />           
-              <File Id="fNbt" Name="fNbt.dll" Source="$(var.McMetroLauncher.TargetDir)fNbt.dll" />
-              <File Id="Craft.Net" Name="Craft.Net.dll" Source="$(var.McMetroLauncher.TargetDir)Craft.Net.dll" />
-              <File Id="Craft.Net.Common" Name="Craft.Net.Common.dll" Source="$(var.McMetroLauncher.TargetDir)Craft.Net.Common.dll" />
-              <File Id="Craft.Net.Client" Name="Craft.Net.Client.dll" Source="$(var.McMetroLauncher.TargetDir)Craft.Net.Client.dll" />
-              <File Id="Craft.Net.Anvil" Name="Craft.Net.Anvil.dll" Source="$(var.McMetroLauncher.TargetDir)Craft.Net.Anvil.dll" />
-              <File Id="BouncyCastle.Crypto" Name="BouncyCastle.Crypto.dll" Source="$(var.McMetroLauncher.TargetDir)BouncyCastle.Crypto.dll" />
-              <!-- Awesomium SDK wird installiert, deshalb brauche ich diese Libraries nicht: -->
-              <!--<File Id="avcodec_53" Name="avcodec-53.dll" Source="$(var.McMetroLauncher.ProjectDir)bin\$(var.McMetroLauncher.Configuration)\avcodec-53.dll" />
+          <Merge Id="merge_awesomium" SourceFile="$(var.AwesomiumMergePath)" DiskId="1" Language="1033" />
+          <Directory Id="tools" Name="tools">
+              <Component Id="Copytools" Guid="{E3CE604D-D5C3-4EFF-816C-A6101468C090}">
+                <File Id="Pack_xz_Extractor" Name="Pack_xz_Extractor.jar" Source="$(var.McMetroLauncher.TargetDir)tools\Pack_xz_Extractor.jar" />
+              </Component>
+            </Directory>
+          <Component Id="ProductComponent" Guid="{4A5619DF-5841-48EC-8D7C-D368718C6D1A}">
+            <File Id="MyApplicationFile" Name="$(var.McMetroLauncher.TargetFileName)" Source="$(var.McMetroLauncher.TargetPath)" KeyPath="yes">
+              <!--Dann legen wir doch gleich noch einen Desktop Shortcut für das Projekt an.-->
+              <Shortcut Advertise="yes" Id="DesktopShortCut" Name="$(var.Name)" Directory="DesktopFolder" WorkingDirectory="INSTALLLOCATION" Description="$(var.Name) ausführen" Icon="Icon.exe">
+              </Shortcut>
+            </File>
+          </Component>
+
+          <Component Id="McMetroLauncher.exe.config" Guid="{02C26E13-C9CB-4215-8974-6A5D553E5CF2}">
+            <!-- Hier nun die zu installierende Datei der Component hinzufügen -->
+            <File Id="McMetroLauncher.exe.config" Name="McMetroLauncher.exe.config" Source="$(var.McMetroLauncher.TargetDir)McMetroLauncher.exe.config"  />
+          </Component>
+
+          <Component Id="libraries" Guid="{D4A5EAE3-E7E3-49F8-A70A-EBEE65CBCABF}">
+            <File Id="GrayscaleEffect" Name="GrayscaleEffect.dll" Source="$(var.McMetroLauncher.TargetDir)GrayscaleEffect.dll" />
+            <File Id="Ionic.Zip" Name="Ionic.Zip.dll" Source="$(var.McMetroLauncher.TargetDir)Ionic.Zip.dll" />
+            <File Id="MahApps.Metro" Name="MahApps.Metro.dll" Source="$(var.McMetroLauncher.TargetDir)MahApps.Metro.dll" />
+            <File Id="MahApps.Metro.Resources" Name="MahApps.Metro.Resources.dll" Source="$(var.McMetroLauncher.TargetDir)MahApps.Metro.Resources.dll" />
+            <File Id="Newtonsoft.Json" Name="Newtonsoft.Json.dll" Source="$(var.McMetroLauncher.TargetDir)Newtonsoft.Json.dll" />
+            <File Id="System.Windows.Interactivity" Name="System.Windows.Interactivity.dll" Source="$(var.McMetroLauncher.TargetDir)System.Windows.Interactivity.dll" />
+            <File Id="Ookii.Dialogs.Wpf" Name="Ookii.Dialogs.Wpf.dll" Source="$(var.McMetroLauncher.TargetDir)Ookii.Dialogs.Wpf.dll" />
+            <File Id="fNbt" Name="fNbt.dll" Source="$(var.McMetroLauncher.TargetDir)fNbt.dll" />
+            <File Id="Craft.Net" Name="Craft.Net.dll" Source="$(var.McMetroLauncher.TargetDir)Craft.Net.dll" />
+            <File Id="Craft.Net.Common" Name="Craft.Net.Common.dll" Source="$(var.McMetroLauncher.TargetDir)Craft.Net.Common.dll" />
+            <File Id="Craft.Net.Client" Name="Craft.Net.Client.dll" Source="$(var.McMetroLauncher.TargetDir)Craft.Net.Client.dll" />
+            <File Id="Craft.Net.Anvil" Name="Craft.Net.Anvil.dll" Source="$(var.McMetroLauncher.TargetDir)Craft.Net.Anvil.dll" />
+            <File Id="BouncyCastle.Crypto" Name="BouncyCastle.Crypto.dll" Source="$(var.McMetroLauncher.TargetDir)BouncyCastle.Crypto.dll" />
+            <File Id="De.TorstenMandelkow.MetroChart" Name="De.TorstenMandelkow.MetroChart.dll" Source="$(var.McMetroLauncher.TargetDir)De.TorstenMandelkow.MetroChart.dll" />
+            <!-- Awesomium SDK wird installiert, deshalb brauche ich diese Libraries nicht: -->
+            <!--<File Id="avcodec_53" Name="avcodec-53.dll" Source="$(var.McMetroLauncher.ProjectDir)bin\$(var.McMetroLauncher.Configuration)\avcodec-53.dll" />
               <File Id="avformat_53" Name="avformat-53.dll" Source="$(var.McMetroLauncher.ProjectDir)bin\$(var.McMetroLauncher.Configuration)\avformat-53.dll" />
               <File Id="avutil_51" Name="avutil-51.dll" Source="$(var.McMetroLauncher.ProjectDir)bin\$(var.McMetroLauncher.Configuration)\avutil-51.dll" />
               <File Id="Awesomium.Core" Name="Awesomium.Core.dll" Source="$(var.McMetroLauncher.ProjectDir)bin\$(var.McMetroLauncher.Configuration)\Awesomium.Core.dll" />
@@ -116,15 +124,15 @@
               <File Id="libEGL" Name="libEGL.dll" Source="$(var.McMetroLauncher.ProjectDir)bin\$(var.McMetroLauncher.Configuration)\libEGL.dll" />
               <File Id="libGLESv2" Name="libGLESv2.dll" Source="$(var.McMetroLauncher.ProjectDir)bin\$(var.McMetroLauncher.Configuration)\libGLESv2.dll" />
               <File Id="awesomium_process" Name="awesomium_process" Source="$(var.McMetroLauncher.ProjectDir)bin\$(var.McMetroLauncher.Configuration)\awesomium_process" />-->
-            </Component>
+          </Component>
 
-            <Component Id="ShortCutDeinstall" Guid="{0BA3B1B9-679B-45C0-A6BB-0CEA1C5CDA7F}">
-              <Shortcut Id="DeinstallShortCut" Name="$(var.Name) deinstallieren" Target="[System64Folder]msiexec.exe" Arguments="/x [ProductCode]" Icon="Icon.exe"/>
-              <RegistryValue Root="HKCU" Key="Software\$(var.Name)" Name="installed" Type="integer" Value="1" KeyPath="yes"/>
-            </Component>
+          <Component Id="ShortCutDeinstall" Guid="{0BA3B1B9-679B-45C0-A6BB-0CEA1C5CDA7F}">
+            <Shortcut Id="DeinstallShortCut" Name="$(var.Name) deinstallieren" Target="[System64Folder]msiexec.exe" Arguments="/x [ProductCode]" Icon="Icon.exe"/>
+            <RegistryValue Root="HKCU" Key="Software\$(var.Name)" Name="installed" Type="integer" Value="1" KeyPath="yes"/>
+          </Component>
         </Directory>
-      </Directory>  
-      
+      </Directory>
+
       <!-- Verknüpfungen im Startmenü setzen 
           Siehe auch http://wix.sourceforge.net/manual-wix3/create_start_menu_shortcut.htm
       -->
@@ -165,7 +173,7 @@
         </RegistryKey>
       </Component>
     </DirectoryRef>
-    
+
     <!-- Feature Bereich hier als Basistemplate nur ein Feature (Alles installieren)
         Siehe auch http://wix.sourceforge.net/manual-wix3/wix_xsd_feature.htm
     -->
@@ -176,8 +184,10 @@
       <ComponentRef Id="ShortCutDeinstall"/>
       <ComponentRef Id="ShortCutComponent" />
       <ComponentRef Id="RegistryEntries" />
+      <ComponentRef Id="Copytools"/>
+      <MergeRef Id="merge_awesomium" />
     </Feature>
-    
+
     <!-- Das was nun folgt ist schon ein wenig Finetuning CustomActions
         siehe auch http://wix.sourceforge.net/manual-wix3/wix_xsd_customaction.htm
     -->
@@ -191,6 +201,8 @@
     <InstallExecuteSequence>
       <Custom Action="PreventDowngrading"
               After="FindRelatedProducts">NEWPRODUCTFOUND</Custom>
+      <MsiPublishAssemblies Sequence="1502" />
+      <MsiUnpublishAssemblies Sequence="1501" />
       <RemoveExistingProducts After="InstallFinalize" />
     </InstallExecuteSequence>
 
@@ -201,7 +213,7 @@
       <Custom Action="PreventDowngrading"
               After="FindRelatedProducts">NEWPRODUCTFOUND</Custom>
     </InstallUISequence>
-  
+
     <!-- So kann man eine eigene Lizenzmeldung ausgeben -->
     <!--<WixVariable Id='WixUILicenseRtf' Overridable='yes' Value='$(var.McMetroLauncher.ProjectDir)Lizenzbestimmungen.rtf'/>-->
 
@@ -212,19 +224,23 @@
     <UI>
       <UIRef Id="WixUI_Minimal" />
       <UIRef Id="WixUI_ErrorProgressText" />
-      
-      <Publish Dialog="ExitDialog"
-          Control="Finish" 
-          Event="DoAction" 
-          Value="LaunchApplication">WIXUI_EXITDIALOGOPTIONALCHECKBOX = 1 and NOT Installed</Publish>
-    
-    </UI>
-    
-  <!-- Checkbox zum starten nach der installation -->
-<Property Id="WIXUI_EXITDIALOGOPTIONALCHECKBOXTEXT" Value="$(var.Name) starten" />
-  
-<Property Id="WixShellExecTarget" Value="[#MyApplicationFile]" />
-<CustomAction Id="LaunchApplication" BinaryKey="WixCA" DllEntry="WixShellExec" Impersonate="yes" />
 
+      <Publish Dialog="ExitDialog"
+          Control="Finish"
+          Event="DoAction"
+          Value="LaunchApplication">WIXUI_EXITDIALOGOPTIONALCHECKBOX = 1 and NOT Installed</Publish>
+
+    </UI>
+
+    <!-- Checkbox zum starten nach der installation -->
+    <Property Id="WIXUI_EXITDIALOGOPTIONALCHECKBOXTEXT" Value="$(var.Name) starten" />
+
+    <Property Id="WixShellExecTarget" Value="[#MyApplicationFile]" />
+    <CustomAction Id="LaunchApplication" BinaryKey="WixCA" DllEntry="WixShellExec" Impersonate="yes" />
+
+    <AdvertiseExecuteSequence>
+      <MsiPublishAssemblies Sequence="1502" />
+    </AdvertiseExecuteSequence>
+    
   </Product>
 </Wix>

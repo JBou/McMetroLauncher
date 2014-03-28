@@ -47,7 +47,7 @@ Public Class ProfileEditor
     Async Function Load_ProfileInfos() As Task
         Dim profile As Profile = Await Profiles.FromName(loadedprofile)
         If profile.name = Nothing Then
-            tb_profile_name.Text = mcpfad
+            tb_profile_name.Text = mcpfad.FullName
         Else
             tb_profile_name.Text = profile.name
         End If
@@ -66,7 +66,7 @@ Public Class ProfileEditor
             End If
         End If
         If profile.gameDir = Nothing Then
-            tb_gameDir.Text = mcpfad
+            tb_gameDir.Text = mcpfad.FullName
         Else
             tb_gameDir.Text = profile.gameDir
             cb_game_directory.IsChecked = True
@@ -102,7 +102,7 @@ Public Class ProfileEditor
     End Function
 
     Async Function StandardValues() As Task
-        tb_gameDir.Text = mcpfad
+        tb_gameDir.Text = mcpfad.FullName
         tb_res_height.Text = "480"
         tb_res_width.Text = "854"
         tb_java_executable.Text = MainWindow.Startcmd(Await Profiles.FromName(loadedprofile))
@@ -262,7 +262,7 @@ Public Class ProfileEditor
         Dim fd As New VistaFolderBrowserDialog
         fd.Description = "Spiel Pfad auswählen"
         fd.RootFolder = Environment.SpecialFolder.MyComputer
-        fd.SelectedPath = mcpfad
+        fd.SelectedPath = mcpfad.FullName
         fd.ShowNewFolderButton = True
         If fd.ShowDialog = True Then
             tb_gameDir.Text = fd.SelectedPath

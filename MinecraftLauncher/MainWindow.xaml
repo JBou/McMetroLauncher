@@ -138,7 +138,7 @@
                         </TabControl.Resources>
                         <TabItem Header="Neuigkeiten" >
                             <Grid>
-                                <awe:WebControl x:Name="Webcontrol_news" Margin="10" Source="http://mcupdate.tumblr.com/"/>
+                                <awe:WebControl x:Name="Webcontrol_news" Margin="10" Source="http://mcupdate.tumblr.com/" IsTransparent="True" />
                                 <Grid HorizontalAlignment="Center" VerticalAlignment="Center" Height="100">
                                     <Label x:Name="lbl_news_loading" Content="Neuigkeiten werden geladen..."  FontSize="60" VerticalAlignment="Top"  />
                                     <Controls:MetroProgressBar x:Name="pb_news_loading" IsIndeterminate="True" VerticalAlignment="Bottom" Height="10" />

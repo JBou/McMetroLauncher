@@ -13,7 +13,7 @@ Public Class Profiles
     Public Shared profilesjo As JObject
 
     Public Shared Sub Load()
-        o = File.ReadAllText(launcher_profiles_json)
+        o = File.ReadAllText(launcher_profiles_json.FullName)
         profilesjo = JObject.Parse(o)
     End Sub
 
@@ -58,7 +58,7 @@ Public Class Profiles
         End If
         profilesjo.Value(Of JObject)("profiles").Add(New JProperty(Profile.name, Profileproperties))
         profilesjo("selectedProfile") = Profile.name
-        File.WriteAllText(launcher_profiles_json, profilesjo.ToString)
+        File.WriteAllText(launcher_profiles_json.FullName, profilesjo.ToString)
     End Sub
 
     Public Shared Sub Edit(editprofilename As String, Profile As Profile)
@@ -91,13 +91,13 @@ Public Class Profiles
         End If
         profilesjo.Value(Of JObject)("profiles").Property(editprofilename).Replace(New JProperty(Profile.name, Profileproperties))
         profilesjo("selectedProfile") = Profile.name
-        File.WriteAllText(launcher_profiles_json, profilesjo.ToString)
+        File.WriteAllText(launcher_profiles_json.FullName, profilesjo.ToString)
     End Sub
 
     Public Shared Sub Remove(profilename As String)
         Load()
         profilesjo.Value(Of JObject)("profiles").Property(profilename).Remove()
-        IO.File.WriteAllText(launcher_profiles_json, profilesjo.ToString)
+        IO.File.WriteAllText(launcher_profiles_json.FullName, profilesjo.ToString)
     End Sub
 
     Public Class Profile
