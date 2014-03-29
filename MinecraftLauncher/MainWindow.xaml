@@ -10,8 +10,8 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:chart="clr-namespace:De.TorstenMandelkow.MetroChart;assembly=De.TorstenMandelkow.MetroChart" 
     GlowBrush="{DynamicResource AccentColorBrush}"            
-    Title="McMetroLauncher" Height="600" Width="800"
-    ForceCursor="True" MinWidth="800" MinHeight="600" Icon="images/favicon.ico" ResizeMode="CanResizeWithGrip" UseLayoutRounding="False" ScrollViewer.CanContentScroll="True" >
+    Title="McMetroLauncher" Height="600" Width="920"
+    ForceCursor="True" MinHeight="600" MinWidth="920" Icon="images/favicon.ico" ResizeMode="CanResizeWithGrip" UseLayoutRounding="False" ScrollViewer.CanContentScroll="True" >
 
     <Window.Resources>
         <ResourceDictionary>
@@ -235,18 +235,23 @@
                     <Button x:Name="btn_selectmodsfolder" Margin="0,77,10,0" Content="..." HorizontalAlignment="Right" VerticalAlignment="Top" Width="26" Height="26" />
                     <Image x:Name="img_installed" Height="23" Width="23" Margin="367,114,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Source="images/check_green.png"/>
                     <Label x:Name="lbl_name" Margin="395,108,110,0" VerticalAlignment="Top" Height="29" FontWeight="Bold" VerticalContentAlignment="Center" Background="#00000000" Foreground="#FF1F94F5" FontSize="15" />
-                    <Button x:Name="btn_list_delete_mod" Margin="0,0,88,77" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="32" Height="32" Padding="0" >
-                        <Image x:Name="btn_list_delete_mod_image" Source="images/light/appbar.delete.png" Margin="0"/>
-                    </Button>
-                    <Button Foreground="{DynamicResource AccentColorBrush}" x:Name="btn_downloadmod" Content="Installieren" Margin="0,0,10,77" VerticalAlignment="Bottom" HorizontalAlignment="Right" Height="32" FontWeight="Bold" FontSize="12" Width="74"/>
+                    <StackPanel  Margin="0,294,10,23" HorizontalAlignment="Right" VerticalAlignment="Center" Width="110" >
+                        <Button x:Name="btn_website" Content="Website besuchen" Height="32" Margin="0,0,0,5" />
+                        <Button x:Name="btn_video" Content="Video ansehen" Height="32" Margin="0,5" />
+                        <Button x:Name="btn_list_delete_mod" Height="32" Margin="0,5" >
+                            <StackPanel Orientation="Horizontal" >
+                                <Image x:Name="btn_list_delete_mod_image" Source="images/light/appbar.delete.png" />
+                                <TextBlock Text="Löschen" VerticalAlignment="Center" />
+                            </StackPanel>
+                        </Button>
+                        <Button Foreground="{DynamicResource AccentColorBrush}" x:Name="btn_downloadmod" Content="Installieren" Height="32" FontWeight="Bold" Margin="0,5,0,0" />
+                    </StackPanel>
                     <Controls:MetroProgressBar Foreground="{DynamicResource AccentColorBrush}" x:Name="pb_mods_download" Height="8" Margin="10,0,10,10" VerticalAlignment="Bottom"/>
-                    <TextBox x:Name="tb_description" Margin="367,176,10,254" TextWrapping="Wrap" BorderThickness="1" HorizontalScrollBarVisibility="Visible" AcceptsReturn="True" IsReadOnly="True" VerticalContentAlignment="Top" VerticalScrollBarVisibility="Auto"/>
+                    <TextBox x:Name="tb_description" Margin="367,176,10,254" TextWrapping="Wrap" BorderThickness="1" HorizontalScrollBarVisibility="Visible" AcceptsReturn="True" IsReadOnly="True" VerticalContentAlignment="Top" VerticalScrollBarVisibility="Auto" Height="113"/>
                     <Viewbox  Margin="367,294,125,23" Stretch="Uniform" >
-                        <awe:WebControl x:Name="wc_mod_video" Height="9" Width="16" MinHeight="9" MinWidth="16" />
+                        <awe:WebControl x:Name="wc_mod_video" Height="9" Width="16" MinWidth="16" MinHeight="9" />
                     </Viewbox>
                     <ComboBox x:Name="cb_modversions" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="352" Height="31"/>
-                    <Button x:Name="btn_website" Content="Website besuchen" Margin="0,0,10,114" VerticalAlignment="Bottom" Height="32" HorizontalAlignment="Right" Width="110"/>
-                    <Button x:Name="btn_video" Content="Video ansehen" Margin="0,0,10,151" VerticalAlignment="Bottom" RenderTransformOrigin="0.489,0.548" HorizontalAlignment="Right" Height="32" Width="110"/>
                     <Button x:Name="btn_play" Content="Play" Margin="192,466,628,24" Visibility="Hidden" />
                     <TextBox x:Name="tb_downloadlink" HorizontalAlignment="Left" Height="26" Margin="362,439,-17,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="597" Visibility="Hidden"/>
                     <Label x:Name="lbl_autor" Content="" Margin="517,108,10,0" VerticalAlignment="Top" Height="29" FontWeight="Bold" VerticalContentAlignment="Center" HorizontalContentAlignment="Right" Background="#00000000" Foreground="#FF1F94F5" FontSize="15"/>

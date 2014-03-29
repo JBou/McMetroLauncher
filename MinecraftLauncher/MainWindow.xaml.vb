@@ -243,7 +243,7 @@ Public Module GlobalInfos
             Return "http://resources.download.minecraft.net/" & hash.Substring(0, 2) & "/" & hash
         End Get
     End Property
-
+    Public ReadOnly YoutubeVideoRegex As Regex = New Regex("youtu(?:\.be|be\.com)/(?:.*v(?:/|=)|(?:.*/)?)([a-zA-Z0-9-_]+)", RegexOptions.IgnoreCase)
     Public Versionsurl As String = "http://s3.amazonaws.com/Minecraft.Download/versions/versions.json"
     Public modfileurl As String = Website & "download/modlist.json"
     Public versionurl As String = Website & "mcmetrolauncher/version.txt"
@@ -462,6 +462,15 @@ Public Class MainWindow
     Private Sub MainWindow_Loaded(sender As Object, e As EventArgs) Handles Me.Loaded
         Webcontrol_news.WebSession = WebCore.CreateWebSession(New WebPreferences() With {.CustomCSS = Scrollbarcss})
         wc_mod_video.WebSession = WebCore.CreateWebSession(New WebPreferences() With {.CustomCSS = Scrollbarcss})
+        wc_mod_video.ViewType = Awesomium.Core.WebViewType.Window
+        If lb_mods.SelectedIndex <> -1 Then
+            Dim youtubeMatch As Match = YoutubeVideoRegex.Match(DirectCast(lb_mods.SelectedItem, Modifications.Mod).video)
+            Dim id As String = String.Empty
+            If youtubeMatch.Success Then
+                id = youtubeMatch.Groups(1).Value
+                wc_mod_video.Source = New Uri("http://www.youtube.com/embed/" & id & "?&origin=http://patzleiner.net")
+            End If
+        End If
     End Sub
 #End Region
 
@@ -1599,16 +1608,14 @@ Public Class MainWindow
                 Case Else
                     lbl_type.Content = "Type: " & DirectCast(lb_mods.SelectedItem, Modifications.Mod).type
             End Select
+
+            Dim youtubeMatch As Match = YoutubeVideoRegex.Match(DirectCast(lb_mods.SelectedItem, Modifications.Mod).video)
+            Dim id As String = String.Empty
+            If youtubeMatch.Success Then
+                id = youtubeMatch.Groups(1).Value
+                wc_mod_video.Source = New Uri("http://www.youtube.com/embed/" & id & "?&origin=http://patzleiner.net")
+            End If
         End If
-
-
-        'If lb_mods.SelectedIndex <> -1 Then
-        '    lbl_name.Content = Mods.NameAt(cb_modversions.SelectedItem.ToString, lb_mods.SelectedIndex)
-        '    tb_description.Text = Mods.descriptionAt(cb_modversions.SelectedItem.ToString, lb_mods.SelectedIndex)
-        '    mod_website = Mods.websiteAt(cb_modversions.SelectedItem.ToString, lb_mods.SelectedIndex)
-        '    mod_video = Mods.videoAt(cb_modversions.SelectedItem.ToString, lb_mods.SelectedIndex)
-        '    mod_downloadlink = Mods.downloadlinkAt(cb_modversions.SelectedItem.ToString, lb_mods.SelectedIndex)
-        'End If
     End Sub
     Private Sub cb_mods_description_language_SelectionChanged(sender As Object, e As SelectionChangedEventArgs) Handles cb_mods_description_language.SelectionChanged
         If lb_mods.SelectedIndex <> -1 Then
