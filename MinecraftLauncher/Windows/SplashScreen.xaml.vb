@@ -8,6 +8,7 @@ Imports MahApps.Metro
 Imports MahApps.Metro.Controls.Dialogs
 Imports System
 Imports System.Reflection
+Imports System.Windows.Threading
 
 Public Class SplashScreen
 
@@ -20,7 +21,7 @@ Public Class SplashScreen
         End Try
     End Function
 
-    Private Sub SplashScreen_Loaded(sender As Object, e As RoutedEventArgs) Handles Me.Loaded
+    Private Async Sub SplashScreen_Loaded(sender As Object, e As RoutedEventArgs) Handles Me.Loaded
         Try
             Dim oAssembly As System.Reflection.AssemblyName = _
       System.Reflection.Assembly.GetExecutingAssembly().GetName
@@ -44,6 +45,14 @@ Public Class SplashScreen
             End If
 
             If internetconnection() = True Then
+                If Path.Combine(GetJavaPath(), "bin", "java.exe") = Nothing Then
+                    Dim result As MessageDialogResult = Await ShowMessageAsync("Java nicht vorhanden", "Du musst Java installieren, um den McMetroLauncher und Minecraft nutzen zu können." & Environment.NewLine & "Ansonsten werden einige Funktionen nicht funktionieren!!" & Environment.NewLine & "Jetzt herunterladen?", MessageDialogStyle.AffirmativeAndNegative)
+                    If result = MessageDialogResult.Affirmative Then
+                        Process.Start("http://java.com/de/download")
+                    Else
+                        Application.Current.Shutdown()
+                    End If
+                End If
 
                 If cachefolder.Exists = False Then
                     cachefolder.Create()
@@ -181,57 +190,53 @@ Public Class SplashScreen
 
     Async Function Start() As Task
         Try
-            Me.Hide()
-            ShowWindowCommandsOnTop = False
-            Await Settings.Load()
-            ' create accent color menu items
-            AccentColors = ThemeManager.DefaultAccents.Select(Function(a) New AccentColorMenuData() With { _
-                    .Name = a.Name,
-                    .ColorBrush = New SolidColorBrush(CType(Windows.Media.ColorConverter.ConvertFromString(a.Resources("AccentColorBrush").ToString), System.Windows.Media.Color))
-            }).ToList
-            Dim Main As New MainWindow
-            If Settings.Settings.WindowState <> Windows.WindowState.Minimized Then
-                Main.WindowState = Settings.Settings.WindowState
-            End If
-            Main.Webcontrol_news.Visibility = Windows.Visibility.Collapsed
-            Main.Webcontrol_news.WebSession = WebCore.CreateWebSession(New WebPreferences() With {.CustomCSS = Scrollbarcss})
-            Main.tb_modsfolder.Text = modsfolder.FullName
-            Await Main.Load_ModVersions()
-            Main.Get_Profiles()
-            Main.Menuitem_accent.ItemsSource = AccentColors
-            Main.cb_direct_join.IsChecked = Settings.Settings.DirectJoin
-            Main.tb_server_address.Text = Settings.Settings.ServerAddress
-            Main.tb_username.Text = Settings.Settings.Username
-            If Settings.Settings.Accent <> Nothing Then
-                Await Main.ChangeAccent(Settings.Settings.Accent)
-            End If
-            If Settings.Settings.Theme = "Dark" Then
-                Await Main.ThemeDark()
-            Else
-                Await Main.ThemeLight()
-            End If
-            'LastLogin = Client.LastLogin.GetLastLogin
-            'If LastLogin IsNot Nothing Then
-            '    If LastLogin.Username <> Nothing Then
-            '        tb_username.Text = LastLogin.Username
-            '    End If
-            '    If LastLogin.Password <> Nothing Then
-            '        pb_Password.Password = LastLogin.Password
-            '    End If
-            'End If
-            Await Main.Load_Servers()
-            Main.Ping_servers()
-            Main.Check_Tools_Downloaded()
-            Main.InitializeComponent()
-            'Finally Show The MainWindow
-            Main.Show()
-            Me.Close()
-            If Path.Combine(GetJavaPath(), "bin", "java.exe") = Nothing Then
-                Dim result As MessageDialogResult = Await Me.ShowMessageAsync("Java nicht vorhanden", "Du musst Java installieren, um den McMetroLauncher und Minecraft nutzen zu können." & Environment.NewLine & "Ansonsten werden einige Funktionen nicht funktionieren!!" & Environment.NewLine & "Jetzt herunterladen?", MessageDialogStyle.AffirmativeAndNegative)
-                If result = MessageDialogResult.Affirmative Then
-                    Process.Start("http://java.com/de/download")
-                End If
-            End If
+            Await Dispatcher.InvokeAsync(New Action(Async Function()
+                                                        ShowWindowCommandsOnTop = False
+                                                        Await Settings.Load()
+                                                        ' create accent color menu items
+                                                        AccentColors = ThemeManager.DefaultAccents.Select(Function(a) New AccentColorMenuData() With { _
+                                                                .Name = a.Name,
+                                                                .ColorBrush = New SolidColorBrush(CType(Windows.Media.ColorConverter.ConvertFromString(a.Resources("AccentColorBrush").ToString), System.Windows.Media.Color))
+                                                        }).ToList
+                                                        Dim Main As New MainWindow
+                                                        Main.InitializeComponent()
+                                                        If Settings.Settings.WindowState <> Windows.WindowState.Minimized Then
+                                                            Main.WindowState = Settings.Settings.WindowState
+                                                        End If
+                                                        Main.Webcontrol_news.Visibility = Windows.Visibility.Collapsed
+                                                        Main.Webcontrol_news.WebSession = WebCore.CreateWebSession(New WebPreferences() With {.CustomCSS = Scrollbarcss})
+                                                        Main.tb_modsfolder.Text = modsfolder.FullName
+                                                        Await Main.Load_ModVersions()
+                                                        Main.Get_Profiles()
+                                                        Main.Menuitem_accent.ItemsSource = AccentColors
+                                                        Main.cb_direct_join.IsChecked = Settings.Settings.DirectJoin
+                                                        Main.tb_server_address.Text = Settings.Settings.ServerAddress
+                                                        Main.tb_username.Text = Settings.Settings.Username
+                                                        'LastLogin = Client.LastLogin.GetLastLogin
+                                                        'If LastLogin IsNot Nothing Then
+                                                        '    If LastLogin.Username <> Nothing Then
+                                                        '        tb_username.Text = LastLogin.Username
+                                                        '    End If
+                                                        '    If LastLogin.Password <> Nothing Then
+                                                        '        pb_Password.Password = LastLogin.Password
+                                                        '    End If
+                                                        'End If
+                                                        Await Main.Load_Servers()
+                                                        Main.Ping_servers()
+                                                        Main.Check_Tools_Downloaded()
+                                                        Me.Hide()
+                                                        If Settings.Settings.Accent <> Nothing Then
+                                                            Await Main.ChangeAccent(Settings.Settings.Accent)
+                                                        End If
+                                                        If Settings.Settings.Theme = "Dark" Then
+                                                            Await Main.ThemeDark()
+                                                        Else
+                                                            Await Main.ThemeLight()
+                                                        End If
+                                                        'Finally Show The MainWindow
+                                                        Main.Show()
+                                                        Me.Close()
+                                                    End Function))
         Catch ex As Exception
             Dim text As String = ex.Message & Environment.NewLine & ex.StackTrace
             If text.ToLower.Contains("awesomium") Or text.Contains("connectionId") Then
