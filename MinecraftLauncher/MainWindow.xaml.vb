@@ -250,26 +250,34 @@ Public Module GlobalInfos
     Public Legacyforgeurl As String = "http://files.minecraftforge.net/minecraftforge/json2"
     Public startedversions As IList(Of String) = New List(Of String)
     'http://www.joomlavision.com/customize-browser-scrollbars-css3/
+
+    'http://ospa.arvat.org/gmail-style-scrollbar-using-webkit-and-css/
     Public Scrollbarcss As String = <![CDATA[
-    ::-webkit-scrollbar {
-    width: 15px; // to adjust width
-    }
-    ::-webkit-scrollbar-track {
-    background: #FFFFFF;
-    -webkit-box-shadow: inset 1px 1px 2px #E0E0E0;   
-    border: 1px solid #D8D8D8;  //color of the track of scroll bar
-    }
-    ::-webkit-scrollbar-thumb {
-    background: #646464;
-    -webkit-box-shadow: inset 1px 1px 2px rgba(155, 155, 155, 0.4);  
-    }
-    ::-webkit-scrollbar-thumb:hover {
-    background: #aaaaaa;
-    }
-    ::-webkit-scrollbar-thumb:active {
-    background: #888;
-    -webkit-box-shadow: inset 1px 1px 2px rgba(0,0,0,0.3);
-    }
+ ::-webkit-scrollbar{
+    width:10px;
+    height:10px;
+    background-color:#fff;
+    box-shadow: inset 1px 1px 0 rgba(0,0,0,.1),inset -1px -1px 0 rgba(0,0,0,.07);
+}
+::-webkit-scrollbar:hover{
+    background-color:#eee;
+}
+::-webkit-resizer{
+    -webkit-border-radius:4px;
+    background-color:#666;
+}
+::-webkit-scrollbar-thumb{
+    min-height:0.8em;
+    min-width:0.8em;
+    background-color: rgba(0, 0, 0, .2);
+    box-shadow: inset 1px 1px 0 rgba(0,0,0,.1),inset -1px -1px 0 rgba(0,0,0,.07);
+}
+::-webkit-scrollbar-thumb:hover{
+    background-color: #bbb;
+}
+::-webkit-scrollbar-thumb:active{
+    background-color:#888;
+}
     ]]>.Value
 End Module
 
@@ -914,16 +922,16 @@ Public Class MainWindow
                                     End If
                                 End If
                                 wc_libraries.DownloadFileAsync(New Uri(url), outputfile)
+                            End If
+                        Else
+                            wc_libraries.DownloadFileAsync(New Uri(url), librarypath.FullName)
+                            Write("Library wird heruntergeladen (Versuch " & librariesdownloadtry & "): " & librarypath.FullName)
                         End If
                     Else
-                        wc_libraries.DownloadFileAsync(New Uri(url), librarypath.FullName)
-                        Write("Library wird heruntergeladen (Versuch " & librariesdownloadtry & "): " & librarypath.FullName)
+                        Write("Library existiert bereits: " & librarypath.FullName)
+                        librariesdownloadindex += 1
+                        DownloadLibraries()
                     End If
-                        Else
-                            Write("Library existiert bereits: " & librarypath.FullName)
-                            librariesdownloadindex += 1
-                            DownloadLibraries()
-                        End If
                 Else
                     librariesdownloadindex += 1
                     DownloadLibraries()

@@ -98,6 +98,7 @@ Public Class SplashScreen
                 lbl_status.Content = "Update gefunden"
                 Dim updater As New Updater
                 updater.Show()
+                Me.Close()
             Else
                 lbl_status.Content = "Lade Versions-Liste herunter"
                 Dim dl As New WebClient()
@@ -109,7 +110,6 @@ Public Class SplashScreen
             MessageBox.Show(ex.Message & Environment.NewLine & ex.StackTrace)
         End Try
     End Sub
-
 
     Private Sub downloadawesomium(sender As Object, e As DownloadStringCompletedEventArgs)
         Try

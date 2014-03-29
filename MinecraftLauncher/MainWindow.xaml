@@ -11,7 +11,6 @@
     xmlns:chart="clr-namespace:De.TorstenMandelkow.MetroChart;assembly=De.TorstenMandelkow.MetroChart" 
     GlowBrush="{DynamicResource AccentColorBrush}"            
     Title="McMetroLauncher" Height="600" Width="950"
-    DataContext="{Binding RelativeSource={RelativeSource Self}}"
     ForceCursor="True" MinWidth="950" MinHeight="600" Icon="images/favicon.ico" ResizeMode="CanResizeWithGrip" UseLayoutRounding="False" ScrollViewer.CanContentScroll="True" >
 
     <Window.Resources>
@@ -461,6 +460,7 @@
                 </Grid>
             </TabItem>
         </TabControl>
+        
         <Menu Height="30" VerticalAlignment="Top" HorizontalAlignment="Right" HorizontalContentAlignment="Center">
             <MenuItem Click="Open_Github" Padding="0,0,5,0">
                 <MenuItem.Header>
@@ -485,6 +485,7 @@
             <MenuItem x:Name="Menuitem_accent" Header="Accent" Click="OnMenuItemClicked"
         		ItemContainerStyle="{StaticResource AccentColorMenuItemStyle}" VerticalAlignment="Center" HorizontalAlignment="Center" />
         </Menu>
+        
         <!--<StatusBar Height="25" VerticalAlignment="Bottom" Background="#FF5EA0FF">
             <StatusBarItem>
                 <Label Name="lbl_Serverstatus" HorizontalAlignment="Left" Padding="5,0,0,0" Foreground="White" />

@@ -20,8 +20,8 @@ Class Updater
         ' Fügen Sie Initialisierungen nach dem InitializeComponent()-Aufruf hinzu.
 
         lblCurrentVersion.Content = "Aktuelle Version: " & AssemblyVersion
-        lblNewestVersion.Content = "Neuste Version: " & OnlineVersion
-        tb_Changelog.Text = changelog
+        lblNewestVersion.Content = "Neuste Version: " & onlineversion
+        wc_Changelog.WebSession = WebCore.CreateWebSession(New WebPreferences() With {.CustomCSS = Scrollbarcss})
     End Sub
 
     Private Sub btn_Click(sender As Object, e As RoutedEventArgs)
@@ -56,6 +56,12 @@ Class Updater
 
     Private Sub wc_DownloadProgressChanged(sender As Object, e As DownloadProgressChangedEventArgs) Handles wc.DownloadProgressChanged
         prg.Value = e.ProgressPercentage
+    End Sub
+
+    Private Sub wc_Changelog_Loaded(sender As Object, e As RoutedEventArgs) Handles wc_Changelog.Loaded
+        Dim markdown As New MarkdownSharp.Markdown
+        Dim html As String = markdown.Transform(changelog)
+        wc_Changelog.LoadHTML(html)
     End Sub
 
 End Class
