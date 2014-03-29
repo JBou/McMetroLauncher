@@ -198,6 +198,7 @@
     <Compile Include="Models\Converters.vb" />
     <Compile Include="Models\Forge.vb" />
     <Compile Include="Models\MainViewModel.vb" />
+    <Compile Include="Models\SimpleCommand.vb" />
     <Compile Include="Models\Unpack.vb" />
     <Compile Include="Windows\Forge_installer.xaml.vb">
       <DependentUpon>Forge_installer.xaml</DependentUpon>

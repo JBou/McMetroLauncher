@@ -194,21 +194,20 @@ Public Class SplashScreen
                                                         ShowWindowCommandsOnTop = False
                                                         Await Settings.Load()
                                                         ' create accent color menu items
-                                                        AccentColors = ThemeManager.DefaultAccents.Select(Function(a) New AccentColorMenuData() With { _
-                                                                .Name = a.Name,
-                                                                .ColorBrush = New SolidColorBrush(CType(Windows.Media.ColorConverter.ConvertFromString(a.Resources("AccentColorBrush").ToString), System.Windows.Media.Color))
-                                                        }).ToList
+                                                        AccentColors = ThemeManager.Accents.Select(Function(a) New AccentColorMenuData() With {.Name = a.Name, .ColorBrush = CType(a.Resources("AccentColorBrush"), Windows.Media.Brush)}).ToList()
+                                                        'create metro theme color menu items
+                                                        AppThemes = ThemeManager.AppThemes.Select(Function(a) New AppThemeMenuData() With {.Name = a.Name, .BorderColorBrush = CType(a.Resources("BlackColorBrush"), Windows.Media.Brush), .ColorBrush = CType(a.Resources("WhiteColorBrush"), Windows.Media.Brush)}).ToList
                                                         Dim Main As New MainWindow
                                                         Main.InitializeComponent()
                                                         If Settings.Settings.WindowState <> Windows.WindowState.Minimized Then
                                                             Main.WindowState = Settings.Settings.WindowState
                                                         End If
                                                         Main.Webcontrol_news.Visibility = Windows.Visibility.Collapsed
-                                                        Main.Webcontrol_news.WebSession = WebCore.CreateWebSession(New WebPreferences() With {.CustomCSS = Scrollbarcss})
                                                         Main.tb_modsfolder.Text = modsfolder.FullName
                                                         Await Main.Load_ModVersions()
                                                         Main.Get_Profiles()
                                                         Main.Menuitem_accent.ItemsSource = AccentColors
+                                                        Main.Menuitem_theme.ItemsSource = AppThemes
                                                         Main.cb_direct_join.IsChecked = Settings.Settings.DirectJoin
                                                         Main.tb_server_address.Text = Settings.Settings.ServerAddress
                                                         Main.tb_username.Text = Settings.Settings.Username
@@ -226,30 +225,23 @@ Public Class SplashScreen
                                                         Main.Check_Tools_Downloaded()
                                                         Me.Hide()
                                                         If Settings.Settings.Accent <> Nothing Then
-                                                            Await Main.ChangeAccent(Settings.Settings.Accent)
+                                                            Dim theme = ThemeManager.DetectAppStyle(Application.Current)
+                                                            Dim accent = ThemeManager.Accents.Where(Function(p) p.Name = Settings.Settings.Accent).FirstOrDefault
+                                                            If accent Is Nothing Then accent = ThemeManager.Accents.First
+                                                            ThemeManager.ChangeAppStyle(Application.Current, accent, theme.Item1)
                                                         End If
-                                                        If Settings.Settings.Theme = "Dark" Then
-                                                            Await Main.ThemeDark()
-                                                        Else
-                                                            Await Main.ThemeLight()
+                                                        If Settings.Settings.Theme <> Nothing Then
+                                                            Dim theme = ThemeManager.DetectAppStyle(Application.Current)
+                                                            Dim appTheme = ThemeManager.AppThemes.Where(Function(p) p.Name = Settings.Settings.Theme).FirstOrDefault
+                                                            If appTheme Is Nothing Then appTheme = ThemeManager.AppThemes.First
+                                                            ThemeManager.ChangeAppStyle(Application.Current, theme.Item2, appTheme)
                                                         End If
                                                         'Finally Show The MainWindow
                                                         Main.Show()
                                                         Me.Close()
                                                     End Function))
         Catch ex As Exception
-            Dim text As String = ex.Message & Environment.NewLine & ex.StackTrace
-            If text.ToLower.Contains("awesomium") Or text.Contains("connectionId") Then
-                text = "Ein Fehler ist aufgetreten!" & Environment.NewLine & "Lade bitte Awesomium herunter: http://awesomium.com/download! Dadurch sollte der Fehler behoben werden." & Environment.NewLine & "Jetzt herunterladen?"
-                Dim result As MessageBoxResult = MessageBox.Show(text, "Achtung", MessageBoxButton.YesNo, MessageBoxImage.Information)
-                If result = MessageBoxResult.Yes Then
-                    'Window download Awesomium öffnen
-                    Process.Start("http://awesomium.com/download")
-                End If
-                Application.Current.Shutdown()
-            Else
-                MessageBox.Show(text)
-            End If
+            MessageBox.Show(ex.Message & Environment.NewLine & ex.StackTrace)
         End Try
     End Function
 

@@ -10,8 +10,8 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:chart="clr-namespace:De.TorstenMandelkow.MetroChart;assembly=De.TorstenMandelkow.MetroChart" 
     GlowBrush="{DynamicResource AccentColorBrush}"            
-    Title="McMetroLauncher" Height="600" Width="950"
-    ForceCursor="True" MinWidth="950" MinHeight="600" Icon="images/favicon.ico" ResizeMode="CanResizeWithGrip" UseLayoutRounding="False" ScrollViewer.CanContentScroll="True" >
+    Title="McMetroLauncher" Height="600" Width="800"
+    ForceCursor="True" MinWidth="800" MinHeight="600" Icon="images/favicon.ico" ResizeMode="CanResizeWithGrip" UseLayoutRounding="False" ScrollViewer.CanContentScroll="True" >
 
     <Window.Resources>
         <ResourceDictionary>
@@ -28,30 +28,37 @@
                 <Setter Property="FontSize" Value="22" />
                 <Setter Property="HorizontalAlignment" Value="Center" />
             </Style>
-            <Ellipse x:Key="DarkThemeMenuIcon"
+            <Ellipse x:Key="AppThemeMenuIcon"
                      x:Shared="False"
                      Width="16"
                      Height="16"
                      StrokeThickness="1"
-                     Stroke="{DynamicResource BlackBrush}"
-                     Fill="{DynamicResource WhiteBrush}" />
-            <Ellipse x:Key="LightThemeMenuIcon"
-                     x:Shared="False"
-                     Width="16"
-                     Height="16"
-                     StrokeThickness="1"
-                     Stroke="{DynamicResource BlackBrush}"
-                     Fill="{DynamicResource BlackBrush}" />
+                     Stroke="{Binding BorderColorBrush, Mode=OneWay}"
+                     Fill="{Binding ColorBrush, Mode=OneWay}" />
             <Ellipse x:Key="AccentMenuIcon"
                      x:Shared="False"
                      Width="16"
                      Height="16"
                      Fill="{Binding ColorBrush, Mode=OneWay}" />
+            <Style x:Key="AppThemeMenuItemStyle"
+                   TargetType="{x:Type MenuItem}"
+                   BasedOn="{StaticResource MetroMenuItem}">
+                <Setter Property="Command"
+                        Value="{Binding ChangeAccentCommand}" />
+                <Setter Property="Icon"
+                        Value="{StaticResource AppThemeMenuIcon}" />
+                <Setter Property="Header"
+                        Value="{Binding Name, Mode=OneWay}" />
+            </Style>
             <Style x:Key="AccentColorMenuItemStyle"
                    TargetType="{x:Type MenuItem}"
                    BasedOn="{StaticResource MetroMenuItem}">
-                <Setter Property="Icon" Value="{StaticResource AccentMenuIcon}" />
-                <Setter Property="Header" Value="{Binding Name, Mode=OneWay}" />
+                <Setter Property="Command"
+                        Value="{Binding ChangeAccentCommand}" />
+                <Setter Property="Icon"
+                        Value="{StaticResource AccentMenuIcon}" />
+                <Setter Property="Header"
+                        Value="{Binding Name, Mode=OneWay}" />
             </Style>
             <Style x:Key="myHeaderStyle" TargetType="{x:Type GridViewColumnHeader}">
                 <Setter Property="Visibility" Value="Collapsed" />
@@ -228,22 +235,21 @@
                     <Button x:Name="btn_selectmodsfolder" Margin="0,77,10,0" Content="..." HorizontalAlignment="Right" VerticalAlignment="Top" Width="26" Height="26" />
                     <Image x:Name="img_installed" Height="23" Width="23" Margin="367,114,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Source="images/check_green.png"/>
                     <Label x:Name="lbl_name" Margin="395,108,110,0" VerticalAlignment="Top" Height="29" FontWeight="Bold" VerticalContentAlignment="Center" Background="#00000000" Foreground="#FF1F94F5" FontSize="15" />
-                    <Button x:Name="btn_list_delete_mod" Margin="778,0,0,23" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="32" Height="32" Padding="0" >
+                    <Button x:Name="btn_list_delete_mod" Margin="0,0,88,77" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="32" Height="32" Padding="0" >
                         <Image x:Name="btn_list_delete_mod_image" Source="images/light/appbar.delete.png" Margin="0"/>
                     </Button>
-                    <Button Foreground="{DynamicResource AccentColorBrush}" x:Name="btn_downloadmod" Content="Installieren" Margin="815,0,10,23" VerticalAlignment="Bottom" Height="32" FontWeight="Bold" FontSize="12"/>
+                    <Button Foreground="{DynamicResource AccentColorBrush}" x:Name="btn_downloadmod" Content="Installieren" Margin="0,0,10,77" VerticalAlignment="Bottom" HorizontalAlignment="Right" Height="32" FontWeight="Bold" FontSize="12" Width="74"/>
                     <Controls:MetroProgressBar Foreground="{DynamicResource AccentColorBrush}" x:Name="pb_mods_download" Height="8" Margin="10,0,10,10" VerticalAlignment="Bottom"/>
-                    <TextBox x:Name="tb_description" Margin="367,176,10,60" TextWrapping="Wrap" BorderThickness="1" HorizontalScrollBarVisibility="Visible" AcceptsReturn="True" IsReadOnly="True" VerticalContentAlignment="Top" VerticalScrollBarVisibility="Auto"/>
+                    <TextBox x:Name="tb_description" Margin="367,176,10,254" TextWrapping="Wrap" BorderThickness="1" HorizontalScrollBarVisibility="Visible" AcceptsReturn="True" IsReadOnly="True" VerticalContentAlignment="Top" VerticalScrollBarVisibility="Auto"/>
+                    <Viewbox  Margin="367,294,125,23" Stretch="Uniform" >
+                        <awe:WebControl x:Name="wc_mod_video" Height="9" Width="16" MinHeight="9" MinWidth="16" />
+                    </Viewbox>
                     <ComboBox x:Name="cb_modversions" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="352" Height="31"/>
-                    <Button x:Name="btn_website" Content="Website besuchen" Margin="663,0,0,23" VerticalAlignment="Bottom" Height="32" HorizontalAlignment="Left" Width="110"/>
-                    <Button x:Name="btn_video" Content="Video ansehen" Margin="548,0,0,23" VerticalAlignment="Bottom" RenderTransformOrigin="0.489,0.548" HorizontalAlignment="Left" Height="32" Width="110"/>
+                    <Button x:Name="btn_website" Content="Website besuchen" Margin="0,0,10,114" VerticalAlignment="Bottom" Height="32" HorizontalAlignment="Right" Width="110"/>
+                    <Button x:Name="btn_video" Content="Video ansehen" Margin="0,0,10,151" VerticalAlignment="Bottom" RenderTransformOrigin="0.489,0.548" HorizontalAlignment="Right" Height="32" Width="110"/>
                     <Button x:Name="btn_play" Content="Play" Margin="192,466,628,24" Visibility="Hidden" />
                     <TextBox x:Name="tb_downloadlink" HorizontalAlignment="Left" Height="26" Margin="362,439,-17,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="597" Visibility="Hidden"/>
-                    <Label x:Name="lbl_mods_status" Content="" HorizontalAlignment="Left" Margin="367,0,0,23" VerticalAlignment="Bottom" Height="32" Width="176"/>
                     <Label x:Name="lbl_autor" Content="" Margin="517,108,10,0" VerticalAlignment="Top" Height="29" FontWeight="Bold" VerticalContentAlignment="Center" HorizontalContentAlignment="Right" Background="#00000000" Foreground="#FF1F94F5" FontSize="15"/>
-                    <Button Visibility="Collapsed" x:Name="btn_refresh" Click="RefreshMods" Margin="0,10,10,0" HorizontalAlignment="Right" VerticalAlignment="Top" Width="26" Height="26" Padding="0" >
-                        <Image x:Name="btn_refresh_image" Source="images/light/appbar.refresh.png" Margin="0"/>
-                    </Button>
                     <TextBox x:Name="tb_search_mods" Controls:TextboxHelper.ClearTextButton="True" Controls:TextboxHelper.Watermark="Suche" Margin="10,46,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="352" />
                     <Label x:Name="lbl_type" Margin="367,142,80,0" VerticalAlignment="Top" Height="29" FontWeight="Bold" VerticalContentAlignment="Center" Background="{x:Null}" Foreground="#FFF51F1F" FontSize="15" />
                     <ComboBox x:Name="cb_mods_profilename" HorizontalAlignment="Left" Margin="396,46,0,0" VerticalAlignment="Top" Width="262"/>
@@ -460,15 +466,15 @@
                 </Grid>
             </TabItem>
         </TabControl>
-        
+
         <Menu Height="30" VerticalAlignment="Top" HorizontalAlignment="Right" HorizontalContentAlignment="Center">
             <MenuItem Click="Open_Github" Padding="0,0,5,0">
                 <MenuItem.Header>
-                        <StackPanel Orientation="Horizontal">
-                            <Image x:Name="img_github" Height="28" Source="images/light/appbar.social.github.octocat.png" />
-                            <TextBlock Text="Github" VerticalAlignment="Center" />
-                        </StackPanel>
-                    </MenuItem.Header>
+                    <StackPanel Orientation="Horizontal">
+                        <Image x:Name="img_github" Height="28" Source="images/light/appbar.social.github.octocat.png" />
+                        <TextBlock Text="Github" VerticalAlignment="Center" />
+                    </StackPanel>
+                </MenuItem.Header>
             </MenuItem>
             <MenuItem Click="Open_Website" Padding="0,0,5,0" >
                 <MenuItem.Header>
@@ -478,14 +484,12 @@
                     </StackPanel>
                 </MenuItem.Header>
             </MenuItem>
-            <MenuItem Header="Theme" VerticalAlignment="Center" HorizontalAlignment="Center" >
-                <MenuItem Click="ThemeLight" Header="Hell" Icon="{StaticResource LightThemeMenuIcon}"/>
-                <MenuItem Click="ThemeDark" Header="Dunkel" Icon="{StaticResource DarkThemeMenuIcon}" />
-            </MenuItem>
-            <MenuItem x:Name="Menuitem_accent" Header="Accent" Click="OnMenuItemClicked"
+            <MenuItem x:Name="Menuitem_theme" Header="Theme" 
+                ItemContainerStyle="{StaticResource AppThemeMenuItemStyle}" VerticalAlignment="Center" HorizontalAlignment="Center" />
+            <MenuItem x:Name="Menuitem_accent" Header="Accent"
         		ItemContainerStyle="{StaticResource AccentColorMenuItemStyle}" VerticalAlignment="Center" HorizontalAlignment="Center" />
         </Menu>
-        
+
         <!--<StatusBar Height="25" VerticalAlignment="Bottom" Background="#FF5EA0FF">
             <StatusBarItem>
                 <Label Name="lbl_Serverstatus" HorizontalAlignment="Left" Padding="5,0,0,0" Foreground="White" />

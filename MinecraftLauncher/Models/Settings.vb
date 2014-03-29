@@ -7,7 +7,7 @@ Imports System.ComponentModel
 Imports Newtonsoft.Json.Linq
 
 Public Class Settings
-    Private Shared SettingsFile As New FileInfo(Path.Combine(Applicationdata.FullName, "Settings.xml"))
+    Private Shared SettingsFile As New FileInfo(Path.Combine(Applicationdata.FullName, "Settings.json"))
     Public Shared Settings As cls_Settings = New cls_Settings
     Public Shared Async Function Load() As Task
         If SettingsFile.Exists Then
@@ -29,7 +29,7 @@ Public Class Settings
     Public Shared Sub SetStandard()
         Settings.mcpfad = Nothing
         Settings.Accent = "Blue"
-        Settings.Theme = "Light"
+        Settings.Theme = "BaseLight"
         Settings.DirectJoin = False
         Settings.ServerAddress = Nothing
     End Sub

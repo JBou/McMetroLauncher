@@ -1,4 +1,4 @@
-ï»¿#Region "Imports"
+#Region "Imports"
 Imports System.Net
 Imports System.IO
 Imports System.Xml.Linq
@@ -27,6 +27,7 @@ Imports System.ComponentModel
 Imports System.Windows.Media
 Imports System
 Imports System.Windows.Markup
+Imports McMetroLauncher.Models
 
 #End Region
 Public Module GlobalInfos
@@ -171,6 +172,7 @@ Public Module GlobalInfos
     Public Const supportedLauncherVersion As Integer = 13
     Public Const AwesomiumVersion As String = "1.7.3"
 
+    Public AppThemes As List(Of AppThemeMenuData)
     Public AccentColors As List(Of AccentColorMenuData)
     Public ReadOnly Property AssemblyVersion As String
         Get
@@ -291,21 +293,62 @@ Public Class AccentColorMenuData
         End Set
     End Property
     Private m_Name As String
-    Public Property ColorBrush() As SolidColorBrush
+    Public Property BorderColorBrush() As Brush
+        Get
+            Return m_BorderColorBrush
+        End Get
+        Set(value As Brush)
+            m_BorderColorBrush = value
+        End Set
+    End Property
+    Private m_BorderColorBrush As Brush
+    Public Property ColorBrush() As Brush
         Get
             Return m_ColorBrush
         End Get
-        Set(value As SolidColorBrush)
+        Set(value As Brush)
             m_ColorBrush = value
         End Set
     End Property
-    Private m_ColorBrush As SolidColorBrush
+    Private m_ColorBrush As Brush
+
+    Private m_changeAccentCommand As ICommand
+
+    Public ReadOnly Property ChangeAccentCommand() As ICommand
+        Get
+            Dim r = If(Me.m_changeAccentCommand, (InlineAssignHelper(m_changeAccentCommand, New SimpleCommand() With { _
+                .CanExecuteDelegate = Function(x) True, _
+                .ExecuteDelegate = Sub() DoChangeTheme() _
+            })))
+            Return r
+        End Get
+    End Property
+
+    Protected Overridable Sub DoChangeTheme()
+        Dim theme = ThemeManager.DetectAppStyle(Application.Current)
+        Dim accent = ThemeManager.GetAccent(Me.Name)
+        ThemeManager.ChangeAppStyle(Application.Current, accent, theme.Item1)
+    End Sub
+    Private Shared Function InlineAssignHelper(Of T)(ByRef target As T, value As T) As T
+        target = value
+        Return value
+    End Function
 End Class
+
+Public Class AppThemeMenuData
+    Inherits AccentColorMenuData
+    Protected Overrides Sub DoChangeTheme()
+        Dim theme = ThemeManager.DetectAppStyle(Application.Current)
+        Dim appTheme = ThemeManager.GetAppTheme(Me.Name)
+        ThemeManager.ChangeAppStyle(Application.Current, theme.Item2, appTheme)
+    End Sub
+End Class
+
 
 Public Class MainWindow
 #Region "Variables"
     '****************Webclients*****************
-    WithEvents wcresources As New System.Net.WebClient ' FÃ¼r das WebClient steuerelement mit Events z.b. DownloadProgressChanged... 
+    WithEvents wcresources As New System.Net.WebClient ' Für das WebClient steuerelement mit Events z.b. DownloadProgressChanged... 
     WithEvents wcversionsdownload As New System.Net.WebClient
     WithEvents wcindexes As New System.Net.WebClient
     WithEvents wcversionsstring As New System.Net.WebClient
@@ -383,61 +426,67 @@ Public Class MainWindow
     End Function
 
 #End Region
-
+#Region "Mainwindow Events"
     Public Sub New()
 
-        ' Dieser Aufruf ist fÃ¼r den Designer erforderlich.
+        ' Dieser Aufruf ist für den Designer erforderlich.
         InitializeComponent()
 
-        ' FÃ¼gen Sie Initialisierungen nach dem InitializeComponent()-Aufruf hinzu.
+        ' Fügen Sie Initialisierungen nach dem InitializeComponent()-Aufruf hinzu.
         Me.DataContext = New MainViewModel
+        AddHandler ThemeManager.IsThemeChanged, AddressOf IsThemeChanged
     End Sub
 
-    Async Function ThemeLight() As Task
-        Dim theme = ThemeManager.DetectTheme(Application.Current)
-        ThemeManager.ChangeTheme(Application.Current, theme.Item2, MahApps.Metro.Theme.Light)
-        Settings.Settings.Theme = "Light"
-        Await Settings.Save()
-        btn_refresh_image.Source = ImageConvert.GetImageStream(My.Resources.appbar_refresh)
-        btn_list_delete_mod_image.Source = ImageConvert.GetImageStream(My.Resources.appbar_delete)
-        DirectCast(Me.Resources("serverlistcontext_copy_image"), Windows.Controls.Image).Source = ImageConvert.GetImageStream(My.Resources.appbar_page_copy)
-        DirectCast(Me.Resources("serverlistcontext_direct_join_image"), Windows.Controls.Image).Source = ImageConvert.GetImageStream(My.Resources.appbar_control_play)
-        DirectCast(Me.Resources("serverlistcontext_direct_join_image2"), Windows.Controls.Image).Source = ImageConvert.GetImageStream(My.Resources.appbar_control_play)
-        img_github.Source = ImageConvert.GetImageStream(My.Resources.appbar_social_github_octocat)
-        img_website.Source = ImageConvert.GetImageStream(My.Resources.appbar_globe)
-    End Function
+    Private Sub MainWindow_Closed(sender As Object, e As EventArgs) Handles Me.Closed
+        Try
+            For i = 0 To startedversions.Count - 1
+                If IO.Directory.Exists(startedversions.Item(i).ToString) = True Then
+                    IO.Directory.Delete(startedversions.Item(i).ToString, True)
+                End If
+            Next
 
-    Async Function ThemeDark() As Task
-        Dim theme = ThemeManager.DetectTheme(Application.Current)
-        ThemeManager.ChangeTheme(Application.Current, theme.Item2, MahApps.Metro.Theme.Dark)
-        Settings.Settings.Theme = "Dark"
-        Await Settings.Save()
-        btn_refresh_image.Source = ImageConvert.GetImageStream(My.Resources.appbar_refresh_dark)
-        btn_list_delete_mod_image.Source = ImageConvert.GetImageStream(My.Resources.appbar_delete_dark)
-        DirectCast(Me.Resources("serverlistcontext_copy_image"), Windows.Controls.Image).Source = ImageConvert.GetImageStream(My.Resources.appbar_page_copy_dark)
-        DirectCast(Me.Resources("serverlistcontext_direct_join_image"), Windows.Controls.Image).Source = ImageConvert.GetImageStream(My.Resources.appbar_control_play_dark)
-        DirectCast(Me.Resources("serverlistcontext_direct_join_image2"), Windows.Controls.Image).Source = ImageConvert.GetImageStream(My.Resources.appbar_control_play_dark)
-        img_github.Source = ImageConvert.GetImageStream(My.Resources.appbar_social_github_octocat_dark)
-        img_website.Source = ImageConvert.GetImageStream(My.Resources.appbar_globe_dark)
-    End Function
+            wcresources.CancelAsync()
+            wcversionsdownload.CancelAsync()
+            wcindexes.CancelAsync()
+            wcversionsstring.CancelAsync()
+            wc_libraries.CancelAsync()
 
-    Private Async Sub OnMenuItemClicked(sender As Object, e As RoutedEventArgs)
-        Dim item As MenuItem = TryCast(e.OriginalSource, MenuItem)
-        ' Handle the menu item click here
-        If item IsNot Nothing Then
-            Await ChangeAccent(item.Header.ToString)
-        End If
+            If cachefolder.Exists = True Then
+                cachefolder.Delete(True)
+            End If
+
+        Catch ex As Exception
+        End Try
     End Sub
 
-    Async Function ChangeAccent(accentname As String) As Task
-        Dim theme = ThemeManager.DetectTheme(Application.Current)
-        If ThemeManager.DefaultAccents.Select(Function(x) x.Name).Contains(accentname) Then
-            Dim accent = ThemeManager.DefaultAccents.First(Function(x) x.Name = accentname)
-            ThemeManager.ChangeTheme(Application.Current, accent, theme.Item1)
-        End If
-        Settings.Settings.Accent = accentname
+    Private Sub MainWindow_Loaded(sender As Object, e As EventArgs) Handles Me.Loaded
+        Webcontrol_news.WebSession = WebCore.CreateWebSession(New WebPreferences() With {.CustomCSS = Scrollbarcss})
+        wc_mod_video.WebSession = WebCore.CreateWebSession(New WebPreferences() With {.CustomCSS = Scrollbarcss})
+    End Sub
+#End Region
+
+    Async Sub IsThemeChanged(sender As Object, e As OnThemeChangedEventArgs)
+        Settings.Settings.Theme = e.AppTheme.Name
+        Settings.Settings.Accent = e.Accent.Name
         Await Settings.Save()
-    End Function
+        If e.AppTheme.Name = "BaseLight" Then
+            btn_list_delete_mod_image.Source = ImageConvert.GetImageStream(My.Resources.appbar_delete)
+            DirectCast(Me.Resources("serverlistcontext_copy_image"), Windows.Controls.Image).Source = ImageConvert.GetImageStream(My.Resources.appbar_page_copy)
+            DirectCast(Me.Resources("serverlistcontext_direct_join_image"), Windows.Controls.Image).Source = ImageConvert.GetImageStream(My.Resources.appbar_control_play)
+            DirectCast(Me.Resources("serverlistcontext_direct_join_image2"), Windows.Controls.Image).Source = ImageConvert.GetImageStream(My.Resources.appbar_control_play)
+            img_github.Source = ImageConvert.GetImageStream(My.Resources.appbar_social_github_octocat)
+            img_website.Source = ImageConvert.GetImageStream(My.Resources.appbar_globe)
+        Else
+            Settings.Settings.Theme = "Dark"
+            Await Settings.Save()
+            btn_list_delete_mod_image.Source = ImageConvert.GetImageStream(My.Resources.appbar_delete_dark)
+            DirectCast(Me.Resources("serverlistcontext_copy_image"), Windows.Controls.Image).Source = ImageConvert.GetImageStream(My.Resources.appbar_page_copy_dark)
+            DirectCast(Me.Resources("serverlistcontext_direct_join_image"), Windows.Controls.Image).Source = ImageConvert.GetImageStream(My.Resources.appbar_control_play_dark)
+            DirectCast(Me.Resources("serverlistcontext_direct_join_image2"), Windows.Controls.Image).Source = ImageConvert.GetImageStream(My.Resources.appbar_control_play_dark)
+            img_github.Source = ImageConvert.GetImageStream(My.Resources.appbar_social_github_octocat_dark)
+            img_website.Source = ImageConvert.GetImageStream(My.Resources.appbar_globe_dark)
+        End If
+    End Sub
 
     Private Sub ShowSettings(sender As Object, e As RoutedEventArgs)
         'Contrrols auf ihre Einstellungen setzen
@@ -469,46 +518,21 @@ Public Class MainWindow
         'Zeige Hilfe
     End Sub
 
-    Private Sub MainWindow_Closed(sender As Object, e As EventArgs) Handles Me.Closed
-        'My.Settings.Username = tb_username.Text.ToString
-        'My.Settings.Ram = cb_ram.SelectedItem.ToString
-        'My.Settings.Save()
-        Try
-            For i = 0 To startedversions.Count - 1
-                If IO.Directory.Exists(startedversions.Item(i).ToString) = True Then
-                    IO.Directory.Delete(startedversions.Item(i).ToString, True)
-                End If
-            Next
-
-            wcresources.CancelAsync()
-            wcversionsdownload.CancelAsync()
-            wcindexes.CancelAsync()
-            wcversionsstring.CancelAsync()
-            wc_libraries.CancelAsync()
-
-            If cachefolder.Exists = True Then
-                cachefolder.Delete(True)
-            End If
-
-        Catch ex As Exception
-        End Try
-    End Sub
-
     ''' <summary>
-    ''' Registriert ein benutzerdefiniertes URL-Protokoll fÃ¼r die Verwendung mit der
+    ''' Registriert ein benutzerdefiniertes URL-Protokoll für die Verwendung mit der
     ''' Windows-Shell, dem Internet Explorer und Office.
     ''' 
-    ''' Beispiel fÃ¼r einen URL eines benutzerdefinierten URL-Protokolls:
+    ''' Beispiel für einen URL eines benutzerdefinierten URL-Protokolls:
     ''' 
     '''   rainbird://RemoteControl/OpenFridge/GetBeer
     ''' </summary>
-    ''' <param name="protocolName">Name des Protokolls (z.B. "rainbird" fÃ¼r "rainbird://...")</param>
-    ''' <param name="applicationPath">VollstÃ¤ndiger Dateisystem-Pfad zur EXE-Datei, die den URL bei Aufruf verarbeitet (Der komplette URL wird als Befehlszeilenparameter Ã¼bergteben)</param>
+    ''' <param name="protocolName">Name des Protokolls (z.B. "rainbird" für "rainbird://...")</param>
+    ''' <param name="applicationPath">Vollständiger Dateisystem-Pfad zur EXE-Datei, die den URL bei Aufruf verarbeitet (Der komplette URL wird als Befehlszeilenparameter übergteben)</param>
     ''' <param name="description">Beschreibung (z.B. "URL:Rainbird Custom URL")</param>
     ''' +
     ''' 
     Public Sub RegisterURLProtocol(protocolName As String, applicationPath As String, description As String)
-        ' Neuer SchlÃ¼ssel fÃ¼r das gewÃ¼nschte URL Protokoll erstellen
+        ' Neuer Schlüssel für das gewünschte URL Protokoll erstellen
         Dim myKey As RegistryKey = Registry.ClassesRoot.CreateSubKey(protocolName)
 
         ' Protokoll zuweisen
@@ -522,12 +546,6 @@ Public Class MainWindow
 
         ' Anwendung festlegen, die das URL-Protokoll behandelt
         myKey.SetValue(Nothing, Chr(34) & applicationPath & Chr(34) & " %1")
-    End Sub
-
-    Public Sub ChangeAccent()
-        Dim theme = ThemeManager.DetectTheme(Application.Current)
-        Dim accent = ThemeManager.DefaultAccents.First(Function(x) x.Name = Me.Name)
-        ThemeManager.ChangeTheme(Application.Current, accent, theme.Item1)
     End Sub
 
     Sub Get_Profiles()
@@ -646,9 +664,9 @@ Public Class MainWindow
             Dim resource As New FileInfo(resourcefile(currentresourcesobject.hash).FullName.Replace("/", "\"))
             Dim todownload As Boolean = True
             If resource.Exists Then
-                'Hash Ã¼berprÃ¼fen
+                'Hash überprüfen
                 If SHA1FileHash(resource.FullName).ToLower = currentresourcesobject.hash Then
-                    'Diese Resource Ã¼berspringen
+                    'Diese Resource überspringen
                     todownload = False
                 Else
                     'Diese Resource Downloaden
@@ -681,14 +699,14 @@ Public Class MainWindow
                 resourcesdownloading = False
                 Exit Sub
             Else
-                'Hash Ã¼berprÃ¼fen
+                'Hash überprüfen
                 If SHA1FileHash(resourcefile(currentresourcesobject.hash).FullName).ToLower = currentresourcesobject.hash Then
-                    'NÃ¤chste Resource Downloaden
+                    'Nächste Resource Downloaden
                     resourcesdownloadindex += 1
                     resourcesdownloadtry = 1
                     Write("Resource erfolgreich heruntergeladen und Hash verglichen")
                 Else
-                    'Resource erneut heruntergeladen, Versuch erhÃ¶hen:
+                    'Resource erneut heruntergeladen, Versuch erhöhen:
                     resourcesdownloadtry += 1
                 End If
                 DownloadResources()
@@ -793,7 +811,7 @@ Public Class MainWindow
         If Startinfos.Versionsinfo Is Nothing Then
             Await Parse_VersionsInfo(Startinfos.Version)
             If Startinfos.Versionsinfo.minimumLauncherVersion > supportedLauncherVersion Then
-                Write("Diese Minecraft Version wird vom Launcher noch nicht vollstÃ¤ndig unterstÃ¼tzt. Es kÃ¶nnte zu Fehlern kommen!", LogLevel.ERROR)
+                Write("Diese Minecraft Version wird vom Launcher noch nicht vollständig unterstützt. Es könnte zu Fehlern kommen!", LogLevel.ERROR)
             End If
         End If
         If Startinfos.IsStarting = True Then
@@ -891,11 +909,11 @@ Public Class MainWindow
                         End If
                         If String.IsNullOrWhiteSpace(Currentlibrarysha1) Then
                             If librarypath.Exists Then
-                                Write("Library konnte nicht auf Hash Ã¼berprÃ¼ft werden und wird Ã¼bersprungen, in der Annahme, dass die lokale Datei gut ist: " & librarypath.FullName, LogLevel.WARNING)
+                                Write("Library konnte nicht auf Hash überprüft werden und wird übersprungen, in der Annahme, dass die lokale Datei gut ist: " & librarypath.FullName, LogLevel.WARNING)
                                 librariesdownloadindex += 1
                                 DownloadLibraries()
                             Else
-                                'Falls es ein MinecraftForge Build ist, url Ã¤ndern
+                                'Falls es ein MinecraftForge Build ist, url ändern
                                 downloadforgelib = False
                                 Dim version As String = Currentlibrary.name.Split(CChar(":"))(2)
                                 If Currentlibrary.name.Split(CChar(":"))(1) = "minecraftforge" And Forge.ForgeList.Select(Function(p) p.version).Contains(version) Then
@@ -955,7 +973,7 @@ Public Class MainWindow
             Try
                 File.Delete(Path.Combine(librariesfolder.FullName, Currentlibrary.path))
             Catch Ex As Exception
-                Write("Ein Fehler ist beim LÃ¶schen einer Library aufgetreten!", LogLevel.WARNING)
+                Write("Ein Fehler ist beim Löschen einer Library aufgetreten!", LogLevel.WARNING)
             End Try
             DownloadLibraries()
         End If
@@ -979,19 +997,19 @@ Public Class MainWindow
             Else
                 If Tounpack = True Or downloadforgelib = True Then
                     Tounpack = False
-                    'NÃ¤chste Library Downloaden
+                    'Nächste Library Downloaden
                     librariesdownloadindex += 1
                     librariesdownloadtry = 1
                     Write("Library erfolgreich heruntergeladen")
                 Else
-                    'Hash Ã¼berprÃ¼fen
+                    'Hash überprüfen
                     If SHA1FileHash(libpath).ToLower = Currentlibrarysha1 Then
-                        'NÃ¤chste Library Downloaden
+                        'Nächste Library Downloaden
                         librariesdownloadindex += 1
                         librariesdownloadtry = 1
                         Write("Library erfolgreich heruntergeladen und Hash verglichen")
                     Else
-                        'Library erneut heruntergeladen, Versuch erhÃ¶hen:
+                        'Library erneut heruntergeladen, Versuch erhöhen:
                         librariesdownloadtry += 1
                     End If
                 End If
@@ -1017,7 +1035,7 @@ Public Class MainWindow
                                           End If
                                           For Each item In Startinfos.Versionsinfo.libraries.Where(Function(p) p.natives IsNot Nothing)
                                               With item
-                                                  'Rules Ã¼berprÃ¼fen
+                                                  'Rules überprüfen
                                                   Dim allowdownload As Boolean = True
                                                   If .rules Is Nothing Then
                                                       allowdownload = True
@@ -1162,8 +1180,8 @@ Public Class MainWindow
                                       Arguments = javaargs & " -Djava.library.path=" & natives & " -cp " & libraries & Versionsjar & " " & mainClass & " " & String.Join(Chr(32), minecraftArguments) & height & width
                                   End Sub))
         'StartArgumente und mainclass ... von JSON IO.File
-        'ÃœberprÃ¼fen, ob username eingegeben wurde!
-        'Libraries zum Start hinzufÃ¼gen!
+        'Überprüfen, ob username eingegeben wurde!
+        'Libraries zum Start hinzufügen!
         If Startinfos.IsStarting = True Then
             Start_MC_Process(mainClass & " " & String.Join(Chr(32), minecraftArguments) & height & width)
         End If
@@ -1184,7 +1202,7 @@ Public Class MainWindow
         With mc.StartInfo
             .FileName = Startcmd(Startinfos.Profile)
             .Arguments = Arguments
-            ' Arbeitsverzeichnis setzen falls nÃ¶tig
+            ' Arbeitsverzeichnis setzen falls nötig
             .WorkingDirectory = ""
             ' kein Window erzeugen
             .CreateNoWindow = True
@@ -1225,7 +1243,7 @@ Public Class MainWindow
         If Startinfos.IsStarting = True Then
             Await Me.ShowMessageAsync("Achtung", "Minecraft wird bereits gestartet!", MessageDialogStyle.Affirmative, New MetroDialogSettings() With {.AffirmativeButtonText = "Ok", .ColorScheme = MetroDialogColorScheme.Accented})
         ElseIf cb_profiles.SelectedIndex = -1 Then
-            Await Me.ShowMessageAsync(Nothing, "WÃ¤hle bitte ein Profil aus!", MessageDialogStyle.Affirmative, New MetroDialogSettings() With {.AffirmativeButtonText = "Ok", .ColorScheme = MetroDialogColorScheme.Accented})
+            Await Me.ShowMessageAsync(Nothing, "Wähle bitte ein Profil aus!", MessageDialogStyle.Affirmative, New MetroDialogSettings() With {.AffirmativeButtonText = "Ok", .ColorScheme = MetroDialogColorScheme.Accented})
         ElseIf tb_username.Text = Nothing Then
             Await Me.ShowMessageAsync(Nothing, "Gib bitte einen Usernamen ein!", MessageDialogStyle.Affirmative, New MetroDialogSettings() With {.AffirmativeButtonText = "Ok", .ColorScheme = MetroDialogColorScheme.Accented})
         Else
@@ -1246,7 +1264,7 @@ Public Class MainWindow
             '                                         })
             '        Session = Login(tb_username.Text, pb_Password.Password)
             '    Catch ex As Client.Session.MinecraftAuthenticationException
-            '        'Auf Deutsch Ã¼bersetzen
+            '        'Auf Deutsch übersetzen
             '        MessageBox.Show(ex.ErrorMessage)
             '        Exit Sub
             '    End Try
@@ -1329,7 +1347,7 @@ Public Class MainWindow
             tr.ClearAllProperties()
             tr.Text = item.Text
             tr.ApplyPropertyValue(TextElement.ForegroundProperty, Foreground)
-            'Zuerst zurÃ¼cksetzen:
+            'Zuerst zurücksetzen:
             tr.ApplyPropertyValue(TextElement.FontWeightProperty, FontWeights.Normal)
             tr.ApplyPropertyValue(Inline.TextDecorationsProperty, New TextDecorationCollection())
             tr.ApplyPropertyValue(TextElement.FontStyleProperty, FontStyles.Normal)
@@ -1488,7 +1506,7 @@ Public Class MainWindow
             cb_profiles.SelectedIndex = 0
             Get_Profiles()
         Else
-            Await Me.ShowMessageAsync("Fehler", "Das letzte Profil kann nicht gelÃ¶scht werden!", MessageDialogStyle.Affirmative, New MetroDialogSettings() With {.AffirmativeButtonText = "Ok", .ColorScheme = MetroDialogColorScheme.Accented})
+            Await Me.ShowMessageAsync("Fehler", "Das letzte Profil kann nicht gelöscht werden!", MessageDialogStyle.Affirmative, New MetroDialogSettings() With {.AffirmativeButtonText = "Ok", .ColorScheme = MetroDialogColorScheme.Accented})
         End If
     End Sub
 
@@ -1635,7 +1653,7 @@ Public Class MainWindow
         End Try
         Dim fd As New VistaFolderBrowserDialog
         fd.UseDescriptionForTitle = True
-        fd.Description = "Mods Ordner auswÃ¤hlen"
+        fd.Description = "Mods Ordner auswählen"
         fd.RootFolder = Environment.SpecialFolder.MyComputer
         fd.SelectedPath = modsfolder.FullName
         fd.ShowNewFolderButton = True
@@ -1700,19 +1718,17 @@ Public Class MainWindow
     End Sub
     Private Async Sub btn_downloadmod_Click(sender As Object, e As RoutedEventArgs) Handles btn_downloadmod.Click
         If moddownloading = True Then
-            Await Me.ShowMessageAsync("Download lÃ¤uft", "Eine Mod wird bereits heruntergeladen. Warte bitte, bis diese fertig ist!", MessageDialogStyle.Affirmative, New MetroDialogSettings() With {.AffirmativeButtonText = "Ok", .ColorScheme = MetroDialogColorScheme.Accented})
+            Await Me.ShowMessageAsync("Download läuft", "Eine Mod wird bereits heruntergeladen. Warte bitte, bis diese fertig ist!", MessageDialogStyle.Affirmative, New MetroDialogSettings() With {.AffirmativeButtonText = "Ok", .ColorScheme = MetroDialogColorScheme.Accented})
         Else
             modsdownloadingversion = cb_modversions.SelectedItem.ToString
             btn_resetmodsfoler.IsEnabled = False
             btn_selectmodsfolder.IsEnabled = False
-            btn_refresh.IsEnabled = False
             btn_downloadmod.IsEnabled = False
             btn_list_delete_mod_image.IsEnabled = False
             cb_mods_profilename.IsEnabled = False
             rb_mods_folder.IsEnabled = False
             rb_mods_profile.IsEnabled = False
             moddownloading = True
-            lbl_mods_status.Content = Nothing
             modsdownloadlist.Clear()
             For Each selectedmod As Modifications.Mod In lb_mods.SelectedItems
                 If modsdownloadlist.Select(Function(p) p.id).Contains(selectedmod.id) = False Then
@@ -1732,11 +1748,11 @@ Public Class MainWindow
     Private Async Sub download_mod()
         If modsdownloadindex < modsdownloadlist.Count Then
             If modsfolderPath.Contains(IO.Path.GetInvalidPathChars) = True Then
-                Await Me.ShowMessageAsync("Fehler", "Der Pfad des Mods Ordners enthÃ¤lt ungÃ¼ltige Zeichen", MessageDialogStyle.Affirmative, New MetroDialogSettings() With {.AffirmativeButtonText = "Ok", .ColorScheme = MetroDialogColorScheme.Accented})
+                Await Me.ShowMessageAsync("Fehler", "Der Pfad des Mods Ordners enthält ungültige Zeichen", MessageDialogStyle.Affirmative, New MetroDialogSettings() With {.AffirmativeButtonText = "Ok", .ColorScheme = MetroDialogColorScheme.Accented})
                 Exit Sub
             End If
             Dim url As New Uri(modsdownloadlist.Item(modsdownloadindex).versions.Where(Function(p) p.version = modsdownloadingversion).First.downloadlink)
-            lbl_mods_status.Content = modsdownloadindex + 1 & " / " & modsdownloadlist.Count & " " & modsdownloadlist.Item(modsdownloadindex).name
+            'lbl_mods_status.Content = modsdownloadindex + 1 & " / " & modsdownloadlist.Count & " " & modsdownloadlist.Item(modsdownloadindex).name
             If modsdownloadingversion >= "1.6.4" = True Then
                 Modsfilename = modsdownloadingversion & "\" & modsdownloadingversion & "-" & modsdownloadlist.Item(modsdownloadindex).id & "." & modsdownloadlist.Item(modsdownloadindex).extension
             Else
@@ -1748,7 +1764,7 @@ Public Class MainWindow
                 End If
                 wcmod.DownloadFileAsync(url, Path.Combine(cachefolder.FullName, Modsfilename))
             Catch ex As Exception
-                lbl_mods_status.Content = ex.Message
+                'lbl_mods_status.Content = ex.Message
                 Me.ShowMessageAsync("Fehler", ex.Message, MessageDialogStyle.Affirmative, New MetroDialogSettings() With {.AffirmativeButtonText = "Ok", .ColorScheme = MetroDialogColorScheme.Accented})
                 Mod_Download_finished()
                 Exit Sub
@@ -1759,13 +1775,13 @@ Public Class MainWindow
             Filter_Mods()
             lb_mods.SelectedIndex = selected
         Else
-            lbl_mods_status.Content = "Erfolgreich installiert"
+            'lbl_mods_status.Content = "Erfolgreich installiert"
             Mod_Download_finished()
         End If
     End Sub
     Private Sub wcmod_DownloadFileCompleted(sender As Object, e As System.ComponentModel.AsyncCompletedEventArgs) Handles wcmod.DownloadFileCompleted
         If e.Cancelled = True Then
-            lbl_mods_status.Content = "Abgebrochen"
+            'lbl_mods_status.Content = "Abgebrochen"
             Mod_Download_finished()
         Else
             Try
@@ -1783,7 +1799,6 @@ Public Class MainWindow
         moddownloading = False
         btn_resetmodsfoler.IsEnabled = True
         btn_selectmodsfolder.IsEnabled = True
-        btn_refresh.IsEnabled = True
         btn_downloadmod.IsEnabled = True
         btn_list_delete_mod_image.IsEnabled = True
         cb_mods_profilename.IsEnabled = True
@@ -1833,7 +1848,7 @@ Public Class MainWindow
             '        Dim hideAddress As Boolean = Convert.ToBoolean(item.Item("hideAddress").ByteValue)
             '        Dim icon As String = Nothing
             '        If item.Tags.Select(Function(p) p.Name).Contains("icon") = False Then
-            '            'Ãœberarbeiten
+            '            'Überarbeiten
             '            icon = Nothing
             '        Else
             '            icon = item.Item("icon").StringValue
@@ -1901,9 +1916,9 @@ Public Class MainWindow
         Catch null As ArgumentNullException
             'hostNameOrAddress ist null.
         Catch socket As SocketException
-            'Beim AuflÃ¶sen von hostNameOrAddress ist ein Fehler aufgetreten.
+            'Beim Auflösen von hostNameOrAddress ist ein Fehler aufgetreten.
         Catch argument As ArgumentException
-            'hostNameOrAddress ist keine gÃ¼ltige IP-Adresse.
+            'hostNameOrAddress ist keine gültige IP-Adresse.
         End Try
 
     End Sub
@@ -1941,7 +1956,7 @@ Public Class MainWindow
     Private Async Sub btn_delete_servers_Click(sender As Object, e As RoutedEventArgs) Handles btn_delete_servers.Click
         Dim selected As Integer = lb_servers.SelectedIndex
         If selected <> -1 Then
-            Dim result As MessageDialogResult = Await Me.ShowMessageAsync("Server lÃ¶schen", "Bist du dir sicher, dass du den Server " & Chr(34) & DirectCast(lb_servers.SelectedItem, ServerList.Server).name & Chr(34) & " entgÃ¼ltig lÃ¶schen willst?", MessageDialogStyle.AffirmativeAndNegative, New MetroDialogSettings() With {.AffirmativeButtonText = "Ja", .NegativeButtonText = "Nein", .ColorScheme = MetroDialogColorScheme.Accented})
+            Dim result As MessageDialogResult = Await Me.ShowMessageAsync("Server löschen", "Bist du dir sicher, dass du den Server " & Chr(34) & DirectCast(lb_servers.SelectedItem, ServerList.Server).name & Chr(34) & " entgültig löschen willst?", MessageDialogStyle.AffirmativeAndNegative, New MetroDialogSettings() With {.AffirmativeButtonText = "Ja", .NegativeButtonText = "Nein", .ColorScheme = MetroDialogColorScheme.Accented})
             If result = MessageDialogResult.Affirmative Then
                 lb_servers.Items.RemoveAt(selected)
                 servers.Servers.RemoveAt(selected)
@@ -2038,7 +2053,7 @@ Public Class MainWindow
         End If
         Try
             btn_start_feedthebeast.IsEnabled = False
-            'progressbar lÃ¤dt herunter
+            'progressbar lädt herunter
             Await New WebClient().DownloadFileTaskAsync(url, path.FullName)
             btn_start_feedthebeast.IsEnabled = True
         Catch ex As Exception
@@ -2070,7 +2085,7 @@ Public Class MainWindow
         End If
         Try
             btn_start_techniclauncher.IsEnabled = False
-            'progressbar lÃ¤dt herunter
+            'progressbar lädt herunter
             Dim laststablebuild As String = Await New WebClient().DownloadStringTaskAsync("http://build.technicpack.net/job/TechnicLauncher/Stable/buildNumber")
             url = String.Format(url, laststablebuild)
             Await New WebClient().DownloadFileTaskAsync(url, path.FullName)

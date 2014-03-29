@@ -10,7 +10,9 @@ Public Class LiteLoader_installer
     Private filename As String
 
     Private Async Sub ForgeManager_Loaded(sender As Object, e As RoutedEventArgs) Handles Me.Loaded
-        If ThemeManager.DetectTheme(Application.Current).Item1 = Theme.Light Then
+        Dim theme = ThemeManager.DetectAppStyle(Application.Current)
+        Dim appTheme = ThemeManager.GetAppTheme(Me.Name)
+        If appTheme.Name = "BaseLight" Then
             btn_copy_image.Source = ImageConvert.GetImageStream(My.Resources.appbar_page_copy)
         Else
             btn_copy_image.Source = ImageConvert.GetImageStream(My.Resources.appbar_page_copy_dark)

@@ -297,7 +297,7 @@ Public Class ProfileEditor
         If DirectCast(sender, CheckBox).IsChecked = True Then
             If sender Is cb_old_beta Or sender Is cb_old_alpha Then
                 Dim msgtext As String = "Diese Versionen sind sehr veraltet und können unstabil sein. Alle Fehler, Abstürze, fehlende Funktionen oder andere Defekte die du finden könnstest werden in diesen Versionen nicht mehr behoben." & Environment.NewLine & "Es wird stark empfohlen, dass du diese Versionen in einem separatem Verzeichniss spielst, um Datenverlust zu vermeiden. Wir sind nicht verantwortlich für den Schaden an deinen Daten!" & Environment.NewLine & Environment.NewLine & "Bist du dir sicher, dass du fortsetzen möchstest?"
-                Dim result As MessageDialogResult = Await Me.ShowMessageAsync("Achtung", msgtext, MessageDialogStyle.AffirmativeAndNegativeAndSingleAuxiliary, New MetroDialogSettings() With {.AffirmativeButtonText = "Ja", .NegativeButtonText = "Nein", .FirstAuxiliaryButtonText = "Abbrechen", .ColorScheme = MetroDialogColorScheme.Accented, .UseAnimations = True})
+                Dim result As MessageDialogResult = Await Me.ShowMessageAsync("Achtung", msgtext, MessageDialogStyle.AffirmativeAndNegativeAndSingleAuxiliary, New MetroDialogSettings() With {.AffirmativeButtonText = "Ja", .NegativeButtonText = "Nein", .FirstAuxiliaryButtonText = "Abbrechen", .ColorScheme = MetroDialogColorScheme.Accented, .AnimateShow = True, .AnimateHide = True})
 
                 If result = MessageDialogResult.Affirmative Then
                     Get_Versions()
