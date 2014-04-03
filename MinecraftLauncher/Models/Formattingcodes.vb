@@ -1,4 +1,8 @@
 ﻿Imports System.Windows.Media
+Imports System.Drawing.Text
+Imports System.Runtime.InteropServices
+Imports System.IO
+
 Public Class FormattingCodes
     Public Shared Function ParseFormattedtext(text As String) As IList(Of FormattedText)
         'http://minecraft.gamepedia.com/Formatting_codes
@@ -65,30 +69,28 @@ Public Class FormattingCodes
     End Function
     Public Shared Function MinecraftText2Document(text As String) As FlowDocument
         Dim document As FlowDocument = New FlowDocument()
-        Dim FormattedTextlist As IList(Of FormattedText) = ParseFormattedtext(text)
-        'Properties anwenden und Text in die RTB schreiben
+        Dim FormattedTextlist As IList(Of FormattingCodes.FormattedText) = ParseFormattedtext(text)
+        ' Dim stackpanel As New StackPanel() With {.Orientation = Orientation.Horizontal}
+        Dim stackpanel As New WrapPanel
         For Each item As FormattingCodes.FormattedText In FormattedTextlist
-            'TextRange erstellen:
-            Dim Foreground As Brush = New SolidColorBrush(item.Color)
-            Dim tr As New TextRange(document.ContentEnd, document.ContentEnd)
-            tr.ClearAllProperties()
-            tr.Text = item.Text
-            tr.ApplyPropertyValue(TextElement.ForegroundProperty, Foreground)
-            'Zuerst zurücksetzen:
-            tr.ApplyPropertyValue(TextElement.FontWeightProperty, FontWeights.Normal)
-            tr.ApplyPropertyValue(Inline.TextDecorationsProperty, New TextDecorationCollection())
-            tr.ApplyPropertyValue(TextElement.FontStyleProperty, FontStyles.Normal)
-
-            'TODO: Obfuscated
-            'If textchar.Obfuscated = True Then tr.ApplyPropertyValue(TextElement.FontWeightProperty, FontWeights.Bold)
-            If item.Bold = True Then tr.ApplyPropertyValue(TextElement.FontWeightProperty, FontWeights.Bold)
-            If item.Strikethrough = True Then tr.ApplyPropertyValue(Inline.TextDecorationsProperty, TextDecorations.Strikethrough)
-            'If Strikethrough = True Then tr.ApplyPropertyValue(Inline.TextDecorationsProperty, TextDecorations)
-            If item.Underline = True Then tr.ApplyPropertyValue(Inline.TextDecorationsProperty, TextDecorations.Underline)
-            If item.Italic = True Then tr.ApplyPropertyValue(TextElement.FontStyleProperty, FontStyles.Italic)
+            'Whitespace underline does'nt work. So replace it with no-break-space, then it works
+            item.Text = item.Text.Replace(Chr(32), Chr(160))
+            Dim tblock As New TextBlock() With {.Text = item.Text, .Foreground = New SolidColorBrush(item.Color)}
+            'Formatted Text don't looks good with this Font:
+            'tblock.FontFamily = New FontFamily("Minecraftia")
+            'tblock.FontFamily = New FontFamily("Lucida Sans")
+            tblock.FontFamily = New FontFamily("ProFontWindows")
+            If item.Obfuscated = True Then tblock.BeginAnimation(TextBlock.TextProperty, New JBou.Animations.CryptedTextAnimation() With {.Text = item.Text, .Length = item.Text.Length, .Duration = Duration.Forever})
+            If item.Bold = True Then tblock.FontWeight = FontWeights.Bold
+            If item.Strikethrough = True Then tblock.TextDecorations.Add(TextDecorations.Strikethrough)
+            If item.Underline = True Then tblock.TextDecorations.Add(TextDecorations.Underline)
+            If item.Italic = True Then tblock.FontStyle = FontStyles.Italic
+            stackpanel.Children.Add(tblock)
         Next
+        document.Blocks.Add(New BlockUIContainer(stackpanel))
         Return document
     End Function
+
     Public Shared Colorcodes As IList(Of ColorCode) = New List(Of ColorCode) From
     {
         New ColorCode() With {.Name = "Black", .Color = DirectCast(ColorConverter.ConvertFromString("#000000"), Color), .Code = "§0"},

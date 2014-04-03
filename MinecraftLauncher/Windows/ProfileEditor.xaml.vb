@@ -151,15 +151,19 @@ Public Class ProfileEditor
     End Sub
 
     Private Async Sub ProfileEditor_Loaded(sender As Object, e As RoutedEventArgs) Handles Me.Loaded
-        Await Versions_Load()
-        Get_Versions()
-        loadedprofile = selectedprofile
-        If Newprofile = True Then
-            Await StandardValues()
-        Else
-            Await Load_ProfileInfos()
-        End If
-        Check_cb_Status()
+        Try
+            Await Versions_Load()
+            Get_Versions()
+            loadedprofile = selectedprofile
+            If Newprofile = True Then
+                Await StandardValues()
+            Else
+                Await Load_ProfileInfos()
+            End If
+            Check_cb_Status()
+        Catch ex As Exception
+            MessageBox.Show(ex.Message & Environment.NewLine & ex.StackTrace)
+        End Try
     End Sub
 
     Private Async Sub btn_save_Click(sender As Object, e As RoutedEventArgs) Handles btn_save.Click

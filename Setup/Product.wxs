@@ -4,7 +4,7 @@
   <?define Manufactor = "Patzleiner"?>
   <?define UpgradeGuid = "{DBC552D0-2FCB-4E70-B902-B65E8D7DDF67}"?>
   <?define Name = "McMetroLauncher"?>
-  <?define AwesomiumMergePath = "C:\Program Files (x86)\Awesomium Technologies LLC\Awesomium SDK\1.7.3.0\wrappers\Awesomium.NET\Redistribute\AWENET0173F.msm"?>
+  <?define AwesomiumMergePath = "C:\Program Files (x86)\Awesomium Technologies LLC\Awesomium SDK\1.7.4.1\wrappers\Awesomium.NET\Redistribute\AWENET0174F.msm"?>
 
   <Product
   Id="*"
@@ -80,9 +80,16 @@
                 durchführen kann.
             -->
           <Merge Id="merge_awesomium" SourceFile="$(var.AwesomiumMergePath)" DiskId="1" Language="1033" />
-          <Directory Id="tools" Name="tools">
+            <Directory Id="tools" Name="tools">
               <Component Id="Copytools" Guid="{E3CE604D-D5C3-4EFF-816C-A6101468C090}">
                 <File Id="Pack_xz_Extractor" Name="Pack_xz_Extractor.jar" Source="$(var.McMetroLauncher.TargetDir)tools\Pack_xz_Extractor.jar" />
+              </Component>
+            </Directory>
+            <Directory Id="Fonts" Name="Fonts">
+              <Component Id="CopyFonts" Guid="{107BE247-5F22-4D28-ACC7-C1CB97B1BBF5}">
+                <File Id="Minecraft" Name="Minecraft.ttf" Source="$(var.McMetroLauncher.TargetDir)Fonts\Minecraft.ttf" TrueType="yes" />
+                <File Id="Minecraftia" Name="Minecraftia.ttf" Source="$(var.McMetroLauncher.TargetDir)Fonts\Minecraftia.ttf" TrueType="yes" />
+                <File Id="ProFontWindows" Name="ProFontWindows.ttf" Source="$(var.McMetroLauncher.TargetDir)Fonts\ProFontWindows.ttf" TrueType="yes" />
               </Component>
             </Directory>
           <Component Id="ProductComponent" Guid="{4A5619DF-5841-48EC-8D7C-D368718C6D1A}">
@@ -112,7 +119,7 @@
             <File Id="Craft.Net.Common" Name="Craft.Net.Common.dll" Source="$(var.McMetroLauncher.TargetDir)Craft.Net.Common.dll" />
             <File Id="Craft.Net.Client" Name="Craft.Net.Client.dll" Source="$(var.McMetroLauncher.TargetDir)Craft.Net.Client.dll" />
             <File Id="Craft.Net.Anvil" Name="Craft.Net.Anvil.dll" Source="$(var.McMetroLauncher.TargetDir)Craft.Net.Anvil.dll" />
-            <File Id="BouncyCastle.Crypto" Name="BouncyCastle.Crypto.dll" Source="$(var.McMetroLauncher.TargetDir)BouncyCastle.Crypto.dll" />
+            <!--<File Id="BouncyCastle.Crypto" Name="BouncyCastle.Crypto.dll" Source="$(var.McMetroLauncher.TargetDir)BouncyCastle.Crypto.dll" />-->
             <File Id="De.TorstenMandelkow.MetroChart" Name="De.TorstenMandelkow.MetroChart.dll" Source="$(var.McMetroLauncher.TargetDir)De.TorstenMandelkow.MetroChart.dll" />
             <!-- Awesomium SDK wird installiert, deshalb brauche ich diese Libraries nicht: -->
             <!--<File Id="avcodec_53" Name="avcodec-53.dll" Source="$(var.McMetroLauncher.ProjectDir)bin\$(var.McMetroLauncher.Configuration)\avcodec-53.dll" />
@@ -186,6 +193,7 @@
       <ComponentRef Id="ShortCutComponent" />
       <ComponentRef Id="RegistryEntries" />
       <ComponentRef Id="Copytools"/>
+      <ComponentRef Id="CopyFonts"/>
       <MergeRef Id="merge_awesomium" />
     </Feature>
 
@@ -204,6 +212,7 @@
               After="FindRelatedProducts">NEWPRODUCTFOUND</Custom>
       <MsiPublishAssemblies Sequence="1502" />
       <MsiUnpublishAssemblies Sequence="1501" />
+      <Custom Action="Repairperformancecounter" Before="InstallFinalize" />
       <RemoveExistingProducts After="InstallFinalize" />
     </InstallExecuteSequence>
 
@@ -214,6 +223,12 @@
       <Custom Action="PreventDowngrading"
               After="FindRelatedProducts">NEWPRODUCTFOUND</Custom>
     </InstallUISequence>
+    
+    <!--rebuild performance counter setting from system backup-->
+    <!--<Property Id="RepairperformancecounterTarget" Value="cmd.exe lodctr /r" />
+    <CustomAction Id="Repairperformancecounter" BinaryKey="WixCA" DllEntry="RepairperformancecounterTarget" Impersonate="yes" />-->
+    <CustomAction Id="Repairperformancecounter" Directory="INSTALLLOCATION" ExeCommand="cmd.exe lodctr /r" Impersonate="yes" />
+
 
     <!-- So kann man eine eigene Lizenzmeldung ausgeben -->
     <!--<WixVariable Id='WixUILicenseRtf' Overridable='yes' Value='$(var.McMetroLauncher.ProjectDir)Lizenzbestimmungen.rtf'/>-->

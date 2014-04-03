@@ -43,9 +43,16 @@ Public Class SplashScreen
                     lbl_copyright.Content = CopyrightAttribute.Copyright
                 End If
             End If
+            If Applicationdata.Exists = False Then
+                Applicationdata.Create()
+            End If
+            If Applicationcache.Exists = False Then
+                Applicationcache.Create()
+            End If
+
 
             If internetconnection() = True Then
-                If Path.Combine(GetJavaPath(), "bin", "java.exe") = Nothing Then
+                If GetJavaPath() = Nothing OrElse New FileInfo(Path.Combine(GetJavaPath(), "bin", "java.exe")).Exists = False Then
                     Dim result As MessageDialogResult = Await ShowMessageAsync("Java nicht vorhanden", "Du musst Java installieren, um den McMetroLauncher und Minecraft nutzen zu können." & Environment.NewLine & "Ansonsten werden einige Funktionen nicht funktionieren!!" & Environment.NewLine & "Jetzt herunterladen?", MessageDialogStyle.AffirmativeAndNegative)
                     If result = MessageDialogResult.Affirmative Then
                         Process.Start("http://java.com/de/download")

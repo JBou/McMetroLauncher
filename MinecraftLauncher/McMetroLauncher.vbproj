@@ -124,9 +124,6 @@
       <HintPath>..\..\..\..\..\..\Program Files (x86)\Awesomium Technologies LLC\Awesomium SDK\1.7.2.2\wrappers\Awesomium.NET\Assemblies\Awesomium.Windows.Controls.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="BouncyCastle.Crypto">
-      <HintPath>..\libraries\BouncyCastle.Crypto.dll</HintPath>
-    </Reference>
     <Reference Include="Craft.Net">
       <HintPath>..\libraries\Craft.Net.dll</HintPath>
     </Reference>
@@ -195,7 +192,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Controls\AspectRatioLayoutDecorator.vb" />
+    <Compile Include="Controls\BindableRichTextBox.vb" />
     <Compile Include="Models\Converters.vb" />
+    <Compile Include="Models\CryptedTextAnimation.vb" />
     <Compile Include="Models\Forge.vb" />
     <Compile Include="Models\MainViewModel.vb" />
     <Compile Include="Models\SimpleCommand.vb" />
@@ -211,9 +211,6 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\BindableRichTextBox.xaml.vb">
-      <DependentUpon>BindableRichTextBox.xaml</DependentUpon>
     </Compile>
     <Compile Include="Models\VersionsInfo.vb" />
     <Compile Include="MainWindow.xaml.vb">
@@ -277,10 +274,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Controls\BindableRichTextBox.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
   </ItemGroup>
   <ItemGroup>
     <Import Include="Awesomium" />
@@ -328,6 +321,15 @@
       <SubType>Designer</SubType>
       <LastGenOutput>Resources.Designer.vb</LastGenOutput>
     </EmbeddedResource>
+    <Content Include="Fonts\Minecraft.ttf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Fonts\Minecraftia.ttf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Fonts\ProFontWindows.ttf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <None Include="My Project\app.manifest" />
     <None Include="My Project\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

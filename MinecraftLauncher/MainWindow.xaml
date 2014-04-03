@@ -10,8 +10,8 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:chart="clr-namespace:De.TorstenMandelkow.MetroChart;assembly=De.TorstenMandelkow.MetroChart" 
     GlowBrush="{DynamicResource AccentColorBrush}"            
-    Title="McMetroLauncher" Height="600" Width="920"
-    ForceCursor="True" MinHeight="600" MinWidth="920" Icon="images/favicon.ico" ResizeMode="CanResizeWithGrip" UseLayoutRounding="False" ScrollViewer.CanContentScroll="True" >
+    Title="McMetroLauncher" Height="610" Width="950"
+    ForceCursor="True" MinHeight="610" MinWidth="950" Icon="images/favicon.ico" ResizeMode="CanResizeWithGrip" UseLayoutRounding="False" ScrollViewer.CanContentScroll="True" >
 
     <Window.Resources>
         <ResourceDictionary>
@@ -24,6 +24,9 @@
             <local:FormattingcodesDocumentConverter x:Key="FormattingcodesDocumentConverter"/>
             <local:MODS_installed_imageConverter x:Key="MODS_installed_imageConverter" />
             <local:Playerlist_Namesstring_Converter x:Key="Playerlist_Namesstring_Converter"/>
+            <Style x:Key="MinecraftFont">
+                <Setter Property="TextElement.FontFamily" Value="Fonts/#Minecraft" />
+            </Style>
             <Style x:Key="DescriptionHeaderStyle" TargetType="Label">
                 <Setter Property="FontSize" Value="22" />
                 <Setter Property="HorizontalAlignment" Value="Center" />
@@ -207,14 +210,7 @@
             </TabItem>
             <TabItem Header="Mods">
                 <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition/>
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition/>
-                    </Grid.ColumnDefinitions>
-
-                    <ListView x:Name="lb_mods" Margin="10,77,0,47" Width="352" HorizontalAlignment="Left" BorderThickness="0" >
+                    <ListView x:Name="lb_mods" Margin="10,77,0,35" Width="352" HorizontalAlignment="Left" BorderThickness="0" >
                         <ListView.View>
                             <GridView ColumnHeaderContainerStyle="{StaticResource myHeaderStyle}">
                                 <GridViewColumn>
@@ -229,39 +225,42 @@
                             </GridView>
                         </ListView.View>
                     </ListView>
-                    <Label Content="Mods installieren in:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="367,10,0,0" Height="31"/>
-                    <TextBox x:Name="tb_modsfolder" Margin="395,77,110,0" VerticalAlignment="Top" IsReadOnly="True"/>
-                    <Button x:Name="btn_resetmodsfoler" Margin="0,77,41,0" Content="Standard" HorizontalAlignment="Right" VerticalAlignment="Top" Height="26" />
-                    <Button x:Name="btn_selectmodsfolder" Margin="0,77,10,0" Content="..." HorizontalAlignment="Right" VerticalAlignment="Top" Width="26" Height="26" />
-                    <Image x:Name="img_installed" Height="23" Width="23" Margin="367,114,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Source="images/check_green.png"/>
-                    <Label x:Name="lbl_name" Margin="395,108,110,0" VerticalAlignment="Top" Height="29" FontWeight="Bold" VerticalContentAlignment="Center" Background="#00000000" Foreground="#FF1F94F5" FontSize="15" />
-                    <StackPanel  Margin="0,294,10,23" HorizontalAlignment="Right" VerticalAlignment="Center" Width="110" >
-                        <Button x:Name="btn_website" Content="Website besuchen" Height="32" Margin="0,0,0,5" />
-                        <Button x:Name="btn_video" Content="Video ansehen" Height="32" Margin="0,5" />
-                        <Button x:Name="btn_list_delete_mod" Height="32" Margin="0,5" >
+                    <Label Content="Mods installieren in:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="367,10,0,0" Height="16" Padding="5,0"/>
+                    <TextBox x:Name="tb_modsfolder" Margin="395,62,110,0" VerticalAlignment="Top" IsReadOnly="True" Height="26"/>
+                    <Button x:Name="btn_resetmodsfoler" Margin="0,62,41,0" Content="Standard" HorizontalAlignment="Right" VerticalAlignment="Top" Height="26" />
+                    <Button x:Name="btn_selectmodsfolder" Margin="0,62,10,0" Content="..." HorizontalAlignment="Right" VerticalAlignment="Top" Width="26" Height="26" />
+                    <Image x:Name="img_installed" Height="23" Width="23" Margin="367,99,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Source="images/check_green.png"/>
+                    <Label x:Name="lbl_name" Margin="395,93,110,0" VerticalAlignment="Top" Height="29" FontWeight="Bold" VerticalContentAlignment="Center" Background="#00000000" Foreground="#FF1F94F5" FontSize="15" />
+                    <DockPanel  Margin="367,0,10,10" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Height="32" >
+                        <Button x:Name="btn_website" Content="Website besuchen" Height="32" Width="125" Margin="0,0,5,0" />
+                        <Button x:Name="btn_video" Content="Video ansehen" Height="32" Width="125" Margin="5,0" />
+                        <Button x:Name="btn_list_delete_mod" Height="32" Width="125" Margin="5,0" >
                             <StackPanel Orientation="Horizontal" >
                                 <Image x:Name="btn_list_delete_mod_image" Source="images/light/appbar.delete.png" />
                                 <TextBlock Text="Löschen" VerticalAlignment="Center" />
                             </StackPanel>
                         </Button>
-                        <Button Foreground="{DynamicResource AccentColorBrush}" x:Name="btn_downloadmod" Content="Installieren" Height="32" FontWeight="Bold" Margin="0,5,0,0" />
-                    </StackPanel>
-                    <Controls:MetroProgressBar Foreground="{DynamicResource AccentColorBrush}" x:Name="pb_mods_download" Height="8" Margin="10,0,10,10" VerticalAlignment="Bottom"/>
-                    <TextBox x:Name="tb_description" Margin="367,176,10,254" TextWrapping="Wrap" BorderThickness="1" HorizontalScrollBarVisibility="Visible" AcceptsReturn="True" IsReadOnly="True" VerticalContentAlignment="Top" VerticalScrollBarVisibility="Auto" Height="113"/>
-                    <Viewbox  Margin="367,294,125,23" Stretch="Uniform" >
-                        <awe:WebControl x:Name="wc_mod_video" Height="9" Width="16" MinWidth="16" MinHeight="9" />
-                    </Viewbox>
+                        <Button Foreground="{DynamicResource AccentColorBrush}" x:Name="btn_downloadmod" Content="Installieren" Height="32" FontWeight="Bold" Margin="5,0,0,0" />
+                    </DockPanel>
+                    <ScrollViewer Margin="367,161,10,47">
+                        <StackPanel >
+                            <TextBox x:Name="tb_description" TextWrapping="Wrap" BorderThickness="0" HorizontalScrollBarVisibility="Visible" AcceptsReturn="True" IsReadOnly="True" VerticalContentAlignment="Top" VerticalScrollBarVisibility="Auto" Text="Markdown + Video in einen Webbrowser per html. Das ganze dann noch in eine Scrollview" Padding="5"/>
+                            <local:AspectRatioLayoutDecorator AspectRatio="1.77777778" >
+                                <awe:WebControl x:Name="wc_mod_video" />
+                            </local:AspectRatioLayoutDecorator>
+                        </StackPanel>
+                    </ScrollViewer>
                     <ComboBox x:Name="cb_modversions" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="352" Height="31"/>
                     <Button x:Name="btn_play" Content="Play" Margin="192,466,628,24" Visibility="Hidden" />
                     <TextBox x:Name="tb_downloadlink" HorizontalAlignment="Left" Height="26" Margin="362,439,-17,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="597" Visibility="Hidden"/>
-                    <Label x:Name="lbl_autor" Content="" Margin="517,108,10,0" VerticalAlignment="Top" Height="29" FontWeight="Bold" VerticalContentAlignment="Center" HorizontalContentAlignment="Right" Background="#00000000" Foreground="#FF1F94F5" FontSize="15"/>
+                    <Label x:Name="lbl_autor" Content="" Margin="517,93,10,0" VerticalAlignment="Top" Height="29" FontWeight="Bold" VerticalContentAlignment="Center" HorizontalContentAlignment="Right" Background="#00000000" Foreground="#FF1F94F5" FontSize="15"/>
                     <TextBox x:Name="tb_search_mods" Controls:TextboxHelper.ClearTextButton="True" Controls:TextboxHelper.Watermark="Suche" Margin="10,46,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="352" />
-                    <Label x:Name="lbl_type" Margin="367,142,80,0" VerticalAlignment="Top" Height="29" FontWeight="Bold" VerticalContentAlignment="Center" Background="{x:Null}" Foreground="#FFF51F1F" FontSize="15" />
-                    <ComboBox x:Name="cb_mods_profilename" HorizontalAlignment="Left" Margin="396,46,0,0" VerticalAlignment="Top" Width="262"/>
-                    <RadioButton x:Name="rb_mods_profile" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="367,46,0,0" Height="26" Width="24"/>
-                    <RadioButton x:Name="rb_mods_folder" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="367,77,0,0" Width="23" Height="26" IsChecked="True"/>
-                    <Label Content="SHIFT oder STRG für Mehrfachauswahl" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="10,0,0,23" Height="19" Width="352" Padding="5,0" HorizontalContentAlignment="Center"/>
-                    <ComboBox x:Name="cb_mods_description_language" HorizontalAlignment="Right" Margin="0,142,10,0" VerticalAlignment="Top" Width="65" Height="29"/>
+                    <Label x:Name="lbl_type" Margin="367,127,80,0" VerticalAlignment="Top" Height="29" FontWeight="Bold" VerticalContentAlignment="Center" Background="{x:Null}" Foreground="#FFF51F1F" FontSize="15" />
+                    <ComboBox x:Name="cb_mods_profilename" HorizontalAlignment="Left" Margin="396,31,0,0" VerticalAlignment="Top" Width="262" Height="26"/>
+                    <RadioButton x:Name="rb_mods_profile" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="367,31,0,0" Height="26" Width="24" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+                    <RadioButton x:Name="rb_mods_folder" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="367,62,0,0" Width="23" Height="26" IsChecked="True" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+                    <Label Content="SHIFT oder STRG für Mehrfachauswahl" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="10,0,0,10" Height="19" Width="352" Padding="5,0" HorizontalContentAlignment="Center"/>
+                    <ComboBox x:Name="cb_mods_description_language" HorizontalAlignment="Right" Margin="0,127,10,0" VerticalAlignment="Top" Width="65" Height="29"/>
                 </Grid>
             </TabItem>
             <TabItem Header="ResourcePacks" Visibility="Collapsed">
@@ -380,7 +379,7 @@
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
                                             <DockPanel LastChildFill="True">
-                                                <TextBlock DockPanel.Dock="Right" FontSize="20" VerticalAlignment="Top" >
+                                                <TextBlock DockPanel.Dock="Right" FontSize="20" VerticalAlignment="Top" TextAlignment="Right">
                                                     <TextBlock.Style>
                                                         <Style TargetType="{x:Type TextBlock}">
                                                             <Style.Triggers>
@@ -391,9 +390,10 @@
                                                                 <DataTrigger Binding="{Binding ServerStatus.Online}" Value="True">
                                                                     <Setter Property="Text">
                                                                         <Setter.Value>
-                                                                            <MultiBinding StringFormat="{}{0} / {1}">
+                                                                            <MultiBinding StringFormat="{}{0} / {1}&#10;{2}">
                                                                                 <Binding Path="ServerStatus.Players.OnlinePlayers" />
                                                                                 <Binding Path="ServerStatus.Players.MaxPlayers" />
+                                                                                <Binding Path="ServerStatus.Version.Name" />
                                                                             </MultiBinding>
                                                                         </Setter.Value>
                                                                     </Setter>
@@ -404,7 +404,7 @@
                                                     </TextBlock.Style>
                                                 </TextBlock>
                                                 <StackPanel>
-                                                    <TextBlock Text="{Binding name}" FontSize="20" VerticalAlignment="Top" />
+                                                    <TextBlock Text="{Binding name}" FontSize="20" VerticalAlignment="Top" FontFamily="/McMetroLauncher;component/Fonts/#Minecraftia" />
                                                     <!--Description-->
                                                     <local:BindableRichTextBox ContextMenu="{StaticResource ServerlistContextMenu}" x:Name="serverlist_motd" FontSize="15" IsReadOnly="True" Background="Transparent" BorderBrush="{x:Null}" SelectionBrush="{x:Null}" BorderThickness="0,0,0,0" SelectionOpacity="0" Cursor="Arrow" Focusable="False" IsTabStop="False" TabIndex="0" >
                                                         <RichTextBox.Resources>

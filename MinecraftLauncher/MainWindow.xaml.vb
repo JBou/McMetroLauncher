@@ -28,6 +28,8 @@ Imports System.Windows.Media
 Imports System
 Imports System.Windows.Markup
 Imports McMetroLauncher.Models
+Imports System.Runtime.ExceptionServices
+Imports System.Text
 
 #End Region
 Public Module GlobalInfos
@@ -171,7 +173,6 @@ Public Module GlobalInfos
     '--------supportedLauncherVersion---------
     Public Const supportedLauncherVersion As Integer = 13
     Public Const AwesomiumVersion As String = "1.7.3"
-
     Public AppThemes As List(Of AppThemeMenuData)
     Public AccentColors As List(Of AccentColorMenuData)
     Public ReadOnly Property AssemblyVersion As String
@@ -218,19 +219,19 @@ Public Module GlobalInfos
     Public resources_dir As New DirectoryInfo(Path.Combine(mcpfad.FullName, "resources"))
     Public librariesurl As String = "https://libraries.minecraft.net/"
     Public selectedprofile As String
-    Public ReadOnly Property indexesurl(assets_index_name As String) As String
+    Public ReadOnly Property indexesurl(index_name As String) As String
         Get
-            Return "http://s3.amazonaws.com/Minecraft.Download/indexes/" & assets_index_name & ".json"
+            Return "http://s3.amazonaws.com/Minecraft.Download/indexes/" & index_name & ".json"
         End Get
     End Property
-    Public ReadOnly Property cacheindexesfile(assets_index_name As String) As FileInfo
+    Public ReadOnly Property cacheindexesfile(index_name As String) As FileInfo
         Get
-            Return New FileInfo(Path.Combine(cachefolder.FullName, "indexes/" & assets_index_name & ".json"))
+            Return New FileInfo(Path.Combine(cachefolder.FullName, "indexes/" & index_name & ".json"))
         End Get
     End Property
-    Public ReadOnly Property indexesfile(assets_index_name As String) As FileInfo
+    Public ReadOnly Property indexesfile(index_name As String) As FileInfo
         Get
-            Return New FileInfo(Path.Combine(assetspath.FullName, "indexes/" & assets_index_name & ".json"))
+            Return New FileInfo(Path.Combine(assetspath.FullName, "indexes/" & index_name & ".json"))
         End Get
     End Property
     Public ReadOnly Property resourcefile(hash As String) As FileInfo
@@ -382,6 +383,8 @@ Public Class MainWindow
     '******************Assets*******************
     Private assets_index_name As String
     '********************UI*********************
+    Public controller As ProgressDialogController
+    Public toolscontroller As ProgressDialogController
     '******************Others*******************
 #End Region
 
@@ -435,6 +438,7 @@ Public Class MainWindow
         ' Fügen Sie Initialisierungen nach dem InitializeComponent()-Aufruf hinzu.
         Me.DataContext = New MainViewModel
         AddHandler ThemeManager.IsThemeChanged, AddressOf IsThemeChanged
+        Me.MetroDialogOptions.ColorScheme = MetroDialogColorScheme.Theme
     End Sub
 
     Private Sub MainWindow_Closed(sender As Object, e As EventArgs) Handles Me.Closed
@@ -459,18 +463,24 @@ Public Class MainWindow
         End Try
     End Sub
 
-    Private Sub MainWindow_Loaded(sender As Object, e As EventArgs) Handles Me.Loaded
+    Private Async Sub MainWindow_Loaded(sender As Object, e As EventArgs) Handles Me.Loaded
+        'Set the Webbrowser Source:
         Webcontrol_news.WebSession = WebCore.CreateWebSession(New WebPreferences() With {.CustomCSS = Scrollbarcss})
         wc_mod_video.WebSession = WebCore.CreateWebSession(New WebPreferences() With {.CustomCSS = Scrollbarcss})
-        wc_mod_video.ViewType = Awesomium.Core.WebViewType.Window
         If lb_mods.SelectedIndex <> -1 Then
             Dim youtubeMatch As Match = YoutubeVideoRegex.Match(DirectCast(lb_mods.SelectedItem, Modifications.Mod).video)
             Dim id As String = String.Empty
             If youtubeMatch.Success Then
                 id = youtubeMatch.Groups(1).Value
-                wc_mod_video.Source = New Uri("http://www.youtube.com/embed/" & id & "?&origin=http://patzleiner.net")
+                wc_mod_video.Source = New Uri("http://www.youtube.com/embed/" & id)
             End If
         End If
+        While Webcontrol_news.IsLoading = True
+            Await Task.Delay(10)
+        End While
+        Webcontrol_news.Visibility = Windows.Visibility.Visible
+        lbl_news_loading.Visibility = Windows.Visibility.Collapsed
+        pb_news_loading.Visibility = Windows.Visibility.Collapsed
     End Sub
 #End Region
 
@@ -759,6 +769,12 @@ Public Class MainWindow
         lbl_downloadstatus_Content(String.Format("{0}% - {1} {2} von {3} {4} heruntergeladen", e.ProgressPercentage, Math.Round(bytes, 2), Einheit, Math.Round(totalbytes, 2), Einheit))
     End Sub
 
+    Private Sub wc_libraries_DownloadProgressChanged(sender As Object, e As DownloadProgressChangedEventArgs) Handles wc_libraries.DownloadProgressChanged
+        If librariesdownloadindex < Startinfos.Versionsinfo.libraries.Count Then
+            pb_download_Value((librariesdownloadindex / Startinfos.Versionsinfo.libraries.Count) * 100 + e.ProgressPercentage / Startinfos.Versionsinfo.libraries.Count)
+        End If
+    End Sub
+
     Public Function SHA1FileHash(ByVal sFile As String) As String
         Dim SHA1 As New SHA1CryptoServiceProvider
         Dim Hash As Byte()
@@ -773,6 +789,21 @@ Public Class MainWindow
         Return Result
     End Function
 
+    Public Function MD5FileHash(ByVal sFile As String) As String
+        Dim MD5 As New MD5CryptoServiceProvider
+        Dim Hash As Byte()
+        Dim Result As String = ""
+        Dim Tmp As String = ""
+
+        Dim FN As New FileStream(sFile, FileMode.Open, FileAccess.Read, FileShare.Read, 8192)
+        MD5.ComputeHash(FN)
+        FN.Close()
+
+        Hash = MD5.Hash
+        Result = Strings.Replace(BitConverter.ToString(Hash), "-", "")
+        Return Result
+    End Function
+
     Async Sub Download_Version()
         Dim versionid As String = Startinfos.Version.id
         Dim VersionsURl As String = "https://s3.amazonaws.com/Minecraft.Download/versions/" & versionid & "/" & versionid & ".jar"
@@ -783,40 +814,104 @@ Public Class MainWindow
         Dim CacheOutputfileJSON As String = Path.Combine(cachefolder.FullName, "versions", versionid, versionid & ".json")
         Dim CacheDirectoryname As String = IO.Path.GetDirectoryName(CacheOutputfile)
         Dim Directoryname As String = IO.Path.GetDirectoryName(Outputfile)
-        If IO.File.Exists(Outputfile) = False Then
-            If IO.Directory.Exists(CacheDirectoryname) = False Then
-                IO.Directory.CreateDirectory(CacheDirectoryname)
-            End If
+        Dim downloaderror As Boolean = False
+        Dim jsondownloaderror As Boolean = False
 
+        'Jar File download
+        Write("Prüfe, ob die Version aktuell ist")
+        Dim todownload As Boolean = False
+        If IO.File.Exists(Outputfile) = False Then
+            todownload = True
+        Else
+            Try
+                Dim Request As HttpWebRequest = DirectCast(WebRequest.Create(VersionsURl), HttpWebRequest)
+                Dim Response As WebResponse = Await Request.GetResponseAsync
+                Dim etag As String = Response.Headers("ETag")
+                Dim md5 As String = MD5FileHash(Outputfile).ToLower
+                If etag <> Chr(34) & md5 & Chr(34) Then
+                    todownload = True
+                End If
+            Catch
+                todownload = False
+            End Try
+        End If
+        If todownload = True Then
             Write("Lade Minecraft Version " & versionid & " herunter")
             Try
+                If IO.Directory.Exists(CacheDirectoryname) = False Then
+                    IO.Directory.CreateDirectory(CacheDirectoryname)
+                End If
+                wcversionsdownload = New WebClient
                 Await wcversionsdownload.DownloadFileTaskAsync(New Uri(VersionsURl), CacheOutputfile)
             Catch ex As Exception
                 Write("Fehler beim herunterladen von Minecraft " & versionid & " :" & Environment.NewLine & ex.Message, LogLevel.ERROR)
+                downloaderror = True
             End Try
             If IO.Directory.Exists(Directoryname) = False Then
                 IO.Directory.CreateDirectory(Directoryname)
             End If
-
+            If IO.File.Exists(Outputfile) Then
+                IO.File.Delete(Outputfile)
+            End If
+        ElseIf todownload = False And File.Exists(Outputfile) = False Then
+            Write("Minecraft " & versionid & " existiert nicht und konnte nicht heruntergeladen werden", LogLevel.ERROR)
+            downloaderror = True
+        End If
+        If downloaderror = False And File.Exists(CacheOutputfile) = True Then
             IO.File.Move(CacheOutputfile, Outputfile)
-
+        ElseIf downloaderror = True Then
+            Startinfos.IsStarting = False
+            Exit Sub
         End If
 
+
+        'Json File download
+        Dim jsontodownload As Boolean = False
         If IO.File.Exists(OutputfileJSON) = False Then
-
-
+            jsontodownload = True
+        Else
+            Try
+                Dim Request As HttpWebRequest = DirectCast(WebRequest.Create(VersionsJSONURL), HttpWebRequest)
+                Dim Response As WebResponse = Await Request.GetResponseAsync
+                Dim etag As String = Response.Headers("ETag")
+                Dim md5 As String = MD5FileHash(OutputfileJSON).ToLower
+                If etag <> Chr(34) & md5 & Chr(34) Then
+                    jsontodownload = True
+                End If
+            Catch
+                jsontodownload = False
+            End Try
+        End If
+        If jsontodownload = True Then
             If IO.Directory.Exists(CacheDirectoryname) = False Then
                 IO.Directory.CreateDirectory(CacheDirectoryname)
             End If
             pb_download_Maximum(100)
-            Await wcversionsdownload.DownloadFileTaskAsync(New Uri(VersionsJSONURL), CacheOutputfileJSON)
-
+            Try
+                wcversionsdownload = New WebClient
+                Await wcversionsdownload.DownloadFileTaskAsync(New Uri(VersionsJSONURL), CacheOutputfileJSON)
+            Catch ex As Exception
+                Write("Fehler beim herunterladen von Minecraft " & versionid & " :" & Environment.NewLine & ex.Message, LogLevel.ERROR)
+                jsondownloaderror = True
+            End Try
             If IO.Directory.Exists(Directoryname) = False Then
                 IO.Directory.CreateDirectory(Directoryname)
             End If
-
-            IO.File.Move(CacheOutputfileJSON, OutputfileJSON)
+            If IO.File.Exists(OutputfileJSON) Then
+                IO.File.Delete(OutputfileJSON)
+            End If
+        ElseIf jsontodownload = False And File.Exists(OutputfileJSON) = False Then
+            Write("Minecraft " & versionid & " existiert nicht und konnte nicht heruntergeladen werden", LogLevel.ERROR)
+            jsondownloaderror = True
         End If
+        If jsondownloaderror = False And File.Exists(CacheOutputfileJSON) = True Then
+            IO.File.Move(CacheOutputfileJSON, OutputfileJSON)
+        ElseIf jsondownloaderror = True Then
+            Startinfos.IsStarting = False
+            Exit Sub
+        End If
+
+        'Start 
         If Startinfos.Versionsinfo Is Nothing Then
             Await Parse_VersionsInfo(Startinfos.Version)
             If Startinfos.Versionsinfo.minimumLauncherVersion > supportedLauncherVersion Then
@@ -838,7 +933,7 @@ Public Class MainWindow
             Await Parse_VersionsInfo(Startinfos.Version)
         End If
         'http://wiki.vg/Game_Files
-        pb_download_Maximum(Startinfos.Versionsinfo.libraries.Count)
+        pb_download_Maximum(100)
         librariesdownloadindex = 0
         librariesdownloadtry = 1
         librariesdownloading = True
@@ -856,7 +951,7 @@ Public Class MainWindow
 
     Async Sub DownloadLibraries()
         Try
-            pb_download_Value(librariesdownloadindex)
+            pb_download_Value(librariesdownloadindex / Startinfos.Versionsinfo.libraries.Count * 100)
             If librariesdownloadindex < Startinfos.Versionsinfo.libraries.Count Then
                 Currentlibrary = Startinfos.Versionsinfo.libraries.Item(librariesdownloadindex)
                 Dim allowdownload As Boolean = True
@@ -1302,7 +1397,12 @@ Public Class MainWindow
 
             If Startinfos.Version Is Nothing Then
                 If Startinfos.Profile.lastVersionId <> Nothing Then
-                    Startinfos.Version = Versions.versions.Where(Function(p) p.id = Startinfos.Profile.lastVersionId).First
+                    If Versions.versions.Select(Function(p) p.id).Contains(Startinfos.Profile.lastVersionId) Then
+                        Startinfos.Version = Versions.versions.Where(Function(p) p.id = Startinfos.Profile.lastVersionId).First
+                    Else
+                        Write(Startinfos.Profile.lastVersionId & ".jar und/oder " & Startinfos.Profile.lastVersionId & ".json existiert nicht" & Environment.NewLine & "---Wähle eine andere Version aus oder, falls du gerade Forge gestartet hast, installiere es erneut!", LogLevel.ERROR)
+                        Exit Sub
+                    End If
                 Else
                     If Startinfos.Profile.allowedReleaseTypes Is Nothing Then
                         Startinfos.Profile.allowedReleaseTypes = New List(Of String)
@@ -1345,34 +1445,6 @@ Public Class MainWindow
     End Sub
 
 #Region "LOG"
-
-    Sub WriteText(text As String, rtb As RichTextBox)
-        Dim FormattedTextlist As IList(Of FormattingCodes.FormattedText) = FormattingCodes.ParseFormattedtext(text)
-        'Properties anwenden und Text in die RTB schreiben
-        For Each item As FormattingCodes.FormattedText In FormattedTextlist
-            'TextRange erstellen:
-            Dim Foreground As Brush = New SolidColorBrush(item.Color)
-            Dim tr As New TextRange(rtb.Document.ContentEnd, rtb.Document.ContentEnd)
-            tr.ClearAllProperties()
-            tr.Text = item.Text
-            tr.ApplyPropertyValue(TextElement.ForegroundProperty, Foreground)
-            'Zuerst zurücksetzen:
-            tr.ApplyPropertyValue(TextElement.FontWeightProperty, FontWeights.Normal)
-            tr.ApplyPropertyValue(Inline.TextDecorationsProperty, New TextDecorationCollection())
-            tr.ApplyPropertyValue(TextElement.FontStyleProperty, FontStyles.Normal)
-
-            'TODO: Obfuscated
-            'If textchar.Obfuscated = True Then tr.ApplyPropertyValue(TextElement.FontWeightProperty, FontWeights.Bold)
-            If item.Bold = True Then tr.ApplyPropertyValue(TextElement.FontWeightProperty, FontWeights.Bold)
-            If item.Strikethrough = True Then tr.ApplyPropertyValue(Inline.TextDecorationsProperty, TextDecorations.Strikethrough)
-            'If Strikethrough = True Then tr.ApplyPropertyValue(Inline.TextDecorationsProperty, TextDecorations)
-            If item.Underline = True Then tr.ApplyPropertyValue(Inline.TextDecorationsProperty, TextDecorations.Underline)
-            If item.Italic = True Then tr.ApplyPropertyValue(TextElement.FontStyleProperty, FontStyles.Italic)
-            rtb.ScrollToEnd()
-        Next
-    End Sub
-
-
     Public Sub Append(ByVal Line As String, rtb As RichTextBox, Optional Color As Brush = Nothing)
         Me.Dispatcher.Invoke(New Action(Sub()
                                             Dim tr As New TextRange(rtb.Document.ContentEnd, rtb.Document.ContentEnd)
@@ -1608,12 +1680,17 @@ Public Class MainWindow
                 Case Else
                     lbl_type.Content = "Type: " & DirectCast(lb_mods.SelectedItem, Modifications.Mod).type
             End Select
-
+            Dim oldsource As String = Nothing
+            If wc_mod_video.Source <> Nothing Then
+                oldsource = wc_mod_video.Source.ToString
+            End If
             Dim youtubeMatch As Match = YoutubeVideoRegex.Match(DirectCast(lb_mods.SelectedItem, Modifications.Mod).video)
             Dim id As String = String.Empty
             If youtubeMatch.Success Then
                 id = youtubeMatch.Groups(1).Value
-                wc_mod_video.Source = New Uri("http://www.youtube.com/embed/" & id & "?&origin=http://patzleiner.net")
+                If oldsource <> id Then
+                    wc_mod_video.Source = New Uri("http://www.youtube.com/embed/" & id)
+                End If
             End If
         End If
     End Sub
@@ -1749,6 +1826,10 @@ Public Class MainWindow
                 End If
             Next
             modsdownloadindex = 0
+
+            controller = Await Me.ShowProgressAsync("Mods werden installiert", "Bitte warten")
+            'controller.SetCancelable(True)
+
             download_mod()
         End If
     End Sub
@@ -1759,37 +1840,42 @@ Public Class MainWindow
                 Exit Sub
             End If
             Dim url As New Uri(modsdownloadlist.Item(modsdownloadindex).versions.Where(Function(p) p.version = modsdownloadingversion).First.downloadlink)
-            'lbl_mods_status.Content = modsdownloadindex + 1 & " / " & modsdownloadlist.Count & " " & modsdownloadlist.Item(modsdownloadindex).name
+            Dim progress As Double = modsdownloadindex / modsdownloadlist.Count
+            controller.SetProgress(progress)
+            controller.SetMessage(modsdownloadindex + 1 & " / " & modsdownloadlist.Count & " " & modsdownloadlist.Item(modsdownloadindex).name)
             If modsdownloadingversion >= "1.6.4" = True Then
                 Modsfilename = modsdownloadingversion & "\" & modsdownloadingversion & "-" & modsdownloadlist.Item(modsdownloadindex).id & "." & modsdownloadlist.Item(modsdownloadindex).extension
             Else
                 Modsfilename = modsdownloadingversion & "-" & modsdownloadlist.Item(modsdownloadindex).id & "." & modsdownloadlist.Item(modsdownloadindex).extension
             End If
+            Dim capturedException As ExceptionDispatchInfo = Nothing
             Try
                 If IO.Directory.Exists(IO.Path.GetDirectoryName(cachefolder.FullName & "\" & Modsfilename)) = False Then
                     IO.Directory.CreateDirectory((IO.Path.GetDirectoryName(cachefolder.FullName & "\" & Modsfilename)))
                 End If
                 wcmod.DownloadFileAsync(url, Path.Combine(cachefolder.FullName, Modsfilename))
             Catch ex As Exception
-                'lbl_mods_status.Content = ex.Message
-                Me.ShowMessageAsync("Fehler", ex.Message, MessageDialogStyle.Affirmative, New MetroDialogSettings() With {.AffirmativeButtonText = "Ok", .ColorScheme = MetroDialogColorScheme.Accented})
-                Mod_Download_finished()
+                capturedException = ExceptionDispatchInfo.Capture(ex)
                 Exit Sub
             End Try
-            'End If
-            modsdownloadindex += 1
-            Dim selected As Integer = lb_mods.SelectedIndex
-            Filter_Mods()
-            lb_mods.SelectedIndex = selected
+            If capturedException IsNot Nothing Then
+                Await Mod_Download_finished(capturedException.SourceException.Message)
+            End If
         Else
-            'lbl_mods_status.Content = "Erfolgreich installiert"
-            Mod_Download_finished()
+            Await Mod_Download_finished()
         End If
     End Sub
-    Private Sub wcmod_DownloadFileCompleted(sender As Object, e As System.ComponentModel.AsyncCompletedEventArgs) Handles wcmod.DownloadFileCompleted
-        If e.Cancelled = True Then
-            'lbl_mods_status.Content = "Abgebrochen"
-            Mod_Download_finished()
+    Private Async Sub wcmod_DownloadFileCompleted(sender As Object, e As System.ComponentModel.AsyncCompletedEventArgs) Handles wcmod.DownloadFileCompleted
+        If e.Error IsNot Nothing Then
+            Await Mod_Download_finished(e.Error.Message)
+            controller.SetCancelable(True)
+            While controller.IsCanceled = False
+                Await Task.Delay(10)
+            End While
+            Await controller.CloseAsync()
+        ElseIf e.Cancelled = True Then
+            'lbl_mods_status.Content = "Abgebrochen
+            controller.SetMessage("Abgebrochen")
         Else
             Try
                 Dim path As String = modsfolderPath & "\" & Modsfilename
@@ -1799,10 +1885,23 @@ Public Class MainWindow
                 My.Computer.FileSystem.MoveFile(IO.Path.Combine(cachefolder.FullName, Modsfilename), path)
             Catch
             End Try
+            modsdownloadindex += 1
+            Dim selected As Integer = lb_mods.SelectedIndex
+            Filter_Mods()
+            lb_mods.SelectedIndex = selected
             download_mod()
         End If
     End Sub
-    Private Sub Mod_Download_finished()
+
+    Private Async Function Mod_Download_finished(Optional Errormessage As String = Nothing) As Task
+        If Errormessage = Nothing Then
+            controller.SetMessage("Mods erfolgreich Installiert")
+            Await Task.Delay(1000)
+            Await controller.CloseAsync()
+        Else
+            controller.SetMessage("Fehler beim Installieren der Mods: " & Errormessage)
+            controller.SetCancelable(True)
+        End If
         moddownloading = False
         btn_resetmodsfoler.IsEnabled = True
         btn_selectmodsfolder.IsEnabled = True
@@ -1814,17 +1913,12 @@ Public Class MainWindow
         Dim selected As Integer = lb_mods.SelectedIndex
         Filter_Mods()
         lb_mods.SelectedIndex = selected
-    End Sub
+    End Function
     Private Sub wcmod_DownloadProgressChanged(sender As Object, e As DownloadProgressChangedEventArgs) Handles wcmod.DownloadProgressChanged
-        ' Do all the ui thread updates here
-        Me.Dispatcher.Invoke(
-            DispatcherPriority.Normal,
-            New Action(Sub()
-
-                           ' Do all the ui thread updates here
-                           pb_mods_download.Value = e.ProgressPercentage
-
-                       End Sub))
+        If modsdownloadindex < modsdownloadlist.Count Then
+            Dim progress As Double = modsdownloadindex / modsdownloadlist.Count + e.ProgressPercentage / 100 / modsdownloadlist.Count
+            controller.SetProgress(progress)
+        End If
     End Sub
 
 #End Region
@@ -2050,8 +2144,7 @@ Public Class MainWindow
     End Sub
 
     Private Async Sub download_feedthebeast()
-        'Zuerst die Website auslesen, um den neuesten Link zu bekommen
-        'Dim str As String = Await New WebClient().DownloadStringTaskAsync("")
+        toolscontroller = Await Me.ShowProgressAsync("Feed the Beast wird heruntergeladen", "Bitte warten")
         Dim url As New Uri(Downloads.Downloadsjo("feedthebeast").Value(Of String)("url"))
         Dim filename As String = Downloads.Downloadsjo("feedthebeast").Value(Of String)("filename")
         Dim path As New FileInfo(IO.Path.Combine(mcpfad.FullName, "tools", filename))
@@ -2061,7 +2154,10 @@ Public Class MainWindow
         Try
             btn_start_feedthebeast.IsEnabled = False
             'progressbar lädt herunter
-            Await New WebClient().DownloadFileTaskAsync(url, path.FullName)
+            Dim a As New WebClient
+            AddHandler a.DownloadProgressChanged, AddressOf Toolsdownloadpreogresschanged
+            Await a.DownloadFileTaskAsync(url, path.FullName)
+            Await toolscontroller.CloseAsync()
             btn_start_feedthebeast.IsEnabled = True
         Catch ex As Exception
             Try
@@ -2075,6 +2171,10 @@ Public Class MainWindow
         End Try
     End Sub
 
+    Sub Toolsdownloadpreogresschanged(sender As Object, e As DownloadProgressChangedEventArgs)
+        toolscontroller.SetProgress(e.ProgressPercentage / 100)
+    End Sub
+
     Private Sub start_feedthebeast()
         Dim filename As String = Downloads.Downloadsjo("feedthebeast").Value(Of String)("filename")
         Dim path As New FileInfo(IO.Path.Combine(mcpfad.FullName, "tools", filename))
@@ -2082,8 +2182,7 @@ Public Class MainWindow
     End Sub
 
     Private Async Sub download_techniclauncher()
-        'Zuerst die Website auslesen, um den neuesten Link zu bekommen
-        'Dim str As String = Await New WebClient().DownloadStringTaskAsync("")
+        toolscontroller = Await Me.ShowProgressAsync("Technic Launcher wird heruntergeladen", "Bitte warten")
         Dim url As String = "http://launcher.technicpack.net/launcher/{0}/TechnicLauncher.jar"
         Dim filename As String = "TechnicLauncher.jar"
         Dim path As New FileInfo(IO.Path.Combine(mcpfad.FullName, "tools", filename))
@@ -2095,7 +2194,10 @@ Public Class MainWindow
             'progressbar lädt herunter
             Dim laststablebuild As String = Await New WebClient().DownloadStringTaskAsync("http://build.technicpack.net/job/TechnicLauncher/Stable/buildNumber")
             url = String.Format(url, laststablebuild)
-            Await New WebClient().DownloadFileTaskAsync(url, path.FullName)
+            Dim a As New WebClient
+            AddHandler a.DownloadProgressChanged, AddressOf Toolsdownloadpreogresschanged
+            Await a.DownloadFileTaskAsync(url, path.FullName)
+            Await toolscontroller.CloseAsync()
             btn_start_techniclauncher.IsEnabled = True
         Catch ex As Exception
             Try
@@ -2119,7 +2221,7 @@ Public Class MainWindow
     Sub Check_Tools_Downloaded()
         'For Each item As Stirng in
         'TechnicLauncher
-        Dim technicfilename As String = Downloads.Downloadsjo("techniclauncher").Value(Of String)("filename").ToString
+        Dim technicfilename As String = "TechnicLauncher.jar"
         Dim feedthebeastfilename As String = Downloads.Downloadsjo("feedthebeast").Value(Of String)("filename").ToString
         If File.Exists(Path.Combine(mcpfad.FullName, "tools", technicfilename)) = True Then
             btn_start_techniclauncher.IsEnabled = True
@@ -2138,14 +2240,6 @@ Public Class MainWindow
     Private Async Sub MainWindow_StateChanged(sender As Object, e As EventArgs) Handles Me.StateChanged
         Settings.Settings.WindowState = Me.WindowState
         Await Settings.Save()
-    End Sub
-
-    Private Sub Webcontrol_news_LoadingFrameComplete(sender As Object, e As FrameEventArgs) Handles Webcontrol_news.LoadingFrameComplete
-        If Webcontrol_news.Source = New Uri("http://mcupdate.tumblr.com/") Then
-            Webcontrol_news.Visibility = Windows.Visibility.Visible
-            lbl_news_loading.Visibility = Windows.Visibility.Collapsed
-            pb_news_loading.Visibility = Windows.Visibility.Collapsed
-        End If
     End Sub
 
 End Class

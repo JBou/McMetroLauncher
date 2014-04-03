@@ -23,15 +23,18 @@ Class Forge_installer
     End Sub
 
     Private Sub ForgeManager_Loaded(sender As Object, e As RoutedEventArgs) Handles Me.Loaded
-        Dim theme = ThemeManager.DetectAppStyle(Application.Current)
-        Dim appTheme = ThemeManager.GetAppTheme(Me.Name)
-        If appTheme.Name = "BaseLight" Then
-            btn_copy_image.Source = ImageConvert.GetImageStream(My.Resources.appbar_page_copy)
-        Else
-            btn_copy_image.Source = ImageConvert.GetImageStream(My.Resources.appbar_page_copy_dark)
-        End If
-        Load_Forge()
-        tb_mcpfad.Text = mcpfad.FullName
+        Try
+            Dim theme = ThemeManager.DetectAppStyle(Application.Current)
+            If theme.Item1.Name = "BaseLight" Then
+                btn_copy_image.Source = ImageConvert.GetImageStream(My.Resources.appbar_page_copy)
+            Else
+                btn_copy_image.Source = ImageConvert.GetImageStream(My.Resources.appbar_page_copy_dark)
+            End If
+            Load_Forge()
+            tb_mcpfad.Text = mcpfad.FullName
+        Catch Ex As Exception
+            MsgBox(Ex.Message & Environment.NewLine & Ex.StackTrace)
+        End Try
     End Sub
 
     Private Async Sub btn_download_Click(sender As Object, e As RoutedEventArgs) Handles btn_download.Click
@@ -40,6 +43,7 @@ Class Forge_installer
         ElseIf wc.IsBusy = True Then
             wc.CancelAsync()
         Else
+            pb_download.IsIndeterminate = False
             forge_anleitung.IsSelected = True
             Dim version As String = DirectCast(lst.SelectedItem, Forge.ForgeBuild).version
             Dim mcversion As String = DirectCast(lst.SelectedItem, Forge.ForgeBuild).mcversion

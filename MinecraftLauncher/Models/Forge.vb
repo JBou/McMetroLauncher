@@ -7,7 +7,12 @@ Public Structure Forge
     Public Shared LegacyBuildList As IList(Of ForgeBuild) = New List(Of ForgeBuild)
     Public Shared ReadOnly Property ForgeList As IList(Of ForgeBuild)
         Get
-            Dim ls As IList(Of ForgeBuild) = LegacyBuildList
+            Dim ls As IList(Of ForgeBuild) = New List(Of ForgeBuild)
+            For Each item As ForgeBuild In LegacyBuildList
+                If ls.Select(Function(p) p.build).Contains(item.build) = False Then
+                    ls.Add(item)
+                End If
+            Next
             For Each item As ForgeBuild In BuildList
                 If ls.Select(Function(p) p.build).Contains(item.build) = False Then
                     ls.Add(item)
