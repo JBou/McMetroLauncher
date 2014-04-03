@@ -10,6 +10,7 @@ Functions:
 - Some other nice Features
 - Edit Profiles and Play all Minecraft Versions
 - Automatically downloads missing Forge and other libraries
+- And of course ad-free and open source :)
 
 [Download latest Release](http://patzleiner.net/download/McMetroLauncher.msi)
 ----------
