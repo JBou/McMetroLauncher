@@ -119,7 +119,7 @@
             <File Id="Craft.Net.Common" Name="Craft.Net.Common.dll" Source="$(var.McMetroLauncher.TargetDir)Craft.Net.Common.dll" />
             <File Id="Craft.Net.Client" Name="Craft.Net.Client.dll" Source="$(var.McMetroLauncher.TargetDir)Craft.Net.Client.dll" />
             <File Id="Craft.Net.Anvil" Name="Craft.Net.Anvil.dll" Source="$(var.McMetroLauncher.TargetDir)Craft.Net.Anvil.dll" />
-            <!--<File Id="BouncyCastle.Crypto" Name="BouncyCastle.Crypto.dll" Source="$(var.McMetroLauncher.TargetDir)BouncyCastle.Crypto.dll" />-->
+            <File Id="MarkdownSharp" Name="MarkdownSharp.dll" Source="$(var.McMetroLauncher.TargetDir)MarkdownSharp.dll" />
             <File Id="De.TorstenMandelkow.MetroChart" Name="De.TorstenMandelkow.MetroChart.dll" Source="$(var.McMetroLauncher.TargetDir)De.TorstenMandelkow.MetroChart.dll" />
             <!-- Awesomium SDK wird installiert, deshalb brauche ich diese Libraries nicht: -->
             <!--<File Id="avcodec_53" Name="avcodec-53.dll" Source="$(var.McMetroLauncher.ProjectDir)bin\$(var.McMetroLauncher.Configuration)\avcodec-53.dll" />

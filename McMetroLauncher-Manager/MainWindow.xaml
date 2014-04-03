@@ -10,7 +10,7 @@
 
     <Grid>
         <Button x:Name="btn_mods" Click="ModManager" Content="Mods Manager" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="296" Height="58"/>
-        <Button x:Name="btn_forge" Click="ForgeManager" Content="Forge Manager" HorizontalAlignment="Left" Margin="10,83,0,0" VerticalAlignment="Top" Width="296" Height="58"/>
+        <Button x:Name="btn_forge" Click="ForgeManager" Content="Forge Manager" HorizontalAlignment="Left" Margin="10,83,0,0" VerticalAlignment="Top" Width="296" Height="58" IsEnabled="False"/>
         <Controls:MetroProgressBar x:Name="pb_download" Margin="10,10,10,10" VerticalAlignment="Bottom" />
     </Grid>
 </Controls:MetroWindow>

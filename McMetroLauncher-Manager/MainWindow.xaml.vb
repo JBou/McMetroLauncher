@@ -62,11 +62,11 @@ Public Class Manager
 
     Private Async Function Start() As Task
         Await Modifications.Load()
-        Await Forge.Load
+        'Await Forge.Load
         Await LiteLoader.Load
         Downloads.Load()
         Await Versions_Load()
-        btn_forge.IsEnabled = True
+        'btn_forge.IsEnabled = True
         btn_mods.IsEnabled = True
         pb_download.IsIndeterminate = False
         pb_download.Visibility = Windows.Visibility.Hidden
