@@ -106,21 +106,48 @@
             <File Id="McMetroLauncher.exe.config" Name="McMetroLauncher.exe.config" Source="$(var.McMetroLauncher.TargetDir)McMetroLauncher.exe.config"  />
           </Component>
 
-          <Component Id="libraries" Guid="{D4A5EAE3-E7E3-49F8-A70A-EBEE65CBCABF}">
+          <Component Id="GrayscaleEffect" Guid="{D4A5EAE3-E7E3-49F8-A70A-EBEE65CBCABF}">
             <File Id="GrayscaleEffect" Name="GrayscaleEffect.dll" Source="$(var.McMetroLauncher.TargetDir)GrayscaleEffect.dll" />
+          </Component>
+          <Component Id="Ionic.Zip" Guid="{3F6D6547-31D0-43BC-A629-4CA80101B283}">
             <File Id="Ionic.Zip" Name="Ionic.Zip.dll" Source="$(var.McMetroLauncher.TargetDir)Ionic.Zip.dll" />
+          </Component>
+          <Component Id="MahApps.Metro" Guid="{8331726B-2614-4572-8123-6B715BDBE740}">
             <File Id="MahApps.Metro" Name="MahApps.Metro.dll" Source="$(var.McMetroLauncher.TargetDir)MahApps.Metro.dll" />
+          </Component>
+          <Component Id="MahApps.Metro.Resources" Guid="{20BC874F-6BF9-469F-ABB2-9AA1921F658A}">
             <File Id="MahApps.Metro.Resources" Name="MahApps.Metro.Resources.dll" Source="$(var.McMetroLauncher.TargetDir)MahApps.Metro.Resources.dll" />
+          </Component>
+          <Component Id="Newtonsoft.Json" Guid="{99C6B69E-CA97-480B-84C2-ED0CEEA067EF}">
             <File Id="Newtonsoft.Json" Name="Newtonsoft.Json.dll" Source="$(var.McMetroLauncher.TargetDir)Newtonsoft.Json.dll" />
+          </Component>
+          <Component Id="System.Windows.Interactivity" Guid="{DAD3B468-2CD4-444F-9403-9567ED97CE61}">
             <File Id="System.Windows.Interactivity" Name="System.Windows.Interactivity.dll" Source="$(var.McMetroLauncher.TargetDir)System.Windows.Interactivity.dll" />
+          </Component>
+          <Component Id="Ookii.Dialogs.Wpf" Guid="{B294E3B8-42F7-4FDE-B14D-C0D20134271E}">
             <File Id="Ookii.Dialogs.Wpf" Name="Ookii.Dialogs.Wpf.dll" Source="$(var.McMetroLauncher.TargetDir)Ookii.Dialogs.Wpf.dll" />
+          </Component>
+          <Component Id="fNbt" Guid="{A3C6EC2B-6125-4FB0-A2E0-DF1CB7E4C254}">
             <File Id="fNbt" Name="fNbt.dll" Source="$(var.McMetroLauncher.TargetDir)fNbt.dll" />
+          </Component>
+          <Component Id="Craft.Net" Guid="{8BE3FE4D-1CFA-4549-B700-126FF250CB3E}">
             <File Id="Craft.Net" Name="Craft.Net.dll" Source="$(var.McMetroLauncher.TargetDir)Craft.Net.dll" />
+          </Component>
+          <Component Id="Craft.Net.Common" Guid="{2FD861EA-3862-41E3-9757-8DE3FD2F642D}">
             <File Id="Craft.Net.Common" Name="Craft.Net.Common.dll" Source="$(var.McMetroLauncher.TargetDir)Craft.Net.Common.dll" />
+          </Component>
+          <Component Id="Craft.Net.Client" Guid="{1DD7B744-ECD0-4AA7-8778-8CC7ABE29995}">
             <File Id="Craft.Net.Client" Name="Craft.Net.Client.dll" Source="$(var.McMetroLauncher.TargetDir)Craft.Net.Client.dll" />
+          </Component>
+          <Component Id="Craft.Net.Anvil" Guid="{98E410D4-2CBF-45BB-83C5-26E548840E6C}">
             <File Id="Craft.Net.Anvil" Name="Craft.Net.Anvil.dll" Source="$(var.McMetroLauncher.TargetDir)Craft.Net.Anvil.dll" />
+          </Component>
+          <Component Id="MarkdownSharp" Guid="{FCE823E9-FAE2-4FE4-AD02-0CE6E75DE57D}">
             <File Id="MarkdownSharp" Name="MarkdownSharp.dll" Source="$(var.McMetroLauncher.TargetDir)MarkdownSharp.dll" />
+          </Component>
+          <Component Id="De.TorstenMandelkow.MetroChart" Guid="{3FC3143B-D705-416B-ACC8-A267D3CE6FF0}">
             <File Id="De.TorstenMandelkow.MetroChart" Name="De.TorstenMandelkow.MetroChart.dll" Source="$(var.McMetroLauncher.TargetDir)De.TorstenMandelkow.MetroChart.dll" />
+          </Component>
             <!-- Awesomium SDK wird installiert, deshalb brauche ich diese Libraries nicht: -->
             <!--<File Id="avcodec_53" Name="avcodec-53.dll" Source="$(var.McMetroLauncher.ProjectDir)bin\$(var.McMetroLauncher.Configuration)\avcodec-53.dll" />
               <File Id="avformat_53" Name="avformat-53.dll" Source="$(var.McMetroLauncher.ProjectDir)bin\$(var.McMetroLauncher.Configuration)\avformat-53.dll" />
@@ -132,7 +159,6 @@
               <File Id="libEGL" Name="libEGL.dll" Source="$(var.McMetroLauncher.ProjectDir)bin\$(var.McMetroLauncher.Configuration)\libEGL.dll" />
               <File Id="libGLESv2" Name="libGLESv2.dll" Source="$(var.McMetroLauncher.ProjectDir)bin\$(var.McMetroLauncher.Configuration)\libGLESv2.dll" />
               <File Id="awesomium_process" Name="awesomium_process" Source="$(var.McMetroLauncher.ProjectDir)bin\$(var.McMetroLauncher.Configuration)\awesomium_process" />-->
-          </Component>
 
           <Component Id="ShortCutDeinstall" Guid="{0BA3B1B9-679B-45C0-A6BB-0CEA1C5CDA7F}">
             <Shortcut Id="DeinstallShortCut" Name="$(var.Name) deinstallieren" Target="[System64Folder]msiexec.exe" Arguments="/x [ProductCode]" Icon="Icon.exe"/>
@@ -140,7 +166,7 @@
           </Component>
         </Directory>
       </Directory>
-
+      
       <!-- Verknüpfungen im Startmenü setzen 
           Siehe auch http://wix.sourceforge.net/manual-wix3/create_start_menu_shortcut.htm
       -->
@@ -158,6 +184,23 @@
       <Directory Id="DesktopFolder" Name="Desktop" />
     </Directory>
 
+    <ComponentGroup Id="libraries">
+      <ComponentRef Id="GrayscaleEffect"/>
+      <ComponentRef Id="Ionic.Zip"/>
+      <ComponentRef Id="MahApps.Metro"/>
+      <ComponentRef Id="MahApps.Metro.Resources"/>
+      <ComponentRef Id="Newtonsoft.Json"/>
+      <ComponentRef Id="System.Windows.Interactivity"/>
+      <ComponentRef Id="Ookii.Dialogs.Wpf"/>
+      <ComponentRef Id="fNbt"/>
+      <ComponentRef Id="Craft.Net"/>
+      <ComponentRef Id="Craft.Net.Common"/>
+      <ComponentRef Id="Craft.Net.Client"/>
+      <ComponentRef Id="Craft.Net.Anvil"/>
+      <ComponentRef Id="MarkdownSharp"/>
+      <ComponentRef Id="De.TorstenMandelkow.MetroChart"/>
+    </ComponentGroup>
+      
     <DirectoryRef Id="TARGETDIR">
       <Component Id="RegistryEntries" Guid="{54FE49BB-EFB5-4C87-828C-A50AE5C62215}">
         <RegistryKey  Root="HKCR"
@@ -188,7 +231,7 @@
     <Feature Id="ProductFeature" Title="$(var.Name)" Level="1">
       <ComponentRef Id="ProductComponent" />
       <ComponentRef Id="McMetroLauncher.exe.config" />
-      <ComponentRef Id="libraries" />
+      <ComponentGroupRef Id="libraries" />
       <ComponentRef Id="ShortCutDeinstall"/>
       <ComponentRef Id="ShortCutComponent" />
       <ComponentRef Id="RegistryEntries" />
@@ -212,7 +255,7 @@
               After="FindRelatedProducts">NEWPRODUCTFOUND</Custom>
       <MsiPublishAssemblies Sequence="1502" />
       <MsiUnpublishAssemblies Sequence="1501" />
-      <Custom Action="Repairperformancecounter" Before="InstallFinalize" />
+      <Custom Action="RepairPerformanceCounters" Before="InstallFinalize" />
       <RemoveExistingProducts After="InstallFinalize" />
     </InstallExecuteSequence>
 
@@ -227,7 +270,16 @@
     <!--rebuild performance counter setting from system backup-->
     <!--<Property Id="RepairperformancecounterTarget" Value="cmd.exe lodctr /r" />
     <CustomAction Id="Repairperformancecounter" BinaryKey="WixCA" DllEntry="RepairperformancecounterTarget" Impersonate="yes" />-->
-    <CustomAction Id="Repairperformancecounter" Directory="INSTALLLOCATION" ExeCommand="cmd.exe lodctr /r" Impersonate="yes" />
+    <!--<CustomAction Id="Repairperformancecounter" Directory="INSTALLLOCATION" ExeCommand="cmd.exe lodctr /r" Impersonate="yes" />-->
+    <Property Id="CMD">
+      <DirectorySearch Id="CmdFolder" Path="[SystemFolder]" Depth="1">
+        <FileSearch Id="CmdExe" Name="cmd.exe"  />
+      </DirectorySearch>
+    </Property>
+    
+    
+    <CustomAction Id="QtExecCmdLine" Property="Cmd" Value="[SystemFolder]cmd.exe" />
+    <CustomAction Id="RepairPerformanceCounters" Property="CMD" ExeCommand="lodctr /r" Return="check" />
 
 
     <!-- So kann man eine eigene Lizenzmeldung ausgeben -->

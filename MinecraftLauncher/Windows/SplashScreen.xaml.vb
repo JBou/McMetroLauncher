@@ -196,8 +196,8 @@ Public Class SplashScreen
     End Sub
 
     Async Function Start() As Task
-        Try
-            Await Dispatcher.InvokeAsync(New Action(Async Function()
+        Await Dispatcher.InvokeAsync(New Action(Async Function()
+                                                    Try
                                                         ShowWindowCommandsOnTop = False
                                                         Await Settings.Load()
                                                         ' create accent color menu items
@@ -205,7 +205,6 @@ Public Class SplashScreen
                                                         'create metro theme color menu items
                                                         AppThemes = ThemeManager.AppThemes.Select(Function(a) New AppThemeMenuData() With {.Name = a.Name, .BorderColorBrush = CType(a.Resources("BlackColorBrush"), Windows.Media.Brush), .ColorBrush = CType(a.Resources("WhiteColorBrush"), Windows.Media.Brush)}).ToList
                                                         Dim Main As New MainWindow
-                                                        Main.InitializeComponent()
                                                         If Settings.Settings.WindowState <> Windows.WindowState.Minimized Then
                                                             Main.WindowState = Settings.Settings.WindowState
                                                         End If
@@ -246,10 +245,10 @@ Public Class SplashScreen
                                                         'Finally Show The MainWindow
                                                         Main.Show()
                                                         Me.Close()
-                                                    End Function))
-        Catch ex As Exception
-            MessageBox.Show(ex.Message & Environment.NewLine & ex.StackTrace)
-        End Try
+                                                    Catch ex As Exception
+                                                        MessageBox.Show(ex.Message & Environment.NewLine & ex.StackTrace)
+                                                    End Try
+                                                End Function))
     End Function
 
     Sub dlprogresschanged(sender As Object, e As DownloadProgressChangedEventArgs)
