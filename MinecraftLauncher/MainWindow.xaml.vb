@@ -175,6 +175,7 @@ Public Module GlobalInfos
     Public Const AwesomiumVersion As String = "1.7.3"
     Public AppThemes As List(Of AppThemeMenuData)
     Public AccentColors As List(Of AccentColorMenuData)
+    Public ViewModel As New MainViewModel
     Public ReadOnly Property AssemblyVersion As String
         Get
             Return System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString()
@@ -436,7 +437,7 @@ Public Class MainWindow
         InitializeComponent()
 
         ' Fügen Sie Initialisierungen nach dem InitializeComponent()-Aufruf hinzu.
-        Me.DataContext = New MainViewModel
+        Me.DataContext = ViewModel
         AddHandler ThemeManager.IsThemeChanged, AddressOf IsThemeChanged
         Me.MetroDialogOptions.ColorScheme = MetroDialogColorScheme.Theme
     End Sub
@@ -1787,15 +1788,12 @@ Public Class MainWindow
         Delete_Mod(Version)
     End Sub
     Public Sub Delete_Mod(Version As String)
-        Dim Struktur As String
-        If Version >= "1.6.4" = True Then
-            Struktur = Version & "\" & Version & "-" & DirectCast(lb_mods.SelectedItem, Modifications.Mod).id & "." & DirectCast(lb_mods.SelectedItem, Modifications.Mod).extension
-        Else
-            Struktur = Version & "-" & DirectCast(lb_mods.SelectedItem, Modifications.Mod).id & "." & DirectCast(lb_mods.SelectedItem, Modifications.Mod).extension
-        End If
-        If File.Exists(tb_modsfolder.Text & "\" & Struktur) = True Then
-            File.Delete(tb_modsfolder.Text & "\" & Struktur)
-        End If
+        For Each selectedmod As Modifications.Mod In lb_mods.SelectedItems
+            Dim Struktur As String = Version & "\" & Version & "-" & DirectCast(lb_mods.SelectedItem, Modifications.Mod).id & "." & DirectCast(lb_mods.SelectedItem, Modifications.Mod).extension
+            If File.Exists(tb_modsfolder.Text & "\" & Struktur) = True Then
+                File.Delete(tb_modsfolder.Text & "\" & Struktur)
+            End If
+        Next
         Dim selected As Integer = lb_mods.SelectedIndex
         Filter_Mods()
         lb_mods.SelectedIndex = selected
@@ -1843,11 +1841,7 @@ Public Class MainWindow
             Dim progress As Double = modsdownloadindex / modsdownloadlist.Count
             controller.SetProgress(progress)
             controller.SetMessage(modsdownloadindex + 1 & " / " & modsdownloadlist.Count & " " & modsdownloadlist.Item(modsdownloadindex).name)
-            If modsdownloadingversion >= "1.6.4" = True Then
-                Modsfilename = modsdownloadingversion & "\" & modsdownloadingversion & "-" & modsdownloadlist.Item(modsdownloadindex).id & "." & modsdownloadlist.Item(modsdownloadindex).extension
-            Else
-                Modsfilename = modsdownloadingversion & "-" & modsdownloadlist.Item(modsdownloadindex).id & "." & modsdownloadlist.Item(modsdownloadindex).extension
-            End If
+            Modsfilename = modsdownloadingversion & "\" & modsdownloadingversion & "-" & modsdownloadlist.Item(modsdownloadindex).id & "." & modsdownloadlist.Item(modsdownloadindex).extension
             Dim capturedException As ExceptionDispatchInfo = Nothing
             Try
                 If IO.Directory.Exists(IO.Path.GetDirectoryName(cachefolder.FullName & "\" & Modsfilename)) = False Then

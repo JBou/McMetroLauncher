@@ -15,8 +15,8 @@ Public Class MainViewModel
             Return _cpu
         End Get
     End Property
-    Private theCPUCounter As PerformanceCounter = New PerformanceCounter("Processor", "% Processor Time", "_Total")
-    Private theMemCounter As PerformanceCounter = New PerformanceCounter("Memory", "Available MBytes")
+    Private CPUCounter As PerformanceCounter = New PerformanceCounter("Processor", "% Processor Time", "_Total")
+    Private MemCounter As PerformanceCounter = New PerformanceCounter("Memory", "Available MBytes")
     Private totalram As ULong = My.Computer.Info.TotalPhysicalMemory()
 
 
@@ -29,7 +29,7 @@ Public Class MainViewModel
         Dim avaiableram As ULong = My.Computer.Info.AvailablePhysicalMemory
         Dim usedram As ULong = totalram - avaiableram
         Dim percentage As Integer = CInt(usedram / totalram * 100)
-        _cpu.Add(New CPU() With {.Name = "", .Count = CInt(theCPUCounter.NextValue)})
+        _cpu.Add(New CPU() With {.Name = "", .Count = CInt(CPUCounter.NextValue)})
         _ram.Add(New Ram() With {.Name = "", .Count = percentage})
 
 
@@ -46,8 +46,8 @@ Public Class MainViewModel
         Dim avaiableram As ULong = My.Computer.Info.AvailablePhysicalMemory
         Dim usedram As ULong = totalram - avaiableram
         Dim percentage As Integer = CInt(usedram / totalram * 100)
-        _cpu.Item(0).Count = CInt(theCPUCounter.NextValue)
-        _ram.Item(0).Count = CInt(percentage)
+        _cpu.Item(0).Count = CInt(CPUCounter.NextValue)
+        _ram.Item(0).Count = percentage
         '_ram.Item(0).Count = CInt(theMemCounter.NextValue)
     End Sub
 End Class
