@@ -67,9 +67,9 @@
                       Property="PREVIOUSVERSIONSINSTALLED"
                       IncludeMinimum="yes"
                       IncludeMaximum="no" />
-    </Upgrade>
-
+    </Upgrade>      
     <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="FontsFolder" />
       <Directory Id="ProgramFilesFolder">
         <Directory Id="INSTALLLOCATION" Name="$(var.Name)" >
           <!-- Und dahinein packen wir eine Component, in diesem Fall Unser Ausführbares Programm 
@@ -83,13 +83,6 @@
             <Directory Id="tools" Name="tools">
               <Component Id="Copytools" Guid="{E3CE604D-D5C3-4EFF-816C-A6101468C090}">
                 <File Id="Pack_xz_Extractor" Name="Pack_xz_Extractor.jar" Source="$(var.McMetroLauncher.TargetDir)tools\Pack_xz_Extractor.jar" />
-              </Component>
-            </Directory>
-            <Directory Id="Fonts" Name="Fonts">
-              <Component Id="CopyFonts" Guid="{107BE247-5F22-4D28-ACC7-C1CB97B1BBF5}">
-                <File Id="Minecraft" Name="Minecraft.ttf" Source="$(var.McMetroLauncher.TargetDir)Fonts\Minecraft.ttf" TrueType="yes" />
-                <File Id="Minecraftia" Name="Minecraftia.ttf" Source="$(var.McMetroLauncher.TargetDir)Fonts\Minecraftia.ttf" TrueType="yes" />
-                <File Id="ProFontWindows" Name="ProFontWindows.ttf" Source="$(var.McMetroLauncher.TargetDir)Fonts\ProFontWindows.ttf" TrueType="yes" />
               </Component>
             </Directory>
           <Component Id="ProductComponent" Guid="{4A5619DF-5841-48EC-8D7C-D368718C6D1A}">
@@ -183,7 +176,15 @@
       <!-- Wird benötigt um den Desktop Shortcut anlegen zu können -->
       <Directory Id="DesktopFolder" Name="Desktop" />
     </Directory>
-
+      
+    <DirectoryRef Id="FontsFolder">
+      <Component Id="Fonts" Guid="{107BE247-5F22-4D28-ACC7-C1CB97B1BBF5}">
+        <File Id="Minecraft" Source="$(var.McMetroLauncher.TargetDir)Fonts\Minecraft.ttf" TrueType="yes" />
+        <File Id="Minecraftia" Source="$(var.McMetroLauncher.TargetDir)Fonts\Minecraftia.ttf" TrueType="yes" />
+        <File Id="ProFontWindows" Source="$(var.McMetroLauncher.TargetDir)Fonts\ProFontWindows.ttf" TrueType="yes" />
+      </Component>
+    </DirectoryRef>
+      
     <ComponentGroup Id="libraries">
       <ComponentRef Id="GrayscaleEffect"/>
       <ComponentRef Id="Ionic.Zip"/>
@@ -236,7 +237,7 @@
       <ComponentRef Id="ShortCutComponent" />
       <ComponentRef Id="RegistryEntries" />
       <ComponentRef Id="Copytools"/>
-      <ComponentRef Id="CopyFonts"/>
+      <ComponentRef Id="Fonts"/>
       <MergeRef Id="merge_awesomium" />
     </Feature>
 

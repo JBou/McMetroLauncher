@@ -194,12 +194,24 @@
     </ApplicationDefinition>
     <Compile Include="Controls\AspectRatioLayoutDecorator.vb" />
     <Compile Include="Controls\BindableRichTextBox.vb" />
+    <Compile Include="Models\Accent-ThemeMenuData.vb" />
     <Compile Include="Models\Converters.vb" />
     <Compile Include="Models\CryptedTextAnimation.vb" />
     <Compile Include="Models\Forge.vb" />
+    <Compile Include="Models\GlobalInfos.vb" />
     <Compile Include="Models\MainViewModel.vb" />
     <Compile Include="Models\SimpleCommand.vb" />
     <Compile Include="Models\Unpack.vb" />
+    <Compile Include="Resources\Resource.de.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resource.de.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Resources\Resource.en.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resource.en.resx</DependentUpon>
+    </Compile>
     <Compile Include="Windows\Forge_installer.xaml.vb">
       <DependentUpon>Forge_installer.xaml</DependentUpon>
     </Compile>
@@ -330,6 +342,16 @@
     <Content Include="Fonts\ProFontWindows.ttf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <EmbeddedResource Include="Resources\Resource.de.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resource.de.Designer.vb</LastGenOutput>
+      <CustomToolNamespace>My.Resources</CustomToolNamespace>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Resource.en.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resource.en.Designer.vb</LastGenOutput>
+      <CustomToolNamespace>My.Resources</CustomToolNamespace>
+    </EmbeddedResource>
     <None Include="My Project\app.manifest" />
     <None Include="My Project\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
