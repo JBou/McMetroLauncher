@@ -1789,7 +1789,7 @@ Public Class MainWindow
     End Sub
     Public Sub Delete_Mod(Version As String)
         For Each selectedmod As Modifications.Mod In lb_mods.SelectedItems
-            Dim Struktur As String = Version & "\" & Version & "-" & DirectCast(lb_mods.SelectedItem, Modifications.Mod).id & "." & DirectCast(lb_mods.SelectedItem, Modifications.Mod).extension
+            Dim Struktur As String = Version & "\" & Version & "-" & selectedmod.id & "." & selectedmod.extension
             If File.Exists(tb_modsfolder.Text & "\" & Struktur) = True Then
                 File.Delete(tb_modsfolder.Text & "\" & Struktur)
             End If
