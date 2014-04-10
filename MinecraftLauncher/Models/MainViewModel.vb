@@ -1,8 +1,21 @@
 ﻿Imports System.Collections.ObjectModel
 Imports System.ComponentModel
 Imports System.Runtime.CompilerServices
+Imports Newtonsoft.Json.Linq
 
 Public Class MainViewModel
+    Implements INotifyPropertyChanged
+    Public Event PropertyChanged(sender As Object, e As PropertyChangedEventArgs) Implements INotifyPropertyChanged.PropertyChanged
+
+    ''' <summary>
+    ''' Raises the PropertyChanged event if needed.
+    ''' </summary>
+    ''' <param name="propertyName">The name of the property that changed.</param>
+    Protected Overridable Sub OnPropertyChanged(propertyName As String)
+        RaiseEvent PropertyChanged(Me, New PropertyChangedEventArgs(propertyName))
+    End Sub
+
+
     Private ReadOnly _ram As ObservableCollection(Of Ram) = New ObservableCollection(Of Ram)
     Public ReadOnly Property Ram As ObservableCollection(Of Ram)
         Get
@@ -15,6 +28,28 @@ Public Class MainViewModel
             Return _cpu
         End Get
     End Property
+    Private ReadOnly _profiles As ObservableCollection(Of String) = New ObservableCollection(Of String)
+    Public ReadOnly Property Profiles As ObservableCollection(Of String)
+        Get
+            Return _profiles
+        End Get
+    End Property
+    Private _selectedprofile As String
+    Public Property selectedprofile() As String
+        Get
+            Return _selectedprofile
+        End Get
+        Set(value As String)
+            _selectedprofile = value
+            OnPropertyChanged("selectedprofile")
+            Dim o As String = IO.File.ReadAllText(launcher_profiles_json.FullName)
+            Dim jo As JObject = JObject.Parse(o)
+            jo("selectedProfile") = ViewModel.selectedprofile
+            IO.File.WriteAllText(launcher_profiles_json.FullName, jo.ToString)
+        End Set
+    End Property
+
+
     Private CPUCounter As PerformanceCounter = New PerformanceCounter("Processor", "% Processor Time", "_Total")
     Private MemCounter As PerformanceCounter = New PerformanceCounter("Memory", "Available MBytes")
     Private totalram As ULong = My.Computer.Info.TotalPhysicalMemory()
@@ -40,7 +75,6 @@ Public Class MainViewModel
         dispatcherTimer.Start()
     End Sub
 
-
     Private Sub dispatcherTimer_Tick(sender As Object, e As EventArgs)
         Dim totalram As ULong = My.Computer.Info.TotalPhysicalMemory()
         Dim avaiableram As ULong = My.Computer.Info.AvailablePhysicalMemory
@@ -50,6 +84,7 @@ Public Class MainViewModel
         _ram.Item(0).Count = percentage
         '_ram.Item(0).Count = CInt(theMemCounter.NextValue)
     End Sub
+
 End Class
 
 Public Class Ram

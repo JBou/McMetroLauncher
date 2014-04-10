@@ -96,6 +96,15 @@ Public Class Versionslist
             End Set
         End Property
         Private m_type As String
+        Public Property custom As Boolean
+            Get
+                Return m_custom
+            End Get
+            Set(value As Boolean)
+                m_custom = value
+            End Set
+        End Property
+        Private m_custom As Boolean
     End Class
 
 End Class

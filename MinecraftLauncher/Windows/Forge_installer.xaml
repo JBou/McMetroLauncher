@@ -7,20 +7,24 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:Behaviours="clr-namespace:MahApps.Metro.Behaviours;assembly=MahApps.Metro"
     GlowBrush="{DynamicResource AccentColorBrush}"   
-    Title="Minecraft Forge" Height="448" Width="660" Icon="../images/favicon.ico" ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
-    
+    Title="Minecraft Forge" Height="450" Width="680" MinHeight="450" MinWidth="680" Icon="../images/favicon.ico" ResizeMode="CanResizeWithGrip" WindowStartupLocation="CenterScreen">
+
     <Window.Resources>
         <ResourceDictionary>
             <local:Modified_Date_Converter x:Key="Modified_Date_Converter"/>
         </ResourceDictionary>
     </Window.Resources>
-    
+
     <DockPanel>
         <Controls:MetroProgressBar Foreground="{DynamicResource AccentColorBrush}" x:Name="pb_download" Height="10" Margin="10" VerticalAlignment="Bottom" DockPanel.Dock="Bottom" />
         <Controls:MetroAnimatedTabControl>
             <TabItem Header="Forge Versionen" x:Name="forge_list">
                 <Grid>
-                    <ListView x:Name="lst" Margin="10,10,10,44" BorderThickness="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <ListView x:Name="lst" Margin="10,10,10,44" BorderThickness="0" Grid.ColumnSpan="2">
                         <ListView.View>
                             <GridView>
                                 <GridViewColumn Header="Version" HeaderStringFormat="" DisplayMemberBinding="{Binding Path=version}" Width="130"/>
@@ -29,10 +33,11 @@
                             </GridView>
                         </ListView.View>
                     </ListView>
-                    <Button x:Name="btn_download" Content="Herunterladen und Installieren" Margin="0,0,0,0" Width="300" VerticalAlignment="Bottom" Height="29"/>
+                    <Button x:Name="btn_download" Content="Manuell installieren (Installer)" Margin="10,0,0,0" Width="307" VerticalAlignment="Bottom" HorizontalAlignment="Left" Height="29" Grid.Column="1"/>
+                    <Button x:Name="btn_download_auto" Content="Automatisch installieren" Margin="0,0,10,0" Width="307" VerticalAlignment="Bottom" HorizontalAlignment="Right" Height="29"/>
                 </Grid>
             </TabItem>
-            <TabItem Header="Anleitung" x:Name="forge_anleitung">
+            <TabItem Header="Anleitung (Manuell)" x:Name="forge_anleitung">
                 <Grid Margin="10">
                     <TextBlock Margin="10,15,10,0" FontSize="18" TextWrapping="WrapWithOverflow" Height="50" VerticalAlignment="Top" Text="Nachdem Forge heruntergeladen wurde, öffnet sich ein Fenster. Wähle dort &quot;Install Client&quot; aus und wähle beim Installationspfad folgenden Ordner aus:" />
                     <TextBox x:Name="tb_mcpfad" Margin="10,80,47,0" FontSize="13" Height="32" VerticalAlignment="Top" IsReadOnly="True" Controls:TextboxHelper.SelectAllOnFocus="True" />

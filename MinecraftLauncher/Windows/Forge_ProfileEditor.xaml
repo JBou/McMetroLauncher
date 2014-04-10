@@ -1,0 +1,17 @@
+﻿<Controls:MetroWindow x:Class="Forge_ProfileEditor"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+    xmlns:Behaviours="clr-namespace:MahApps.Metro.Behaviours;assembly=MahApps.Metro"
+    GlowBrush="{DynamicResource AccentColorBrush}"
+    Title="Version zu Profil hinzufügen" Height="222" Width="429" ResizeMode="CanMinimize" WindowStartupLocation="CenterScreen">
+    <Grid>
+        <Button x:Name="btn_save" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="100" Margin="0,0,10,10" Content="Speichern" />
+        <Button x:Name="btn_skip" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="100" Margin="0,0,115,10" Content="Überspringen" />
+        <ComboBox ItemsSource="{Binding Path=Profiles}" SelectedItem="{Binding selectedprofile, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" x:Name="cb_profiles"  VerticalAlignment="Top" Margin="34,73,10,0" />
+        <RadioButton x:Name="rb_existingprofile"  VerticalAlignment="Top"  Margin="10,50,0,0" Content="Zu bestehendem Profil hinzufügen:" IsChecked="True" />
+        <RadioButton x:Name="rb_newprofiles" VerticalAlignment="Top" Margin="10,104,0,0" Content="Neues Profil erstellen:" />
+        <TextBox x:Name="tb_newprofilename" VerticalAlignment="Top" Margin="34,127,10,0" />
+        <Label x:Name="lbl_header"  VerticalAlignment="Top"  Margin="10,10,0,0" Height="35" Padding="5,0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="16" />
+    </Grid>
+</Controls:MetroWindow>

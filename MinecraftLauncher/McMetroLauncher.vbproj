@@ -216,6 +216,9 @@
       <DependentUpon>Forge_installer.xaml</DependentUpon>
     </Compile>
     <Compile Include="Models\Formattingcodes.vb" />
+    <Compile Include="Windows\Forge_ProfileEditor.xaml.vb">
+      <DependentUpon>Forge_ProfileEditor.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Windows\LiteLoader_installer.xaml.vb">
       <DependentUpon>LiteLoader_installer.xaml</DependentUpon>
     </Compile>
@@ -258,6 +261,10 @@
       <DependentUpon>Application.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Windows\Forge_ProfileEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Windows\LiteLoader_installer.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

@@ -85,7 +85,11 @@ Public Class ProfileEditor
             End If
         End If
         Get_Versions()
-        cb_versions.SelectedItem = cb_versions.Items.OfType(Of Versionslist.Version).ToList.Where(Function(p) p.id = profile.lastVersionId).FirstOrDefault
+        If cb_versions.Items.OfType(Of Versionslist.Version).ToList.Select(Function(p) p.id).Contains(profile.lastVersionId) Then
+            cb_versions.SelectedItem = cb_versions.Items.OfType(Of Versionslist.Version).ToList.Where(Function(p) p.id = profile.lastVersionId).FirstOrDefault
+        Else
+            cb_versions.SelectedIndex = 0
+        End If
         If profile.javaDir = Nothing Then
             tb_java_executable.Text = MainWindow.Startcmd(Await Profiles.FromName(loadedprofile))
         Else
@@ -154,7 +158,7 @@ Public Class ProfileEditor
         Try
             Await Versions_Load()
             Get_Versions()
-            loadedprofile = selectedprofile
+            loadedprofile = ViewModel.selectedprofile
             If Newprofile = True Then
                 Await StandardValues()
             Else
@@ -257,7 +261,7 @@ Public Class ProfileEditor
                 End If
             End If
 
-            Me.DialogResult = True
+            Profiles.Get_Profiles()
             Me.Close()
         End If
     End Sub

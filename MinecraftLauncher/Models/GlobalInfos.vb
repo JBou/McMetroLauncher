@@ -36,7 +36,8 @@ Public Module GlobalInfos
                             .id = jo("id").ToString,
                             .type = jo("type").ToString,
                             .time = jo("time").ToString,
-                            .releaseTime = jo("releaseTime").ToString}
+                            .releaseTime = jo("releaseTime").ToString,
+                            .custom = True}
                         GlobalInfos.Versions.versions.Add(versionitem)
                     Else
                         'Falsche id wurde gefunden
@@ -194,7 +195,6 @@ Public Module GlobalInfos
     Public changelog As String = Nothing
     Public resources_dir As New DirectoryInfo(Path.Combine(mcpfad.FullName, "resources"))
     Public librariesurl As String = "https://libraries.minecraft.net/"
-    Public selectedprofile As String
     Public ReadOnly Property indexesurl(index_name As String) As String
         Get
             Return "http://s3.amazonaws.com/Minecraft.Download/indexes/" & index_name & ".json"

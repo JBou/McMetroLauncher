@@ -100,6 +100,33 @@ Public Class Profiles
         IO.File.WriteAllText(launcher_profiles_json.FullName, profilesjo.ToString)
     End Sub
 
+    Public Shared Sub Get_Profiles()
+        Profiles.Load()
+        Dim jo As JObject = Profiles.profilesjo
+        ViewModel.Profiles.Clear()
+        For Each Profile As String In Profiles.List
+            ViewModel.Profiles.Add(Profile)
+        Next
+        If jo.Properties.Select(Function(p) p.Name).Contains("selectedProfile") = True Then
+            ViewModel.selectedprofile = jo("selectedProfile").ToString
+        Else
+            jo.Add(New JProperty("selectedProfile", ViewModel.Profiles.First))
+            ViewModel.selectedprofile = ViewModel.Profiles.First
+        End If
+        If Profiles.List.Count = 0 Then
+            'StandartProfile schreiben
+            Dim standartprofile As New JObject(
+            New JProperty("profiles",
+                New JObject(
+                    New JProperty("Default",
+                        New JObject(
+                            New JProperty("name", "Default"))))),
+            New JProperty("selectedProfile", "Default"))
+            IO.File.WriteAllText(launcher_profiles_json.FullName, standartprofile.ToString)
+            Get_Profiles()
+        End If
+    End Sub
+
     Public Class Profile
         Private _name As String, _gameDir As String, _lastVersionId As String, _javaDir As String,
             _javaArgs As String, _resolution As cls_Resolution, _allowedReleaseTypes As IList(Of String),

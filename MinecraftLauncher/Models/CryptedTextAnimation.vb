@@ -28,8 +28,9 @@ Namespace JBou.Animations
                 SetValue(CryptedTextAnimation.TextProperty, value)
             End Set
         End Property
+        Private Const CHARACTERS As String = "abcdeghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.,-:;_!§$%&/()=?{[]}\<>|#*~^°"
 
-        Private Const CHARACTERS As String = "abcdeghjmnopqrsuvwxyzABCDEFGHJKLMNOPQRSTUVWXYZ0123456789"
+        Private Const bigCHARACTERS As String = "abcdeghjmnopqrsuvwxyzABCDEFGHJKLMNOPQRSTUVWXYZ0123456789"
         '+#\-/()<>€@$^&%=?
         Private Const lenght4Chars As String = "k{}f"
         Private Const narrowCHARACTERS As String = "iltI.,;:!|"

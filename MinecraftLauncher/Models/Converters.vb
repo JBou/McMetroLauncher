@@ -1,5 +1,7 @@
 ﻿Imports System.IO
 Imports Craft.Net
+Imports Newtonsoft.Json
+Imports Newtonsoft.Json.Linq
 
 #Region "Converters"
 Public Structure ImageConvert
@@ -103,7 +105,7 @@ Public Class Playerlist_Namesstring_Converter
         Dim s As IList(Of ServerStatus.PlayerList.Player) = TryCast(value, IList(Of ServerStatus.PlayerList.Player))
         If s Is Nothing Then Return Nothing
         Dim playernames As IList(Of String) = s.Select(Function(p) p.Name).ToList
-        Dim returnstring As String = "Players:" & Environment.NewLine & String.Join(Environment.NewLine, playernames)
+        Dim returnstring As String = resManager.GetString("Players") & ":" & Environment.NewLine & String.Join(Environment.NewLine, playernames)
         Return returnstring
     End Function
 
@@ -147,6 +149,32 @@ Public Class Modified_Date_Converter
         Throw New NotImplementedException()
     End Function
 
+End Class
+
+#End Region
+
+#Region "JsonConverters"
+Class CustomIntConverter
+    Inherits JsonConverter
+    Public Overrides Function CanConvert(objectType As Type) As Boolean
+        Return (objectType = GetType(Integer))
+    End Function
+
+    Public Overrides Function ReadJson(reader As JsonReader, objectType As Type, existingValue As Object, serializer As JsonSerializer) As Object
+        Dim jsonValue As JValue = serializer.Deserialize(Of JValue)(reader)
+
+        If jsonValue.Type = JTokenType.Float Then
+            Return CInt(Math.Round(CDbl(jsonValue.Value)))
+        ElseIf jsonValue.Type = JTokenType.[Integer] Then
+            Return CInt(jsonValue.Value)
+        End If
+
+        Throw New FormatException()
+    End Function
+
+    Public Overrides Sub WriteJson(writer As JsonWriter, value As Object, serializer As JsonSerializer)
+        Throw New NotImplementedException()
+    End Sub
 End Class
 
 #End Region

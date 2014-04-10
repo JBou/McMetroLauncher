@@ -12,10 +12,13 @@ Imports System.Windows.Threading
 
 Public Class SplashScreen
 
-    Public Function internetconnection() As Boolean
+    Public Async Function internetconnection() As Task(Of Boolean)
         Try
-            My.Computer.Network.Ping("www.google.com")
-            Return True
+            Using client As New WebClient
+                Using stream As Stream = Await client.OpenReadTaskAsync("http://www.google.com")
+                    Return True
+                End Using
+            End Using
         Catch ex As Exception
             Return False
         End Try
@@ -51,7 +54,7 @@ Public Class SplashScreen
             End If
 
 
-            If internetconnection() = True Then
+            If Await internetconnection() = True Then
                 If GetJavaPath() = Nothing OrElse New FileInfo(Path.Combine(GetJavaPath(), "bin", "java.exe")).Exists = False Then
                     Dim result As MessageDialogResult = Await ShowMessageAsync("Java nicht vorhanden", "Du musst Java installieren, um den McMetroLauncher und Minecraft nutzen zu können." & Environment.NewLine & "Ansonsten werden einige Funktionen nicht funktionieren!!" & Environment.NewLine & "Jetzt herunterladen?", MessageDialogStyle.AffirmativeAndNegative)
                     If result = MessageDialogResult.Affirmative Then
@@ -211,7 +214,7 @@ Public Class SplashScreen
                                                         Main.Webcontrol_news.Visibility = Windows.Visibility.Collapsed
                                                         Main.tb_modsfolder.Text = modsfolder.FullName
                                                         Await Main.Load_ModVersions()
-                                                        Main.Get_Profiles()
+                                                        Profiles.Get_Profiles()
                                                         Main.Menuitem_accent.ItemsSource = AccentColors
                                                         Main.Menuitem_theme.ItemsSource = AppThemes
                                                         Main.cb_direct_join.IsChecked = Settings.Settings.DirectJoin
@@ -230,13 +233,13 @@ Public Class SplashScreen
                                                         Main.Ping_servers()
                                                         Main.Check_Tools_Downloaded()
                                                         Me.Hide()
-                                                        If Settings.Settings.Accent <> Nothing Then
+                                                        If Settings.Settings.Accent <> Nothing And ThemeManager.Accents.Select(Function(p) p.Name).Contains(Settings.Settings.Accent) Then
                                                             Dim theme = ThemeManager.DetectAppStyle(Application.Current)
                                                             Dim accent = ThemeManager.Accents.Where(Function(p) p.Name = Settings.Settings.Accent).FirstOrDefault
                                                             If accent Is Nothing Then accent = ThemeManager.Accents.First
                                                             ThemeManager.ChangeAppStyle(Application.Current, accent, theme.Item1)
                                                         End If
-                                                        If Settings.Settings.Theme <> Nothing Then
+                                                        If Settings.Settings.Theme <> Nothing And ThemeManager.AppThemes.Select(Function(p) p.Name).Contains(Settings.Settings.Theme) Then
                                                             Dim theme = ThemeManager.DetectAppStyle(Application.Current)
                                                             Dim appTheme = ThemeManager.AppThemes.Where(Function(p) p.Name = Settings.Settings.Theme).FirstOrDefault
                                                             If appTheme Is Nothing Then appTheme = ThemeManager.AppThemes.First

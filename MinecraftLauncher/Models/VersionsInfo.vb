@@ -1,4 +1,5 @@
 ﻿Imports Newtonsoft.Json.Linq
+Imports Newtonsoft.Json
 
 Public Class Natives
     Public Property linux() As String
@@ -85,6 +86,15 @@ Public Class Library
         End Set
     End Property
     Private m_name As String
+    Public Property url As String
+        Get
+            Return m_url
+        End Get
+        Set(value As String)
+            m_url = value
+        End Set
+    End Property
+    Private m_url As String
     Public Property natives As Natives
         Get
             Return m_natives
@@ -218,6 +228,7 @@ Public Class VersionsInfo
         End Set
     End Property
     Private m_assets As String
+    <JsonIgnore>
     Public Property JObject As JObject
         Get
             Return m_jobject
