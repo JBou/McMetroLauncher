@@ -1449,17 +1449,26 @@ Public Class MainWindow
         Dim Version As String = DirectCast(lb_mods.SelectedItem, Modifications.Mod).versions.Where(Function(p) p.version = cb_modversions.SelectedItem.ToString).First.version
         Delete_Mod(Version)
     End Sub
-    Public Sub Delete_Mod(Version As String)
+    Public Async Function Delete_Mod(Version As String) As Task
+        Dim capturedException As ExceptionDispatchInfo = Nothing
         For Each selectedmod As Modifications.Mod In lb_mods.SelectedItems
-            Dim Struktur As String = Version & "\" & Version & "-" & selectedmod.id & "." & selectedmod.extension
-            If File.Exists(tb_modsfolder.Text & "\" & Struktur) = True Then
-                File.Delete(tb_modsfolder.Text & "\" & Struktur)
+            Try
+                Dim Struktur As String = Version & "\" & Version & "-" & selectedmod.id & "." & selectedmod.extension
+                If File.Exists(tb_modsfolder.Text & "\" & Struktur) = True Then
+                    File.Delete(tb_modsfolder.Text & "\" & Struktur)
+                End If
+            Catch ex As Exception
+                capturedException = ExceptionDispatchInfo.Capture(ex)
+            End Try
+            If capturedException IsNot Nothing Then
+                Await Me.ShowMessageAsync("Fehler", "Mod konnte nicht gelöscht werden: " & selectedmod.name & Environment.NewLine & "Falls der Mod in Minecraft geöffnet ist, schließe Minecraft zuerst!")
             End If
         Next
         Dim selected As Integer = lb_mods.SelectedIndex
         Filter_Mods()
         lb_mods.SelectedIndex = selected
-    End Sub
+
+    End Function
     Private Async Sub btn_downloadmod_Click(sender As Object, e As RoutedEventArgs) Handles btn_downloadmod.Click
         If moddownloading = True Then
             Await Me.ShowMessageAsync("Download läuft", "Eine Mod wird bereits heruntergeladen. Warte bitte, bis diese fertig ist!", MessageDialogStyle.Affirmative, New MetroDialogSettings() With {.AffirmativeButtonText = "Ok", .ColorScheme = MetroDialogColorScheme.Accented})
