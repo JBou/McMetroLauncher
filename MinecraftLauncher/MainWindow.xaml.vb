@@ -986,7 +986,7 @@ Public Class MainWindow
             .FileName = Startcmd(Startinfos.Profile)
             .Arguments = Arguments
             ' Arbeitsverzeichnis setzen falls nötig
-            .WorkingDirectory = ""
+            .WorkingDirectory = mcpfad.FullName
             ' kein Window erzeugen
             .CreateNoWindow = True
             ' UseShellExecute auf false setzen
