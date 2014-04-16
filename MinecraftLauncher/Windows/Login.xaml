@@ -8,16 +8,13 @@
     xmlns:Behaviours="clr-namespace:MahApps.Metro.Behaviours;assembly=MahApps.Metro"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    GlowBrush="{DynamicResource AccentColorBrush}"            
-    Title="McMetroLauncher" Height="340" Width="500"
-     MinHeight="300" MinWidth="500" Icon="../images/favicon.ico" ResizeMode="CanMinimize" >
+    GlowBrush="{DynamicResource AccentColorBrush}"  Width="500" Height="350"          
+    Title="McMetroLauncher" Icon="../images/favicon.ico" ResizeMode="CanMinimize" WindowStartupLocation="CenterScreen" >
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition/>
-        </Grid.ColumnDefinitions>
-        <Button x:Name="btn_play" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,99,89,0" Width="74" Content="Play" Height="25" />
-        <Button x:Name="btn_logout" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,99,10,0" Width="74" Content="Logout" Height="25" />
-        <ComboBox x:Name="cb_existing_users" VerticalAlignment="Top" Margin="5,99,168,0" Height="25" />
+        <CheckBox x:Name="cb_online_mode" VerticalAlignment="Top" Margin="10,104,5,0" Height="25" Content="Online Mode" VerticalContentAlignment="Center" IsChecked="True" />
+        <Button x:Name="btn_play" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,69,89,0" Width="74" Content="Play" Height="25" />
+        <Button x:Name="btn_logout" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,69,10,0" Width="74" Content="Logout" Height="25" />
+        <ComboBox x:Name="cb_existing_users" VerticalAlignment="Top" Margin="10,69,168,0" Height="25" DisplayMemberPath="displayName" />
         <TextBox x:Name="tb_username" VerticalAlignment="Top" Margin="10,160,10,0" Height="26" />
         <Label VerticalAlignment="Top" Margin="10,129,10,0" Height="26" Content="Email Addresse oder Username:" />
         <PasswordBox x:Name="pb_password" VerticalAlignment="Top" Margin="10,222,10,0" Height="26" />
@@ -32,8 +29,8 @@
                 Passwort vergessen?
             </Hyperlink>
         </TextBlock>
-        <Button x:Name="btn_login" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,276,10,0" Width="230" Content="Login" Height="25" />
-        <Button x:Name="btn_register" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,276,254,0" Width="230" Content="Register" Height="25" Click="open_register" />
+        <Button x:Name="btn_login" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="10,276,10,10" Width="230" Content="Login" Height="25" />
+        <Button x:Name="btn_register" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="10,276,254,10" Width="230" Content="Register" Height="25" Click="open_register" />
 
     </Grid>
 </Controls:MetroWindow>

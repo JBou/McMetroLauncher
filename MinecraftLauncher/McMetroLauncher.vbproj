@@ -113,6 +113,10 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>
+    </StartupObject>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Awesomium.Core, Version=1.7.3.0, Culture=neutral, PublicKeyToken=e1a0d7c8071a5214, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
@@ -195,11 +199,13 @@
     <Compile Include="Controls\AspectRatioLayoutDecorator.vb" />
     <Compile Include="Controls\BindableRichTextBox.vb" />
     <Compile Include="Models\Accent-ThemeMenuData.vb" />
+    <Compile Include="Models\authenticationDatabase.vb" />
     <Compile Include="Models\Converters.vb" />
     <Compile Include="Models\CryptedTextAnimation.vb" />
     <Compile Include="Models\Forge.vb" />
     <Compile Include="Models\GlobalInfos.vb" />
     <Compile Include="Models\MainViewModel.vb" />
+    <Compile Include="Models\Session.vb" />
     <Compile Include="Models\SimpleCommand.vb" />
     <Compile Include="Models\Unpack.vb" />
     <Compile Include="Resources\Resource.de.Designer.vb">
@@ -211,6 +217,9 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resource.en.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Views\MainView.xaml.vb">
+      <DependentUpon>MainView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Windows\Forge_installer.xaml.vb">
       <DependentUpon>Forge_installer.xaml</DependentUpon>
@@ -228,7 +237,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Models\VersionsInfo.vb" />
-    <Compile Include="MainWindow.xaml.vb">
+    <Compile Include="Windows\MainWindow.xaml.vb">
       <DependentUpon>MainWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Models\Mods.vb" />
@@ -253,6 +262,10 @@
     <Compile Include="Windows\ProfileEditor.xaml.vb">
       <DependentUpon>ProfileEditor.xaml</DependentUpon>
     </Compile>
+    <Page Include="Views\MainView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Windows\Forge_installer.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -269,7 +282,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="MainWindow.xaml">
+    <Page Include="Windows\MainWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

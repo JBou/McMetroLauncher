@@ -15,6 +15,26 @@ Public Class MainViewModel
         RaiseEvent PropertyChanged(Me, New PropertyChangedEventArgs(propertyName))
     End Sub
 
+    Public Property AppThemes As List(Of AppThemeMenuData)
+        Get
+            Return GlobalInfos.AppThemes
+        End Get
+        Set(value As List(Of AppThemeMenuData))
+            GlobalInfos.AppThemes = value
+            OnPropertyChanged("AppThemes")
+        End Set
+    End Property
+
+    Public Property AccentColors As List(Of AccentColorMenuData)
+        Get
+            Return GlobalInfos.AccentColors
+        End Get
+        Set(value As List(Of AccentColorMenuData))
+            GlobalInfos.AccentColors = value
+            OnPropertyChanged("AccentColors")
+        End Set
+    End Property
+
 
     Private ReadOnly _ram As ObservableCollection(Of Ram) = New ObservableCollection(Of Ram)
     Public ReadOnly Property Ram As ObservableCollection(Of Ram)
@@ -34,18 +54,13 @@ Public Class MainViewModel
             Return _profiles
         End Get
     End Property
-    Private _selectedprofile As String
-    Public Property selectedprofile() As String
+    Public Property selectedprofile As String
         Get
-            Return _selectedprofile
+            Return McMetroLauncher.Profiles.selectedprofile
         End Get
         Set(value As String)
-            _selectedprofile = value
+            McMetroLauncher.Profiles.selectedprofile = value
             OnPropertyChanged("selectedprofile")
-            Dim o As String = IO.File.ReadAllText(launcher_profiles_json.FullName)
-            Dim jo As JObject = JObject.Parse(o)
-            jo("selectedProfile") = ViewModel.selectedprofile
-            IO.File.WriteAllText(launcher_profiles_json.FullName, jo.ToString)
         End Set
     End Property
 

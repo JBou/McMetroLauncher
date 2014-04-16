@@ -1,11 +1,13 @@
 ﻿Imports System.IO
 Imports System.Text.RegularExpressions
 Imports System.Resources
-Imports Craft.Net.Client
 Imports Microsoft.Win32
 Imports Newtonsoft.Json.Linq
 Imports Newtonsoft.Json
 Imports System.Windows.Media
+Imports McMetroLauncher.JBou.Authentication
+Imports MahApps.Metro
+Imports System
 
 Public Module GlobalInfos
 #Region "Functions/Subs"
@@ -143,15 +145,18 @@ Public Module GlobalInfos
             End Set
         End Property
         Private Shared m_isstarting As Boolean
-
+        Public Shared Property Session As Session
     End Class
 
     '--------supportedLauncherVersion---------
     Public Const supportedLauncherVersion As Integer = 13
     Public resManager As ResourceManager = My.Resources.ResourceManager
-    Public AppThemes As List(Of AppThemeMenuData)
-    Public AccentColors As List(Of AccentColorMenuData)
+    Public AccentColors As List(Of AccentColorMenuData) = ThemeManager.Accents.Select(Function(a) New AccentColorMenuData() With {.Name = a.Name, .ColorBrush = CType(a.Resources("AccentColorBrush"), Windows.Media.Brush)}).ToList()
+    Public AppThemes As List(Of AppThemeMenuData) = ThemeManager.AppThemes.Select(Function(a) New AppThemeMenuData() With {.Name = a.Name, .BorderColorBrush = CType(a.Resources("BlackColorBrush"), Windows.Media.Brush), .ColorBrush = CType(a.Resources("WhiteColorBrush"), Windows.Media.Brush)}).ToList
     Public ViewModel As New MainViewModel
+    '--------------MainWindow------------------
+    Public Main As New MainWindow
+    '------------------------------------------
     Public ReadOnly Property AssemblyVersion As String
         Get
             Return System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString()
@@ -159,8 +164,6 @@ Public Module GlobalInfos
     End Property
     Public SelectedModVersion As String
     Public Versions As Versionslist = New Versionslist
-    Public LastLogin As LastLogin
-    Public Session As Session
     Public Website As String = "http://patzleiner.net/"
     Public Appdata As New DirectoryInfo(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData))
     Public mcpfad As New DirectoryInfo(Path.Combine(Appdata.FullName, ".minecraft"))

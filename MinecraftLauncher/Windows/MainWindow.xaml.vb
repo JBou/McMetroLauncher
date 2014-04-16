@@ -21,7 +21,6 @@ Imports fNbt
 Imports System.Threading
 Imports System.Security.Cryptography
 Imports Craft.Net
-Imports Craft.Net.Client
 Imports System.Threading.Tasks
 Imports System.ComponentModel
 Imports System.Windows.Media
@@ -31,6 +30,8 @@ Imports McMetroLauncher.Models
 Imports System.Runtime.ExceptionServices
 Imports System.Text
 Imports System.Resources
+Imports McMetroLauncher.JBou.Authentication
+Imports McMetroLauncher.JBou.Authentication.Session
 
 #End Region
 
@@ -39,6 +40,7 @@ Public Class MainWindow
     '****************Webclients*****************
     WithEvents wcresources As New System.Net.WebClient ' Für das WebClient steuerelement mit Events z.b. DownloadProgressChanged... 
     WithEvents wcversionsdownload As New System.Net.WebClient
+    WithEvents wcversionsjsondownload As New System.Net.WebClient
     WithEvents wcindexes As New System.Net.WebClient
     WithEvents wcversionsstring As New System.Net.WebClient
     WithEvents wc_libraries As New System.Net.WebClient
@@ -78,15 +80,11 @@ Public Class MainWindow
 
 #Region "GUI Update"
     Public Delegate Sub refresh_pb_download_Value(Value As Double)
-    Public Delegate Sub refresh_pb_download_Maximumimum(Value As Double)
     Public Delegate Sub refresh_pb_download_IsIndeterminate(Value As Boolean)
     Public Delegate Sub refresh_lbl_downloadstatus_Content(Value As String)
 
     Public Sub pb_download_Value(Value As Double)
         pb_download.Dispatcher.Invoke(New refresh_pb_download_Value(AddressOf set_pb_download_value), Value)
-    End Sub
-    Public Sub pb_download_Maximum(Value As Double)
-        pb_download.Dispatcher.Invoke(New refresh_pb_download_Maximumimum(AddressOf set_pb_download_Maximum), Value)
     End Sub
     Public Sub pb_download_IsIndeterminate(Value As Boolean)
         pb_download.Dispatcher.Invoke(New refresh_pb_download_IsIndeterminate(AddressOf set_pb_download_IsIndeterminate), Value)
@@ -98,11 +96,6 @@ Public Class MainWindow
     Private Async Function set_pb_download_value(Value As Double) As Task
         Await Task.Factory.StartNew(Sub()
                                         pb_download.Value = Value
-                                    End Sub, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.FromCurrentSynchronizationContext())
-    End Function
-    Private Async Function set_pb_download_Maximum(Value As Double) As Task
-        Await Task.Factory.StartNew(Sub()
-                                        pb_download.Maximum = Value
                                     End Sub, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.FromCurrentSynchronizationContext())
     End Function
     Private Async Function set_pb_download_IsIndeterminate(Value As Boolean) As Task
@@ -117,6 +110,7 @@ Public Class MainWindow
     End Function
 
 #End Region
+
 #Region "Mainwindow Events"
     Public Sub New()
 
@@ -146,9 +140,9 @@ Public Class MainWindow
             If cachefolder.Exists = True Then
                 cachefolder.Delete(True)
             End If
-
         Catch ex As Exception
         End Try
+        Environment.Exit(Environment.ExitCode)
     End Sub
 
     Private Async Sub MainWindow_Loaded(sender As Object, e As EventArgs) Handles Me.Loaded
@@ -321,14 +315,13 @@ Public Class MainWindow
                                       resourcesdownloadindex = 0
                                       resourcesdownloadtry = 1
                                       resourcesdownloading = True
-                                      pb_download_Maximum(resourcesindexes.objects.Count)
                                       DownloadResources()
                                   End Sub))
     End Function
 
     Sub DownloadResources()
-        pb_download_Value(resourcesdownloadindex)
         If resourcesdownloadindex < resourcesindexes.objects.Count Then
+            pb_download_Value(resourcesdownloadindex / resourcesindexes.objects.Count - 1 * 100)
             currentresourcesobject = resourcesindexes.objects.Item(resourcesdownloadindex)
             Dim resource As New FileInfo(resourcefile(currentresourcesobject.hash).FullName.Replace("/", "\"))
             Dim todownload As Boolean = True
@@ -469,8 +462,10 @@ Public Class MainWindow
             If Versions.versions.Where(Function(p) p.custom = False).Select(Function(p) p.id).Contains(versionid) Then
                 Try
                     Dim Request As HttpWebRequest = DirectCast(WebRequest.Create(VersionsURl), HttpWebRequest)
+                    Request.Timeout = 5000
                     Dim Response As WebResponse = Await Request.GetResponseAsync
                     Dim etag As String = Response.Headers("ETag")
+                    Response.Close()
                     Dim md5 As String = MD5FileHash(Outputfile.FullName).ToLower
                     If etag <> Chr(34) & md5 & Chr(34) Then
                         todownload = True
@@ -489,14 +484,14 @@ Public Class MainWindow
                     CacheOutputfile.Directory.Create()
                 End If
                 wcversionsdownload = New WebClient
+                wcversionsdownload.DownloadFileAsync(New Uri(VersionsURl), CacheOutputfile.FullName)
                 AddHandler wcversionsdownload.DownloadFileCompleted, AddressOf versiondownloadfinished
-                Await wcversionsdownload.DownloadFileTaskAsync(New Uri(VersionsURl), CacheOutputfile.FullName)
             Catch ex As Exception
                 Write("Fehler beim herunterladen von Minecraft " & versionid & " :" & Environment.NewLine & ex.Message, LogLevel.ERROR)
                 Startinfos.IsStarting = False
             End Try
         Else
-            Await downloadverisonsjson()
+            Await downloadversionsjson()
         End If
     End Sub
 
@@ -513,18 +508,20 @@ Public Class MainWindow
                 Outputfile.Directory.Create()
             End If
             CacheOutputfile.MoveTo(Outputfile.FullName)
-            Await downloadverisonsjson()
+            Await downloadversionsjson()
         Else
             Write("Fehler beim herunterladen von Minecraft " & Startinfos.Version.id & " :" & Environment.NewLine & e.Error.Message, LogLevel.ERROR)
             Startinfos.IsStarting = False
         End If
     End Sub
 
-    Async Function downloadverisonsjson() As Task
+    Async Function downloadversionsjson() As Task
         Dim versionid As String = Startinfos.Version.id
         Dim VersionsJSONURL As String = "https://s3.amazonaws.com/Minecraft.Download/versions/" & versionid & "/" & versionid & ".json"
         Dim OutputfileJSON As New FileInfo(Path.Combine(versionsfolder.FullName, versionid, versionid & ".json"))
         Dim CacheOutputfileJSON As New FileInfo(Path.Combine(cachefolder.FullName, "versions", versionid, versionid & ".json"))
+        Dim Request As HttpWebRequest = DirectCast(WebRequest.Create(VersionsJSONURL), HttpWebRequest)
+        Request.Timeout = 5000
         'Json File download
         Dim jsontodownload As Boolean = False
         If OutputfileJSON.Exists = False Then
@@ -532,9 +529,9 @@ Public Class MainWindow
         Else
             If Versions.versions.Where(Function(p) p.custom = False).Select(Function(p) p.id).Contains(versionid) Then
                 Try
-                    Dim Request As HttpWebRequest = DirectCast(WebRequest.Create(VersionsJSONURL), HttpWebRequest)
                     Dim Response As WebResponse = Await Request.GetResponseAsync
                     Dim etag As String = Response.Headers("ETag")
+                    Response.Close()
                     Dim md5 As String = MD5FileHash(OutputfileJSON.FullName).ToLower
                     If etag <> Chr(34) & md5 & Chr(34) Then
                         jsontodownload = True
@@ -550,12 +547,13 @@ Public Class MainWindow
             If CacheOutputfileJSON.Directory.Exists = False Then
                 CacheOutputfileJSON.Directory.Create()
             End If
-            pb_download_Maximum(100)
+            If CacheOutputfileJSON.Exists Then
+                CacheOutputfileJSON.Delete()
+            End If
             Try
-                Using a As New WebClient
-                    AddHandler a.DownloadFileCompleted, AddressOf jsondownloadfinished
-                    a.DownloadFileAsync(New Uri(VersionsJSONURL), CacheOutputfileJSON.FullName)
-                End Using
+                wcversionsjsondownload = New WebClient
+                wcversionsjsondownload.DownloadFileAsync(New Uri(VersionsJSONURL), CacheOutputfileJSON.FullName)
+                AddHandler wcversionsjsondownload.DownloadFileCompleted, AddressOf jsondownloadfinished
             Catch ex As Exception
                 Write("Fehler beim herunterladen von Minecraft " & versionid & " :" & Environment.NewLine & ex.Message, LogLevel.ERROR)
                 Startinfos.IsStarting = False
@@ -597,17 +595,11 @@ Public Class MainWindow
         End If
     End Function
 
-    Function Login(username As String, password As String) As Session
-        Dim session As Session = Client.Session.DoLogin(username, password)
-        Return session
-    End Function
-
     Async Sub Download_Libraries()
         If Startinfos.Versionsinfo Is Nothing Then
             Await Parse_VersionsInfo(Startinfos.Version)
         End If
         'http://wiki.vg/Game_Files
-        pb_download_Maximum(100)
         librariesdownloadindex = 0
         librariesdownloadtry = 1
         librariesdownloading = True
@@ -918,13 +910,29 @@ Public Class MainWindow
                                       If resourcesindexes.virtual = True Then
                                           assets_dir = Path.Combine(assetspath.FullName, "virtual", assets_index_name)
                                       End If
-                                      argumentreplacements.Add(New String() {"${auth_player_name}", Settings.Settings.Username})
+                                      argumentreplacements.Add(New String() {"${auth_player_name}", Startinfos.Session.SelectedProfile.Name})
                                       argumentreplacements.Add(New String() {"${version_name}", Startinfos.Version.id})
                                       argumentreplacements.Add(New String() {"${game_directory}", gamedir})
                                       argumentreplacements.Add(New String() {"${game_assets}", assets_dir})
                                       argumentreplacements.Add(New String() {"${assets_root}", assets_dir})
                                       argumentreplacements.Add(New String() {"${assets_index_name}", assets_index_name})
                                       argumentreplacements.Add(New String() {"${user_properties}", New JObject().ToString})
+
+                                      If Startinfos.Session.OnlineMode = True Then
+                                          'session username
+                                          argumentreplacements.Add(New String() {"${auth_uuid}", Startinfos.Session.SelectedProfile.Id})
+                                          argumentreplacements.Add(New String() {"${auth_access_token}", Startinfos.Session.AccessToken})
+                                          argumentreplacements.Add(New String() {"${auth_session}", "token:" & Startinfos.Session.AccessToken & ":" & Startinfos.Session.SelectedProfile.Id})
+                                          Dim jo As New JObject
+                                          For Each item As authenticationDatabase.Userproperty In Startinfos.Session.User.properties
+                                              jo.Add(New JProperty(item.name, item.value))
+                                          Next
+                                          argumentreplacements.Add(New String() {"${user_properties}", jo.ToString})
+                                          'TODO:
+                                          'argumentreplacements.Add(New String() {"${user_type}", "mojang/legacy"})
+                                      Else
+
+                                      End If
 
                                       For Each item As String() In argumentreplacements
                                           For i = 0 To minecraftArguments.Count - 1
@@ -1027,8 +1035,8 @@ Public Class MainWindow
             Await Me.ShowMessageAsync("Achtung", "Minecraft wird bereits gestartet!", MessageDialogStyle.Affirmative, New MetroDialogSettings() With {.AffirmativeButtonText = "Ok", .ColorScheme = MetroDialogColorScheme.Accented})
         ElseIf cb_profiles.SelectedIndex = -1 Then
             Await Me.ShowMessageAsync(Nothing, "Wähle bitte ein Profil aus!", MessageDialogStyle.Affirmative, New MetroDialogSettings() With {.AffirmativeButtonText = "Ok", .ColorScheme = MetroDialogColorScheme.Accented})
-        ElseIf tb_username.Text = Nothing Then
-            Await Me.ShowMessageAsync(Nothing, "Gib bitte einen Usernamen ein!", MessageDialogStyle.Affirmative, New MetroDialogSettings() With {.AffirmativeButtonText = "Ok", .ColorScheme = MetroDialogColorScheme.Accented})
+            'ElseIf tb_username.Text = Nothing Then
+            '    Await Me.ShowMessageAsync(Nothing, "Gib bitte einen Usernamen ein!", MessageDialogStyle.Affirmative, New MetroDialogSettings() With {.AffirmativeButtonText = "Ok", .ColorScheme = MetroDialogColorScheme.Accented})
         Else
             If Startinfos.Profile Is Nothing Then
                 Startinfos.Profile = Await Profiles.FromName(ViewModel.selectedprofile)
@@ -1036,24 +1044,7 @@ Public Class MainWindow
             Await Versions_Load()
             tabitem_console.IsSelected = True
             mc = New Process
-            'If cb_online_mode.IsChecked = True Then
-            '    If pb_Password.Password = Nothing Then
-            '        MessageBox.Show("Gib ein Password ein!", "Fehler", MessageBoxButton.OK, MessageBoxImage.Information)
-            '        Exit Sub
-            'Else
-            '    Try
-            '        Client.LastLogin.SetLastLogin(New LastLogin() With {
-            '                                      .Username = tb_username.Text,
-            '                                      .Password = pb_Password.Password
-            '                                         })
-            '        Session = Login(tb_username.Text, pb_Password.Password)
-            '    Catch ex As Client.Session.MinecraftAuthenticationException
-            '        'Auf Deutsch übersetzen
-            '        MessageBox.Show(ex.ErrorMessage)
-            '        Exit Sub
-            '    End Try
-            '    End If
-            'End If
+            Await Check_Account()
             If Startinfos.Server.JustStarted = False Then
                 If cb_direct_join.IsChecked = True Then
                     If tb_server_address.Text <> Nothing Then
@@ -1070,7 +1061,6 @@ Public Class MainWindow
                     End If
                 Else
                     Startinfos.Server.ServerAdress = Nothing
-                    Startinfos.Server.ServerPort = Nothing
                 End If
             End If
 
@@ -1254,23 +1244,6 @@ Public Class MainWindow
         End If
     End Sub
 
-    Private Sub tb_username_KeyDown(sender As Object, e As Input.KeyEventArgs) Handles tb_username.KeyDown
-        If e.Key = Key.Enter Or e.Key = Key.Return Then
-            'Deine Aktionen
-            StartMC()
-        End If
-    End Sub
-
-    Private Async Sub tb_username_TextChanged(sender As Object, e As TextChangedEventArgs) Handles tb_username.TextChanged
-        Try
-            Settings.Settings.Username = tb_username.Text
-            Await Settings.Save()
-        Catch
-        End Try
-        'My.Settings.Username = tb_username.Text.ToString
-        'My.Settings.Save()
-    End Sub
-
 #Region "Mods"
     Public Async Function Load_ModVersions() As Task
         cb_modversions.Items.Clear()
@@ -1445,9 +1418,9 @@ Public Class MainWindow
             End If
         End If
     End Sub
-    Private Sub btn_list_delete_mod_Click(sender As Object, e As RoutedEventArgs) Handles btn_list_delete_mod.Click
+    Private Async Sub btn_list_delete_mod_Click(sender As Object, e As RoutedEventArgs) Handles btn_list_delete_mod.Click
         Dim Version As String = DirectCast(lb_mods.SelectedItem, Modifications.Mod).versions.Where(Function(p) p.version = cb_modversions.SelectedItem.ToString).First.version
-        Delete_Mod(Version)
+        Await Delete_Mod(Version)
     End Sub
     Public Async Function Delete_Mod(Version As String) As Task
         Dim capturedException As ExceptionDispatchInfo = Nothing
@@ -1766,7 +1739,14 @@ Public Class MainWindow
                                                          End If
                                                          Await Versions_Load()
                                                          '1.6.2-1.7.4
-                                                         If Version.Contains("-") = True Then
+
+                                                         If Version.Contains("Spigot") Then
+                                                             Dim ver As String = Version.Replace("Spigot ", "")
+                                                             Startinfos.Version = Versions.versions.Where(Function(p) p.id = ver).FirstOrDefault
+                                                         ElseIf Version.Contains("CraftBukkit") Then
+                                                             Dim ver As String = Version.Replace("CraftBukkit ", "")
+                                                             Startinfos.Version = Versions.versions.Where(Function(p) p.id = ver).FirstOrDefault
+                                                         ElseIf Version.Contains("-") = True Then
                                                              Startinfos.Version = Versions.versions.Where(Function(p) p.id = Version.Split(CChar("-"))(1)).FirstOrDefault
                                                          Else
                                                              Startinfos.Version = Versions.versions.Where(Function(p) p.id = Version).FirstOrDefault
@@ -1907,4 +1887,74 @@ Public Class MainWindow
         Await Settings.Save()
     End Sub
 
+#Region "Auth"
+    Private Async Sub cb_profiles_SelectionChanged(sender As Object, e As SelectionChangedEventArgs) Handles cb_profiles.SelectionChanged
+        If SplashScreen.Starting = False Then
+            Await Check_Account()
+        End If
+    End Sub
+
+    Async Function Check_Account() As Task
+        If cb_profiles.SelectedIndex <> -1 Then
+            Await authenticationDatabase.Load()
+            Dim profile As Profiles.Profile = Await Profiles.FromName(ViewModel.selectedprofile)
+            If profile.playerUUID = Nothing Then
+                'Show Login
+                Dim loginscreen As New Login
+                loginscreen.Show()
+                Me.Hide()
+            Else
+                Dim capturedException As MinecraftAuthenticationException = Nothing
+                'Login with access token
+                Try
+                    If authenticationDatabase.List.Select(Function(p) p.uuid.Replace("-", "")).Contains(profile.playerUUID) Then
+                        Write("Anmelden mit access token")
+                        Dim Account = authenticationDatabase.List.Where(Function(p) p.uuid.Replace("-", "") = profile.playerUUID).First
+                        Startinfos.Session = New Session() With {.AccessToken = Account.accessToken,
+                                                          .ClientToken = authenticationDatabase.clientToken,
+                                                          .SelectedProfile = Nothing}
+                        Await Startinfos.Session.Refresh()
+                        lbl_Username.Content = "Willkommen, " & Account.displayName
+                        authenticationDatabase.List.Where(Function(p) p.uuid.Replace("-", "") = profile.playerUUID).First.accessToken = Startinfos.Session.AccessToken
+                        Await authenticationDatabase.Save()
+                    Else
+                        'Show Login
+                        Dim loginscreen As New Login
+                        loginscreen.Show()
+                        Me.Hide()
+                        Exit Function
+                    End If
+                Catch ex As MinecraftAuthenticationException
+                    capturedException = ex
+                End Try
+                If capturedException IsNot Nothing Then
+                    Await Me.ShowMessageAsync(capturedException.Error, capturedException.ErrorMessage, MessageDialogStyle.Affirmative)
+                    'Show Login
+                    Dim loginscreen As New Login
+                    loginscreen.Show()
+                    Me.Hide()
+                End If
+            End If
+        End If
+    End Function
+
+    Private Async Sub btn_logout_Click(sender As Object, e As RoutedEventArgs) Handles btn_logout.Click
+        'logout / invalidate session
+        Dim capturedException As MinecraftAuthenticationException = Nothing
+        Try
+            Dim profile As Profiles.Profile = Await Profiles.FromName(ViewModel.selectedprofile)
+            profile.playerUUID = Nothing
+            Await Profiles.Edit(ViewModel.selectedprofile, profile)
+            'Show Login
+            Dim loginscreen As New Login
+            loginscreen.Show()
+            Me.Hide()
+        Catch ex As MinecraftAuthenticationException
+            capturedException = ex
+        End Try
+        If capturedException IsNot Nothing Then
+            Await Me.ShowMessageAsync(capturedException.Error, capturedException.ErrorMessage, MessageDialogStyle.Affirmative)
+        End If
+    End Sub
+#End Region
 End Class

@@ -12,6 +12,20 @@ Public Class Profiles
     Public Shared o As String
     Public Shared profilesjo As JObject
 
+    Private Shared _selectedprofile As String
+    Public Shared Property selectedprofile() As String
+        Get
+            Return _selectedprofile
+        End Get
+        Set(value As String)
+            _selectedprofile = value
+            Dim o As String = IO.File.ReadAllText(launcher_profiles_json.FullName)
+            Dim jo As JObject = JObject.Parse(o)
+            jo("selectedProfile") = ViewModel.selectedprofile
+            IO.File.WriteAllText(launcher_profiles_json.FullName, jo.ToString)
+        End Set
+    End Property
+
     Public Shared Sub Load()
         o = File.ReadAllText(launcher_profiles_json.FullName)
         profilesjo = JObject.Parse(o)
@@ -28,71 +42,31 @@ Public Class Profiles
         Return profilesjo.Value(Of JObject)("profiles").Properties.Select(Function(p) p.Name).ToList()
     End Function
 
-    Public Shared Sub Add(ByVal Profile As Profile)
+    Public Shared Async Function Add(ByVal Profile As Profile) As Task
         Load()
-        Dim Profileproperties As JObject = New JObject(New JProperty("name", Profile.name))
-        If Profile.gameDir <> Nothing Then
-            Profileproperties.Add(New JProperty("gameDir", Profile.gameDir))
-        End If
-        If Profile.lastVersionId <> Nothing Then
-            Profileproperties.Add(New JProperty("lastVersionId", Profile.lastVersionId))
-        End If
-        If Profile.javaDir <> Nothing Then
-            Profileproperties.Add(New JProperty("javaDir", Profile.javaDir))
-        End If
-        If Profile.javaArgs <> Nothing Then
-            Profileproperties.Add(New JProperty("javaArgs", Profile.javaArgs))
-        End If
-        If Profile.resolution IsNot Nothing Then
-            If Profile.resolution.height = Nothing Then
-                Profile.resolution.height = "480"
-            End If
-            If Profile.resolution.width = Nothing Then
-                Profile.resolution.width = "854"
-            End If
-            Profileproperties.Add(New JProperty("resolution", New JObject(New JProperty("width", Profile.resolution.width), New JProperty("height", Profile.resolution.height))))
-        End If
+        Dim Profileproperties As JObject = JObject.Parse(Await JsonConvert.SerializeObjectAsync(Profile, Formatting.Indented, New JsonSerializerSettings() With {.NullValueHandling = NullValueHandling.Ignore}))
         If Profile.allowedReleaseTypes IsNot Nothing Then
-            Profile.allowedReleaseTypes.Insert(0, "release")
-            Profileproperties.Add(New JProperty("allowedReleaseTypes", New JArray(Profile.allowedReleaseTypes.Select(Function(p) p.ToString))))
+            If Profile.allowedReleaseTypes.Contains("release") = False Then
+                Profile.allowedReleaseTypes.Insert(0, "release")
+            End If
         End If
         profilesjo.Value(Of JObject)("profiles").Add(New JProperty(Profile.name, Profileproperties))
         profilesjo("selectedProfile") = Profile.name
         File.WriteAllText(launcher_profiles_json.FullName, profilesjo.ToString)
-    End Sub
+    End Function
 
-    Public Shared Sub Edit(editprofilename As String, Profile As Profile)
+    Public Shared Async Function Edit(editprofilename As String, Profile As Profile) As Task
         Load()
-        Dim Profileproperties As JObject = New JObject(New JProperty("name", Profile.name))
-        If Profile.gameDir <> Nothing Then
-            Profileproperties.Add(New JProperty("gameDir", Profile.gameDir))
-        End If
-        If Profile.lastVersionId <> Nothing Then
-            Profileproperties.Add(New JProperty("lastVersionId", Profile.lastVersionId))
-        End If
-        If Profile.javaDir <> Nothing Then
-            Profileproperties.Add(New JProperty("javaDir", Profile.javaDir))
-        End If
-        If Profile.javaArgs <> Nothing Then
-            Profileproperties.Add(New JProperty("javaArgs", Profile.javaArgs))
-        End If
-        If Profile.resolution IsNot Nothing Then
-            If Profile.resolution.height = Nothing Then
-                Profile.resolution.height = "480"
-            End If
-            If Profile.resolution.width = Nothing Then
-                Profile.resolution.width = "854"
-            End If
-            Profileproperties.Add(New JProperty("resolution", New JObject(New JProperty("width", Profile.resolution.width), New JProperty("height", Profile.resolution.height))))
-        End If
+        Dim Profileproperties As JObject = JObject.Parse(Await JsonConvert.SerializeObjectAsync(Profile, Formatting.Indented, New JsonSerializerSettings() With {.NullValueHandling = NullValueHandling.Ignore}))
         If Profile.allowedReleaseTypes IsNot Nothing Then
-            Profile.allowedReleaseTypes.Insert(0, "release")
-            Profileproperties.Add(New JProperty("allowedReleaseTypes", New JArray(Profile.allowedReleaseTypes.Select(Function(p) p.ToString))))
+            If Profile.allowedReleaseTypes.Contains("release") = False Then
+                Profile.allowedReleaseTypes.Insert(0, "release")
+            End If
         End If
         profilesjo.Value(Of JObject)("profiles").Property(editprofilename).Replace(New JProperty(Profile.name, Profileproperties))
         profilesjo("selectedProfile") = Profile.name
         File.WriteAllText(launcher_profiles_json.FullName, profilesjo.ToString)
-    End Sub
+    End Function
 
     Public Shared Sub Remove(profilename As String)
         Load()

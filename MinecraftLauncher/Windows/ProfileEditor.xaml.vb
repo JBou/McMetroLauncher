@@ -250,14 +250,16 @@ Public Class ProfileEditor
                 If Profiles.List.Contains(tb_profile_name.Text) = True Then
                     Await Me.ShowMessageAsync("Profil existiert bereits", "Dieses Profil existiert bereits!", MessageDialogStyle.Affirmative, New MetroDialogSettings() With {.AffirmativeButtonText = "Ok", .ColorScheme = MetroDialogColorScheme.Accented})
                 Else
-                    Profiles.Add(prof)
+                    Await Profiles.Add(prof)
                 End If
 
             Else
+                Dim oldprofile As Profiles.Profile = Await Profiles.FromName(loadedprofile)
+                prof.playerUUID = oldprofile.playerUUID
                 If Profiles.List.Contains(tb_profile_name.Text.ToString) And tb_profile_name.Text.ToString <> loadedprofile Then
-                    Await Me.ShowMessageAsync("Profil existiert bereits", "Dieses Profil existiert bereits!", MessageDialogStyle.Affirmative, New MetroDialogSettings() With {.AffirmativeButtonText = "Ok", .ColorScheme = MetroDialogColorScheme.Accented})
+                Await Me.ShowMessageAsync("Profil existiert bereits", "Dieses Profil existiert bereits!", MessageDialogStyle.Affirmative, New MetroDialogSettings() With {.AffirmativeButtonText = "Ok", .ColorScheme = MetroDialogColorScheme.Accented})
                 Else
-                    Profiles.Edit(loadedprofile, prof)
+                Await Profiles.Edit(loadedprofile, prof)
                 End If
             End If
 

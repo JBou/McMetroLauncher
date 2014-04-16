@@ -22,7 +22,7 @@
         <Label x:Name="lbl_statustitle" Content="Launcher wird gestartet..." Margin="86,295,10,0" VerticalAlignment="Top" VerticalContentAlignment="Center" Height="41" FontSize="20" Background="#00000000" Foreground="Black"/>
         <Controls:ProgressRing Foreground="{DynamicResource AccentColorBrush}" IsActive="True" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,300,0,0" MinWidth="60" MinHeight="60" Width="71" Height="71"/>
         <Label x:Name="lbl_status" Content="" HorizontalAlignment="Left" Margin="86,336,0,0" VerticalAlignment="Top" Width="348" VerticalContentAlignment="Center" Height="30"/>
-        <Controls:MetroProgressBar x:Name="pb_download" Margin="10,376,10,0" VerticalAlignment="Top" Height="9"/>
+        <Controls:MetroProgressBar Foreground="{DynamicResource AccentColorBrush}" x:Name="pb_download" Margin="10,376,10,0" VerticalAlignment="Top" Height="9"/>
         <Image Height="285" Margin="10,10,10,126" Width="424" Source="../minecraft_block.png"/>
         <Label x:Name="lbl_Version" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="10,0,0,10" Width="101" Height="26"/>
     </Grid>

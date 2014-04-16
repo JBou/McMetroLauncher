@@ -14,14 +14,14 @@ Public Class Forge_ProfileEditor
         If rb_existingprofile.IsChecked Then
             Dim selectedprofile As Profiles.Profile = Await Profiles.FromName(cb_profiles.SelectedItem.ToString)
             selectedprofile.lastVersionId = Versionname
-            Profiles.Edit(selectedprofile.name, selectedprofile)
+            Await Profiles.Edit(selectedprofile.name, selectedprofile)
             Profiles.Get_Profiles()
             Me.Close()
         Else
             If Profiles.List.Contains(tb_newprofilename.Text) Then
                 Await Me.ShowMessageAsync("Fehler", "Profil existiert bereits: " & tb_newprofilename.Text)
             Else
-                Profiles.Add(New Profiles.Profile With {.name = tb_newprofilename.Text, .lastVersionId = Versionname})
+                Await Profiles.Add(New Profiles.Profile With {.name = tb_newprofilename.Text, .lastVersionId = Versionname})
                 Profiles.Get_Profiles()
                 Me.Close()
             End If

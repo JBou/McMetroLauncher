@@ -105,7 +105,7 @@ Public Class Playerlist_Namesstring_Converter
         Dim s As IList(Of ServerStatus.PlayerList.Player) = TryCast(value, IList(Of ServerStatus.PlayerList.Player))
         If s Is Nothing Then Return Nothing
         Dim playernames As IList(Of String) = s.Select(Function(p) p.Name).ToList
-        Dim returnstring As String = resManager.GetString("Players") & ":" & Environment.NewLine & String.Join(Environment.NewLine, playernames)
+        Dim returnstring As String = "Players:" & Environment.NewLine & String.Join(Environment.NewLine, playernames)
         Return returnstring
     End Function
 

@@ -9,13 +9,24 @@ Imports MahApps.Metro.Controls.Dialogs
 Imports System
 Imports System.Reflection
 Imports System.Windows.Threading
+Imports McMetroLauncher.JBou.Authentication.Session
+Imports McMetroLauncher.JBou.Authentication
 
 Public Class SplashScreen
+    Dim dlversion As New WebClient
+    Dim dlchangelog As New WebClient
+    Dim dlversionsjson As New WebClient
+    Dim dlmodsfile As New WebClient
+    Dim dlforgefile As New WebClient
+    Dim dllegacyforgefile As New WebClient
 
+
+    Public Shared Starting As Boolean = True
     Public Async Function internetconnection() As Task(Of Boolean)
         Try
             Using client As New WebClient
                 Using stream As Stream = Await client.OpenReadTaskAsync("http://www.google.com")
+                    stream.Close()
                     Return True
                 End Using
             End Using
@@ -24,8 +35,32 @@ Public Class SplashScreen
         End Try
     End Function
 
+    Private Sub SplashScreen_Closing(sender As Object, e As ComponentModel.CancelEventArgs) Handles Me.Closing
+        dlversion.CancelAsync()
+        dlchangelog.CancelAsync()
+        dlversionsjson.CancelAsync()
+        dlmodsfile.CancelAsync()
+        dlforgefile.CancelAsync()
+        dllegacyforgefile.CancelAsync()
+    End Sub
+
     Private Async Sub SplashScreen_Loaded(sender As Object, e As RoutedEventArgs) Handles Me.Loaded
         Try
+            Starting = True
+            Await Settings.Load()
+            If Settings.Settings.Accent <> Nothing And ThemeManager.Accents.Select(Function(p) p.Name).Contains(Settings.Settings.Accent) Then
+                Dim theme = ThemeManager.DetectAppStyle(Application.Current)
+                Dim accent = ThemeManager.Accents.Where(Function(p) p.Name = Settings.Settings.Accent).FirstOrDefault
+                If accent Is Nothing Then accent = ThemeManager.Accents.First
+                ThemeManager.ChangeAppStyle(Application.Current, accent, theme.Item1)
+            End If
+            If Settings.Settings.Theme <> Nothing And ThemeManager.AppThemes.Select(Function(p) p.Name).Contains(Settings.Settings.Theme) Then
+                Dim theme = ThemeManager.DetectAppStyle(Application.Current)
+                Dim appTheme = ThemeManager.AppThemes.Where(Function(p) p.Name = Settings.Settings.Theme).FirstOrDefault
+                If appTheme Is Nothing Then appTheme = ThemeManager.AppThemes.First
+                ThemeManager.ChangeAppStyle(Application.Current, theme.Item2, appTheme)
+            End If
+
             Dim oAssembly As System.Reflection.AssemblyName = _
       System.Reflection.Assembly.GetExecutingAssembly().GetName
             ' Versionsnummer
@@ -85,10 +120,9 @@ Public Class SplashScreen
                     File.WriteAllText(launcher_profiles_json.FullName, standartprofile.ToString)
                 End If
                 lbl_status.Content = "Prüfe auf Updates"
-                Dim dl As New WebClient()
-                dl.DownloadStringAsync(New Uri(versionurl))
-                AddHandler dl.DownloadStringCompleted, AddressOf downloadchangelog
-                AddHandler dl.DownloadProgressChanged, AddressOf dlprogresschanged
+                dlversion.DownloadStringAsync(New Uri(versionurl))
+                AddHandler dlversion.DownloadStringCompleted, AddressOf downloadchangelog
+                AddHandler dlversion.DownloadProgressChanged, AddressOf dlprogresschanged
             Else
                 lbl_statustitle.Content = "Fehler"
                 lbl_status.Content = "Bitte überprüfe deine Internetverbindung!"
@@ -99,163 +133,191 @@ Public Class SplashScreen
     End Sub
 
     Private Sub downloadchangelog(sender As Object, e As DownloadStringCompletedEventArgs)
-        Try
-            onlineversion = e.Result
-            Dim dl As New WebClient()
-            dl.DownloadStringAsync(New Uri(changelogurl))
-            AddHandler dl.DownloadStringCompleted, AddressOf downloadversionsjson
-            AddHandler dl.DownloadProgressChanged, AddressOf dlprogresschanged
-        Catch ex As Exception
-            MessageBox.Show(ex.Message & Environment.NewLine & ex.StackTrace)
-        End Try
+        If e.Cancelled = False And e.Error Is Nothing Then
+            Try
+                onlineversion = e.Result
+                dlchangelog.DownloadStringAsync(New Uri(changelogurl))
+                AddHandler dlchangelog.DownloadStringCompleted, AddressOf downloadversionsjson
+                AddHandler dlchangelog.DownloadProgressChanged, AddressOf dlprogresschanged
+            Catch ex As Exception
+                MessageBox.Show(ex.Message & Environment.NewLine & ex.StackTrace)
+            End Try
+        ElseIf e.Cancelled = False And e.Error IsNot Nothing Then
+            MessageBox.Show("Ein Fehler ist aufgetreten: " & Environment.NewLine & e.Error.Message & Environment.NewLine & e.Error.StackTrace)
+        End If
     End Sub
 
     Private Sub downloadversionsjson(sender As Object, e As DownloadStringCompletedEventArgs)
-        Try
-            changelog = e.Result
-            If Check_Updates() = True Then
-                lbl_status.Content = "Update gefunden"
-                Dim updater As New Updater
-                updater.Show()
-                Me.Close()
-            Else
-                lbl_status.Content = "Lade Versions-Liste herunter"
-                Dim dl As New WebClient()
-                dl.DownloadFileAsync(New Uri(Versionsurl), outputjsonversions.FullName)
-                AddHandler dl.DownloadFileCompleted, AddressOf downloadmodsfile
-                AddHandler dl.DownloadProgressChanged, AddressOf dlprogresschanged
-            End If
-        Catch ex As Exception
-            MessageBox.Show(ex.Message & Environment.NewLine & ex.StackTrace)
-        End Try
-    End Sub
-
-    Private Sub downloadawesomium(sender As Object, e As DownloadStringCompletedEventArgs)
-        Try
-            changelog = e.Result
-            If Check_Updates() = True Then
-                lbl_status.Content = "Update gefunden"
-                Dim updater As New Updater
-                updater.Show()
-            Else
-                lbl_status.Content = "Lade Versions-Liste herunter"
-                Dim dl As New WebClient()
-                dl.DownloadFileAsync(New Uri(Versionsurl), outputjsonversions.FullName)
-                AddHandler dl.DownloadFileCompleted, AddressOf downloadmodsfile
-                AddHandler dl.DownloadProgressChanged, AddressOf dlprogresschanged
-            End If
-        Catch ex As Exception
-            MessageBox.Show(ex.Message & Environment.NewLine & ex.StackTrace)
-        End Try
+        If e.Cancelled = False And e.Error Is Nothing Then
+            Try
+                changelog = e.Result
+                If Check_Updates() = True Then
+                    lbl_status.Content = "Update gefunden"
+                    Dim updater As New Updater
+                    updater.Show()
+                    Me.Close()
+                Else
+                    lbl_status.Content = "Lade Versions-Liste herunter"
+                    dlversionsjson.DownloadFileAsync(New Uri(Versionsurl), outputjsonversions.FullName)
+                    AddHandler dlversionsjson.DownloadFileCompleted, AddressOf downloadmodsfile
+                    AddHandler dlversionsjson.DownloadProgressChanged, AddressOf dlprogresschanged
+                End If
+            Catch ex As Exception
+                MessageBox.Show(ex.Message & Environment.NewLine & ex.StackTrace)
+            End Try
+        ElseIf e.Cancelled = False And e.Error IsNot Nothing Then
+            MessageBox.Show("Ein Fehler ist aufgetreten: " & Environment.NewLine & e.Error.Message & Environment.NewLine & e.Error.StackTrace)
+        End If
     End Sub
 
     Private Async Sub downloadmodsfile(sender As Object, e As ComponentModel.AsyncCompletedEventArgs)
-        Try
-            Await Versions_Load()
-            lbl_status.Content = "Lade Mod-Liste herunter"
-            Dim dl As New WebClient()
-            dl.DownloadFileAsync(New Uri(modfileurl), modsfile.FullName)
-            AddHandler dl.DownloadFileCompleted, AddressOf downloadlegacyforgefile
-            AddHandler dl.DownloadProgressChanged, AddressOf dlprogresschanged
-        Catch ex As Exception
-            MessageBox.Show(ex.Message & Environment.NewLine & ex.StackTrace)
-        End Try
+        If e.Cancelled = False And e.Error Is Nothing Then
+            Try
+                Await Versions_Load()
+                lbl_status.Content = "Lade Mod-Liste herunter"
+                dlmodsfile.DownloadFileAsync(New Uri(modfileurl), modsfile.FullName)
+                AddHandler dlmodsfile.DownloadFileCompleted, AddressOf downloadlegacyforgefile
+                AddHandler dlmodsfile.DownloadProgressChanged, AddressOf dlprogresschanged
+            Catch ex As Exception
+                MessageBox.Show(ex.Message & Environment.NewLine & ex.StackTrace)
+            End Try
+        ElseIf e.Cancelled = False And e.Error IsNot Nothing Then
+            MessageBox.Show("Ein Fehler ist aufgetreten: " & Environment.NewLine & e.Error.Message & Environment.NewLine & e.Error.StackTrace)
+        End If
     End Sub
 
     Private Sub downloadlegacyforgefile(sender As Object, e As ComponentModel.AsyncCompletedEventArgs)
-        Try
-            lbl_status.Content = "Lade Forge-Build-Liste herunter"
-            Dim dl As New WebClient
-            dl.DownloadFileAsync(New Uri(Legacyforgeurl), Legacyforgefile.FullName)
-            AddHandler dl.DownloadFileCompleted, AddressOf downloadforgefile
-            AddHandler dl.DownloadProgressChanged, AddressOf dlprogresschanged
-
-        Catch ex As Exception
-            MessageBox.Show(ex.Message & Environment.NewLine & ex.StackTrace)
-        End Try
+        If e.Cancelled = False And e.Error Is Nothing Then
+            Dim valid As Boolean = True
+            Try
+                JContainer.Parse(File.ReadAllText(Legacyforgefile.FullName))
+            Catch ex As Exception
+                valid = False
+            End Try
+            If valid = True Then
+                Downloadforgefile()
+            Else
+                Try
+                    lbl_status.Content = "Lade Forge-Build-Liste herunter"
+                    dlforgefile.DownloadFileAsync(New Uri(Legacyforgeurl), Legacyforgefile.FullName)
+                    AddHandler dlforgefile.DownloadFileCompleted, AddressOf downloadlegacyforgefilefinfished
+                    AddHandler dlforgefile.DownloadProgressChanged, AddressOf dlprogresschanged
+                Catch ex As Exception
+                    MessageBox.Show(ex.Message & Environment.NewLine & ex.StackTrace)
+                End Try
+            End If
+        ElseIf e.Cancelled = False And e.Error IsNot Nothing Then
+            MessageBox.Show("Ein Fehler ist aufgetreten: " & Environment.NewLine & e.Error.Message & Environment.NewLine & e.Error.StackTrace)
+        End If
     End Sub
 
-    Private Sub downloadforgefile(sender As Object, e As ComponentModel.AsyncCompletedEventArgs)
+    Private Sub downloadlegacyforgefilefinfished(sender As Object, e As ComponentModel.AsyncCompletedEventArgs)
+        If e.Cancelled = False And e.Error Is Nothing Then
+            Downloadforgefile()
+        ElseIf e.Cancelled = False And e.Error IsNot Nothing Then
+            MessageBox.Show("Ein Fehler ist aufgetreten: " & Environment.NewLine & e.Error.Message & Environment.NewLine & e.Error.StackTrace)
+        End If
+    End Sub
+
+    Sub Downloadforgefile()
         Try
-            Dim dl As New WebClient()
-            dl.DownloadFileAsync(New Uri(Forgeurl), Forgefile.FullName)
-            AddHandler dl.DownloadFileCompleted, AddressOf DownloadsFinished
-            AddHandler dl.DownloadProgressChanged, AddressOf dlprogresschanged
+            dllegacyforgefile.DownloadFileAsync(New Uri(Forgeurl), Forgefile.FullName)
+            AddHandler dllegacyforgefile.DownloadFileCompleted, AddressOf DownloadsFinished
+            AddHandler dllegacyforgefile.DownloadProgressChanged, AddressOf dlprogresschanged
         Catch ex As Exception
             MessageBox.Show(ex.Message & Environment.NewLine & ex.StackTrace)
         End Try
     End Sub
 
     Private Async Sub DownloadsFinished(sender As Object, e As ComponentModel.AsyncCompletedEventArgs)
-        Try
-            Await Modifications.Load()
-            Await Forge.Load()
-            Await LiteLoader.Load()
-            Downloads.Load()
-            Await Start()
-        Catch ex As Exception
-            MessageBox.Show(ex.Message & Environment.NewLine & ex.StackTrace)
-        End Try
+        If e.Cancelled = False And e.Error Is Nothing Then
+            Try
+                lbl_status.Content = "Launcher startet..."
+                Await Modifications.Load()
+                Await Forge.Load()
+                Await LiteLoader.Load()
+                Downloads.Load()
+                Await Start()
+            Catch ex As Exception
+                MessageBox.Show(ex.Message & Environment.NewLine & ex.StackTrace)
+            End Try
+        ElseIf e.Cancelled = False And e.Error IsNot Nothing Then
+            MessageBox.Show("Ein Fehler ist aufgetreten: " & Environment.NewLine & e.Error.Message & Environment.NewLine & e.Error.StackTrace)
+        End If
     End Sub
 
     Async Function Start() As Task
-        Await Dispatcher.InvokeAsync(New Action(Async Function()
-                                                    Try
-                                                        ShowWindowCommandsOnTop = False
-                                                        Await Settings.Load()
-                                                        ' create accent color menu items
-                                                        AccentColors = ThemeManager.Accents.Select(Function(a) New AccentColorMenuData() With {.Name = a.Name, .ColorBrush = CType(a.Resources("AccentColorBrush"), Windows.Media.Brush)}).ToList()
-                                                        'create metro theme color menu items
-                                                        AppThemes = ThemeManager.AppThemes.Select(Function(a) New AppThemeMenuData() With {.Name = a.Name, .BorderColorBrush = CType(a.Resources("BlackColorBrush"), Windows.Media.Brush), .ColorBrush = CType(a.Resources("WhiteColorBrush"), Windows.Media.Brush)}).ToList
-                                                        Dim Main As New MainWindow
-                                                        If Settings.Settings.WindowState <> Windows.WindowState.Minimized Then
-                                                            Main.WindowState = Settings.Settings.WindowState
-                                                        End If
-                                                        Main.Webcontrol_news.Visibility = Windows.Visibility.Collapsed
-                                                        Main.tb_modsfolder.Text = modsfolder.FullName
-                                                        Await Main.Load_ModVersions()
-                                                        Profiles.Get_Profiles()
-                                                        Main.Menuitem_accent.ItemsSource = AccentColors
-                                                        Main.Menuitem_theme.ItemsSource = AppThemes
-                                                        Main.cb_direct_join.IsChecked = Settings.Settings.DirectJoin
-                                                        Main.tb_server_address.Text = Settings.Settings.ServerAddress
-                                                        Main.tb_username.Text = Settings.Settings.Username
-                                                        'LastLogin = Client.LastLogin.GetLastLogin
-                                                        'If LastLogin IsNot Nothing Then
-                                                        '    If LastLogin.Username <> Nothing Then
-                                                        '        tb_username.Text = LastLogin.Username
-                                                        '    End If
-                                                        '    If LastLogin.Password <> Nothing Then
-                                                        '        pb_Password.Password = LastLogin.Password
-                                                        '    End If
-                                                        'End If
-                                                        Await Main.Load_Servers()
-                                                        Main.Ping_servers()
-                                                        Main.Check_Tools_Downloaded()
-                                                        Me.Hide()
-                                                        If Settings.Settings.Accent <> Nothing And ThemeManager.Accents.Select(Function(p) p.Name).Contains(Settings.Settings.Accent) Then
-                                                            Dim theme = ThemeManager.DetectAppStyle(Application.Current)
-                                                            Dim accent = ThemeManager.Accents.Where(Function(p) p.Name = Settings.Settings.Accent).FirstOrDefault
-                                                            If accent Is Nothing Then accent = ThemeManager.Accents.First
-                                                            ThemeManager.ChangeAppStyle(Application.Current, accent, theme.Item1)
-                                                        End If
-                                                        If Settings.Settings.Theme <> Nothing And ThemeManager.AppThemes.Select(Function(p) p.Name).Contains(Settings.Settings.Theme) Then
-                                                            Dim theme = ThemeManager.DetectAppStyle(Application.Current)
-                                                            Dim appTheme = ThemeManager.AppThemes.Where(Function(p) p.Name = Settings.Settings.Theme).FirstOrDefault
-                                                            If appTheme Is Nothing Then appTheme = ThemeManager.AppThemes.First
-                                                            ThemeManager.ChangeAppStyle(Application.Current, theme.Item2, appTheme)
-                                                        End If
-                                                        'Finally Show The MainWindow
-                                                        Main.Show()
-                                                        Me.Close()
-                                                    Catch ex As Exception
-                                                        MessageBox.Show(ex.Message & Environment.NewLine & ex.StackTrace)
-                                                    End Try
-                                                End Function))
+        Try
+            ShowWindowCommandsOnTop = False
+            If Settings.Settings.WindowState <> Windows.WindowState.Minimized Then
+                Main.WindowState = Settings.Settings.WindowState
+            End If
+            Main.Webcontrol_news.Visibility = Windows.Visibility.Collapsed
+            Main.tb_modsfolder.Text = modsfolder.FullName
+            Await Main.Load_ModVersions()
+            Profiles.Get_Profiles()
+            Main.cb_direct_join.IsChecked = Settings.Settings.DirectJoin
+            Main.tb_server_address.Text = Settings.Settings.ServerAddress
+            'Main.tb_username.Text = Settings.Settings.Username
+            Await Main.Load_Servers()
+            Main.Ping_servers()
+            Main.Check_Tools_Downloaded()
+            Await Check_Account()
+            Starting = False
+        Catch ex As Exception
+            MessageBox.Show(ex.Message & Environment.NewLine & ex.StackTrace)
+        End Try
     End Function
 
     Sub dlprogresschanged(sender As Object, e As DownloadProgressChangedEventArgs)
         pb_download.Value = e.ProgressPercentage
     End Sub
 
+
+#Region "Auth"
+
+    Async Function Check_Account() As Task
+        Await authenticationDatabase.Load()
+        Dim profile As Profiles.Profile = Await Profiles.FromName(ViewModel.selectedprofile)
+        If profile.playerUUID = Nothing Then
+            'Show Login
+            Dim loginscreen As New Login
+            loginscreen.Show()
+        Else
+            Dim capturedException As MinecraftAuthenticationException = Nothing
+            'Login with access token
+            Try
+                If authenticationDatabase.List.Select(Function(p) p.uuid.Replace("-", "")).Contains(profile.playerUUID) Then
+                    lbl_status.Content = "Anmelden mit access token"
+                    Dim Account = authenticationDatabase.List.Where(Function(p) p.uuid.Replace("-", "") = profile.playerUUID).First
+                    Dim session = New Session() With {.AccessToken = Account.accessToken,
+                                                      .ClientToken = authenticationDatabase.clientToken,
+                                                      .SelectedProfile = Nothing}
+                    Await session.Refresh
+                    Main.lbl_Username.Content = "Willkommen, " & Account.displayName
+                    authenticationDatabase.List.Where(Function(p) p.uuid.Replace("-", "") = profile.playerUUID).First.accessToken = session.AccessToken
+                    Await authenticationDatabase.Save()
+                Else
+                    'Show Login
+                    Dim loginscreen As New Login
+                    loginscreen.Show()
+                    Me.Close()
+                    Exit Function
+                End If
+            Catch ex As MinecraftAuthenticationException
+                capturedException = ex
+            End Try
+            If capturedException IsNot Nothing Then
+                Await Me.ShowMessageAsync(capturedException.Error, capturedException.ErrorMessage, MessageDialogStyle.Affirmative)
+                'Show Login
+                Dim loginscreen As New Login
+                loginscreen.Show()
+            Else
+                Main.Show()
+            End If
+        End If
+        Me.Close()
+    End Function
+
+#End Region
 End Class

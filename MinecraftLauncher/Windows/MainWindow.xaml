@@ -11,7 +11,7 @@
     xmlns:chart="clr-namespace:De.TorstenMandelkow.MetroChart;assembly=De.TorstenMandelkow.MetroChart" 
     GlowBrush="{DynamicResource AccentColorBrush}"            
     Title="McMetroLauncher" Height="610" Width="950"
-    ForceCursor="True" MinHeight="610" MinWidth="950" Icon="images/favicon.ico" ResizeMode="CanResizeWithGrip" UseLayoutRounding="False" ScrollViewer.CanContentScroll="True" >
+    ForceCursor="True" MinHeight="610" MinWidth="950" Icon="/images/favicon.ico" ResizeMode="CanResizeWithGrip" UseLayoutRounding="False" ScrollViewer.CanContentScroll="True" >
 
     <Window.Resources>
         <ResourceDictionary>
@@ -66,9 +66,9 @@
             <Style x:Key="myHeaderStyle" TargetType="{x:Type GridViewColumnHeader}">
                 <Setter Property="Visibility" Value="Collapsed" />
             </Style>
-            <Image x:Key="serverlistcontext_copy_image" Source="images/light/appbar.page.copy.png" Height="30"/>
-            <Image x:Key="serverlistcontext_direct_join_image" Source="images/light/appbar.control.play.png" Height="30"/>
-            <Image x:Key="serverlistcontext_direct_join_image2" Source="images/light/appbar.control.play.png" Height="30"/>
+            <Image x:Key="serverlistcontext_copy_image" Source="/images/light/appbar.page.copy.png" Height="30"/>
+            <Image x:Key="serverlistcontext_direct_join_image" Source="/images/light/appbar.control.play.png" Height="30"/>
+            <Image x:Key="serverlistcontext_direct_join_image2" Source="/images/light/appbar.control.play.png" Height="30"/>
         </ResourceDictionary>
     </Window.Resources>
 
@@ -147,15 +147,15 @@
                         </TabControl.Resources>
                         <TabItem Header="Neuigkeiten" >
                             <Grid>
-                                <awe:WebControl x:Name="Webcontrol_news" Margin="10" Source="http://mcupdate.tumblr.com/" IsTransparent="True" />
+                                <awe:WebControl x:Name="Webcontrol_news" Margin="10,10,10,0" Source="http://mcupdate.tumblr.com/" IsTransparent="True" />
                                 <Grid HorizontalAlignment="Center" VerticalAlignment="Center" Height="100">
                                     <Label x:Name="lbl_news_loading" Content="Neuigkeiten werden geladen..."  FontSize="60" VerticalAlignment="Top"  />
                                     <Controls:MetroProgressBar x:Name="pb_news_loading" IsIndeterminate="True" VerticalAlignment="Bottom" Height="10" />
                                 </Grid>
                             </Grid>
                         </TabItem>
-                        <TabItem x:Name="tabitem_console" Header="Console" Margin="3,0,-3,0" >
-                            <RichTextBox x:Name="tb_ausgabe" VerticalScrollBarVisibility="Auto" IsReadOnly="True" VerticalContentAlignment="Top" Margin="10" HorizontalScrollBarVisibility="Auto" TabIndex="2">
+                        <TabItem x:Name="tabitem_console" Header="Console" >
+                            <RichTextBox x:Name="tb_ausgabe" VerticalScrollBarVisibility="Auto" IsReadOnly="True" VerticalContentAlignment="Top" Margin="10,10,10,0" HorizontalScrollBarVisibility="Auto" TabIndex="2">
                                 <RichTextBox.Resources>
                                     <Style TargetType="{x:Type Paragraph}">
                                         <Setter Property="Margin" Value="0"/>
@@ -165,13 +165,16 @@
                         </TabItem>
                     </TabControl>
                     <ListBox x:Name="Listbox1" HorizontalAlignment="Left" Height="271" Margin="459,10,0,0" VerticalAlignment="Top" Width="473" Visibility="Collapsed"/>
-                    <TextBox x:Name="tb_username" HorizontalAlignment="Right" Height="32" Margin="0,0,138,10" TextWrapping="Wrap" VerticalAlignment="Bottom" Width="148" VerticalContentAlignment="Center" TabIndex="10"/>
-                    <Button x:Name="btn_startMC" Content="Start" HorizontalAlignment="Right" Margin="0,0,10,10" VerticalAlignment="Bottom" Width="123" Height="69" FontSize="30" TabIndex="11"/>
+                    <Button x:Name="btn_startMC" Content="Play" HorizontalAlignment="Right" Margin="0,0,10,10" VerticalAlignment="Bottom" Width="150" Height="69" FontSize="30" TabIndex="11"/>
+                    <StackPanel Orientation="Vertical" Margin="0,0,165,10"  HorizontalAlignment="Right"  VerticalAlignment="Bottom" Height="69">
+                        <Label x:Name="lbl_Username" Width="180" Height="30" TabIndex="11" HorizontalAlignment="Center" VerticalAlignment="Center" HorizontalContentAlignment="Center" />
+                        <Button x:Name="btn_logout" Content="LogOut" Width="60" Height="22" TabIndex="11" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,10,0,0"/>
+                    </StackPanel>
                     <Controls:MetroProgressBar Foreground="{DynamicResource AccentColorBrush}" x:Name="pb_download" Height="5" Margin="10,0,10,84" VerticalAlignment="Bottom"/>
                     <ComboBox x:Name="cb_versions" HorizontalAlignment="Left" Margin="348,0,0,47" VerticalAlignment="Bottom" Width="76" Height="32" Visibility="Hidden"/>
                     <ComboBox x:Name="cb_type" HorizontalAlignment="Left" Margin="246,0,0,47" VerticalAlignment="Bottom" Width="97" Height="32" Visibility="Hidden"/>
                     <ListBox x:Name="lb_Datum" HorizontalAlignment="Left" Height="162" Margin="10,348,0,0" VerticalAlignment="Top" Width="179" Visibility="Hidden"/>
-                    <Label x:Name="lbl_downloadstatus" HorizontalAlignment="Left" Margin="233,0,0,47" VerticalAlignment="Bottom" Width="418" Height="32"/>
+                    <Label x:Name="lbl_downloadstatus" HorizontalAlignment="Left" Margin="353,0,0,47" VerticalAlignment="Bottom" Width="418" Height="32"/>
                     <ComboBox x:Name="cb_ram" HorizontalAlignment="Right" Margin="0,0,138,10" VerticalAlignment="Bottom" Width="148" Height="32" ToolTip="Nur verfügbar mit Java 64 bit" Visibility="Hidden"/>
                     <Label Content="Ram" HorizontalAlignment="Right" Margin="0,0,291,10" VerticalAlignment="Bottom" Height="32" Width="78" FontSize="15" ToolTip="Nur verfügbar mit Java 64 bit" Visibility="Hidden"/>
                     <Button x:Name="btn_new_profile" Content="Neu" HorizontalAlignment="Left" Margin="10,0,0,10" VerticalAlignment="Bottom" Width="26" Height="33" MinWidth="50" TabIndex="4"/>
@@ -183,9 +186,8 @@
                     <ListBox x:Name="lb_libraries_url" HorizontalAlignment="Left" Height="271" Margin="323,120,0,0" VerticalAlignment="Top" Width="320" Visibility="Collapsed"/>
                     <PasswordBox x:Name="pb_Password" HorizontalAlignment="Right" Height="32" Margin="0,0,138,10" VerticalAlignment="Bottom" Width="148" VerticalContentAlignment="Center" IsEnabled="False" Visibility="Hidden"/>
                     <CheckBox x:Name="cb_online_mode" HorizontalAlignment="Right" Height="32" Content="Online Mode" Margin="0,0,180,10" VerticalAlignment="Bottom" Width="106" VerticalContentAlignment="Center" IsEnabled="False" Visibility="Hidden"/>
-                    <TextBox x:Name="tb_server_address" Controls:TextboxHelper.Watermark="Address" HorizontalAlignment="Right" Height="32" Margin="0,0,291,10" TextWrapping="Wrap" VerticalAlignment="Bottom" Width="148" VerticalContentAlignment="Center" TabIndex="8"/>
-                    <CheckBox x:Name="cb_direct_join" HorizontalAlignment="Right" Height="32" Content="Direct Join" Margin="0,0,291,47" VerticalAlignment="Bottom" Width="148" VerticalContentAlignment="Center" Padding="6,0,0,0" FontSize="15" ToolTip="Tritt nach dem Spielstart automatisch dem festgelegten Server bei" TabIndex="7"/>
-                    <Label HorizontalAlignment="Right" Height="32" Content="Username" Margin="0,0,138,47" VerticalAlignment="Bottom" Width="148" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" FontSize="20" Padding="0" TabIndex="9" />
+                    <TextBox x:Name="tb_server_address" Controls:TextboxHelper.Watermark="Address" HorizontalAlignment="Right" Height="32" Margin="0,0,542,10" TextWrapping="Wrap" VerticalAlignment="Bottom" Width="148" VerticalContentAlignment="Center" TabIndex="8"/>
+                    <CheckBox x:Name="cb_direct_join" HorizontalAlignment="Right" Height="32" Content="Direct Join" Margin="0,0,542,47" VerticalAlignment="Bottom" Width="148" VerticalContentAlignment="Center" Padding="6,0,0,0" FontSize="15" ToolTip="Tritt nach dem Spielstart automatisch dem festgelegten Server bei" TabIndex="7"/>
 
 
                 </Grid>
@@ -194,18 +196,18 @@
                 <Grid Margin="24,37,18,-7" Width="900">
                     <Button Content="Forge installieren" x:Name="install_forge" Click="forge_installer" Margin="0,10,10,0" Height="74" VerticalAlignment="Top" HorizontalAlignment="Right" Width="165"/>
                     <TextBlock TextWrapping="Wrap" Margin="274,18,180,422" Padding="5" Text="Minecraft Forge ist ein ModLoader mit dem ihr einfacher Mods installieren könnt. Er hilft dabei, dass die Mods untereinander kompatibel sind. Die meisten Mods basieren auf Forge. Du kannst Mods für Forge unter dem Tab &quot;Mods&quot; installieren." VerticalAlignment="Top" />
-                    <Image Margin="26,10,0,0" Height="74" VerticalAlignment="Top" HorizontalAlignment="Left" Width="243" Source="images/forge_banner.png"/>
+                    <Image Margin="26,10,0,0" Height="74" VerticalAlignment="Top" HorizontalAlignment="Left" Width="243" Source="/images/forge_banner.png"/>
                     <TextBlock TextWrapping="Wrap" Margin="274,199,180,229" Padding="5" Text="Mit den Technic Launcher kannst du viele bekannte Modpacks spielen wie z.B. Tekkit, Hexxit, Volt.... Auserdem kannst du eigene Modpacks hinzufügen und spielen. Diese findest du auf http://technicpack.net." VerticalAlignment="Top" Height="70" />
                     <Button Content="Herunterladen" x:Name="btn_download_techniclauncher" Click="download_techniclauncher" Margin="0,215,10,0" Height="35" VerticalAlignment="Top" HorizontalAlignment="Right" Width="165"/>
                     <Button Content="Starten" x:Name="btn_start_techniclauncher"  Click="start_techniclauncher" Margin="0,255,10,0" Height="35" VerticalAlignment="Top" HorizontalAlignment="Right" Width="165"/>
-                    <Image Margin="10,183,0,0" Height="91" VerticalAlignment="Top" HorizontalAlignment="Left" Width="259" Source="images/tl.png"/>
+                    <Image Margin="10,183,0,0" Height="91" VerticalAlignment="Top" HorizontalAlignment="Left" Width="259" Source="/images/tl.png"/>
                     <Button Content="LiteLoader installieren" x:Name="install_liteloader" Click="liteloader_installer" Margin="0,110,10,0" Height="74" VerticalAlignment="Top" HorizontalAlignment="Right" Width="165"/>
                     <TextBlock TextWrapping="Wrap" Margin="274,101,180,323" Padding="5" Text="LiteLoader ist ein ModLoader der dafür entwickelt wurde, grundlegende Loader Funktionalitaten für Mods anzubieten, die nicht den Spielmechanismus ändern müssen. Er wurde dafür entwickelt, neben Minecraft Forge zu laufen und zwischen LiteLoader und Forge Mods treten keine Konflikte auf." VerticalAlignment="Top" />
-                    <Image Margin="25,89,0,0" Height="83" VerticalAlignment="Top" HorizontalAlignment="Left" Width="243" Source="images/liteloader_header_xmas.png"/>
+                    <Image Margin="25,89,0,0" Height="83" VerticalAlignment="Top" HorizontalAlignment="Left" Width="243" Source="/images/liteloader_header_xmas.png"/>
                     <TextBlock TextWrapping="Wrap" Margin="274,293,180,135" Padding="5" Text="Mit den Feed The Beast Launcher kannst du viele bekannte Modpacks spielen wie z.B. Unleashed, Unhinged, FTB Ultimate, Direwolf 20... die sehr viele Mods beinhalten. Mehr Infos findest du auf http://feed-the-beast.com." VerticalAlignment="Top" Height="70" />
                     <Button Content="Herunterladen" x:Name="btn_download_feedthebeast" Click="download_feedthebeast" Margin="0,295,10,0" Height="35" VerticalAlignment="Top" HorizontalAlignment="Right" Width="165"/>
                     <Button Content="Starten" x:Name="btn_start_feedthebeast"  Click="start_feedthebeast" Margin="0,335,10,0" Height="35" VerticalAlignment="Top" HorizontalAlignment="Right" Width="165"/>
-                    <Image Margin="74,270,0,0" Height="86" VerticalAlignment="Top" HorizontalAlignment="Left" Width="134" Source="images/web-ftb-logo_0.png"/>
+                    <Image Margin="74,270,0,0" Height="86" VerticalAlignment="Top" HorizontalAlignment="Left" Width="134" Source="/images/web-ftb-logo_0.png"/>
                 </Grid>
             </TabItem>
             <TabItem Header="Mods">
@@ -229,14 +231,14 @@
                     <TextBox x:Name="tb_modsfolder" Margin="517,41,110,0" VerticalAlignment="Top" IsReadOnly="True" Height="26"/>
                     <Button x:Name="btn_resetmodsfoler" Margin="0,41,41,0" Content="Standard" HorizontalAlignment="Right" VerticalAlignment="Top" Height="26" />
                     <Button x:Name="btn_selectmodsfolder" Margin="0,41,10,0" Content="..." HorizontalAlignment="Right" VerticalAlignment="Top" Width="26" Height="26" />
-                    <Image x:Name="img_installed" Height="23" Width="23" Margin="367,78,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Source="images/check_green.png"/>
+                    <Image x:Name="img_installed" Height="23" Width="23" Margin="367,78,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Source="/images/check_green.png"/>
                     <Label x:Name="lbl_name" Margin="395,72,110,0" VerticalAlignment="Top" Height="29" FontWeight="Bold" VerticalContentAlignment="Center" Background="#00000000" Foreground="#FF1F94F5" FontSize="15" />
                     <DockPanel  Margin="367,0,10,10" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Height="32" >
                         <Button x:Name="btn_website" Content="Website besuchen" Height="32" Width="125" Margin="0,0,5,0" />
                         <Button x:Name="btn_video" Content="Video ansehen" Height="32" Width="125" Margin="5,0" />
                         <Button x:Name="btn_list_delete_mod" Height="32" Width="125" Margin="5,0" >
                             <StackPanel Orientation="Horizontal" >
-                                <Image x:Name="btn_list_delete_mod_image" Source="images/light/appbar.delete.png" />
+                                <Image x:Name="btn_list_delete_mod_image" Source="/images/light/appbar.delete.png" />
                                 <TextBlock Text="Löschen" VerticalAlignment="Center" />
                             </StackPanel>
                         </Button>
@@ -353,12 +355,6 @@
                                                         </TextBlock.Text>
                                                     </TextBlock>
                                                 </StackPanel>
-
-                                                <!--<MultiBinding xml:space="preserve" StringFormat="{}{0}&#10;Version: {1}">
-                                                    <Binding Path="ip" />
-                                                    <Binding Path="ServerStatus.Version" />
-                                                </MultiBinding>-->
-
                                             </Setter.Value>
                                         </Setter>
                                     </DataTrigger>
@@ -476,7 +472,7 @@
             <MenuItem Click="Open_Github" Padding="0,0,5,0">
                 <MenuItem.Header>
                     <StackPanel Orientation="Horizontal">
-                        <Image x:Name="img_github" Height="28" Source="images/light/appbar.social.github.octocat.png" />
+                        <Image x:Name="img_github" Height="28" Source="/images/light/appbar.social.github.octocat.png" />
                         <TextBlock Text="Github" VerticalAlignment="Center" />
                     </StackPanel>
                 </MenuItem.Header>
@@ -484,14 +480,16 @@
             <MenuItem Click="Open_Website" Padding="0,0,5,0" >
                 <MenuItem.Header>
                     <StackPanel Orientation="Horizontal">
-                        <Image x:Name="img_website" Height="28" Source="images/light/appbar.globe.png" />
+                        <Image x:Name="img_website" Height="28" Source="/images/light/appbar.globe.png" />
                         <TextBlock Text="Website" VerticalAlignment="Center" />
                     </StackPanel>
                 </MenuItem.Header>
             </MenuItem>
-            <MenuItem x:Name="Menuitem_theme" Header="Theme" 
+            <MenuItem Header="Theme" 
+                ItemsSource="{Binding Path=AppThemes}"
                 ItemContainerStyle="{StaticResource AppThemeMenuItemStyle}" VerticalAlignment="Center" HorizontalAlignment="Center" />
-            <MenuItem x:Name="Menuitem_accent" Header="Accent"
+            <MenuItem Header="Accent"
+                ItemsSource="{Binding Path=AccentColors}"
         		ItemContainerStyle="{StaticResource AccentColorMenuItemStyle}" VerticalAlignment="Center" HorizontalAlignment="Center" />
         </Menu>
 
