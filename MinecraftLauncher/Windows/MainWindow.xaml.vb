@@ -913,8 +913,8 @@ Public Class MainWindow
                                           argumentreplacements.Add(New String() {"${user_properties}", jo.ToString})
                                           'TODO:
                                           'argumentreplacements.Add(New String() {"${user_type}", "mojang/legacy"})
-                                      Else
-
+                                          'Else
+                                          'Vielleicht twitch token aus einstellungen, so kann man auch cracked streamen
                                       End If
 
                                       For Each item As String() In argumentreplacements
@@ -939,13 +939,13 @@ Public Class MainWindow
                                           javaargs = "-Xmx" & "1024" & "M"
                                       End If
 
-                                      If Startinfos.Profile.resolution.height <> Nothing Then
+                                      If Startinfos.Profile.resolution.height <> Nothing And Startinfos.Profile.resolution.height <> "0" Then
                                           height = " --height " & Startinfos.Profile.resolution.height
                                       Else
                                           height = Nothing
                                       End If
 
-                                      If Startinfos.Profile.resolution.width <> Nothing Then
+                                      If Startinfos.Profile.resolution.width <> Nothing And Startinfos.Profile.resolution.width <> "0" Then
                                           width = " --width " & Startinfos.Profile.resolution.width
                                       Else
                                           width = Nothing
@@ -1027,56 +1027,57 @@ Public Class MainWindow
             Await Versions_Load()
             tabitem_console.IsSelected = True
             mc = New Process
-            Await Check_Account()
-            If Startinfos.Server.JustStarted = False Then
-                If cb_direct_join.IsChecked = True Then
-                    If tb_server_address.Text <> Nothing Then
-                        If Startinfos.Server.JustStarted = False Then
-                            If tb_server_address.Text.Contains(":") = False Then
-                                Startinfos.Server.ServerAdress = tb_server_address.Text
-                            Else
-                                Dim address As String() = tb_server_address.Text.Split(CChar(":"))
-                                Startinfos.Server.ServerAdress = address(0)
-                                Startinfos.Server.ServerPort = address(1)
+            If Await Check_Account() Then
+                If Startinfos.Server.JustStarted = False Then
+                    If cb_direct_join.IsChecked = True Then
+                        If tb_server_address.Text <> Nothing Then
+                            If Startinfos.Server.JustStarted = False Then
+                                If tb_server_address.Text.Contains(":") = False Then
+                                    Startinfos.Server.ServerAdress = tb_server_address.Text
+                                Else
+                                    Dim address As String() = tb_server_address.Text.Split(CChar(":"))
+                                    Startinfos.Server.ServerAdress = address(0)
+                                    Startinfos.Server.ServerPort = address(1)
+                                End If
+                                Startinfos.Server.JustStarted = True
                             End If
-                            Startinfos.Server.JustStarted = True
                         End If
-                    End If
-                Else
-                    Startinfos.Server.ServerAdress = Nothing
-                End If
-            End If
-
-
-            If Startinfos.Version Is Nothing Then
-                If Startinfos.Profile.lastVersionId <> Nothing Then
-                    If Versions.versions.Select(Function(p) p.id).Contains(Startinfos.Profile.lastVersionId) Then
-                        Startinfos.Version = Versions.versions.Where(Function(p) p.id = Startinfos.Profile.lastVersionId).First
                     Else
-                        Startinfos.Profile = Nothing
-                        Write(Startinfos.Profile.lastVersionId & ".jar und/oder " & Startinfos.Profile.lastVersionId & ".json existiert nicht" & Environment.NewLine & "---Wähle eine andere Version aus oder, falls du gerade Forge gestartet hast, installiere es erneut!", LogLevel.ERROR)
-                        Exit Sub
+                        Startinfos.Server.ServerAdress = Nothing
                     End If
-                Else
-                    If Startinfos.Profile.allowedReleaseTypes Is Nothing Then
-                        Startinfos.Profile.allowedReleaseTypes = New List(Of String)
-                    End If
-                    'Wenn snapshots aktiviert sind, dann index 0, sonst latestrelease
-                    If Startinfos.Profile.allowedReleaseTypes.Count > 0 Then
-                        If Startinfos.Profile.allowedReleaseTypes.Contains("snapshot") = True Then
-                            'Version mit Index 0 auslesen
-                            Startinfos.Version = Versions.latest_version
+                End If
+
+
+                If Startinfos.Version Is Nothing Then
+                    If Startinfos.Profile.lastVersionId <> Nothing Then
+                        If Versions.versions.Select(Function(p) p.id).Contains(Startinfos.Profile.lastVersionId) Then
+                            Startinfos.Version = Versions.versions.Where(Function(p) p.id = Startinfos.Profile.lastVersionId).First
+                        Else
+                            Startinfos.Profile = Nothing
+                            Write(Startinfos.Profile.lastVersionId & ".jar und/oder " & Startinfos.Profile.lastVersionId & ".json existiert nicht" & Environment.NewLine & "---Wähle eine andere Version aus oder, falls du gerade Forge gestartet hast, installiere es erneut!", LogLevel.ERROR)
+                            Exit Sub
+                        End If
+                    Else
+                        If Startinfos.Profile.allowedReleaseTypes Is Nothing Then
+                            Startinfos.Profile.allowedReleaseTypes = New List(Of String)
+                        End If
+                        'Wenn snapshots aktiviert sind, dann index 0, sonst latestrelease
+                        If Startinfos.Profile.allowedReleaseTypes.Count > 0 Then
+                            If Startinfos.Profile.allowedReleaseTypes.Contains("snapshot") = True Then
+                                'Version mit Index 0 auslesen
+                                Startinfos.Version = Versions.latest_version
+                            Else
+                                Startinfos.Version = Versions.versions.Where(Function(p) p.id = Versions.latest.release).First
+                            End If
                         Else
                             Startinfos.Version = Versions.versions.Where(Function(p) p.id = Versions.latest.release).First
                         End If
-                    Else
-                        Startinfos.Version = Versions.versions.Where(Function(p) p.id = Versions.latest.release).First
                     End If
                 End If
+                Clear()
+                Startinfos.IsStarting = True
+                Download_Version()
             End If
-            Clear()
-            Startinfos.IsStarting = True
-            Download_Version()
         End If
     End Sub
 
@@ -1133,7 +1134,7 @@ Public Class MainWindow
         'or you are using a base editing jar that is changing this class (and likely others too). If you REALLY want to run minecraft in this configuration,
         'add the flag -Dfml.ignoreInvalidMinecraftCertificates=true to the 'JVM settings' in your launcher profile.
         If Line.Contains("add the flag -Dfml.ignoreInvalidMinecraftCertificates=true to the 'JVM settings' in your launcher profile") Then
-            Write("Ein Fehler ist aufgetreten. Bitte versuche, im ProfileEditor bei den ""JVM Argumenten"" folgendes hinzuzufügen: "" -Dfml.ignoreInvalidMinecraftCertificates=true""", MainWindow.LogLevel.ERROR)
+            Write("Ein Fehler ist aufgetreten. Bitte versuche, im ProfileEditor bei den ""JVM Argumenten"" folgendes hinzuzufügen: ""-Dfml.ignoreInvalidMinecraftCertificates=true""", MainWindow.LogLevel.ERROR)
         End If
     End Sub
     Public Enum LogLevel
@@ -1887,13 +1888,19 @@ Public Class MainWindow
         Await Check_Account()
     End Sub
 
-    Async Function Check_Account() As Task
+    ''' <summary>
+    ''' Login with accesstoken. Returns true if successfully logged in, otherwise false.
+    ''' </summary>
+    ''' <returns>Returns true if successfully logged in, otherwise false.</returns>
+    ''' <remarks></remarks>
+    Async Function Check_Account() As Task(Of Boolean)
         If cb_profiles.SelectedIndex <> -1 Then
             Await authenticationDatabase.Load()
             Dim profile As Profiles.Profile = Await Profiles.FromName(ViewModel.selectedprofile)
             If profile.playerUUID = Nothing Then
                 LoginScreen.Open()
                 TabControl_main.Visibility = Windows.Visibility.Collapsed
+                Return False
             Else
                 Dim capturedException As MinecraftAuthenticationException = Nothing
                 'Login with access token
@@ -1901,24 +1908,24 @@ Public Class MainWindow
                     If authenticationDatabase.List.Select(Function(p) p.uuid.Replace("-", "")).Contains(profile.playerUUID) Then
                         Write("Anmelden mit access token")
                         Dim Account = authenticationDatabase.List.Where(Function(p) p.uuid.Replace("-", "") = profile.playerUUID).First
-                        Startinfos.Session = New Session() With {.AccessToken = Account.accessToken,
-                                                          .ClientToken = authenticationDatabase.clientToken,
-                                                          .SelectedProfile = Nothing}
-                        Await Startinfos.Session.Refresh()
-                        authenticationDatabase.List.Where(Function(p) p.uuid.Replace("-", "") = profile.playerUUID).First.accessToken = Startinfos.Session.AccessToken
-                        Await authenticationDatabase.Save()
-                        lbl_Username.Content = Account.displayName
+                        If Guid.TryParse(Account.userid, New Guid) Then
+                            Startinfos.Session = New Session() With {.AccessToken = Account.accessToken,
+                                                                  .ClientToken = authenticationDatabase.clientToken,
+                                                                  .SelectedProfile = Nothing}
+                            Await Startinfos.Session.Refresh()
+                            authenticationDatabase.List.Where(Function(p) p.uuid.Replace("-", "") = profile.playerUUID).First.accessToken = Startinfos.Session.AccessToken
+                            Await authenticationDatabase.Save()
+                        Else
+                            Startinfos.Session = New Session() With {.ClientToken = authenticationDatabase.clientToken,
+                                                                  .SelectedProfile = New Profile() With {.Name = Account.displayName}}
+                        End If
                         'This comes last:
-                        Dim WebRequest As HttpWebRequest = DirectCast(HttpWebRequest.Create("https://minotar.net/helm/" & Account.displayName & "/100"), HttpWebRequest)
-                        Using WebReponse As HttpWebResponse = DirectCast(Await WebRequest.GetResponseAsync, HttpWebResponse)
-                            Using stream As Stream = WebReponse.GetResponseStream
-                                img_avatar.Source = ImageConvert.GetImageStream(System.Drawing.Image.FromStream(stream))
-                            End Using
-                        End Using
+                        Await ShowUsername_Avatar(Account.displayName)
+                        Return True
                     Else
                         LoginScreen.Open()
                         TabControl_main.Visibility = Windows.Visibility.Collapsed
-                        Exit Function
+                        Return False
                     End If
                 Catch ex As MinecraftAuthenticationException
                     capturedException = ex
@@ -1928,8 +1935,21 @@ Public Class MainWindow
                     LoginScreen.Open()
                     TabControl_main.Visibility = Windows.Visibility.Collapsed
                 End If
+                Return False
             End If
+        Else
+            Return False
         End If
+    End Function
+
+    Async Function ShowUsername_Avatar(username As String) As Task
+        lbl_Username.Content = username
+        Dim WebRequest As HttpWebRequest = DirectCast(HttpWebRequest.Create("https://minotar.net/helm/" & username & "/100"), HttpWebRequest)
+        Using WebReponse As HttpWebResponse = DirectCast(Await WebRequest.GetResponseAsync, HttpWebResponse)
+            Using stream As Stream = WebReponse.GetResponseStream
+                img_avatar.Source = ImageConvert.GetImageStream(System.Drawing.Image.FromStream(stream))
+            End Using
+        End Using
     End Function
 
     Private Async Sub btn_logout_Click(sender As Object, e As RoutedEventArgs) Handles btn_logout.Click

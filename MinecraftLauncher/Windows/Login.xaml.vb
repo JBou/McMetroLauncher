@@ -43,16 +43,23 @@ Public Class Login
         'Login with access token
         Try
             Dim Account = DirectCast(cb_existing_users.SelectedItem, authenticationDatabase.Account)
-            Dim session = New Session() With {.AccessToken = Account.accessToken,
-                                              .ClientToken = authenticationDatabase.clientToken,
-                                              .SelectedProfile = Nothing}
-            Await session.Refresh
-            authenticationDatabase.List.Where(Function(p) p.uuid = Account.uuid).First.accessToken = session.AccessToken
-            Await authenticationDatabase.Save()
-            Dim profile As Profiles.Profile = Await Profiles.FromName(ViewModel.selectedprofile)
-            profile.playerUUID = session.SelectedProfile.Id
-            Await Profiles.Edit(ViewModel.selectedprofile, profile)
-            Main.lbl_Username.Content = "Willkommen, " & session.SelectedProfile.Name
+            If Guid.TryParse(Account.userid, New Guid) Then
+                Dim session = New Session() With {.AccessToken = Account.accessToken,
+                                                  .ClientToken = authenticationDatabase.clientToken,
+                                                  .SelectedProfile = Nothing}
+                Await session.Refresh
+                authenticationDatabase.List.Where(Function(p) p.uuid = Account.uuid).First.accessToken = session.AccessToken
+                Await authenticationDatabase.Save()
+                Dim profile As Profiles.Profile = Await Profiles.FromName(ViewModel.selectedprofile)
+                profile.playerUUID = session.SelectedProfile.Id
+                Await Profiles.Edit(ViewModel.selectedprofile, profile)
+                Await Main.ShowUsername_Avatar(session.SelectedProfile.Name)
+            Else
+                Dim profile As Profiles.Profile = Await Profiles.FromName(ViewModel.selectedprofile)
+                profile.playerUUID = Account.uuid.Replace("-", "")
+                Await Profiles.Edit(ViewModel.selectedprofile, profile)
+                Await Main.ShowUsername_Avatar(Account.displayName)
+            End If
             Main.Show()
             Me.Visibility = System.Windows.Visibility.Collapsed
             Main.TabControl_main.Visibility = System.Windows.Visibility.Visible
@@ -74,17 +81,31 @@ Public Class Login
         Dim capturedException As MinecraftAuthenticationException = Nothing
         'login with username & password
         Try
-            Session = Await JBou.Authentication.Session.DoLogin(tb_username.Text, pb_password.Password)
-            authenticationDatabase.clientToken = Session.ClientToken
-            If authenticationDatabase.List.Select(Function(p) p.uuid.Replace("-", "")).Contains(Session.SelectedProfile.Id) Then
-                authenticationDatabase.List.Remove(authenticationDatabase.List.Where(Function(p) p.uuid.Replace("-", "") = Session.SelectedProfile.Id).First)
+            If cb_online_mode.IsChecked Then
+                Session = Await JBou.Authentication.Session.DoLogin(tb_username.Text, pb_password.Password)
+                authenticationDatabase.clientToken = Session.ClientToken
+                If authenticationDatabase.List.Select(Function(p) p.uuid.Replace("-", "")).Contains(Session.SelectedProfile.Id) Then
+                    authenticationDatabase.List.Remove(authenticationDatabase.List.Where(Function(p) p.uuid.Replace("-", "") = Session.SelectedProfile.Id).First)
+                End If
+                authenticationDatabase.List.Add(Session.ToAccount)
+                Await authenticationDatabase.Save()
+                Dim profile As Profiles.Profile = Await Profiles.FromName(ViewModel.selectedprofile)
+                profile.playerUUID = Session.SelectedProfile.Id
+                Await Profiles.Edit(ViewModel.selectedprofile, profile)
+                Await Main.ShowUsername_Avatar(Session.SelectedProfile.Name)
+            Else
+                Dim account As New authenticationDatabase.Account() With {
+                                                .displayName = tb_username.Text,
+                                                .username = tb_username.Text,
+                                                .uuid = Guid.NewGuid.ToString,
+                                                .userid = tb_username.Text}
+                authenticationDatabase.List.Add(account)
+                Await authenticationDatabase.Save()
+                Dim profile As Profiles.Profile = Await Profiles.FromName(ViewModel.selectedprofile)
+                profile.playerUUID = account.uuid.Replace("-", "")
+                Await Profiles.Edit(ViewModel.selectedprofile, profile)
+                Await Main.ShowUsername_Avatar(account.displayName)
             End If
-            authenticationDatabase.List.Add(Session.ToAccount)
-            Await authenticationDatabase.Save()
-            Dim profile As Profiles.Profile = Await Profiles.FromName(ViewModel.selectedprofile)
-            profile.playerUUID = Session.SelectedProfile.Id
-            Await Profiles.Edit(ViewModel.selectedprofile, profile)
-            Main.lbl_Username.Content = "Willkommen, " & Session.SelectedProfile.Name
             Main.Show()
             Me.Visibility = System.Windows.Visibility.Collapsed
             Main.TabControl_main.Visibility = System.Windows.Visibility.Visible
@@ -101,10 +122,12 @@ Public Class Login
         Dim capturedException As MinecraftAuthenticationException = Nothing
         Try
             Dim Account = DirectCast(cb_existing_users.SelectedItem, authenticationDatabase.Account)
-            Dim session = New Session() With {.AccessToken = Account.accessToken,
-                                              .ClientToken = authenticationDatabase.clientToken,
-                                              .SelectedProfile = Nothing}
-            Await session.Invalidate()
+            If Guid.TryParse(Account.userid, New Guid) Then
+                Dim session = New Session() With {.AccessToken = Account.accessToken,
+                                                  .ClientToken = authenticationDatabase.clientToken,
+                                                  .SelectedProfile = Nothing}
+                Await session.Invalidate()
+            End If
             authenticationDatabase.List.Remove(authenticationDatabase.List.Where(Function(p) p.uuid = Account.uuid).First)
             Await authenticationDatabase.Save()
             Load_Accounts()

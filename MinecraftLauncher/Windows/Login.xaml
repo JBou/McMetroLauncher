@@ -16,7 +16,7 @@
         <ComboBox x:Name="cb_existing_users" VerticalAlignment="Top" Margin="10,10,168,0" Height="25" DisplayMemberPath="displayName" />
         <TextBox x:Name="tb_username" VerticalAlignment="Top" Margin="10,101,10,0" Height="26" />
         <Label VerticalAlignment="Top" Margin="10,70,10,0" Height="26" Content="Email Addresse oder Username:" />
-        <PasswordBox x:Name="pb_password" VerticalAlignment="Top" Margin="10,163,10,0" Height="26" />
+        <PasswordBox x:Name="pb_password" VerticalAlignment="Top" Margin="10,163,10,0" Height="26" IsEnabled="{Binding ElementName=cb_online_mode,Path=IsChecked}" />
         <Label VerticalAlignment="Top" Margin="10,132,10,0" Height="26" Content="Passwort:" />
         <TextBlock VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,127,10,0" Height="26" FontSize="9" >
             <Hyperlink NavigateUri="https://help.mojang.com/customer/portal/articles/1233873" RequestNavigate="Hyperlink_RequestNavigate">
