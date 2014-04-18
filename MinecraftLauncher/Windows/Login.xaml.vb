@@ -9,6 +9,8 @@ Public Class Login
     Sub Open()
         Visibility = System.Windows.Visibility.Visible
         Load_Accounts()
+        tb_username.Text = Nothing
+        pb_password.Password = Nothing
     End Sub
 
     Private Sub Login_Loaded(sender As Object, e As RoutedEventArgs) Handles Me.Loaded
@@ -22,6 +24,9 @@ Public Class Login
                 cb_existing_users.Items.Add(item)
             Next
             cb_existing_users.SelectedIndex = 0
+            cb_existing_users.Visibility = System.Windows.Visibility.Visible
+            btn_play.Visibility = System.Windows.Visibility.Visible
+            btn_logout.Visibility = System.Windows.Visibility.Visible
         Else
             cb_existing_users.Visibility = System.Windows.Visibility.Collapsed
             btn_play.Visibility = System.Windows.Visibility.Collapsed

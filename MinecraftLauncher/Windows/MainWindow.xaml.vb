@@ -669,17 +669,16 @@ Public Class MainWindow
                         Dim forgeuniversal As Boolean = False
                         Dim version As String = Currentlibrary.name.Split(CChar(":"))(2)
                         'legacy = "minecraftforge", new versions = "forge"
-                        If Currentlibrary.name.Split(CChar(":"))(1) = "minecraftforge" And Forge.ForgeList.Select(Function(p) p.version).Contains(version) Then
+                        If Currentlibrary.name.Split(CChar(":"))(1) = "minecraftforge" Or Currentlibrary.name.Split(CChar(":"))(1) = "forge" And Forge.ForgeList.Select(Function(p) p.version).Contains(version) Then
                             Dim mcversion As String = Forge.ForgeList.Where(Function(p) p.version = version).First.mcversion
                             'Buildlist durchsuchen
                             downloadforgelib = True
                             forgeuniversal = True
-                            url = String.Format("http://files.minecraftforge.net/minecraftforge/minecraftforge-universal-{1}-{0}.jar", version, mcversion)
-                        ElseIf Currentlibrary.name.Split(CChar(":"))(1) = "forge" Then
-                            Dim mcversion As String = Forge.ForgeList.Where(Function(p) p.version = version).First.mcversion
-                            downloadforgelib = True
-                            forgeuniversal = True
-                            url = String.Format("http://files.minecraftforge.net/maven/net/minecraftforge/forge/{1}-{0}/forge-{1}-{0}-universal.jar", version, mcversion)
+                            If Forge.LegacyBuildList.Select(Function(p) p.version).Contains(version) Then
+                                url = String.Format("http://files.minecraftforge.net/minecraftforge/minecraftforge-universal-{1}-{0}.jar", version, mcversion)
+                            Else
+                                url = String.Format("http://files.minecraftforge.net/maven/net/minecraftforge/forge/{1}-{0}/forge-{1}-{0}-universal.jar", version, mcversion)
+                            End If
                         End If
                         Dim outputfile As String = librarypath.FullName
                         'Auser bei forge universal lib
