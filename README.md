@@ -14,8 +14,7 @@ Functions:
 
 [Download latest Release](http://patzleiner.net/download/McMetroLauncher.msi)
 ----------
-**Currently only avaiable in German and only supports OFFLINE MODE**
-(Online Mode will be supported in the next Updates)
+**Currently only avaiable in German** (English will be supported in the next Updates)
 
 [.NET Framework 4.5](http://www.microsoft.com/de-de/download/details.aspx?id=30653) is needed to run this Programm!
 
