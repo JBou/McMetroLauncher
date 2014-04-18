@@ -151,6 +151,24 @@ Public Class Modified_Date_Converter
 
 End Class
 
+Public Class userid_OnlineModeConverter
+    Implements System.Windows.Data.IValueConverter
+
+    Public Function Convert(value As Object, targetType As Type, parameter As Object, culture As System.Globalization.CultureInfo) As Object Implements System.Windows.Data.IValueConverter.Convert
+        Dim userid As String = TryCast(value, String)
+        If Guid.TryParse(userid, New Guid) Then
+            Return True
+        Else
+            Return False
+        End If
+    End Function
+
+    Public Function ConvertBack(value As Object, targetType As Type, parameter As Object, culture As System.Globalization.CultureInfo) As Object Implements IValueConverter.ConvertBack
+        Throw New NotImplementedException()
+    End Function
+
+End Class
+
 #End Region
 
 #Region "JsonConverters"

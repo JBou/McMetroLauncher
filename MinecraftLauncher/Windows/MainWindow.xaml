@@ -161,8 +161,11 @@
                     <ListBox x:Name="Listbox1" HorizontalAlignment="Left" Height="271" Margin="459,10,0,0" VerticalAlignment="Top" Width="473" Visibility="Collapsed"/>
                     <StackPanel Orientation="Horizontal" Margin="0,0,165,10" Height="69"  HorizontalAlignment="Right"  VerticalAlignment="Bottom" >
                         <StackPanel Height="69">
-                            <Label x:Name="lbl_Username" Width="150" Height="30" TabIndex="11" HorizontalAlignment="Center" VerticalAlignment="Center" HorizontalContentAlignment="Center" />
-                            <Button x:Name="btn_logout" Content="LogOut" Width="150" Height="22" TabIndex="11" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,10,0,0"/>
+                            <Label x:Name="lbl_Username" Width="150" Height="25" TabIndex="11" HorizontalAlignment="Center" VerticalAlignment="Center" HorizontalContentAlignment="Center" />
+                            <DockPanel Margin="0,10,0,0">
+                                <Button x:Name="btn_logout" Content="LogOut" TabIndex="11" DockPanel.Dock="Right" Margin="10,0,0,0" />
+                                <Label x:Name="lbl_user_state" TabIndex="11" HorizontalContentAlignment="Right" />
+                            </DockPanel>
                         </StackPanel>
                         <Image x:Name="img_avatar" Height="69" Width="69" Margin="5,0,0,0"/>
                     </StackPanel>

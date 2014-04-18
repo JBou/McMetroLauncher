@@ -1909,7 +1909,7 @@ Public Class MainWindow
                                                                   .SelectedProfile = New Profile() With {.Name = Account.displayName}}
                         End If
                         'This comes last:
-                        Await ShowUsername_Avatar(Account.displayName)
+                        Await ShowUsername_Avatar(Account)
                         Return True
                     Else
                         LoginScreen.Open()
@@ -1931,9 +1931,11 @@ Public Class MainWindow
         End If
     End Function
 
-    Async Function ShowUsername_Avatar(username As String) As Task
-        lbl_Username.Content = username
-        Dim WebRequest As HttpWebRequest = DirectCast(HttpWebRequest.Create("https://minotar.net/helm/" & username & "/100"), HttpWebRequest)
+    Async Function ShowUsername_Avatar(Account As authenticationDatabase.Account) As Task
+        lbl_Username.Content = Account.displayName
+        lbl_user_state.Content = If(Guid.TryParse(Account.userid, New Guid), "Premium", "Cracked")
+        lbl_user_state.Foreground = If(Guid.TryParse(Account.userid, New Guid), Brushes.Green, Brushes.Red)
+        Dim WebRequest As HttpWebRequest = DirectCast(HttpWebRequest.Create("https://minotar.net/helm/" & Account.displayName & "/100"), HttpWebRequest)
         Using WebReponse As HttpWebResponse = DirectCast(Await WebRequest.GetResponseAsync, HttpWebResponse)
             Using stream As Stream = WebReponse.GetResponseStream
                 img_avatar.Source = ImageConvert.GetImageStream(System.Drawing.Image.FromStream(stream))

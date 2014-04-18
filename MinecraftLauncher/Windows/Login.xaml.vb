@@ -11,6 +11,7 @@ Public Class Login
         Load_Accounts()
         tb_username.Text = Nothing
         pb_password.Password = Nothing
+        cb_online_mode.IsChecked = True
     End Sub
 
     Private Sub Login_Loaded(sender As Object, e As RoutedEventArgs) Handles Me.Loaded
@@ -58,12 +59,12 @@ Public Class Login
                 Dim profile As Profiles.Profile = Await Profiles.FromName(ViewModel.selectedprofile)
                 profile.playerUUID = session.SelectedProfile.Id
                 Await Profiles.Edit(ViewModel.selectedprofile, profile)
-                Await Main.ShowUsername_Avatar(session.SelectedProfile.Name)
+                Await Main.ShowUsername_Avatar(session.ToAccount)
             Else
                 Dim profile As Profiles.Profile = Await Profiles.FromName(ViewModel.selectedprofile)
                 profile.playerUUID = Account.uuid.Replace("-", "")
                 Await Profiles.Edit(ViewModel.selectedprofile, profile)
-                Await Main.ShowUsername_Avatar(Account.displayName)
+                Await Main.ShowUsername_Avatar(Account)
             End If
             Main.Show()
             Me.Visibility = System.Windows.Visibility.Collapsed
@@ -97,8 +98,11 @@ Public Class Login
                 Dim profile As Profiles.Profile = Await Profiles.FromName(ViewModel.selectedprofile)
                 profile.playerUUID = Session.SelectedProfile.Id
                 Await Profiles.Edit(ViewModel.selectedprofile, profile)
-                Await Main.ShowUsername_Avatar(Session.SelectedProfile.Name)
+                Await Main.ShowUsername_Avatar(Session.ToAccount)
             Else
+                If authenticationDatabase.List.Select(Function(p) p.userid).Contains(tb_username.Text) Then
+                    authenticationDatabase.List.Remove(authenticationDatabase.List.Where(Function(p) p.userid = tb_username.Text).First)
+                End If
                 Dim account As New authenticationDatabase.Account() With {
                                                 .displayName = tb_username.Text,
                                                 .username = tb_username.Text,
@@ -109,7 +113,7 @@ Public Class Login
                 Dim profile As Profiles.Profile = Await Profiles.FromName(ViewModel.selectedprofile)
                 profile.playerUUID = account.uuid.Replace("-", "")
                 Await Profiles.Edit(ViewModel.selectedprofile, profile)
-                Await Main.ShowUsername_Avatar(account.displayName)
+                Await Main.ShowUsername_Avatar(account)
             End If
             Main.Show()
             Me.Visibility = System.Windows.Visibility.Collapsed

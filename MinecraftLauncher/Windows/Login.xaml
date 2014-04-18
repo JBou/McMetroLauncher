@@ -9,10 +9,49 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Width="500" Height="360" >
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro.Resources;component/Icons.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.ListView.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <local:userid_OnlineModeConverter x:Key="userid_OnlineModeConverter"/>
+        </ResourceDictionary>
+    </UserControl.Resources>
     <StackPanel>
         <GroupBox Header="Mit bestehendem Account einloggen:" VerticalAlignment="Top" Margin="10,10,10,0" Height="80">
             <Grid>
-                <ComboBox x:Name="cb_existing_users" VerticalAlignment="Top" Margin="10,10,168,0" Height="25" DisplayMemberPath="displayName" />
+                <ComboBox x:Name="cb_existing_users" VerticalAlignment="Top" Margin="10,10,168,0" Height="25" VerticalContentAlignment="Center" HorizontalContentAlignment="Stretch" >
+                    <ComboBox.ItemContainerStyle>
+                        <Style TargetType="ComboBoxItem" BasedOn="{StaticResource MetroComboBoxItem}">
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                        </Style>
+                    </ComboBox.ItemContainerStyle>
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <DockPanel>
+                                <TextBlock DockPanel.Dock="Right">
+                                    <TextBlock.Style>
+                                        <Style TargetType="{x:Type TextBlock}">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding userid, Converter={StaticResource userid_OnlineModeConverter}}" Value="True">
+                                                    <Setter Property="Text" Value="Premium" />
+                                                    <Setter Property="Foreground" Value="Green" />
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding userid, Converter={StaticResource userid_OnlineModeConverter}}" Value="False">
+                                                    <Setter Property="Text" Value="Cracked" />
+                                                    <Setter Property="Foreground" Value="Red" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+                                <TextBlock Text="{Binding displayName}" DockPanel.Dock="Left" />
+                            </DockPanel>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
                 <Button x:Name="btn_play" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,10,89,0" Width="74" Content="Play" Height="25" />
                 <Button x:Name="btn_logout" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,10,10,0" Width="74" Content="Logout" Height="25" />
             </Grid>
