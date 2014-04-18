@@ -32,7 +32,7 @@ Public Class authenticationDatabase
         List.Clear()
         Dim o As String = File.ReadAllText(launcher_profiles.FullName)
         Dim jo As JObject = JObject.Parse(o)
-        clientToken = jo("clientToken").ToString
+        clientToken = If(jo.Properties.Select(Function(p) p.Name).Contains("clientToken"), jo("clientToken").ToString, Guid.NewGuid.ToString)
         If jo.Properties.Select(Function(p) p.Name).Contains("authenticationDatabase") Then
             For Each item As String In jo.Value(Of JObject)("authenticationDatabase").Properties.Select(Function(p) p.Value.ToString)
                 Dim account As Account = Await JsonConvert.DeserializeObjectAsync(Of Account)(item)
