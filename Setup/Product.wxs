@@ -4,7 +4,7 @@
   <?define Manufactor = "Patzleiner"?>
   <?define UpgradeGuid = "{DBC552D0-2FCB-4E70-B902-B65E8D7DDF67}"?>
   <?define Name = "McMetroLauncher"?>
-  <?define AwesomiumMergePath = "C:\Program Files (x86)\Awesomium Technologies LLC\Awesomium SDK\1.7.4.1\wrappers\Awesomium.NET\Redistribute\AWENET0174F.msm"?>
+  <?define AwesomiumMergePath = "C:\Program Files (x86)\Awesomium Technologies LLC\Awesomium SDK\1.7.4.2\wrappers\Awesomium.NET\Redistribute\AWENET0174F.msm"?>
 
   <Product
   Id="*"
@@ -47,7 +47,7 @@
 
     <Property Id="ARPCOMMENTS" Value="$(var.Name)" />
     <Property Id="ARPHELPLINK" Value="http://patzleiner.net" />
-    <Property Id="ARPCONTACT" Value="Patzleiner" />
+    <Property Id="ARPCONTACT" Value="JBou" />
     <Property Id="ARPURLINFOABOUT" Value="http://patzleiner.net" />
     <Property Id="ARPPRODUCTICON" Value="Icon.exe" />
     <Upgrade Id="$(var.UpgradeGuid)">

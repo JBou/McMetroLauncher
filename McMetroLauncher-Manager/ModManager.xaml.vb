@@ -160,8 +160,17 @@ Public Class ModManager
         End If
     End Sub
 
-    Private Sub btn_delete_Click(sender As Object, e As RoutedEventArgs) Handles btn_delete.Click
-
+    Private Async Sub btn_delete_Click(sender As Object, e As RoutedEventArgs) Handles btn_delete.Click
+        If lb_mods.SelectedIndex = -1 Then
+            MessageBox.Show("Bitte wähle eine Mod aus!", "Fehler", MessageBoxButton.OK, MessageBoxImage.Error)
+        Else
+            Dim moditem As Modifications.Mod = DirectCast(lb_mods.SelectedItem, Modifications.Mod)
+            Dim result As MessageBoxResult = MessageBox.Show("Möchtest du wirklich die Mod " & Chr(36) & moditem.name & Chr(36) & " löschen?", "Achtung", MessageBoxButton.YesNoCancel, MessageBoxImage.Information)
+            If result = MessageBoxResult.Yes Then
+                Modifications.ModList.Remove(Modifications.ModList.Where(Function(p) p.id = moditem.id).First)
+                Await Modifications.SavetoFile(modsfile)
+            End If
+        End If
     End Sub
 End Class
 

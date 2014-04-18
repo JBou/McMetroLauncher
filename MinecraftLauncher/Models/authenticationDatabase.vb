@@ -52,8 +52,10 @@ Public Class authenticationDatabase
         jo("clientToken") = clientToken
         Dim accountlist As New JObject
         For Each item As Account In List
-            Dim account As String = Await JsonConvert.SerializeObjectAsync(item, Formatting.Indented, New JsonSerializerSettings() With {.NullValueHandling = NullValueHandling.Ignore})
-            accountlist.Add(New JProperty(item.uuid.Replace("-", ""), JObject.Parse(account)))
+            If accountlist.Properties.Select(Function(p) p.Name).Contains(item.uuid.Replace("-", "")) = False Then
+                Dim account As String = Await JsonConvert.SerializeObjectAsync(item, Formatting.Indented, New JsonSerializerSettings() With {.NullValueHandling = NullValueHandling.Ignore})
+                accountlist.Add(New JProperty(item.uuid.Replace("-", ""), JObject.Parse(account)))
+            End If
         Next
         jo("authenticationDatabase") = accountlist
         File.WriteAllText(launcher_profiles.FullName, jo.ToString(Formatting.Indented))
