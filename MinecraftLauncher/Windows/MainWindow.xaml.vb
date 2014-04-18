@@ -170,23 +170,6 @@ Public Class MainWindow
         Settings.Settings.Theme = e.AppTheme.Name
         Settings.Settings.Accent = e.Accent.Name
         Await Settings.Save()
-        If e.AppTheme.Name = "BaseLight" Then
-            btn_list_delete_mod_image.Source = ImageConvert.GetImageStream(My.Resources.appbar_delete)
-            DirectCast(Me.Resources("serverlistcontext_copy_image"), Windows.Controls.Image).Source = ImageConvert.GetImageStream(My.Resources.appbar_page_copy)
-            DirectCast(Me.Resources("serverlistcontext_direct_join_image"), Windows.Controls.Image).Source = ImageConvert.GetImageStream(My.Resources.appbar_control_play)
-            DirectCast(Me.Resources("serverlistcontext_direct_join_image2"), Windows.Controls.Image).Source = ImageConvert.GetImageStream(My.Resources.appbar_control_play)
-            img_github.Source = ImageConvert.GetImageStream(My.Resources.appbar_social_github_octocat)
-            img_website.Source = ImageConvert.GetImageStream(My.Resources.appbar_globe)
-        Else
-            Settings.Settings.Theme = "Dark"
-            Await Settings.Save()
-            btn_list_delete_mod_image.Source = ImageConvert.GetImageStream(My.Resources.appbar_delete_dark)
-            DirectCast(Me.Resources("serverlistcontext_copy_image"), Windows.Controls.Image).Source = ImageConvert.GetImageStream(My.Resources.appbar_page_copy_dark)
-            DirectCast(Me.Resources("serverlistcontext_direct_join_image"), Windows.Controls.Image).Source = ImageConvert.GetImageStream(My.Resources.appbar_control_play_dark)
-            DirectCast(Me.Resources("serverlistcontext_direct_join_image2"), Windows.Controls.Image).Source = ImageConvert.GetImageStream(My.Resources.appbar_control_play_dark)
-            img_github.Source = ImageConvert.GetImageStream(My.Resources.appbar_social_github_octocat_dark)
-            img_website.Source = ImageConvert.GetImageStream(My.Resources.appbar_globe_dark)
-        End If
     End Sub
 
     Private Sub ShowSettings(sender As Object, e As RoutedEventArgs)
@@ -409,7 +392,7 @@ Public Class MainWindow
             bytes = e.BytesReceived / 1000000
             Einheit = "MB"
         End If
-        lbl_downloadstatus_Content(String.Format("{0}% - {1} {2} von {3} {4} heruntergeladen", e.ProgressPercentage, Math.Round(bytes, 2), Einheit, Math.Round(totalbytes, 2), Einheit))
+        'lbl_downloadstatus_Content(String.Format("{0}% - {1} {2} von {3} {4} heruntergeladen", e.ProgressPercentage, Math.Round(bytes, 2), Einheit, Math.Round(totalbytes, 2), Einheit))
     End Sub
 
     Private Sub wc_libraries_DownloadProgressChanged(sender As Object, e As DownloadProgressChangedEventArgs) Handles wc_libraries.DownloadProgressChanged
@@ -1254,6 +1237,8 @@ Public Class MainWindow
         cb_modversions.SelectedIndex = 0
     End Function
     Private Sub Filter_Mods()
+        Dim selectedmod As String = Nothing
+        If lb_mods.SelectedItem IsNot Nothing Then selectedmod = DirectCast(lb_mods.SelectedItem, Modifications.Mod).name
         lb_mods.Items.Clear()
         Modifications.Check_installed(modsfolderPath)
         Dim mods_with_selectedversion As IList(Of Modifications.Mod) = Modifications.ModList.Where(Function(p) p.versions.Select(Function(i) i.version).Contains(cb_modversions.SelectedItem.ToString)).ToList
@@ -1262,8 +1247,18 @@ Public Class MainWindow
                 lb_mods.Items.Add(Moditem)
             End If
         Next
-        If lb_mods.Items.Count >= 1 Then
-            lb_mods.SelectedIndex = 0
+        If selectedmod <> Nothing Then
+            If lb_mods.Items.Cast(Of Modifications.Mod).Select(Function(p) p.name).Contains(selectedmod) Then
+                lb_mods.SelectedItem = lb_mods.Items.Cast(Of Modifications.Mod).Where(Function(p) p.name = selectedmod).First
+            Else
+                If lb_mods.Items.Count > 0 Then
+                    lb_mods.SelectedIndex = 0
+                End If
+            End If
+        Else
+            If lb_mods.Items.Count > 0 Then
+                lb_mods.SelectedIndex = 0
+            End If
         End If
     End Sub
     Private Sub cb_modversions_SelectionChanged(sender As Object, e As SelectionChangedEventArgs) Handles cb_modversions.SelectionChanged
@@ -1450,7 +1445,7 @@ Public Class MainWindow
             btn_resetmodsfoler.IsEnabled = False
             btn_selectmodsfolder.IsEnabled = False
             btn_downloadmod.IsEnabled = False
-            btn_list_delete_mod_image.IsEnabled = False
+            btn_list_delete_mod.IsEnabled = False
             cb_mods_profilename.IsEnabled = False
             rb_mods_folder.IsEnabled = False
             rb_mods_profile.IsEnabled = False
@@ -1544,7 +1539,7 @@ Public Class MainWindow
         btn_resetmodsfoler.IsEnabled = True
         btn_selectmodsfolder.IsEnabled = True
         btn_downloadmod.IsEnabled = True
-        btn_list_delete_mod_image.IsEnabled = True
+        btn_list_delete_mod.IsEnabled = True
         cb_mods_profilename.IsEnabled = True
         rb_mods_folder.IsEnabled = True
         rb_mods_profile.IsEnabled = True
@@ -1567,9 +1562,9 @@ Public Class MainWindow
         lb_servers.Items.Clear()
         If servers_dat.Exists = True Then
             lbl_no_servers.Visibility = Windows.Visibility.Collapsed
-            servers = New ServerList()
-            Await servers.Load()
-            If servers.Servers.Count = 0 Then
+            ViewModel.Servers = New ServerList()
+            Await ViewModel.Servers.Load()
+            If ViewModel.Servers.Servers.Count = 0 Then
                 lbl_no_servers.Visibility = Windows.Visibility.Visible
             Else
                 lbl_no_servers.Visibility = Windows.Visibility.Collapsed
@@ -1600,7 +1595,7 @@ Public Class MainWindow
             '            }
             '        servers.Servers.Add(server)
             '    Next
-            For Each item As ServerList.Server In servers.Servers
+            For Each item As ServerList.Server In ViewModel.Servers.Servers
                 lb_servers.Items.Add(item)
             Next
             If lb_servers.SelectedIndex = -1 Then
@@ -1624,9 +1619,9 @@ Public Class MainWindow
 
     Private Sub ThreadProc()
         Try
-            Parallel.For(0, servers.Servers.Count, Sub(b)
-                                                       CheckOnline(b)
-                                                   End Sub)
+            Parallel.For(0, ViewModel.Servers.Servers.Count, Sub(b)
+                                                                 CheckOnline(b)
+                                                             End Sub)
         Catch
         End Try
     End Sub
@@ -1643,15 +1638,15 @@ Public Class MainWindow
             '                                 lb_servers.Items.Insert(i, servers.Servers.Item(i))
             '                                 lb_servers.SelectedIndex = selected
             '                             End Sub))
-            servers.Servers.Item(i).DoPing()
+            ViewModel.Servers.Servers.Item(i).DoPing()
             'MsgBox(servers.Item(i).ServerStatus.Players.MaxPlayers)
             Dispatcher.Invoke(New Action(Sub()
                                              Dim selected As Integer = lb_servers.SelectedIndex
                                              lb_servers.Items.RemoveAt(i)
-                                             lb_servers.Items.Insert(i, servers.Servers.Item(i))
+                                             lb_servers.Items.Insert(i, ViewModel.Servers.Servers.Item(i))
                                              lb_servers.SelectedIndex = selected
                                          End Sub))
-            servers.Save()
+            ViewModel.Servers.Save()
         Catch null As ArgumentNullException
             'hostNameOrAddress ist null.
         Catch socket As SocketException
@@ -1698,8 +1693,8 @@ Public Class MainWindow
             Dim result As MessageDialogResult = Await Me.ShowMessageAsync("Server löschen", "Bist du dir sicher, dass du den Server " & Chr(34) & DirectCast(lb_servers.SelectedItem, ServerList.Server).name & Chr(34) & " entgültig löschen willst?", MessageDialogStyle.AffirmativeAndNegative, New MetroDialogSettings() With {.AffirmativeButtonText = "Ja", .NegativeButtonText = "Nein", .ColorScheme = MetroDialogColorScheme.Accented})
             If result = MessageDialogResult.Affirmative Then
                 lb_servers.Items.RemoveAt(selected)
-                servers.Servers.RemoveAt(selected)
-                servers.Save()
+                ViewModel.Servers.Servers.RemoveAt(selected)
+                ViewModel.Servers.Save()
             End If
         End If
     End Sub
@@ -1889,9 +1884,7 @@ Public Class MainWindow
 
 #Region "Auth"
     Private Async Sub cb_profiles_SelectionChanged(sender As Object, e As SelectionChangedEventArgs) Handles cb_profiles.SelectionChanged
-        If SplashScreen.Starting = False Then
-            Await Check_Account()
-        End If
+        Await Check_Account()
     End Sub
 
     Async Function Check_Account() As Task
@@ -1899,10 +1892,8 @@ Public Class MainWindow
             Await authenticationDatabase.Load()
             Dim profile As Profiles.Profile = Await Profiles.FromName(ViewModel.selectedprofile)
             If profile.playerUUID = Nothing Then
-                'Show Login
-                Dim loginscreen As New Login
-                loginscreen.Show()
-                Me.Hide()
+                LoginScreen.Open()
+                TabControl_main.Visibility = Windows.Visibility.Collapsed
             Else
                 Dim capturedException As MinecraftAuthenticationException = Nothing
                 'Login with access token
@@ -1914,14 +1905,19 @@ Public Class MainWindow
                                                           .ClientToken = authenticationDatabase.clientToken,
                                                           .SelectedProfile = Nothing}
                         Await Startinfos.Session.Refresh()
-                        lbl_Username.Content = "Willkommen, " & Account.displayName
                         authenticationDatabase.List.Where(Function(p) p.uuid.Replace("-", "") = profile.playerUUID).First.accessToken = Startinfos.Session.AccessToken
                         Await authenticationDatabase.Save()
+                        lbl_Username.Content = Account.displayName
+                        'This comes last:
+                        Dim WebRequest As HttpWebRequest = DirectCast(HttpWebRequest.Create("https://minotar.net/helm/" & Account.displayName & "/100"), HttpWebRequest)
+                        Using WebReponse As HttpWebResponse = DirectCast(Await WebRequest.GetResponseAsync, HttpWebResponse)
+                            Using stream As Stream = WebReponse.GetResponseStream
+                                img_avatar.Source = ImageConvert.GetImageStream(System.Drawing.Image.FromStream(stream))
+                            End Using
+                        End Using
                     Else
-                        'Show Login
-                        Dim loginscreen As New Login
-                        loginscreen.Show()
-                        Me.Hide()
+                        LoginScreen.Open()
+                        TabControl_main.Visibility = Windows.Visibility.Collapsed
                         Exit Function
                     End If
                 Catch ex As MinecraftAuthenticationException
@@ -1929,10 +1925,8 @@ Public Class MainWindow
                 End Try
                 If capturedException IsNot Nothing Then
                     Await Me.ShowMessageAsync(capturedException.Error, capturedException.ErrorMessage, MessageDialogStyle.Affirmative)
-                    'Show Login
-                    Dim loginscreen As New Login
-                    loginscreen.Show()
-                    Me.Hide()
+                    LoginScreen.Open()
+                    TabControl_main.Visibility = Windows.Visibility.Collapsed
                 End If
             End If
         End If
@@ -1945,10 +1939,8 @@ Public Class MainWindow
             Dim profile As Profiles.Profile = Await Profiles.FromName(ViewModel.selectedprofile)
             profile.playerUUID = Nothing
             Await Profiles.Edit(ViewModel.selectedprofile, profile)
-            'Show Login
-            Dim loginscreen As New Login
-            loginscreen.Show()
-            Me.Hide()
+            LoginScreen.Open()
+            TabControl_main.Visibility = Windows.Visibility.Collapsed
         Catch ex As MinecraftAuthenticationException
             capturedException = ex
         End Try
@@ -1956,5 +1948,6 @@ Public Class MainWindow
             Await Me.ShowMessageAsync(capturedException.Error, capturedException.ErrorMessage, MessageDialogStyle.Affirmative)
         End If
     End Sub
+
 #End Region
 End Class

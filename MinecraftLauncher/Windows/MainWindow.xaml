@@ -66,9 +66,6 @@
             <Style x:Key="myHeaderStyle" TargetType="{x:Type GridViewColumnHeader}">
                 <Setter Property="Visibility" Value="Collapsed" />
             </Style>
-            <Image x:Key="serverlistcontext_copy_image" Source="/images/light/appbar.page.copy.png" Height="30"/>
-            <Image x:Key="serverlistcontext_direct_join_image" Source="/images/light/appbar.control.play.png" Height="30"/>
-            <Image x:Key="serverlistcontext_direct_join_image2" Source="/images/light/appbar.control.play.png" Height="30"/>
         </ResourceDictionary>
     </Window.Resources>
 
@@ -116,9 +113,6 @@
     </Controls:MetroWindow.Flyouts>
 
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition/>
-        </Grid.RowDefinitions>
         <TabControl x:Name="TabControl_main" TabIndex="15">
             <TabItem Header="Minecraft" x:Name="tabitem_Minecraft">
                 <Grid>
@@ -166,15 +160,18 @@
                     </TabControl>
                     <ListBox x:Name="Listbox1" HorizontalAlignment="Left" Height="271" Margin="459,10,0,0" VerticalAlignment="Top" Width="473" Visibility="Collapsed"/>
                     <Button x:Name="btn_startMC" Content="Play" HorizontalAlignment="Right" Margin="0,0,10,10" VerticalAlignment="Bottom" Width="150" Height="69" FontSize="30" TabIndex="11"/>
-                    <StackPanel Orientation="Vertical" Margin="0,0,165,10"  HorizontalAlignment="Right"  VerticalAlignment="Bottom" Height="69">
-                        <Label x:Name="lbl_Username" Width="180" Height="30" TabIndex="11" HorizontalAlignment="Center" VerticalAlignment="Center" HorizontalContentAlignment="Center" />
-                        <Button x:Name="btn_logout" Content="LogOut" Width="60" Height="22" TabIndex="11" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,10,0,0"/>
+                    <StackPanel Orientation="Horizontal" Margin="0,0,165,10" Height="69"  HorizontalAlignment="Right"  VerticalAlignment="Bottom" >
+                        <StackPanel Height="69">
+                            <Label x:Name="lbl_Username" Width="150" Height="30" TabIndex="11" HorizontalAlignment="Center" VerticalAlignment="Center" HorizontalContentAlignment="Center" />
+                            <Button x:Name="btn_logout" Content="LogOut" Width="150" Height="22" TabIndex="11" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,10,0,0"/>
+                        </StackPanel>
+                        <Image x:Name="img_avatar" Height="69" Width="69" Margin="5,0,0,0"/>
                     </StackPanel>
                     <Controls:MetroProgressBar Foreground="{DynamicResource AccentColorBrush}" x:Name="pb_download" Height="5" Margin="10,0,10,84" VerticalAlignment="Bottom"/>
                     <ComboBox x:Name="cb_versions" HorizontalAlignment="Left" Margin="348,0,0,47" VerticalAlignment="Bottom" Width="76" Height="32" Visibility="Hidden"/>
                     <ComboBox x:Name="cb_type" HorizontalAlignment="Left" Margin="246,0,0,47" VerticalAlignment="Bottom" Width="97" Height="32" Visibility="Hidden"/>
                     <ListBox x:Name="lb_Datum" HorizontalAlignment="Left" Height="162" Margin="10,348,0,0" VerticalAlignment="Top" Width="179" Visibility="Hidden"/>
-                    <Label x:Name="lbl_downloadstatus" HorizontalAlignment="Left" Margin="353,0,0,47" VerticalAlignment="Bottom" Width="418" Height="32"/>
+                    <Label x:Name="lbl_downloadstatus" HorizontalAlignment="Left" Margin="343,0,0,62" VerticalAlignment="Bottom" Width="418" Height="33"/>
                     <ComboBox x:Name="cb_ram" HorizontalAlignment="Right" Margin="0,0,138,10" VerticalAlignment="Bottom" Width="148" Height="32" ToolTip="Nur verfügbar mit Java 64 bit" Visibility="Hidden"/>
                     <Label Content="Ram" HorizontalAlignment="Right" Margin="0,0,291,10" VerticalAlignment="Bottom" Height="32" Width="78" FontSize="15" ToolTip="Nur verfügbar mit Java 64 bit" Visibility="Hidden"/>
                     <Button x:Name="btn_new_profile" Content="Neu" HorizontalAlignment="Left" Margin="10,0,0,10" VerticalAlignment="Bottom" Width="26" Height="33" MinWidth="50" TabIndex="4"/>
@@ -186,8 +183,8 @@
                     <ListBox x:Name="lb_libraries_url" HorizontalAlignment="Left" Height="271" Margin="323,120,0,0" VerticalAlignment="Top" Width="320" Visibility="Collapsed"/>
                     <PasswordBox x:Name="pb_Password" HorizontalAlignment="Right" Height="32" Margin="0,0,138,10" VerticalAlignment="Bottom" Width="148" VerticalContentAlignment="Center" IsEnabled="False" Visibility="Hidden"/>
                     <CheckBox x:Name="cb_online_mode" HorizontalAlignment="Right" Height="32" Content="Online Mode" Margin="0,0,180,10" VerticalAlignment="Bottom" Width="106" VerticalContentAlignment="Center" IsEnabled="False" Visibility="Hidden"/>
-                    <TextBox x:Name="tb_server_address" Controls:TextboxHelper.Watermark="Address" HorizontalAlignment="Right" Height="32" Margin="0,0,542,10" TextWrapping="Wrap" VerticalAlignment="Bottom" Width="148" VerticalContentAlignment="Center" TabIndex="8"/>
-                    <CheckBox x:Name="cb_direct_join" HorizontalAlignment="Right" Height="32" Content="Direct Join" Margin="0,0,542,47" VerticalAlignment="Bottom" Width="148" VerticalContentAlignment="Center" Padding="6,0,0,0" FontSize="15" ToolTip="Tritt nach dem Spielstart automatisch dem festgelegten Server bei" TabIndex="7"/>
+                    <TextBox x:Name="tb_server_address" Controls:TextboxHelper.Watermark="Address" HorizontalAlignment="Left" Height="32" Margin="246,0,0,10" TextWrapping="Wrap" VerticalAlignment="Bottom" Width="148" VerticalContentAlignment="Center" TabIndex="8"/>
+                    <CheckBox x:Name="cb_direct_join" HorizontalAlignment="Left" Height="32" Content="Direct Join" Margin="246,0,0,48" VerticalAlignment="Bottom" Width="148" VerticalContentAlignment="Center" Padding="6,0,0,0" FontSize="15" ToolTip="Tritt nach dem Spielstart automatisch dem festgelegten Server bei" TabIndex="7"/>
 
 
                 </Grid>
@@ -236,12 +233,7 @@
                     <DockPanel  Margin="367,0,10,10" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Height="32" >
                         <Button x:Name="btn_website" Content="Website besuchen" Height="32" Width="125" Margin="0,0,5,0" />
                         <Button x:Name="btn_video" Content="Video ansehen" Height="32" Width="125" Margin="5,0" />
-                        <Button x:Name="btn_list_delete_mod" Height="32" Width="125" Margin="5,0" >
-                            <StackPanel Orientation="Horizontal" >
-                                <Image x:Name="btn_list_delete_mod_image" Source="/images/light/appbar.delete.png" />
-                                <TextBlock Text="Löschen" VerticalAlignment="Center" />
-                            </StackPanel>
-                        </Button>
+                        <Button x:Name="btn_list_delete_mod" Content="Löschen" Height="32" Width="125" Margin="5,0" />
                         <Button Foreground="{DynamicResource AccentColorBrush}" x:Name="btn_downloadmod" Content="Installieren" Height="32" FontWeight="Bold" Margin="5,0,0,0" />
                     </DockPanel>
                     <ScrollViewer Margin="367,106,10,47">
@@ -285,8 +277,23 @@
                     <ListView x:Name="lb_servers" Margin="21,42,21,47" Width="900" HorizontalAlignment="Center" BorderThickness="0" >
                         <ListView.Resources>
                             <ContextMenu StaysOpen="true" x:Key="ServerlistContextMenu">
-                                <MenuItem Header="Server Addresse kopieren" Name="context_copy_server_address" Click="copy_server_address" Icon="{DynamicResource serverlistcontext_copy_image}" />
-                                <MenuItem Header="Direct Join (Auto)" Name="context_join_server_from_list_auto" Click="join_server_from_list_auto" Icon="{DynamicResource serverlistcontext_direct_join_image}" >
+                                <MenuItem Header="Server Addresse kopieren" Name="context_copy_server_address" Click="copy_server_address" >
+                                    <MenuItem.Icon>
+                                        <Rectangle Height="28" Width="28" Fill="{DynamicResource BlackBrush}">
+                                            <Rectangle.OpacityMask>
+                                                <ImageBrush ImageSource="/images/light/appbar.page.copy.png"/>
+                                            </Rectangle.OpacityMask>
+                                        </Rectangle>
+                                    </MenuItem.Icon>
+                                </MenuItem>
+                                <MenuItem Header="Direct Join (Auto)" Name="context_join_server_from_list_auto" Click="join_server_from_list_auto" >
+                                    <MenuItem.Icon>
+                                        <Rectangle Height="28" Width="28" Fill="{DynamicResource BlackBrush}">
+                                            <Rectangle.OpacityMask>
+                                                <ImageBrush ImageSource="/images/light/appbar.control.play.png"/>
+                                            </Rectangle.OpacityMask>
+                                        </Rectangle>
+                                    </MenuItem.Icon>
                                     <MenuItem.Style>
                                         <Style BasedOn="{StaticResource MetroMenuItem}" TargetType="MenuItem" >
                                             <Style.Triggers>
@@ -307,7 +314,16 @@
                                         </Style>
                                     </MenuItem.Style>
                                 </MenuItem>
-                                <MenuItem Header="Direct Join (Manuell)" Name="context_join_server_from_list" Click="join_server_from_list" Icon="{DynamicResource serverlistcontext_direct_join_image2}"/>
+                                <MenuItem Header="Direct Join (Manuell)" Name="context_join_server_from_list" Click="join_server_from_list" >
+                                    <MenuItem.Icon>
+                                        <Rectangle Height="28" Width="28" Fill="{DynamicResource BlackBrush}">
+                                            <Rectangle.OpacityMask>
+                                                <ImageBrush ImageSource="/images/light/appbar.control.play.png"/>
+                                            </Rectangle.OpacityMask>
+                                        </Rectangle>
+                                    </MenuItem.Icon>
+                                </MenuItem>
+
                             </ContextMenu>
                         </ListView.Resources>
                         <ListView.ItemContainerStyle>
@@ -472,7 +488,11 @@
             <MenuItem Click="Open_Github" Padding="0,0,5,0">
                 <MenuItem.Header>
                     <StackPanel Orientation="Horizontal">
-                        <Image x:Name="img_github" Height="28" Source="/images/light/appbar.social.github.octocat.png" />
+                        <Rectangle Height="28" Width="28" Fill="{DynamicResource BlackBrush}">
+                            <Rectangle.OpacityMask>
+                                <ImageBrush ImageSource="/images/light/appbar.social.github.octocat.png"/>
+                            </Rectangle.OpacityMask>
+                        </Rectangle>
                         <TextBlock Text="Github" VerticalAlignment="Center" />
                     </StackPanel>
                 </MenuItem.Header>
@@ -480,7 +500,11 @@
             <MenuItem Click="Open_Website" Padding="0,0,5,0" >
                 <MenuItem.Header>
                     <StackPanel Orientation="Horizontal">
-                        <Image x:Name="img_website" Height="28" Source="/images/light/appbar.globe.png" />
+                        <Rectangle Height="28" Width="28" Fill="{DynamicResource BlackBrush}">
+                            <Rectangle.OpacityMask>
+                                <ImageBrush ImageSource="/images/light/appbar.globe.png"/>
+                            </Rectangle.OpacityMask>
+                        </Rectangle>
                         <TextBlock Text="Website" VerticalAlignment="Center" />
                     </StackPanel>
                 </MenuItem.Header>
@@ -492,6 +516,7 @@
                 ItemsSource="{Binding Path=AccentColors}"
         		ItemContainerStyle="{StaticResource AccentColorMenuItemStyle}" VerticalAlignment="Center" HorizontalAlignment="Center" />
         </Menu>
+        <local:Login x:Name="LoginScreen"  DataContext="{Binding}" Visibility="Collapsed"/>
 
         <!--<StatusBar Height="25" VerticalAlignment="Bottom" Background="#FF5EA0FF">
             <StatusBarItem>

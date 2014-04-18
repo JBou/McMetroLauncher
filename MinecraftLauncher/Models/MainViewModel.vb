@@ -15,6 +15,17 @@ Public Class MainViewModel
         RaiseEvent PropertyChanged(Me, New PropertyChangedEventArgs(propertyName))
     End Sub
 
+    Private m_Servers As ServerList = New ServerList()
+    Public Property Servers As ServerList
+        Get
+            Return m_Servers
+        End Get
+        Set(value As ServerList)
+            m_Servers = value
+            OnPropertyChanged("Servers")
+        End Set
+    End Property
+
     Public Property AppThemes As List(Of AppThemeMenuData)
         Get
             Return GlobalInfos.AppThemes

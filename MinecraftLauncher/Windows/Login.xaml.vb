@@ -6,13 +6,15 @@ Imports MahApps.Metro.Controls.Dialogs
 Public Class Login
     Public Session As Session
 
-    Public Sub New()
-        ' Dieser Aufruf ist für den Designer erforderlich.
-        InitializeComponent()
-
-        ' Fügen Sie Initialisierungen nach dem InitializeComponent()-Aufruf hinzu.
+    Sub Open()
+        Visibility = System.Windows.Visibility.Visible
         Load_Accounts()
     End Sub
+
+    Private Sub Login_Loaded(sender As Object, e As RoutedEventArgs) Handles Me.Loaded
+        Load_Accounts()
+    End Sub
+
     Sub Load_Accounts()
         cb_existing_users.Items.Clear()
         If authenticationDatabase.List.Count > 0 Then
@@ -52,12 +54,13 @@ Public Class Login
             Await Profiles.Edit(ViewModel.selectedprofile, profile)
             Main.lbl_Username.Content = "Willkommen, " & session.SelectedProfile.Name
             Main.Show()
-            Me.Close()
+            Me.Visibility = System.Windows.Visibility.Collapsed
+            Main.TabControl_main.Visibility = System.Windows.Visibility.Visible
         Catch ex As MinecraftAuthenticationException
             capturedException = ex
         End Try
         If capturedException IsNot Nothing Then
-            Await Me.ShowMessageAsync(capturedException.Error, capturedException.ErrorMessage, MessageDialogStyle.Affirmative)
+            Await DirectCast(MainWindow.GetWindow(Me), MainWindow).ShowMessageAsync(capturedException.Error, capturedException.ErrorMessage, MessageDialogStyle.Affirmative)
             If capturedException.ErrorMessage = "Invalid token." Then
                 Dim Account = DirectCast(cb_existing_users.SelectedItem, authenticationDatabase.Account)
                 authenticationDatabase.List.Remove(authenticationDatabase.List.Where(Function(p) p.uuid = Account.uuid).First)
@@ -73,8 +76,8 @@ Public Class Login
         Try
             Session = Await JBou.Authentication.Session.DoLogin(tb_username.Text, pb_password.Password)
             authenticationDatabase.clientToken = Session.ClientToken
-            If authenticationDatabase.List.Select(Function(p) p.uuid).Contains(Session.SelectedProfile.Id) Then
-                authenticationDatabase.List.Remove(authenticationDatabase.List.Where(Function(p) p.uuid = Session.SelectedProfile.Id).First)
+            If authenticationDatabase.List.Select(Function(p) p.uuid.Replace("-", "")).Contains(Session.SelectedProfile.Id) Then
+                authenticationDatabase.List.Remove(authenticationDatabase.List.Where(Function(p) p.uuid.Replace("-", "") = Session.SelectedProfile.Id).First)
             End If
             authenticationDatabase.List.Add(Session.ToAccount)
             Await authenticationDatabase.Save()
@@ -83,12 +86,13 @@ Public Class Login
             Await Profiles.Edit(ViewModel.selectedprofile, profile)
             Main.lbl_Username.Content = "Willkommen, " & Session.SelectedProfile.Name
             Main.Show()
-            Me.Close()
+            Me.Visibility = System.Windows.Visibility.Collapsed
+            Main.TabControl_main.Visibility = System.Windows.Visibility.Visible
         Catch ex As MinecraftAuthenticationException
             capturedException = ex
         End Try
         If capturedException IsNot Nothing Then
-            Await Me.ShowMessageAsync(capturedException.Error, capturedException.ErrorMessage, MessageDialogStyle.Affirmative)
+            Await DirectCast(MainWindow.GetWindow(Me), MainWindow).ShowMessageAsync(capturedException.Error, capturedException.ErrorMessage, MessageDialogStyle.Affirmative)
         End If
     End Sub
 
@@ -108,7 +112,8 @@ Public Class Login
             capturedException = ex
         End Try
         If capturedException IsNot Nothing Then
-            Await Me.ShowMessageAsync(capturedException.Error, capturedException.ErrorMessage, MessageDialogStyle.Affirmative)
+            Await DirectCast(MainWindow.GetWindow(Me), MainWindow).ShowMessageAsync(capturedException.Error, capturedException.ErrorMessage, MessageDialogStyle.Affirmative)
         End If
     End Sub
+
 End Class

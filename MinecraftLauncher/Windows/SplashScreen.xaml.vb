@@ -21,19 +21,18 @@ Public Class SplashScreen
     Dim dllegacyforgefile As New WebClient
 
 
-    Public Shared Starting As Boolean = True
-    Public Async Function internetconnection() As Task(Of Boolean)
+    Public Function internetconnection() As Boolean
         Try
-            Using client As New WebClient
-                Using stream As Stream = Await client.OpenReadTaskAsync("http://www.google.com")
-                    stream.Close()
+            Using client = New WebClient()
+                Using stream = client.OpenRead("http://www.google.com")
                     Return True
                 End Using
             End Using
-        Catch ex As Exception
+        Catch
             Return False
         End Try
     End Function
+
 
     Private Sub SplashScreen_Closing(sender As Object, e As ComponentModel.CancelEventArgs) Handles Me.Closing
         dlversion.CancelAsync()
@@ -46,7 +45,6 @@ Public Class SplashScreen
 
     Private Async Sub SplashScreen_Loaded(sender As Object, e As RoutedEventArgs) Handles Me.Loaded
         Try
-            Starting = True
             Await Settings.Load()
             If Settings.Settings.Accent <> Nothing And ThemeManager.Accents.Select(Function(p) p.Name).Contains(Settings.Settings.Accent) Then
                 Dim theme = ThemeManager.DetectAppStyle(Application.Current)
@@ -89,7 +87,7 @@ Public Class SplashScreen
             End If
 
 
-            If Await internetconnection() = True Then
+            If internetconnection() = True Then
                 If GetJavaPath() = Nothing OrElse New FileInfo(Path.Combine(GetJavaPath(), "bin", "java.exe")).Exists = False Then
                     Dim result As MessageDialogResult = Await ShowMessageAsync("Java nicht vorhanden", "Du musst Java installieren, um den McMetroLauncher und Minecraft nutzen zu können." & Environment.NewLine & "Ansonsten werden einige Funktionen nicht funktionieren!!" & Environment.NewLine & "Jetzt herunterladen?", MessageDialogStyle.AffirmativeAndNegative)
                     If result = MessageDialogResult.Affirmative Then
@@ -233,6 +231,8 @@ Public Class SplashScreen
         If e.Cancelled = False And e.Error Is Nothing Then
             Try
                 lbl_status.Content = "Launcher startet..."
+                Await ViewModel.Servers.Load
+                Await authenticationDatabase.Load()
                 Await Modifications.Load()
                 Await Forge.Load()
                 Await LiteLoader.Load()
@@ -262,8 +262,9 @@ Public Class SplashScreen
             Await Main.Load_Servers()
             Main.Ping_servers()
             Main.Check_Tools_Downloaded()
-            Await Check_Account()
-            Starting = False
+            Main.Show()
+            Me.Close()
+            'Await Check_Account()
         Catch ex As Exception
             MessageBox.Show(ex.Message & Environment.NewLine & ex.StackTrace)
         End Try
@@ -274,50 +275,43 @@ Public Class SplashScreen
     End Sub
 
 
-#Region "Auth"
+    '#Region "Auth"
 
-    Async Function Check_Account() As Task
-        Await authenticationDatabase.Load()
-        Dim profile As Profiles.Profile = Await Profiles.FromName(ViewModel.selectedprofile)
-        If profile.playerUUID = Nothing Then
-            'Show Login
-            Dim loginscreen As New Login
-            loginscreen.Show()
-        Else
-            Dim capturedException As MinecraftAuthenticationException = Nothing
-            'Login with access token
-            Try
-                If authenticationDatabase.List.Select(Function(p) p.uuid.Replace("-", "")).Contains(profile.playerUUID) Then
-                    lbl_status.Content = "Anmelden mit access token"
-                    Dim Account = authenticationDatabase.List.Where(Function(p) p.uuid.Replace("-", "") = profile.playerUUID).First
-                    Dim session = New Session() With {.AccessToken = Account.accessToken,
-                                                      .ClientToken = authenticationDatabase.clientToken,
-                                                      .SelectedProfile = Nothing}
-                    Await session.Refresh
-                    Main.lbl_Username.Content = "Willkommen, " & Account.displayName
-                    authenticationDatabase.List.Where(Function(p) p.uuid.Replace("-", "") = profile.playerUUID).First.accessToken = session.AccessToken
-                    Await authenticationDatabase.Save()
-                Else
-                    'Show Login
-                    Dim loginscreen As New Login
-                    loginscreen.Show()
-                    Me.Close()
-                    Exit Function
-                End If
-            Catch ex As MinecraftAuthenticationException
-                capturedException = ex
-            End Try
-            If capturedException IsNot Nothing Then
-                Await Me.ShowMessageAsync(capturedException.Error, capturedException.ErrorMessage, MessageDialogStyle.Affirmative)
-                'Show Login
-                Dim loginscreen As New Login
-                loginscreen.Show()
-            Else
-                Main.Show()
-            End If
-        End If
-        Me.Close()
-    End Function
+    '    Async Function Check_Account() As Task
+    '        Dim profile As Profiles.Profile = Await Profiles.FromName(ViewModel.selectedprofile)
+    '        If profile.playerUUID = Nothing Then
+    '            Main.LoginScreen.Visibility = Windows.Visibility.Visible
+    '        Else
+    '            Dim capturedException As MinecraftAuthenticationException = Nothing
+    '            'Login with access token
+    '            Try
+    '                If authenticationDatabase.List.Select(Function(p) p.uuid.Replace("-", "")).Contains(profile.playerUUID) Then
+    '                    lbl_status.Content = "Anmelden mit access token"
+    '                    Dim Account = authenticationDatabase.List.Where(Function(p) p.uuid.Replace("-", "") = profile.playerUUID).First
+    '                    Dim session = New Session() With {.AccessToken = Account.accessToken,
+    '                                                      .ClientToken = authenticationDatabase.clientToken,
+    '                                                      .SelectedProfile = Nothing}
+    '                    Await session.Refresh
+    '                    Main.lbl_Username.Content = Account.displayName
+    '                    authenticationDatabase.List.Where(Function(p) p.uuid.Replace("-", "") = profile.playerUUID).First.accessToken = session.AccessToken
+    '                    Await authenticationDatabase.Save()
+    '                Else
+    '                    Main.LoginScreen.Visibility = Windows.Visibility.Visible
+    '                    Me.Close()
+    '                    Exit Function
+    '                End If
+    '            Catch ex As MinecraftAuthenticationException
+    '                capturedException = ex
+    '            End Try
+    '            If capturedException IsNot Nothing Then
+    '                Await Me.ShowMessageAsync(capturedException.Error, capturedException.ErrorMessage, MessageDialogStyle.Affirmative)
+    '                Main.LoginScreen.Visibility = Windows.Visibility.Visible
+    '            Else
+    '                Main.Show()
+    '            End If
+    '        End If
+    '        Me.Close()
+    '    End Function
 
-#End Region
+    '#End Region
 End Class

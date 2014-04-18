@@ -148,9 +148,11 @@ Public Class ProfileEditor
         If cb_resolution.IsChecked = True Then
             tb_res_height.IsEnabled = True
             tb_res_width.IsEnabled = True
+            lbl_x.IsEnabled = True
         Else
             tb_res_height.IsEnabled = False
             tb_res_width.IsEnabled = False
+            lbl_x.IsEnabled = False
         End If
     End Sub
 

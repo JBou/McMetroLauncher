@@ -17,7 +17,7 @@
                 <Label Content="Profil Name:" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Height="26" Width="119" Padding="0" VerticalContentAlignment="Center"/>
                 <TextBox x:Name="tb_profile_name" Height="26" Margin="134,10,10,0" VerticalAlignment="Top" MaxLines="1"/>
                 <Button x:Name="btn_selectgamedir" HorizontalAlignment="Right" Height="26" Margin="0,42,10,0" VerticalAlignment="Top" Width="25" Content="..." />
-                <Label Content="x" HorizontalAlignment="Left" Margin="280,77,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Padding="0"/>
+                <Label x:Name="lbl_x" Content="x" HorizontalAlignment="Left" Margin="280,77,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Padding="0"/>
                 <TextBox x:Name="tb_res_height" HorizontalAlignment="Left" Height="26" Margin="296,72,0,0" VerticalAlignment="Top" Width="135" MaxLines="1" MaxLength="4"/>
                 <TextBox x:Name="tb_res_width" HorizontalAlignment="Left" Height="26" Margin="134,72,0,0" VerticalAlignment="Top" Width="135" MaxLines="1" MaxLength="4"/>
                 <TextBox x:Name="tb_gameDir" Height="26" Margin="134,41,40,0" VerticalAlignment="Top" MaxLines="1" IsReadOnly="True"/>

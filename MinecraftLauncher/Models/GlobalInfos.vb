@@ -193,7 +193,6 @@ Public Module GlobalInfos
     Public Delegate Sub WriteA(ByVal Text As String, rtb As RichTextBox)
     Public Delegate Sub WriteColored(ByVal Text As String, rtb As RichTextBox, Color As Brush)
     Public downloadfilepath As String
-    Public servers As ServerList = New ServerList
     Public onlineversion As String = Nothing
     Public changelog As String = Nothing
     Public resources_dir As New DirectoryInfo(Path.Combine(mcpfad.FullName, "resources"))

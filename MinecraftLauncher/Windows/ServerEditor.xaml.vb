@@ -59,11 +59,11 @@ Public Class ServerEditor
             .AcceptTextures = cb_AcceptTextures.IsChecked.Value
         }
         If Newserver = True Then
-            servers.Servers.Add(server)
+            ViewModel.Servers.Servers.Add(server)
         Else
-            servers.Servers.Item(serversindex) = server
+            ViewModel.Servers.Servers.Item(serversindex) = server
         End If
-        servers.Save()
+        ViewModel.Servers.Save()
         DialogResult = True
         Me.Close()
     End Sub
