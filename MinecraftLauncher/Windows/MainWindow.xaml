@@ -141,7 +141,7 @@
                         </TabControl.Resources>
                         <TabItem Header="Neuigkeiten" >
                             <Grid>
-                                <awe:WebControl x:Name="Webcontrol_news" Margin="10,10,10,0" Source="http://mcupdate.tumblr.com/" IsTransparent="True" />
+                                <awe:WebControl x:Name="Webcontrol_news" Margin="10,10,10,0" Source="http://mcupdate.tumblr.com/" />
                                 <Grid HorizontalAlignment="Center" VerticalAlignment="Center" Height="100">
                                     <Label x:Name="lbl_news_loading" Content="Neuigkeiten werden geladen..."  FontSize="60" VerticalAlignment="Top"  />
                                     <Controls:MetroProgressBar x:Name="pb_news_loading" IsIndeterminate="True" VerticalAlignment="Bottom" Height="10" />
@@ -159,7 +159,6 @@
                         </TabItem>
                     </TabControl>
                     <ListBox x:Name="Listbox1" HorizontalAlignment="Left" Height="271" Margin="459,10,0,0" VerticalAlignment="Top" Width="473" Visibility="Collapsed"/>
-                    <Button x:Name="btn_startMC" Content="Play" HorizontalAlignment="Right" Margin="0,0,10,10" VerticalAlignment="Bottom" Width="150" Height="69" FontSize="30" TabIndex="11"/>
                     <StackPanel Orientation="Horizontal" Margin="0,0,165,10" Height="69"  HorizontalAlignment="Right"  VerticalAlignment="Bottom" >
                         <StackPanel Height="69">
                             <Label x:Name="lbl_Username" Width="150" Height="30" TabIndex="11" HorizontalAlignment="Center" VerticalAlignment="Center" HorizontalContentAlignment="Center" />
@@ -167,13 +166,9 @@
                         </StackPanel>
                         <Image x:Name="img_avatar" Height="69" Width="69" Margin="5,0,0,0"/>
                     </StackPanel>
+                    <Button x:Name="btn_startMC" Content="Play" HorizontalAlignment="Right" Margin="0,0,10,10" VerticalAlignment="Bottom" Width="150" Height="69" FontSize="30" TabIndex="11"/>
                     <Controls:MetroProgressBar Foreground="{DynamicResource AccentColorBrush}" x:Name="pb_download" Height="5" Margin="10,0,10,84" VerticalAlignment="Bottom"/>
-                    <ComboBox x:Name="cb_versions" HorizontalAlignment="Left" Margin="348,0,0,47" VerticalAlignment="Bottom" Width="76" Height="32" Visibility="Hidden"/>
-                    <ComboBox x:Name="cb_type" HorizontalAlignment="Left" Margin="246,0,0,47" VerticalAlignment="Bottom" Width="97" Height="32" Visibility="Hidden"/>
-                    <ListBox x:Name="lb_Datum" HorizontalAlignment="Left" Height="162" Margin="10,348,0,0" VerticalAlignment="Top" Width="179" Visibility="Hidden"/>
                     <Label x:Name="lbl_downloadstatus" HorizontalAlignment="Left" Margin="343,0,0,62" VerticalAlignment="Bottom" Width="418" Height="33"/>
-                    <ComboBox x:Name="cb_ram" HorizontalAlignment="Right" Margin="0,0,138,10" VerticalAlignment="Bottom" Width="148" Height="32" ToolTip="Nur verfügbar mit Java 64 bit" Visibility="Hidden"/>
-                    <Label Content="Ram" HorizontalAlignment="Right" Margin="0,0,291,10" VerticalAlignment="Bottom" Height="32" Width="78" FontSize="15" ToolTip="Nur verfügbar mit Java 64 bit" Visibility="Hidden"/>
                     <Button x:Name="btn_new_profile" Content="Neu" HorizontalAlignment="Left" Margin="10,0,0,10" VerticalAlignment="Bottom" Width="26" Height="33" MinWidth="50" TabIndex="4"/>
                     <Button x:Name="btn_edit_profile" Content="Bearbeiten" HorizontalAlignment="Left" Margin="65,0,0,10" VerticalAlignment="Bottom" Width="89" Height="33" TabIndex="5"/>
                     <ComboBox ItemsSource="{Binding Path=Profiles}" SelectedItem="{Binding selectedprofile, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" x:Name="cb_profiles" HorizontalAlignment="Left" Margin="10,0,0,48" VerticalAlignment="Bottom" Width="218" Height="31" TabIndex="3"/>
@@ -194,13 +189,13 @@
                     <Button Content="Forge installieren" x:Name="install_forge" Click="forge_installer" Margin="0,10,10,0" Height="74" VerticalAlignment="Top" HorizontalAlignment="Right" Width="165"/>
                     <TextBlock TextWrapping="Wrap" Margin="274,18,180,422" Padding="5" Text="Minecraft Forge ist ein ModLoader mit dem ihr einfacher Mods installieren könnt. Er hilft dabei, dass die Mods untereinander kompatibel sind. Die meisten Mods basieren auf Forge. Du kannst Mods für Forge unter dem Tab &quot;Mods&quot; installieren." VerticalAlignment="Top" />
                     <Image Margin="26,10,0,0" Height="74" VerticalAlignment="Top" HorizontalAlignment="Left" Width="243" Source="/images/forge_banner.png"/>
+                    <Button Content="LiteLoader installieren" x:Name="install_liteloader" Click="liteloader_installer" Margin="0,110,10,0" Height="74" VerticalAlignment="Top" HorizontalAlignment="Right" Width="165"/>
+                    <TextBlock TextWrapping="Wrap" Margin="274,101,180,323" Padding="5" Text="LiteLoader ist ein ModLoader der dafür entwickelt wurde, grundlegende Loader Funktionalitaten für Mods anzubieten, die nicht den Spielmechanismus ändern müssen. Er wurde dafür entwickelt, neben Minecraft Forge zu laufen und zwischen LiteLoader und Forge Mods treten keine Konflikte auf." VerticalAlignment="Top" />
+                    <Image Margin="25,89,0,0" Height="83" VerticalAlignment="Top" HorizontalAlignment="Left" Width="243" Source="/images/liteloader_header_xmas.png"/>
                     <TextBlock TextWrapping="Wrap" Margin="274,199,180,229" Padding="5" Text="Mit den Technic Launcher kannst du viele bekannte Modpacks spielen wie z.B. Tekkit, Hexxit, Volt.... Auserdem kannst du eigene Modpacks hinzufügen und spielen. Diese findest du auf http://technicpack.net." VerticalAlignment="Top" Height="70" />
                     <Button Content="Herunterladen" x:Name="btn_download_techniclauncher" Click="download_techniclauncher" Margin="0,215,10,0" Height="35" VerticalAlignment="Top" HorizontalAlignment="Right" Width="165"/>
                     <Button Content="Starten" x:Name="btn_start_techniclauncher"  Click="start_techniclauncher" Margin="0,255,10,0" Height="35" VerticalAlignment="Top" HorizontalAlignment="Right" Width="165"/>
                     <Image Margin="10,183,0,0" Height="91" VerticalAlignment="Top" HorizontalAlignment="Left" Width="259" Source="/images/tl.png"/>
-                    <Button Content="LiteLoader installieren" x:Name="install_liteloader" Click="liteloader_installer" Margin="0,110,10,0" Height="74" VerticalAlignment="Top" HorizontalAlignment="Right" Width="165"/>
-                    <TextBlock TextWrapping="Wrap" Margin="274,101,180,323" Padding="5" Text="LiteLoader ist ein ModLoader der dafür entwickelt wurde, grundlegende Loader Funktionalitaten für Mods anzubieten, die nicht den Spielmechanismus ändern müssen. Er wurde dafür entwickelt, neben Minecraft Forge zu laufen und zwischen LiteLoader und Forge Mods treten keine Konflikte auf." VerticalAlignment="Top" />
-                    <Image Margin="25,89,0,0" Height="83" VerticalAlignment="Top" HorizontalAlignment="Left" Width="243" Source="/images/liteloader_header_xmas.png"/>
                     <TextBlock TextWrapping="Wrap" Margin="274,293,180,135" Padding="5" Text="Mit den Feed The Beast Launcher kannst du viele bekannte Modpacks spielen wie z.B. Unleashed, Unhinged, FTB Ultimate, Direwolf 20... die sehr viele Mods beinhalten. Mehr Infos findest du auf http://feed-the-beast.com." VerticalAlignment="Top" Height="70" />
                     <Button Content="Herunterladen" x:Name="btn_download_feedthebeast" Click="download_feedthebeast" Margin="0,295,10,0" Height="35" VerticalAlignment="Top" HorizontalAlignment="Right" Width="165"/>
                     <Button Content="Starten" x:Name="btn_start_feedthebeast"  Click="start_feedthebeast" Margin="0,335,10,0" Height="35" VerticalAlignment="Top" HorizontalAlignment="Right" Width="165"/>

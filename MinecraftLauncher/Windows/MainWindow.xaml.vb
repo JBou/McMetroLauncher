@@ -1188,16 +1188,6 @@ Public Class MainWindow
         End If
     End Function
 
-    Public Function RamCheck() As Integer
-        'If GetJavaPath() = "64" Then
-        Dim cbram_selecteditem As String = cb_ram.SelectedItem.ToString()
-        Dim ram_i As Integer = Val(cbram_selecteditem.First)
-        Return ram_i * 1024
-        'Else
-        'Return 1024
-        'End If
-    End Function
-
     Private Sub wcversionsdownload_DownloadProgressChanged(sender As Object, e As DownloadProgressChangedEventArgs) Handles wcversionsdownload.DownloadProgressChanged
         pb_download_Value(e.ProgressPercentage)
     End Sub
