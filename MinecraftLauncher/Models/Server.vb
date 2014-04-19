@@ -50,27 +50,31 @@ Public Class ServerList
 
     Public Async Function LoadFrom(file As String) As Task
         Await Task.Run(Sub()
-                           Dim nbt = New NbtFile(file)
-                           Servers.Clear()
-                           For Each server As NbtCompound In TryCast(nbt.RootTag("servers"), NbtList)
-                               Dim entry As New Server()
-                               If server.Contains("name") Then
-                                   entry.name = server("name").StringValue
-                               End If
-                               If server.Contains("ip") Then
-                                   entry.ip = server("ip").StringValue
-                               End If
-                               If server.Contains("hideAddress") Then
-                                   entry.hideAddress = server("hideAddress").ByteValue = 1
-                               End If
-                               If server.Contains("acceptTextures") Then
-                                   entry.AcceptTextures = server("acceptTextures").ByteValue = 1
-                               End If
-                               If server.Contains("icon") Then
-                                   entry.icon = server("icon").StringValue
-                               End If
-                               Servers.Add(entry)
-                           Next
+                           If IO.File.Exists(file) Then
+                               Dim nbt = New NbtFile(file)
+                               Servers.Clear()
+                               For Each server As NbtCompound In TryCast(nbt.RootTag("servers"), NbtList)
+                                   Dim entry As New Server()
+                                   If server.Contains("name") Then
+                                       entry.name = server("name").StringValue
+                                   End If
+                                   If server.Contains("ip") Then
+                                       entry.ip = server("ip").StringValue
+                                   End If
+                                   If server.Contains("hideAddress") Then
+                                       entry.hideAddress = server("hideAddress").ByteValue = 1
+                                   End If
+                                   If server.Contains("acceptTextures") Then
+                                       entry.AcceptTextures = server("acceptTextures").ByteValue = 1
+                                   End If
+                                   If server.Contains("icon") Then
+                                       entry.icon = server("icon").StringValue
+                                   End If
+                                   Servers.Add(entry)
+                               Next
+                           Else
+                               Servers = New List(Of Server)
+                           End If
                        End Sub)
     End Function
 

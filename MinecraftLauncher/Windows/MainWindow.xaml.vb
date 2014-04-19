@@ -1550,6 +1550,7 @@ Public Class MainWindow
 
     Async Function Load_Servers() As Task
         lb_servers.Items.Clear()
+        servers_dat.Refresh()
         If servers_dat.Exists = True Then
             lbl_no_servers.Visibility = Windows.Visibility.Collapsed
             ViewModel.Servers = New ServerList()
@@ -1871,6 +1872,8 @@ Public Class MainWindow
         Settings.Settings.WindowState = Me.WindowState
         Await Settings.Save()
     End Sub
+
+
 
 #Region "Auth"
     Private Async Sub cb_profiles_SelectionChanged(sender As Object, e As SelectionChangedEventArgs) Handles cb_profiles.SelectionChanged
