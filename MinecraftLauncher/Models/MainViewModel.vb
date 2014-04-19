@@ -59,11 +59,15 @@ Public Class MainViewModel
             Return _cpu
         End Get
     End Property
-    Private ReadOnly _profiles As ObservableCollection(Of String) = New ObservableCollection(Of String)
-    Public ReadOnly Property Profiles As ObservableCollection(Of String)
+    Private _profiles As ObservableCollection(Of String) = New ObservableCollection(Of String)
+    Public Property Profiles As ObservableCollection(Of String)
         Get
             Return _profiles
         End Get
+        Set(value As ObservableCollection(Of String))
+            _profiles = value
+            OnPropertyChanged("Profiles")
+        End Set
     End Property
     Public Property selectedprofile As String
         Get

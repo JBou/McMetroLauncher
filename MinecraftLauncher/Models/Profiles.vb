@@ -77,10 +77,7 @@ Public Class Profiles
     Public Shared Sub Get_Profiles()
         Profiles.Load()
         Dim jo As JObject = Profiles.profilesjo
-        ViewModel.Profiles.Clear()
-        For Each Profile As String In Profiles.List
-            ViewModel.Profiles.Add(Profile)
-        Next
+        ViewModel.Profiles = New ObjectModel.ObservableCollection(Of String)(Profiles.List)
         If jo.Properties.Select(Function(p) p.Name).Contains("selectedProfile") = True Then
             ViewModel.selectedprofile = jo("selectedProfile").ToString
         Else
