@@ -514,7 +514,7 @@
                 ItemsSource="{Binding Path=AccentColors}"
         		ItemContainerStyle="{StaticResource AccentColorMenuItemStyle}" VerticalAlignment="Center" HorizontalAlignment="Center" />
         </Menu>
-        <local:Login x:Name="LoginScreen"  DataContext="{Binding}" Visibility="Collapsed"/>
+        <local:Login x:Name="LoginScreen" Visibility="Collapsed"/>
 
         <!--<StatusBar Height="25" VerticalAlignment="Bottom" Background="#FF5EA0FF">
             <StatusBarItem>

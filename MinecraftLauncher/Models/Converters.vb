@@ -195,4 +195,25 @@ Class CustomIntConverter
     End Sub
 End Class
 
+<ValueConversion(GetType(Boolean), GetType(Boolean))> _
+Public Class InverseBooleanConverter
+    Implements IValueConverter
+#Region "IValueConverter Members"
+
+    Public Function Convert(value As Object, targetType As Type, parameter As Object, culture As System.Globalization.CultureInfo) As Object Implements IValueConverter.Convert
+        If targetType <> GetType(Boolean) Then
+            Throw New InvalidOperationException("The target must be a boolean")
+        End If
+
+        Return Not CBool(value)
+    End Function
+
+    Public Function ConvertBack(value As Object, targetType As Type, parameter As Object, culture As System.Globalization.CultureInfo) As Object Implements IValueConverter.ConvertBack
+        Throw New NotImplementedException()
+    End Function
+
+#End Region
+End Class
+
+
 #End Region

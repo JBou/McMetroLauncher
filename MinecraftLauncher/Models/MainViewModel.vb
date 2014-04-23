@@ -2,9 +2,10 @@
 Imports System.ComponentModel
 Imports System.Runtime.CompilerServices
 Imports Newtonsoft.Json.Linq
+Imports System.Text.RegularExpressions
 
 Public Class MainViewModel
-    Implements INotifyPropertyChanged
+    Implements INotifyPropertyChanged, IDataErrorInfo
     Public Event PropertyChanged(sender As Object, e As PropertyChangedEventArgs) Implements INotifyPropertyChanged.PropertyChanged
 
     ''' <summary>
@@ -46,14 +47,6 @@ Public Class MainViewModel
         End Set
     End Property
 
-
-    Private ReadOnly _ram As ObservableCollection(Of Ram) = New ObservableCollection(Of Ram)
-    Public ReadOnly Property Ram As ObservableCollection(Of Ram)
-        Get
-            Return _ram
-        End Get
-    End Property
-    Private ReadOnly _cpu As ObservableCollection(Of CPU) = New ObservableCollection(Of CPU)
     Public ReadOnly Property CPU As ObservableCollection(Of CPU)
         Get
             Return _cpu
@@ -79,15 +72,88 @@ Public Class MainViewModel
         End Set
     End Property
 
+#Region "Login"
+    Public _username As String
+    Public Property Username As String
+        Get
+            Return _username
+        End Get
+        Set(value As String)
+            If Equals(value, Username) Then
+                Return
+            Else
+                _username = value
+                OnPropertyChanged("Username")
+            End If
+        End Set
+    End Property
+    Public _onlineMode As Boolean = True
+    Public Property OnlineMode As Boolean
+        Get
+            Return _onlineMode
+        End Get
+        Set(value As Boolean)
+            If Equals(value, Username) Then
+                Return
+            Else
+                _onlineMode = value
 
-    Private CPUCounter As PerformanceCounter = New PerformanceCounter("Processor", "% Processor Time", "_Total")
-    Private MemCounter As PerformanceCounter = New PerformanceCounter("Memory", "Available MBytes")
-    Private totalram As ULong = My.Computer.Info.TotalPhysicalMemory()
+                OnPropertyChanged("OnlineMode")
+            End If
+        End Set
+    End Property
 
+#End Region
+
+#Region "Error"
+    Public ReadOnly Property [Error]() As String Implements IDataErrorInfo.Error
+        Get
+            Return String.Empty
+        End Get
+    End Property
+
+    Default Public ReadOnly Property Item(columnName As String) As String Implements IDataErrorInfo.Item
+        Get
+            If columnName = "Username" Then
+                If String.IsNullOrWhiteSpace(Username) Then
+                    Return "Gib einen Benutzernamen ein"
+                ElseIf Not OnlineMode Then
+                    'Username Validation
+                    If Username.Length < 3 Or Username.Length > 16 Then
+                        Return "3 - 16 Zeichen"
+                    Else
+                        Dim regex As New Regex("^[A-Za-z0-9_-]{2,16}$")
+                        Dim match As Match = regex.Match(Username)
+
+                        If Not match.Success Then
+                            Return "Nur Buchstaben, Zahlen, Binde- und Unterstriche"
+                        End If
+                    End If
+                End If
+            End If
+            Return String.Empty
+        End Get
+    End Property
+
+#End Region
 
     Public Sub New()
         Check_RAM_CPU()
     End Sub
+
+#Region "Infos"
+
+    Private ReadOnly _ram As ObservableCollection(Of Ram) = New ObservableCollection(Of Ram)
+    Public ReadOnly Property Ram As ObservableCollection(Of Ram)
+        Get
+            Return _ram
+        End Get
+    End Property
+
+    Private ReadOnly _cpu As ObservableCollection(Of CPU) = New ObservableCollection(Of CPU)
+    Private CPUCounter As PerformanceCounter = New PerformanceCounter("Processor", "% Processor Time", "_Total")
+    Private MemCounter As PerformanceCounter = New PerformanceCounter("Memory", "Available MBytes")
+    Private totalram As ULong = My.Computer.Info.TotalPhysicalMemory()
 
     Sub Check_RAM_CPU()
         Dim totalram As ULong = My.Computer.Info.TotalPhysicalMemory()
@@ -115,8 +181,11 @@ Public Class MainViewModel
         '_ram.Item(0).Count = CInt(theMemCounter.NextValue)
     End Sub
 
+#End Region
+
 End Class
 
+#Region "Classes"
 Public Class Ram
     Implements INotifyPropertyChanged
     Private _name As String = String.Empty
@@ -181,3 +250,5 @@ Public Class CPU
         RaiseEvent PropertyChanged(Me, New PropertyChangedEventArgs(propertyName))
     End Sub
 End Class
+
+#End Region

@@ -2,16 +2,31 @@
 Imports McMetroLauncher.JBou.Authentication.Session
 Imports System.Runtime.ExceptionServices
 Imports MahApps.Metro.Controls.Dialogs
+Imports MahApps.Metro
+Imports System.ComponentModel
+Imports System.Text.RegularExpressions
 
 Public Class Login
+    Public Sub New()
+
+        ' Dieser Aufruf ist für den Designer erforderlich.
+        InitializeComponent()
+
+        ' Fügen Sie Initialisierungen nach dem InitializeComponent()-Aufruf hinzu.
+        Me.DataContext = ViewModel
+    End Sub
+
+
     Public Session As Session
 
     Sub Open()
+        Controls.TextboxHelper.SetIsWaitingForData(tb_username, False)
         Visibility = System.Windows.Visibility.Visible
         Load_Accounts()
         tb_username.Text = Nothing
         pb_password.Password = Nothing
         cb_online_mode.IsChecked = True
+        UpdateValidation()
     End Sub
 
     Private Sub Login_Loaded(sender As Object, e As RoutedEventArgs) Handles Me.Loaded
@@ -87,37 +102,40 @@ Public Class Login
         Dim capturedException As MinecraftAuthenticationException = Nothing
         'login with username & password
         Try
-            If cb_online_mode.IsChecked Then
-                Session = Await JBou.Authentication.Session.DoLogin(tb_username.Text, pb_password.Password)
-                authenticationDatabase.clientToken = Session.ClientToken
-                If authenticationDatabase.List.Select(Function(p) p.uuid.Replace("-", "")).Contains(Session.SelectedProfile.Id) Then
-                    authenticationDatabase.List.Remove(authenticationDatabase.List.Where(Function(p) p.uuid.Replace("-", "") = Session.SelectedProfile.Id).First)
+            If Not tb_username.GetBindingExpression(TextBox.TextProperty).HasError Then
+                Controls.TextboxHelper.SetIsWaitingForData(tb_username, False)
+                If cb_online_mode.IsChecked Then
+                    Session = Await JBou.Authentication.Session.DoLogin(tb_username.Text, pb_password.Password)
+                    authenticationDatabase.clientToken = Session.ClientToken
+                    If authenticationDatabase.List.Select(Function(p) p.uuid.Replace("-", "")).Contains(Session.SelectedProfile.Id) Then
+                        authenticationDatabase.List.Remove(authenticationDatabase.List.Where(Function(p) p.uuid.Replace("-", "") = Session.SelectedProfile.Id).First)
+                    End If
+                    authenticationDatabase.List.Add(Session.ToAccount)
+                    Await authenticationDatabase.Save()
+                    Dim profile As Profiles.Profile = Await Profiles.FromName(ViewModel.selectedprofile)
+                    profile.playerUUID = Session.SelectedProfile.Id
+                    Await Profiles.Edit(ViewModel.selectedprofile, profile)
+                    Await Main.ShowUsername_Avatar(Session.ToAccount)
+                Else
+                    If authenticationDatabase.List.Select(Function(p) p.userid).Contains(tb_username.Text) Then
+                        authenticationDatabase.List.Remove(authenticationDatabase.List.Where(Function(p) p.userid = tb_username.Text).First)
+                    End If
+                    Dim account As New authenticationDatabase.Account() With {
+                                                    .displayName = tb_username.Text,
+                                                    .username = tb_username.Text,
+                                                    .uuid = Guid.NewGuid.ToString,
+                                                    .userid = tb_username.Text}
+                    authenticationDatabase.List.Add(account)
+                    Await authenticationDatabase.Save()
+                    Dim profile As Profiles.Profile = Await Profiles.FromName(ViewModel.selectedprofile)
+                    profile.playerUUID = account.uuid.Replace("-", "")
+                    Await Profiles.Edit(ViewModel.selectedprofile, profile)
+                    Await Main.ShowUsername_Avatar(account)
                 End If
-                authenticationDatabase.List.Add(Session.ToAccount)
-                Await authenticationDatabase.Save()
-                Dim profile As Profiles.Profile = Await Profiles.FromName(ViewModel.selectedprofile)
-                profile.playerUUID = Session.SelectedProfile.Id
-                Await Profiles.Edit(ViewModel.selectedprofile, profile)
-                Await Main.ShowUsername_Avatar(Session.ToAccount)
-            Else
-                If authenticationDatabase.List.Select(Function(p) p.userid).Contains(tb_username.Text) Then
-                    authenticationDatabase.List.Remove(authenticationDatabase.List.Where(Function(p) p.userid = tb_username.Text).First)
-                End If
-                Dim account As New authenticationDatabase.Account() With {
-                                                .displayName = tb_username.Text,
-                                                .username = tb_username.Text,
-                                                .uuid = Guid.NewGuid.ToString,
-                                                .userid = tb_username.Text}
-                authenticationDatabase.List.Add(account)
-                Await authenticationDatabase.Save()
-                Dim profile As Profiles.Profile = Await Profiles.FromName(ViewModel.selectedprofile)
-                profile.playerUUID = account.uuid.Replace("-", "")
-                Await Profiles.Edit(ViewModel.selectedprofile, profile)
-                Await Main.ShowUsername_Avatar(account)
+                Main.Show()
+                Me.Visibility = System.Windows.Visibility.Collapsed
+                Main.TabControl_main.Visibility = System.Windows.Visibility.Visible
             End If
-            Main.Show()
-            Me.Visibility = System.Windows.Visibility.Collapsed
-            Main.TabControl_main.Visibility = System.Windows.Visibility.Visible
         Catch ex As MinecraftAuthenticationException
             capturedException = ex
         End Try
@@ -148,4 +166,7 @@ Public Class Login
         End If
     End Sub
 
+    Private Sub UpdateValidation()
+        tb_username.GetBindingExpression(TextBox.TextProperty).UpdateSource()
+    End Sub
 End Class
