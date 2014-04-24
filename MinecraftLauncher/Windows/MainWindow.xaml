@@ -63,6 +63,25 @@
                 <Setter Property="Header"
                         Value="{Binding Name, Mode=OneWay}" />
             </Style>
+            <Style x:Key="ServiceStatusItemStyle"
+                   TargetType="{x:Type MenuItem}"
+                   BasedOn="{StaticResource MetroMenuItem}">
+                <Setter Property="Focusable"
+                        Value="False" />
+                <Setter Property="Icon"
+                        Value="{StaticResource AccentMenuIcon}" />
+                <Setter Property="Header"
+                        Value="{Binding Name, Mode=OneWay}" />
+            </Style>
+            <Style x:Key="BaseTextStyle" TargetType="TextBlock">
+                <Setter Property="FontFamily" Value="Segoe UI" />
+                <Setter Property="FontSize" Value="9" />
+            </Style>
+            <Style x:Key="ChartTitleStyle" TargetType="TextBlock" BasedOn="{StaticResource BaseTextStyle}">
+                <Setter Property="FontSize" Value="26"/>
+                <Setter Property="FontFamily" Value="Segoe UI Light"/>
+                <Setter Property="FontWeight" Value="Light"/>
+            </Style>
             <Style x:Key="myHeaderStyle" TargetType="{x:Type GridViewColumnHeader}">
                 <Setter Property="Visibility" Value="Collapsed" />
             </Style>
@@ -271,7 +290,7 @@
             </TabItem>
             <TabItem Header="Servers">
                 <Grid>
-                    <Label Margin="10,10,10,47" Width="900" VerticalAlignment="Top" HorizontalAlignment="Center" BorderThickness="0" Content="Server, dessen Version älter als 1.7 ist, werden als &quot;Offline&quot; angezeigt, Rechtsklick für mehr Optionen" HorizontalContentAlignment="Center" Background="{x:Null}" Foreground="Red" FontWeight="Bold"  />
+                    <TextBlock Margin="10,10,10,10" VerticalAlignment="Top" HorizontalAlignment="Center" Text="Server, dessen Version älter als 1.7 ist, werden als &quot;Offline&quot; angezeigt, Rechtsklick für mehr Optionen" Foreground="Red" FontWeight="Bold" FontSize="16"  />
                     <ListView x:Name="lb_servers" Margin="21,42,21,47" Width="900" HorizontalAlignment="Center" BorderThickness="0" >
                         <ListView.Resources>
                             <ContextMenu StaysOpen="true" x:Key="ServerlistContextMenu">
@@ -450,13 +469,13 @@
                 </Grid>
             </TabItem>
             <TabItem Header="Infos">
-                <Grid>
+                <Grid Margin="24,37,18,-7" Width="900">
                     <StackPanel Orientation="Horizontal" >
                         <chart:RadialGaugeChart ChartTitle="Arbeitspeicher" 
                                                 ChartSubTitle=""
                                                 ChartLegendVisibility="Collapsed"
                                                 VerticalAlignment="Top"
-                                                Background="Transparent">
+                                                Background="Transparent" HorizontalAlignment="Left">
                             <chart:RadialGaugeChart.Series >
                                 <chart:ChartSeries DisplayMember="Name"
                                 ItemsSource="{Binding Path=Ram}"
@@ -468,7 +487,7 @@
                                                 ChartSubTitle=""
                                                 ChartLegendVisibility="Collapsed"
                                                 VerticalAlignment="Top"
-                                                Background="Transparent"
+                                                Background="Transparent" HorizontalAlignment="Left"
                                                 >
                             <chart:RadialGaugeChart.Series >
                                 <chart:ChartSeries DisplayMember="Name"
@@ -477,6 +496,16 @@
                                     ValueMember="Count" />
                             </chart:RadialGaugeChart.Series>
                         </chart:RadialGaugeChart>
+                        <StackPanel Orientation="Vertical" Margin="20,20,0,0" >
+                            <TextBlock Style="{StaticResource ChartTitleStyle}" Text="Service Statuses" Foreground="#FF666666"/>
+                            <Menu ItemContainerStyle="{StaticResource ServiceStatusItemStyle}" ItemsSource="{Binding Path=ServiceStatuses}" Margin="0,10,0,0" >
+                                <Menu.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <VirtualizingStackPanel Orientation="Vertical"/>
+                                    </ItemsPanelTemplate>
+                                </Menu.ItemsPanel>
+                            </Menu>
+                        </StackPanel>
                     </StackPanel>
                 </Grid>
             </TabItem>

@@ -3,6 +3,8 @@ Imports System.ComponentModel
 Imports System.Runtime.CompilerServices
 Imports Newtonsoft.Json.Linq
 Imports System.Text.RegularExpressions
+Imports System.Net
+Imports MahApps.Metro
 
 Public Class MainViewModel
     Implements INotifyPropertyChanged, IDataErrorInfo
@@ -47,12 +49,6 @@ Public Class MainViewModel
         End Set
     End Property
 
-    Public ReadOnly Property CPU As ObservableCollection(Of CPU)
-        Get
-            Return _cpu
-        End Get
-    End Property
-    Private _profiles As ObservableCollection(Of String) = New ObservableCollection(Of String)
     Public Property Profiles As ObservableCollection(Of String)
         Get
             Return _profiles
@@ -139,9 +135,27 @@ Public Class MainViewModel
 
     Public Sub New()
         Check_RAM_CPU()
+        Check_service_statuses()
     End Sub
 
 #Region "Infos"
+    Private _servicestatuses As ObservableCollection(Of AccentColorMenuData) = New ObservableCollection(Of AccentColorMenuData)
+    Public Property ServiceStatuses As ObservableCollection(Of AccentColorMenuData)
+        Get
+            Return _servicestatuses
+        End Get
+        Set(value As ObservableCollection(Of AccentColorMenuData))
+            _servicestatuses = value
+            OnPropertyChanged("ServiceStatuses")
+        End Set
+    End Property
+
+    Public ReadOnly Property CPU As ObservableCollection(Of CPU)
+        Get
+            Return _cpu
+        End Get
+    End Property
+    Private _profiles As ObservableCollection(Of String) = New ObservableCollection(Of String)
 
     Private ReadOnly _ram As ObservableCollection(Of Ram) = New ObservableCollection(Of Ram)
     Public ReadOnly Property Ram As ObservableCollection(Of Ram)
@@ -154,6 +168,28 @@ Public Class MainViewModel
     Private CPUCounter As PerformanceCounter = New PerformanceCounter("Processor", "% Processor Time", "_Total")
     Private MemCounter As PerformanceCounter = New PerformanceCounter("Memory", "Available MBytes")
     Private totalram As ULong = My.Computer.Info.TotalPhysicalMemory()
+
+    Public Sub Check_service_statuses()
+        Using wc As New WebClient
+            Dim status As String = wc.DownloadString("http://status.mojang.com/check")
+            Dim ja As JArray = JArray.Parse(status)
+            Dim ls As New List(Of AccentColorMenuData)
+            For Each Item As JObject In ja
+                Dim name As String = Item.Properties.Select(Function(p) p.Name).First
+                Dim value As String = Item.Value(Of String)(name)
+                Dim service As New AccentColorMenuData() With {.Name = name}
+                If value.ToString = "green" Then
+                    service.ColorBrush = CType(ThemeManager.Accents.Where(Function(p) p.Name = "Green").First.Resources("AccentColorBrush"), System.Windows.Media.Brush)
+                ElseIf value.ToString = "yellow" Then
+                    service.ColorBrush = CType(ThemeManager.Accents.Where(Function(p) p.Name = "Yellow").First.Resources("AccentColorBrush"), System.Windows.Media.Brush)
+                Else
+                    service.ColorBrush = CType(ThemeManager.Accents.Where(Function(p) p.Name = "Red").First.Resources("AccentColorBrush"), System.Windows.Media.Brush)
+                End If
+                ls.Add(service)
+            Next
+            ServiceStatuses = New ObservableCollection(Of AccentColorMenuData)(ls)
+        End Using
+    End Sub
 
     Sub Check_RAM_CPU()
         Dim totalram As ULong = My.Computer.Info.TotalPhysicalMemory()
