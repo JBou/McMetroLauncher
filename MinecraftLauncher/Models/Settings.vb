@@ -37,13 +37,13 @@ Public Class Settings
         Dim text As String = File.ReadAllText(SettingsFile.FullName)
         Settings = Await JsonConvert.DeserializeObjectAsync(Of cls_Settings)(text, New JsonSerializerSettings() With {.DefaultValueHandling = DefaultValueHandling.Ignore, .NullValueHandling = NullValueHandling.Ignore})
     End Function
-    Public Shared Async Function Save() As Task
+    Public Shared Sub Save()
         If Settings.mcpfad = mcpfad.FullName Then
             Settings.mcpfad = Nothing
         End If
-        Dim text As String = Await JsonConvert.SerializeObjectAsync(Settings, Newtonsoft.Json.Formatting.Indented, New JsonSerializerSettings() With {.DefaultValueHandling = DefaultValueHandling.Ignore, .NullValueHandling = NullValueHandling.Ignore})
+        Dim text As String = JsonConvert.SerializeObject(Settings, Newtonsoft.Json.Formatting.Indented, New JsonSerializerSettings() With {.DefaultValueHandling = DefaultValueHandling.Ignore, .NullValueHandling = NullValueHandling.Ignore})
         File.WriteAllText(SettingsFile.FullName, text)
-    End Function
+    End Sub
     Public Class cls_Settings
         Private _mcpfad As String, _accent As String, _Theme As String, _ServerAddress As String, _DirectJoin As Boolean, _WindowState As WindowState
         Public Sub New()

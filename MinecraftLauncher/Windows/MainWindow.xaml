@@ -200,7 +200,7 @@
                     <ListBox x:Name="lb_libraries_url" HorizontalAlignment="Left" Height="271" Margin="323,120,0,0" VerticalAlignment="Top" Width="320" Visibility="Collapsed"/>
                     <PasswordBox x:Name="pb_Password" HorizontalAlignment="Right" Height="32" Margin="0,0,138,10" VerticalAlignment="Bottom" Width="148" VerticalContentAlignment="Center" IsEnabled="False" Visibility="Hidden"/>
                     <CheckBox x:Name="cb_online_mode" HorizontalAlignment="Right" Height="32" Content="Online Mode" Margin="0,0,180,10" VerticalAlignment="Bottom" Width="106" VerticalContentAlignment="Center" IsEnabled="False" Visibility="Hidden"/>
-                    <TextBox x:Name="tb_server_address" Controls:TextboxHelper.Watermark="Address" HorizontalAlignment="Left" Height="32" Margin="246,0,0,10" TextWrapping="Wrap" VerticalAlignment="Bottom" Width="148" VerticalContentAlignment="Center" TabIndex="8"/>
+                    <TextBox Text="{Binding Directjoinaddress, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Controls:TextboxHelper.Watermark="Address" HorizontalAlignment="Left" Height="32" Margin="246,0,0,10" TextWrapping="Wrap" VerticalAlignment="Bottom" Width="148" VerticalContentAlignment="Center" TabIndex="8"/>
                     <CheckBox x:Name="cb_direct_join" HorizontalAlignment="Left" Height="32" Content="Direct Join" Margin="246,0,0,48" VerticalAlignment="Bottom" Width="148" VerticalContentAlignment="Center" Padding="6,0,0,0" FontSize="15" ToolTip="Tritt nach dem Spielstart automatisch dem festgelegten Server bei" TabIndex="7"/>
 
 
@@ -224,7 +224,7 @@
                     <Image Margin="74,270,0,0" Height="86" VerticalAlignment="Top" HorizontalAlignment="Left" Width="134" Source="/images/web-ftb-logo_0.png"/>
                 </Grid>
             </TabItem>
-            <TabItem Header="Mods">
+            <TabItem Header="Mods" x:Name="tabitem_Mods">
                 <Grid>
                     <ListView x:Name="lb_mods" Margin="10,72,0,35" Width="352" HorizontalAlignment="Left" BorderThickness="0" >
                         <ListView.View>
@@ -543,7 +543,7 @@
                 ItemsSource="{Binding Path=AccentColors}"
         		ItemContainerStyle="{StaticResource AccentColorMenuItemStyle}" VerticalAlignment="Center" HorizontalAlignment="Center" />
         </Menu>
-        <local:Login x:Name="LoginScreen" Visibility="Collapsed"/>
+        <local:Login x:Name="LoginScreen" Visibility="Collapsed" />
 
         <!--<StatusBar Height="25" VerticalAlignment="Bottom" Background="#FF5EA0FF">
             <StatusBarItem>

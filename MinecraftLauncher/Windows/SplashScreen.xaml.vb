@@ -11,6 +11,8 @@ Imports System.Reflection
 Imports System.Windows.Threading
 Imports McMetroLauncher.JBou.Authentication.Session
 Imports McMetroLauncher.JBou.Authentication
+Imports System.Collections.Specialized
+Imports System.Web
 
 Public Class SplashScreen
     Dim dlversion As New WebClient
@@ -58,7 +60,6 @@ Public Class SplashScreen
                 If appTheme Is Nothing Then appTheme = ThemeManager.AppThemes.First
                 ThemeManager.ChangeAppStyle(Application.Current, theme.Item2, appTheme)
             End If
-
             Dim oAssembly As System.Reflection.AssemblyName = _
       System.Reflection.Assembly.GetExecutingAssembly().GetName
             ' Versionsnummer
@@ -257,14 +258,44 @@ Public Class SplashScreen
             Await Main.Load_ModVersions()
             Profiles.Get_Profiles()
             Main.cb_direct_join.IsChecked = Settings.Settings.DirectJoin
-            Main.tb_server_address.Text = Settings.Settings.ServerAddress
-            'Main.tb_username.Text = Settings.Settings.Username
+            ViewModel.Directjoinaddress = Settings.Settings.ServerAddress
+            Try
+                If CommandLineArgs.Count > 1 Then
+                    Dim url As New Uri(CommandLineArgs(1))
+                    'Console.WriteLine("Protocol: {0}", url.Scheme)
+                    'Console.WriteLine("Host: {0}", url.Host)
+                    'Console.WriteLine("Path: {0}", HttpUtility.UrlDecode(url.AbsolutePath))
+                    'Console.WriteLine("Query: {0}", url.Query)
+                    'Dim Parms As NameValueCollection = HttpUtility.ParseQueryString(url.Query)
+                    'Console.WriteLine("Parms: {0}", Parms.Count)
+                    'For Each x As String In Parms.AllKeys
+                    '    Console.WriteLine(vbTab & "Parm: {0} = {1}", x, Parms(x))
+                    'Next
+                    If url.Host = "join" Then
+                        If url.Segments.Count > 1 Then
+                            ViewModel.Directjoinaddress = url.Segments.ElementAt(1)
+                            Main.cb_direct_join.IsChecked = True
+                        End If
+                    End If
+                    If url.Host = "mods" Then
+                        If url.Segments.Count > 2 Then
+                            If url.Segments.ElementAt(1).Replace("/", "") = "show" Then
+                                Main.cb_modversions.SelectedItem = Main.cb_modversions.Items.Cast(Of String).Where(Function(p) p = url.Segments.ElementAt(2).Replace("/", "")).First
+                                If url.Segments.Count > 3 Then
+                                    Main.lb_mods.SelectedItem = Main.lb_mods.Items.Cast(Of Modifications.Mod).Where(Function(p) p.id = url.Segments.ElementAt(3).Replace("/", "")).First
+                                End If
+                                Main.tabitem_Mods.IsSelected = True
+                            End If
+                        End If
+                    End If
+                End If
+            Catch
+            End Try
             Await Main.Load_Servers()
             Main.Ping_servers()
             Main.Check_Tools_Downloaded()
             Main.Show()
             Me.Close()
-            'Await Check_Account()
         Catch ex As Exception
             MessageBox.Show(ex.Message & Environment.NewLine & ex.StackTrace)
         End Try
@@ -274,44 +305,4 @@ Public Class SplashScreen
         pb_download.Value = e.ProgressPercentage
     End Sub
 
-
-    '#Region "Auth"
-
-    '    Async Function Check_Account() As Task
-    '        Dim profile As Profiles.Profile = Await Profiles.FromName(ViewModel.selectedprofile)
-    '        If profile.playerUUID = Nothing Then
-    '            Main.LoginScreen.Visibility = Windows.Visibility.Visible
-    '        Else
-    '            Dim capturedException As MinecraftAuthenticationException = Nothing
-    '            'Login with access token
-    '            Try
-    '                If authenticationDatabase.List.Select(Function(p) p.uuid.Replace("-", "")).Contains(profile.playerUUID) Then
-    '                    lbl_status.Content = "Anmelden mit access token"
-    '                    Dim Account = authenticationDatabase.List.Where(Function(p) p.uuid.Replace("-", "") = profile.playerUUID).First
-    '                    Dim session = New Session() With {.AccessToken = Account.accessToken,
-    '                                                      .ClientToken = authenticationDatabase.clientToken,
-    '                                                      .SelectedProfile = Nothing}
-    '                    Await session.Refresh
-    '                    Main.lbl_Username.Content = Account.displayName
-    '                    authenticationDatabase.List.Where(Function(p) p.uuid.Replace("-", "") = profile.playerUUID).First.accessToken = session.AccessToken
-    '                    Await authenticationDatabase.Save()
-    '                Else
-    '                    Main.LoginScreen.Visibility = Windows.Visibility.Visible
-    '                    Me.Close()
-    '                    Exit Function
-    '                End If
-    '            Catch ex As MinecraftAuthenticationException
-    '                capturedException = ex
-    '            End Try
-    '            If capturedException IsNot Nothing Then
-    '                Await Me.ShowMessageAsync(capturedException.Error, capturedException.ErrorMessage, MessageDialogStyle.Affirmative)
-    '                Main.LoginScreen.Visibility = Windows.Visibility.Visible
-    '            Else
-    '                Main.Show()
-    '            End If
-    '        End If
-    '        Me.Close()
-    '    End Function
-
-    '#End Region
 End Class

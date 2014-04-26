@@ -148,7 +148,7 @@ Public Class MainWindow
     Private Async Sub MainWindow_Loaded(sender As Object, e As EventArgs) Handles Me.Loaded
         'Set the Webbrowser Source:
         Webcontrol_news.WebSession = WebCore.CreateWebSession(New WebPreferences() With {.CustomCSS = Scrollbarcss})
-        wc_mod_video.WebSession = WebCore.CreateWebSession(New WebPreferences() With {.CustomCSS = Scrollbarcss})
+        'wc_mod_video.WebSession = WebCore.CreateWebSession(New WebPreferences() With {.CustomCSS = Scrollbarcss})
         If lb_mods.SelectedIndex <> -1 Then
             Dim youtubeMatch As Match = YoutubeVideoRegex.Match(DirectCast(lb_mods.SelectedItem, Modifications.Mod).video)
             Dim id As String = String.Empty
@@ -166,10 +166,10 @@ Public Class MainWindow
     End Sub
 #End Region
 
-    Async Sub IsThemeChanged(sender As Object, e As OnThemeChangedEventArgs)
+    Sub IsThemeChanged(sender As Object, e As OnThemeChangedEventArgs)
         Settings.Settings.Theme = e.AppTheme.Name
         Settings.Settings.Accent = e.Accent.Name
-        Await Settings.Save()
+        Settings.Save()
     End Sub
 
     Private Sub ShowSettings(sender As Object, e As RoutedEventArgs)
@@ -1001,10 +1001,10 @@ Public Class MainWindow
 
     Public Sub StartfromServerlist()
         If Startinfos.Server.JustStarted = False Then
-            If tb_server_address.Text.Contains(":") = False Then
-                Startinfos.Server.ServerAdress = tb_server_address.Text
+            If ViewModel.Directjoinaddress.Contains(":") = False Then
+                Startinfos.Server.ServerAdress = ViewModel.Directjoinaddress
             Else
-                Dim address As String() = tb_server_address.Text.Split(CChar(":"))
+                Dim address As String() = ViewModel.Directjoinaddress.Split(CChar(":"))
                 Startinfos.Server.ServerAdress = address(0)
                 Startinfos.Server.ServerPort = address(1)
             End If
@@ -1029,12 +1029,12 @@ Public Class MainWindow
             If Await Check_Account() Then
                 If Startinfos.Server.JustStarted = False Then
                     If cb_direct_join.IsChecked = True Then
-                        If tb_server_address.Text <> Nothing Then
+                        If ViewModel.Directjoinaddress <> Nothing Then
                             If Startinfos.Server.JustStarted = False Then
-                                If tb_server_address.Text.Contains(":") = False Then
-                                    Startinfos.Server.ServerAdress = tb_server_address.Text
+                                If ViewModel.Directjoinaddress.Contains(":") = False Then
+                                    Startinfos.Server.ServerAdress = ViewModel.Directjoinaddress
                                 Else
-                                    Dim address As String() = tb_server_address.Text.Split(CChar(":"))
+                                    Dim address As String() = ViewModel.Directjoinaddress.Split(CChar(":"))
                                     Startinfos.Server.ServerAdress = address(0)
                                     Startinfos.Server.ServerPort = address(1)
                                 End If
@@ -1698,7 +1698,7 @@ Public Class MainWindow
 
     Sub join_server_from_list()
         If lb_servers.SelectedIndex <> -1 Then
-            tb_server_address.Text = DirectCast(lb_servers.SelectedItem, ServerList.Server).ip
+            ViewModel.Directjoinaddress = DirectCast(lb_servers.SelectedItem, ServerList.Server).ip
             cb_direct_join.IsChecked = True
             tabitem_Minecraft.IsSelected = True
         End If
@@ -1753,15 +1753,11 @@ Public Class MainWindow
 
 #End Region
 
-    Private Async Sub cb_direct_join_Click(sender As Object, e As RoutedEventArgs) Handles cb_direct_join.Click
+    Private Sub cb_direct_join_Click(sender As Object, e As RoutedEventArgs) Handles cb_direct_join.Click
         Settings.Settings.DirectJoin = cb_direct_join.IsChecked.Value
-        Await Settings.Save()
+        Settings.Save()
     End Sub
 
-    Private Async Sub tb_server_address_TextChanged(sender As Object, e As TextChangedEventArgs) Handles tb_server_address.TextChanged
-        Settings.Settings.ServerAddress = tb_server_address.Text
-        Await Settings.Save()
-    End Sub
 #Region "Tools"
 
     Private Sub forge_installer()
@@ -1868,9 +1864,9 @@ Public Class MainWindow
 
 #End Region
 
-    Private Async Sub MainWindow_StateChanged(sender As Object, e As EventArgs) Handles Me.StateChanged
+    Private Sub MainWindow_StateChanged(sender As Object, e As EventArgs) Handles Me.StateChanged
         Settings.Settings.WindowState = Me.WindowState
-        Await Settings.Save()
+        Settings.Save()
     End Sub
 
 

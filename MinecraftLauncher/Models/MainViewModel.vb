@@ -68,6 +68,21 @@ Public Class MainViewModel
         End Set
     End Property
 
+#Region "Minecraft"
+    Private _Directjoinaddress As String
+    Public Property Directjoinaddress As String
+        Get
+            Return _Directjoinaddress
+        End Get
+        Set(value As String)
+            _Directjoinaddress = value
+            OnPropertyChanged("Directjoinaddress")
+            Settings.Settings.ServerAddress = value
+            Settings.Save()
+        End Set
+    End Property
+#End Region
+
 #Region "Login"
     Public _username As String
     Public Property Username As String

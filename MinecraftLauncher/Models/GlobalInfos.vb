@@ -197,6 +197,7 @@ Public Module GlobalInfos
     Public changelog As String = Nothing
     Public resources_dir As New DirectoryInfo(Path.Combine(mcpfad.FullName, "resources"))
     Public librariesurl As String = "https://libraries.minecraft.net/"
+    Public CommandLineArgs As String() = Environment.GetCommandLineArgs()
     Public ReadOnly Property indexesurl(index_name As String) As String
         Get
             Return "http://s3.amazonaws.com/Minecraft.Download/indexes/" & index_name & ".json"
