@@ -232,7 +232,7 @@ Public Class SplashScreen
         If e.Cancelled = False And e.Error Is Nothing Then
             Try
                 lbl_status.Content = "Launcher startet..."
-                Await ViewModel.Servers.Load
+                Await ServerList.Load
                 Await authenticationDatabase.Load()
                 Await Modifications.Load()
                 Await Forge.Load()

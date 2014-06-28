@@ -32,6 +32,7 @@ Imports System.Text
 Imports System.Resources
 Imports McMetroLauncher.JBou.Authentication
 Imports McMetroLauncher.JBou.Authentication.Session
+Imports System.Collections.ObjectModel
 
 #End Region
 
@@ -178,11 +179,11 @@ Public Class MainWindow
     End Sub
 
     Public Sub Open_Website()
-        Process.Start("http://patzleiner.net")
+        Process.Start(GlobalInfos.Website)
     End Sub
 
     Public Sub Open_Github()
-        Process.Start("https://github.com/JBou/McMetroLauncher")
+        Process.Start(GlobalInfos.Github)
     End Sub
 
     Private Sub ToggleFlyout(index As Integer)
@@ -1549,13 +1550,12 @@ Public Class MainWindow
 #Region "Server"
 
     Async Function Load_Servers() As Task
-        lb_servers.Items.Clear()
         servers_dat.Refresh()
         If servers_dat.Exists = True Then
             lbl_no_servers.Visibility = Windows.Visibility.Collapsed
-            ViewModel.Servers = New ServerList()
-            Await ViewModel.Servers.Load()
-            If ViewModel.Servers.Servers.Count = 0 Then
+            ViewModel.Servers = New ObservableCollection(Of ServerList.Server)
+            Await ServerList.Load()
+            If ViewModel.Servers.Count = 0 Then
                 lbl_no_servers.Visibility = Windows.Visibility.Visible
             Else
                 lbl_no_servers.Visibility = Windows.Visibility.Collapsed
@@ -1586,9 +1586,9 @@ Public Class MainWindow
             '            }
             '        servers.Servers.Add(server)
             '    Next
-            For Each item As ServerList.Server In ViewModel.Servers.Servers
-                lb_servers.Items.Add(item)
-            Next
+            'For Each item As ServerList.Server In ViewModel.Servers
+            '    lb_servers.Items.Add(item)
+            'Next
             If lb_servers.SelectedIndex = -1 Then
                 lb_servers.SelectedIndex = 0
             Else
@@ -1610,9 +1610,9 @@ Public Class MainWindow
 
     Private Sub ThreadProc()
         Try
-            Parallel.For(0, ViewModel.Servers.Servers.Count, Sub(b)
-                                                                 CheckOnline(b)
-                                                             End Sub)
+            Parallel.For(0, ViewModel.Servers.Count, Sub(b)
+                                                         CheckOnline(b)
+                                                     End Sub)
         Catch
         End Try
     End Sub
@@ -1629,15 +1629,15 @@ Public Class MainWindow
             '                                 lb_servers.Items.Insert(i, servers.Servers.Item(i))
             '                                 lb_servers.SelectedIndex = selected
             '                             End Sub))
-            ViewModel.Servers.Servers.Item(i).DoPing()
+            ViewModel.Servers.Item(i).DoPing()
             'MsgBox(servers.Item(i).ServerStatus.Players.MaxPlayers)
-            Dispatcher.Invoke(New Action(Sub()
-                                             Dim selected As Integer = lb_servers.SelectedIndex
-                                             lb_servers.Items.RemoveAt(i)
-                                             lb_servers.Items.Insert(i, ViewModel.Servers.Servers.Item(i))
-                                             lb_servers.SelectedIndex = selected
-                                         End Sub))
-            ViewModel.Servers.Save()
+            'Dispatcher.Invoke(New Action(Sub()
+            '                                 Dim selected As Integer = lb_servers.SelectedIndex
+            '                                 lb_servers.Items.RemoveAt(i)
+            '                                 lb_servers.Items.Insert(i, ViewModel.Servers.Item(i))
+            '                                 lb_servers.SelectedIndex = selected
+            '                             End Sub))
+            ServerList.Save()
         Catch null As ArgumentNullException
             'hostNameOrAddress ist null.
         Catch socket As SocketException
@@ -1684,8 +1684,8 @@ Public Class MainWindow
             Dim result As MessageDialogResult = Await Me.ShowMessageAsync("Server löschen", "Bist du dir sicher, dass du den Server " & Chr(34) & DirectCast(lb_servers.SelectedItem, ServerList.Server).name & Chr(34) & " entgültig löschen willst?", MessageDialogStyle.AffirmativeAndNegative, New MetroDialogSettings() With {.AffirmativeButtonText = "Ja", .NegativeButtonText = "Nein", .ColorScheme = MetroDialogColorScheme.Accented})
             If result = MessageDialogResult.Affirmative Then
                 lb_servers.Items.RemoveAt(selected)
-                ViewModel.Servers.Servers.RemoveAt(selected)
-                ViewModel.Servers.Save()
+                ViewModel.Servers.RemoveAt(selected)
+                ServerList.Save()
             End If
         End If
     End Sub
@@ -1869,8 +1869,6 @@ Public Class MainWindow
         Settings.Save()
     End Sub
 
-
-
 #Region "Auth"
     Private Async Sub cb_profiles_SelectionChanged(sender As Object, e As SelectionChangedEventArgs) Handles cb_profiles.SelectionChanged
         Await Check_Account()
@@ -1960,4 +1958,5 @@ Public Class MainWindow
     End Sub
 
 #End Region
+
 End Class

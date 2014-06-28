@@ -149,7 +149,7 @@ Public Module GlobalInfos
     End Class
 
     '--------supportedLauncherVersion---------
-    Public Const supportedLauncherVersion As Integer = 13
+    Public Const supportedLauncherVersion As Integer = 14
     Public resManager As ResourceManager = My.Resources.ResourceManager
     Public AccentColors As List(Of AccentColorMenuData) = ThemeManager.Accents.Select(Function(a) New AccentColorMenuData() With {.Name = a.Name, .ColorBrush = CType(a.Resources("AccentColorBrush"), Windows.Media.Brush)}).ToList()
     Public AppThemes As List(Of AppThemeMenuData) = ThemeManager.AppThemes.Select(Function(a) New AppThemeMenuData() With {.Name = a.Name, .BorderColorBrush = CType(a.Resources("BlackColorBrush"), Windows.Media.Brush), .ColorBrush = CType(a.Resources("WhiteColorBrush"), Windows.Media.Brush)}).ToList
@@ -165,6 +165,7 @@ Public Module GlobalInfos
     Public SelectedModVersion As String
     Public Versions As Versionslist = New Versionslist
     Public Website As String = "http://patzleiner.net/"
+    Public Github As String = "https://github.com/JBou/McMetroLauncher"
     Public Appdata As New DirectoryInfo(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData))
     Public mcpfad As New DirectoryInfo(Path.Combine(Appdata.FullName, ".minecraft"))
     Public Applicationdata As New DirectoryInfo(Path.Combine(Appdata.FullName, "McMetroLauncher"))

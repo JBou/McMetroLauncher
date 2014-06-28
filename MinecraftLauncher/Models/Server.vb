@@ -5,31 +5,25 @@ Imports System.Net.Sockets
 Imports Craft.Net.Common
 Imports fNbt
 Imports Newtonsoft.Json
+Imports System.ComponentModel
+Imports System.Collections.ObjectModel
 
 Public Class ServerList
-    Public Property Servers As IList(Of Server)
-        Get
-            Return m_servers
-        End Get
-        Set(value As IList(Of Server))
-            m_servers = value
-        End Set
-    End Property
-    Private m_servers As IList(Of Server)
+    Implements INotifyPropertyChanged
 
-    Public Sub New()
-        Servers = New List(Of Server)
+    Shared Sub New()
+        ViewModel.Servers = New ObservableCollection(Of Server)
     End Sub
 
-    Public Sub Save()
+    Public Shared Sub Save()
         SaveTo(servers_dat.FullName)
     End Sub
 
-    Public Sub SaveTo(file As String)
+    Public Shared Sub SaveTo(file As String)
         Dim nbt = New NbtFile()
         nbt.RootTag = New NbtCompound("")
         Dim list = New NbtList("servers", NbtTagType.Compound)
-        For Each server As Server In Servers
+        For Each server As Server In ViewModel.Servers
             Dim compound = New NbtCompound()
             compound.Add(New NbtString("name", server.name))
             compound.Add(New NbtString("ip", server.ip))
@@ -44,15 +38,15 @@ Public Class ServerList
         nbt.SaveToFile(file, NbtCompression.None)
     End Sub
 
-    Public Async Function Load() As Task
+    Public Shared Async Function Load() As Task
         Await LoadFrom(servers_dat.FullName)
     End Function
 
-    Public Async Function LoadFrom(file As String) As Task
+    Public Shared Async Function LoadFrom(file As String) As Task
         Await Task.Run(Sub()
                            If IO.File.Exists(file) Then
                                Dim nbt = New NbtFile(file)
-                               Servers.Clear()
+                               Dim ls As New ObservableCollection(Of Server)
                                For Each server As NbtCompound In TryCast(nbt.RootTag("servers"), NbtList)
                                    Dim entry As New Server()
                                    If server.Contains("name") Then
@@ -70,15 +64,20 @@ Public Class ServerList
                                    If server.Contains("icon") Then
                                        entry.icon = server("icon").StringValue
                                    End If
-                                   Servers.Add(entry)
+                                   ls.Add(entry)
                                Next
+                               Application.Current.Dispatcher.Invoke((Sub()
+                                                                          ViewModel.Servers = ls
+                                                                      End Sub))
                            Else
-                               Servers = New List(Of Server)
+                               ViewModel.Servers = New ObservableCollection(Of Server)
                            End If
                        End Sub)
+
     End Function
 
     Public Class Server
+        Implements INotifyPropertyChanged
         Private _name As String, _ip As String, _hideAddress As Boolean, _icon As String, _serverping As ServerStatus, _AcceptTextures As Boolean
         Public Sub New(name As String, ip As String, hideAddress As Boolean, icon As String, AcceptTextures As Boolean)
             Me.name = name
@@ -103,6 +102,7 @@ Public Class ServerList
             End Get
             Set(value As String)
                 _name = value
+                OnPropertyChanged("name")
             End Set
         End Property
         Public Property ip As String
@@ -111,6 +111,7 @@ Public Class ServerList
             End Get
             Set(value As String)
                 _ip = value
+                OnPropertyChanged("ip")
             End Set
         End Property
 
@@ -120,6 +121,7 @@ Public Class ServerList
             End Get
             Set(value As Boolean)
                 _hideAddress = value
+                OnPropertyChanged("hideAddress")
             End Set
         End Property
 
@@ -129,6 +131,7 @@ Public Class ServerList
             End Get
             Set(value As Boolean)
                 _AcceptTextures = value
+                OnPropertyChanged("AcceptTextures")
             End Set
         End Property
 
@@ -138,6 +141,7 @@ Public Class ServerList
             End Get
             Set(value As ServerStatus)
                 _serverping = value
+                OnPropertyChanged("ServerStatus")
             End Set
         End Property
 
@@ -147,6 +151,7 @@ Public Class ServerList
             End Get
             Set(value As String)
                 _icon = value
+                OnPropertyChanged("icon")
             End Set
         End Property
 
@@ -194,24 +199,25 @@ Public Class ServerList
                 response.Status.Latency = time - sent
 
 
-                ServerStatus = New ServerStatus
-                ServerStatus.Description = response.Status.Description
-                ServerStatus.Icon = response.Status.Icon
-                ServerStatus.Latency = response.Status.Latency
-                ServerStatus.Players = response.Status.Players
-                ServerStatus.Version = response.Status.Version
-                ServerStatus.Online = True
+                Dim Status As New ServerStatus
+                Status.Description = response.Status.Description
+                Status.Icon = response.Status.Icon
+                Status.Latency = response.Status.Latency
+                Status.Players = response.Status.Players
+                Status.Version = response.Status.Version
+                Status.Online = True
                 Dim cleanPath As String = response.Status.Icon
-                If ServerStatus.Icon IsNot Nothing Then
+                If Status.Icon IsNot Nothing Then
                     Dim removeString As String = "data:image/png;base64,"
-                    If ServerStatus.Icon.StartsWith(removeString) Then
+                    If Status.Icon.StartsWith(removeString) Then
                         Dim sourcestring As String = cleanPath
                         Dim index As Integer = sourcestring.IndexOf(removeString)
                         cleanPath = If((index < 0), sourcestring, sourcestring.Remove(index, removeString.Length))
                     End If
                 End If
-                ServerStatus.Icon = cleanPath
+                Status.Icon = cleanPath
                 icon = cleanPath
+                Me.ServerStatus = Status
             Catch socketex As SocketException
                 client.Close()
                 ServerStatus = New ServerStatus
@@ -223,14 +229,26 @@ Public Class ServerList
             End Try
         End Sub
 
-
         Public Overrides Function ToString() As String
             Return name
         End Function
+
+#Region "PropertyChanged"
+        Public Event PropertyChanged(sender As Object, e As PropertyChangedEventArgs) Implements INotifyPropertyChanged.PropertyChanged
+
+        ''' <summary>
+        ''' Raises the PropertyChanged event if needed.
+        ''' </summary>
+        ''' <param name="propertyName">The name of the property that changed.</param>
+        Protected Overridable Sub OnPropertyChanged(propertyName As String)
+            RaiseEvent PropertyChanged(Me, New PropertyChangedEventArgs(propertyName))
+        End Sub
+#End Region
     End Class
 
     Public Class ServerStatus
         Inherits Craft.Net.ServerStatus
+        Implements INotifyPropertyChanged
 
         Private m_online As Boolean
         <JsonIgnore>
@@ -240,9 +258,33 @@ Public Class ServerList
             End Get
             Set(value As Boolean)
                 m_online = value
+                OnPropertyChanged("Online")
             End Set
         End Property
 
+#Region "PropertyChanged"
+        Public Event PropertyChanged(sender As Object, e As PropertyChangedEventArgs) Implements INotifyPropertyChanged.PropertyChanged
+
+        ''' <summary>
+        ''' Raises the PropertyChanged event if needed.
+        ''' </summary>
+        ''' <param name="propertyName">The name of the property that changed.</param>
+        Protected Overridable Sub OnPropertyChanged(propertyName As String)
+            RaiseEvent PropertyChanged(Me, New PropertyChangedEventArgs(propertyName))
+        End Sub
+#End Region
+
     End Class
 
+#Region "PropertyChanged"
+    Public Event PropertyChanged(sender As Object, e As PropertyChangedEventArgs) Implements INotifyPropertyChanged.PropertyChanged
+
+    ''' <summary>
+    ''' Raises the PropertyChanged event if needed.
+    ''' </summary>
+    ''' <param name="propertyName">The name of the property that changed.</param>
+    Protected Overridable Sub OnPropertyChanged(propertyName As String)
+        RaiseEvent PropertyChanged(Me, New PropertyChangedEventArgs(propertyName))
+    End Sub
+#End Region
 End Class

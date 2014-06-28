@@ -8,11 +8,15 @@
     xmlns:Behaviours="clr-namespace:MahApps.Metro.Behaviours;assembly=MahApps.Metro"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity" 
     xmlns:chart="clr-namespace:De.TorstenMandelkow.MetroChart;assembly=De.TorstenMandelkow.MetroChart" 
+    xmlns:JBouControls="clr-namespace:McMetroLauncher.JBou.Controls"
     GlowBrush="{DynamicResource AccentColorBrush}"            
     Title="McMetroLauncher" Height="610" Width="950"
     ForceCursor="True" MinHeight="610" MinWidth="950" Icon="/images/favicon.ico" ResizeMode="CanResizeWithGrip" UseLayoutRounding="False" ScrollViewer.CanContentScroll="True" >
-
+    
+    <!--Für IMAc Screenshots-->
+    <!--Title="McMetroLauncher" Height="676" Width="1200"-->
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -73,16 +77,13 @@
                 <Setter Property="Header"
                         Value="{Binding Name, Mode=OneWay}" />
             </Style>
-            <Style x:Key="BaseTextStyle" TargetType="TextBlock">
-                <Setter Property="FontFamily" Value="Segoe UI" />
-                <Setter Property="FontSize" Value="9" />
-            </Style>
-            <Style x:Key="ChartTitleStyle" TargetType="TextBlock" BasedOn="{StaticResource BaseTextStyle}">
+            <Style x:Key="ChartTitleStyle" TargetType="TextBlock">
                 <Setter Property="FontSize" Value="26"/>
                 <Setter Property="FontFamily" Value="Segoe UI Light"/>
                 <Setter Property="FontWeight" Value="Light"/>
+                <Setter Property="Foreground" Value="#FF666666"/>
             </Style>
-            <Style x:Key="myHeaderStyle" TargetType="{x:Type GridViewColumnHeader}">
+            <Style x:Key="CollapsedHeaderStyle" TargetType="{x:Type GridViewColumnHeader}">
                 <Setter Property="Visibility" Value="Collapsed" />
             </Style>
         </ResourceDictionary>
@@ -228,7 +229,7 @@
                 <Grid>
                     <ListView x:Name="lb_mods" Margin="10,72,0,35" Width="352" HorizontalAlignment="Left" BorderThickness="0" >
                         <ListView.View>
-                            <GridView ColumnHeaderContainerStyle="{StaticResource myHeaderStyle}">
+                            <GridView ColumnHeaderContainerStyle="{StaticResource CollapsedHeaderStyle}">
                                 <GridViewColumn>
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
@@ -257,9 +258,9 @@
                         <StackPanel >
                             <Label x:Name="lbl_type" VerticalAlignment="Top" Height="29" FontWeight="Bold" VerticalContentAlignment="Center" Background="{x:Null}" Foreground="#FFF51F1F" FontSize="15" />
                             <TextBox x:Name="tb_description" TextWrapping="Wrap" BorderThickness="0" HorizontalScrollBarVisibility="Visible" AcceptsReturn="True" IsReadOnly="True" VerticalContentAlignment="Top" VerticalScrollBarVisibility="Auto" Text="Markdown + Video in einen Webbrowser per html. Das ganze dann noch in eine Scrollview" Padding="5"/>
-                            <local:AspectRatioLayoutDecorator AspectRatio="1.77777778" >
+                            <JBouControls:AspectRatioLayoutDecorator AspectRatio="1.77777778" >
                                 <awe:WebControl x:Name="wc_mod_video" />
-                            </local:AspectRatioLayoutDecorator>
+                            </JBouControls:AspectRatioLayoutDecorator>
                         </StackPanel>
                     </ScrollViewer>
                     <ComboBox x:Name="cb_modversions" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="352" Height="26"/>
@@ -279,7 +280,7 @@
                     <ComboBox x:Name="cb_resourcepacksversions" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="350" Height="31"/>
                     <ListView x:Name="lb_resourcepacks" Margin="10,46,0,23" Width="350" HorizontalAlignment="Left" BorderThickness="0" >
                         <ListView.View>
-                            <GridView ColumnHeaderContainerStyle="{StaticResource myHeaderStyle}" AllowsColumnReorder="False">
+                            <GridView ColumnHeaderContainerStyle="{StaticResource CollapsedHeaderStyle}" AllowsColumnReorder="False">
                                 <GridViewColumn Header="Icon" DisplayMemberBinding="{Binding icon}" />
                                 <GridViewColumn Header="Name" DisplayMemberBinding="{Binding name}" />
                                 <GridViewColumn Header="Website" DisplayMemberBinding="{Binding website}" />
@@ -291,7 +292,7 @@
             <TabItem Header="Servers">
                 <Grid>
                     <TextBlock Margin="10,10,10,10" VerticalAlignment="Top" HorizontalAlignment="Center" Text="Server, dessen Version älter als 1.7 ist, werden als &quot;Offline&quot; angezeigt, Rechtsklick für mehr Optionen" Foreground="Red" FontWeight="Bold" FontSize="16"  />
-                    <ListView x:Name="lb_servers" Margin="21,42,21,47" Width="900" HorizontalAlignment="Center" BorderThickness="0" >
+                    <ListView x:Name="lb_servers" ItemsSource="{Binding Path=Servers, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="10,42,10,47" HorizontalAlignment="Stretch" BorderThickness="0" >
                         <ListView.Resources>
                             <ContextMenu StaysOpen="true" x:Key="ServerlistContextMenu">
                                 <MenuItem Header="Server Addresse kopieren" Name="context_copy_server_address" Click="copy_server_address" >
@@ -382,7 +383,7 @@
                                                         <TextBlock.Text>
                                                             <MultiBinding xml:space="preserve" StringFormat="{}Version: {0}&#10;{1}">
                                                                 <Binding Path="ServerStatus.Version.Name" />
-                                                                <!--<Binding Path="ServerStatus.Latency" />-->
+                                                                <Binding Path="ServerStatus.Latency" />
                                                                 <Binding Path="ServerStatus.Players.Players" Converter="{StaticResource Playerlist_Namesstring_Converter}" />
                                                             </MultiBinding>
                                                         </TextBlock.Text>
@@ -395,7 +396,7 @@
                             </Style>
                         </ListView.ItemContainerStyle>
                         <ListView.View>
-                            <GridView ColumnHeaderContainerStyle="{StaticResource myHeaderStyle}" AllowsColumnReorder="False">
+                            <GridView ColumnHeaderContainerStyle="{StaticResource CollapsedHeaderStyle}"  AllowsColumnReorder="False">
                                 <!--Icon-->
                                 <GridViewColumn Header="Icon" Width="80" >
                                     <GridViewColumn.CellTemplate>
@@ -435,14 +436,14 @@
                                                 <StackPanel>
                                                     <TextBlock Text="{Binding name}" FontSize="20" VerticalAlignment="Top" FontFamily="/McMetroLauncher;component/Fonts/#Minecraftia" />
                                                     <!--Description-->
-                                                    <local:BindableRichTextBox ContextMenu="{StaticResource ServerlistContextMenu}" x:Name="serverlist_motd" FontSize="15" IsReadOnly="True" Background="Transparent" BorderBrush="{x:Null}" SelectionBrush="{x:Null}" BorderThickness="0,0,0,0" SelectionOpacity="0" Cursor="Arrow" Focusable="False" IsTabStop="False" TabIndex="0" >
+                                                    <JBouControls:BindableRichTextBox ContextMenu="{StaticResource ServerlistContextMenu}" x:Name="serverlist_motd" FontSize="15" IsReadOnly="True" Background="Transparent" BorderBrush="{x:Null}" SelectionBrush="{x:Null}" BorderThickness="0,0,0,0" SelectionOpacity="0" Cursor="Arrow" Focusable="False" IsTabStop="False" TabIndex="0" >
                                                         <RichTextBox.Resources>
                                                             <Style TargetType="{x:Type Paragraph}">
                                                                 <Setter Property="Margin" Value="0"/>
                                                             </Style>
                                                         </RichTextBox.Resources>
                                                         <RichTextBox.Style>
-                                                            <Style TargetType="{x:Type local:BindableRichTextBox}">
+                                                            <Style TargetType="{x:Type JBouControls:BindableRichTextBox}">
                                                                 <Style.Triggers>
                                                                     <DataTrigger Binding="{Binding ServerStatus.Online}" Value="True">
                                                                         <Setter Property="Document"  Value="{Binding ServerStatus.Description, IsAsync=True, Converter={StaticResource FormattingcodesDocumentConverter}}"/>
@@ -450,7 +451,7 @@
                                                                 </Style.Triggers>
                                                             </Style>
                                                         </RichTextBox.Style>
-                                                    </local:BindableRichTextBox>
+                                                    </JBouControls:BindableRichTextBox>
                                                 </StackPanel>
                                             </DockPanel>
                                         </DataTemplate>
@@ -458,6 +459,27 @@
                                 </GridViewColumn>
                             </GridView>
                         </ListView.View>
+                        <ListView.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <JBouControls:FluidWrapPanel 
+                                 HorizontalAlignment="Stretch"
+                                 VerticalAlignment="Stretch"
+                                 Background="Transparent"
+                                 IsComposing="True"
+                                 Orientation="Vertical"
+                                 DragOpacity="0.75"
+                                 DragScale="1.2">
+                                    <JBouControls:FluidWrapPanel.ElementEasing>
+                                        <BackEase EasingMode="EaseOut"
+                                      Amplitude="0.35"></BackEase>
+                                    </JBouControls:FluidWrapPanel.ElementEasing>
+                                    <JBouControls:FluidWrapPanel.DragEasing>
+                                        <BackEase EasingMode="EaseOut"
+                                      Amplitude="0.65"></BackEase>
+                                    </JBouControls:FluidWrapPanel.DragEasing>
+                                </JBouControls:FluidWrapPanel>
+                            </ItemsPanelTemplate>
+                        </ListView.ItemsPanel>
                     </ListView>
                     <Label x:Name="lbl_no_servers" Margin="10,10,10,47" Width="900" VerticalAlignment="Center" HorizontalAlignment="Center" BorderThickness="0" Content="Du hast noch keine gespeicherten Server" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="25" Visibility="Collapsed"/>
                     <DockPanel Margin="10" VerticalAlignment="Bottom" HorizontalAlignment="Center" UseLayoutRounding="False" LastChildFill="False">
@@ -497,7 +519,7 @@
                             </chart:RadialGaugeChart.Series>
                         </chart:RadialGaugeChart>
                         <StackPanel Orientation="Vertical" Margin="20,20,0,0" >
-                            <TextBlock Style="{StaticResource ChartTitleStyle}" Text="Service Statuses" Foreground="#FF666666"/>
+                            <TextBlock Style="{StaticResource ChartTitleStyle}" Text="Service Statuses" />
                             <Menu ItemContainerStyle="{StaticResource ServiceStatusItemStyle}" ItemsSource="{Binding Path=ServiceStatuses}" Margin="0,10,0,0" >
                                 <Menu.ItemsPanel>
                                     <ItemsPanelTemplate>

@@ -152,8 +152,9 @@
     <Reference Include="Ionic.Zip">
       <HintPath>..\libraries\Ionic.Zip.dll</HintPath>
     </Reference>
-    <Reference Include="MahApps.Metro">
-      <HintPath>..\..\..\..\Documents\GitHub\MahApps.Metro\MahApps.Metro\bin\Debug\NET45\MahApps.Metro.dll</HintPath>
+    <Reference Include="MahApps.Metro, Version=0.12.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\libraries\MahApps.Metro.dll</HintPath>
     </Reference>
     <Reference Include="MahApps.Metro.Resources">
       <HintPath>..\libraries\MahApps.Metro.Resources.dll</HintPath>
@@ -197,9 +198,17 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Controls\ArrangePanel\ArrangePanel.vb" />
+    <Compile Include="Controls\ArrangePanel\ILayoutStrategy.vb" />
+    <Compile Include="Controls\ArrangePanel\TableLayoutStrategy.vb" />
     <Compile Include="Controls\AspectRatioLayoutDecorator.vb" />
     <Compile Include="Controls\BindableRichTextBox.vb" />
-    <Compile Include="Controls\ReorderableListBox.vb" />
+    <Compile Include="Controls\FluidListView\FluidListView.xaml.vb">
+      <DependentUpon>FluidListView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\FluidWrapPanel\FluidLayoutManager.vb" />
+    <Compile Include="Controls\FluidWrapPanel\FluidMouseDragBehavior.vb" />
+    <Compile Include="Controls\FluidWrapPanel\FluidWrapPanel.vb" />
     <Compile Include="Models\Accent-ThemeMenuData.vb" />
     <Compile Include="Models\authenticationDatabase.vb" />
     <Compile Include="Models\Converters.vb" />
@@ -264,6 +273,10 @@
     <Compile Include="Windows\ProfileEditor.xaml.vb">
       <DependentUpon>ProfileEditor.xaml</DependentUpon>
     </Compile>
+    <Page Include="Controls\FluidListView\FluidListView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\MainView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

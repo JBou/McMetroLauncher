@@ -299,7 +299,7 @@ Namespace JBou.Authentication
         End Class
 
         <JsonProperty("user")>
-        Public Property User As MojangUser
+        Public Shadows Property User As MojangUser
             Get
                 Return m_User
             End Get
@@ -318,10 +318,11 @@ Namespace JBou.Authentication
                                                                                        .userProperties = User.properties}
         End Function
 
-        Public Class MojangUser
-
-            Public Property id As String
-            Public Property properties() As IList(Of authenticationDatabase.Userproperty)
+        Public Shadows Class MojangUser
+            <JsonProperty("id")>
+            Public Property Id As String
+            <JsonProperty("properties")>
+            Public Property Properties() As IList(Of authenticationDatabase.Userproperty)
 
         End Class
     End Class

@@ -18,12 +18,12 @@ Public Class MainViewModel
         RaiseEvent PropertyChanged(Me, New PropertyChangedEventArgs(propertyName))
     End Sub
 
-    Private m_Servers As ServerList = New ServerList()
-    Public Property Servers As ServerList
+    Private m_Servers As New ObservableCollection(Of ServerList.Server)
+    Public Property Servers As ObservableCollection(Of ServerList.Server)
         Get
             Return m_Servers
         End Get
-        Set(value As ServerList)
+        Set(value As ObservableCollection(Of ServerList.Server))
             m_Servers = value
             OnPropertyChanged("Servers")
         End Set
