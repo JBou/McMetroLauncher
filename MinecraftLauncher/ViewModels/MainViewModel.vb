@@ -14,7 +14,7 @@ Public Class MainViewModel
     ''' Raises the PropertyChanged event if needed.
     ''' </summary>
     ''' <param name="propertyName">The name of the property that changed.</param>
-    Protected Overridable Sub OnPropertyChanged(propertyName As String)
+    Protected Overridable Sub OnPropertyChanged(<CallerMemberName> Optional propertyName As String = "")
         RaiseEvent PropertyChanged(Me, New PropertyChangedEventArgs(propertyName))
     End Sub
 

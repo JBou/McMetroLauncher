@@ -213,7 +213,7 @@
     <Compile Include="Models\CryptedTextAnimation.vb" />
     <Compile Include="Models\Forge.vb" />
     <Compile Include="Models\GlobalInfos.vb" />
-    <Compile Include="Models\MainViewModel.vb" />
+    <Compile Include="ViewModels\MainViewModel.vb" />
     <Compile Include="Models\Session.vb" />
     <Compile Include="Models\SimpleCommand.vb" />
     <Compile Include="Models\Unpack.vb" />
@@ -227,6 +227,9 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resource.en.resx</DependentUpon>
     </Compile>
+    <Compile Include="ViewModelBase\BindableBase.vb" />
+    <Compile Include="ViewModelBase\PropertyChangedBase.vb" />
+    <Compile Include="ViewModelBase\RelayCommand.vb" />
     <Compile Include="Views\MainView.xaml.vb">
       <DependentUpon>MainView.xaml</DependentUpon>
     </Compile>

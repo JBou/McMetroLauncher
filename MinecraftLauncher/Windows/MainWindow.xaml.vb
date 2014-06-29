@@ -33,10 +33,12 @@ Imports System.Resources
 Imports McMetroLauncher.JBou.Authentication
 Imports McMetroLauncher.JBou.Authentication.Session
 Imports System.Collections.ObjectModel
+Imports System.Runtime.CompilerServices
 
 #End Region
 
 Public Class MainWindow
+    Implements INotifyPropertyChanged
 #Region "Variables"
     '****************Webclients*****************
     WithEvents wcresources As New System.Net.WebClient ' Für das WebClient steuerelement mit Events z.b. DownloadProgressChanged... 
@@ -79,6 +81,18 @@ Public Class MainWindow
     '******************Others*******************
 #End Region
 
+#Region "PropertyChanged"
+    Public Event PropertyChanged(sender As Object, e As PropertyChangedEventArgs) Implements INotifyPropertyChanged.PropertyChanged
+
+    ''' <summary>
+    ''' Raises the PropertyChanged event if needed.
+    ''' </summary>
+    ''' <param name="propertyName">The name of the property that changed.</param>
+    Shadows Sub OnPropertyChanged(<CallerMemberName> Optional propertyName As String = "")
+        RaiseEvent PropertyChanged(Me, New PropertyChangedEventArgs(propertyName))
+    End Sub
+#End Region
+
 #Region "GUI"
     Private _pb_download_Value As Double
     Private _pb_download_IsIndeterminate As Boolean
@@ -89,6 +103,7 @@ Public Class MainWindow
         End Get
         Set(value As Double)
             _pb_download_Value = value
+            OnPropertyChanged("pb_download_Value")
         End Set
     End Property
     Public Property pb_download_IsIndeterminate As Boolean
@@ -97,6 +112,7 @@ Public Class MainWindow
         End Get
         Set(value As Boolean)
             _pb_download_IsIndeterminate = value
+            OnPropertyChanged("pb_download_IsIndeterminate")
         End Set
     End Property
     Public Property lbl_downloadstatus_Content As String
@@ -105,6 +121,7 @@ Public Class MainWindow
         End Get
         Set(value As String)
             _lbl_downloadstatus_Content = value
+            OnPropertyChanged("lbl_downloadstatus_Content")
         End Set
     End Property
 #End Region
@@ -281,7 +298,7 @@ Public Class MainWindow
                                       If indexjo.Properties.Select(Function(p) p.Name).Contains("virtual") = False Then
                                           virtual = False
                                       Else
-                                          virtual = Convert.ToBoolean(indexjo("virtual"))
+                                          virtual = Convert.ToBoolean(indexjo("virtual").ToString)
                                       End If
                                       For i = 0 To indexjo("objects").Values.Count - 1
                                           Dim keys As List(Of JProperty) = indexjo.Value(Of JObject)("objects").Properties.ToList
@@ -302,7 +319,7 @@ Public Class MainWindow
 
     Sub DownloadResources()
         If resourcesdownloadindex < resourcesindexes.objects.Count Then
-            pb_download_Value = resourcesdownloadindex / resourcesindexes.objects.Count - 1 * 100
+            pb_download_Value = resourcesdownloadindex / (resourcesindexes.objects.Count - 1) * 100
             currentresourcesobject = resourcesindexes.objects.Item(resourcesdownloadindex)
             Dim resource As New FileInfo(resourcefile(currentresourcesobject.hash).FullName.Replace("/", "\"))
             Dim todownload As Boolean = True
@@ -904,7 +921,7 @@ Public Class MainWindow
                                           argumentreplacements.Add(New String() {"${auth_access_token}", Startinfos.Session.AccessToken})
                                           argumentreplacements.Add(New String() {"${auth_session}", "token:" & Startinfos.Session.AccessToken & ":" & Startinfos.Session.SelectedProfile.Id})
                                           Dim jo As New JObject
-                                          For Each item As authenticationDatabase.Userproperty In Startinfos.Session.User.properties
+                                          For Each item As authenticationDatabase.Userproperty In Startinfos.Session.User.Properties
                                               jo.Add(New JProperty(item.name, item.value))
                                           Next
                                           argumentreplacements.Add(New String() {"${user_properties}", jo.ToString})
