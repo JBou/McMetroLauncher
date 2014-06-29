@@ -203,12 +203,10 @@
     <Compile Include="Controls\ArrangePanel\TableLayoutStrategy.vb" />
     <Compile Include="Controls\AspectRatioLayoutDecorator.vb" />
     <Compile Include="Controls\BindableRichTextBox.vb" />
-    <Compile Include="Controls\FluidListView\FluidListView.xaml.vb">
-      <DependentUpon>FluidListView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Controls\FluidWrapPanel\FluidLayoutManager.vb" />
     <Compile Include="Controls\FluidWrapPanel\FluidMouseDragBehavior.vb" />
     <Compile Include="Controls\FluidWrapPanel\FluidWrapPanel.vb" />
+    <Compile Include="Helpers\ExtensionMethods.vb" />
     <Compile Include="Models\Accent-ThemeMenuData.vb" />
     <Compile Include="Models\authenticationDatabase.vb" />
     <Compile Include="Models\Converters.vb" />
@@ -273,10 +271,6 @@
     <Compile Include="Windows\ProfileEditor.xaml.vb">
       <DependentUpon>ProfileEditor.xaml</DependentUpon>
     </Compile>
-    <Page Include="Controls\FluidListView\FluidListView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Views\MainView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

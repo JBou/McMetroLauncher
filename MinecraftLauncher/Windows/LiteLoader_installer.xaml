@@ -6,7 +6,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:Behaviours="clr-namespace:MahApps.Metro.Behaviours;assembly=MahApps.Metro"
     GlowBrush="{DynamicResource AccentColorBrush}"   
-    Title="Minecraft Forge" Height="448" Width="660" Icon="../images/favicon.ico" ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
+    Title="Minecraft Forge" Height="448" Width="660" Icon="/images/favicon.ico" ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
     <DockPanel>
         <Controls:MetroProgressBar Foreground="{DynamicResource AccentColorBrush}" x:Name="pb_download" Height="10" Margin="10" VerticalAlignment="Bottom" DockPanel.Dock="Bottom" />
         <Controls:MetroAnimatedTabControl>

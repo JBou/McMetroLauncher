@@ -79,37 +79,34 @@ Public Class MainWindow
     '******************Others*******************
 #End Region
 
-#Region "GUI Update"
-    Public Delegate Sub refresh_pb_download_Value(Value As Double)
-    Public Delegate Sub refresh_pb_download_IsIndeterminate(Value As Boolean)
-    Public Delegate Sub refresh_lbl_downloadstatus_Content(Value As String)
-
-    Public Sub pb_download_Value(Value As Double)
-        pb_download.Dispatcher.Invoke(New refresh_pb_download_Value(AddressOf set_pb_download_value), Value)
-    End Sub
-    Public Sub pb_download_IsIndeterminate(Value As Boolean)
-        pb_download.Dispatcher.Invoke(New refresh_pb_download_IsIndeterminate(AddressOf set_pb_download_IsIndeterminate), Value)
-    End Sub
-    Public Sub lbl_downloadstatus_Content(Value As String)
-        lbl_downloadstatus.Dispatcher.Invoke(New refresh_lbl_downloadstatus_Content(AddressOf set_lbl_downloadstatus_Content), Value)
-    End Sub
-
-    Private Async Function set_pb_download_value(Value As Double) As Task
-        Await Task.Factory.StartNew(Sub()
-                                        pb_download.Value = Value
-                                    End Sub, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.FromCurrentSynchronizationContext())
-    End Function
-    Private Async Function set_pb_download_IsIndeterminate(Value As Boolean) As Task
-        Await Task.Factory.StartNew(Sub()
-                                        pb_download.IsIndeterminate = Value
-                                    End Sub, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.FromCurrentSynchronizationContext())
-    End Function
-    Private Async Function set_lbl_downloadstatus_Content(Value As String) As Task
-        Await Task.Factory.StartNew(Sub()
-                                        lbl_downloadstatus.Content = Value
-                                    End Sub, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.FromCurrentSynchronizationContext())
-    End Function
-
+#Region "GUI"
+    Private _pb_download_Value As Double
+    Private _pb_download_IsIndeterminate As Boolean
+    Private _lbl_downloadstatus_Content As String
+    Public Property pb_download_Value As Double
+        Get
+            Return _pb_download_Value
+        End Get
+        Set(value As Double)
+            _pb_download_Value = value
+        End Set
+    End Property
+    Public Property pb_download_IsIndeterminate As Boolean
+        Get
+            Return _pb_download_IsIndeterminate
+        End Get
+        Set(value As Boolean)
+            _pb_download_IsIndeterminate = value
+        End Set
+    End Property
+    Public Property lbl_downloadstatus_Content As String
+        Get
+            Return _lbl_downloadstatus_Content
+        End Get
+        Set(value As String)
+            _lbl_downloadstatus_Content = value
+        End Set
+    End Property
 #End Region
 
 #Region "Mainwindow Events"
@@ -243,7 +240,7 @@ Public Class MainWindow
             assets_index_name = "legacy"
         End If
         resourcesdownloading = True
-        pb_download_IsIndeterminate(True)
+        pb_download_IsIndeterminate = True
         If resources_dir.Exists = False Then
             resources_dir.Create()
         End If
@@ -257,7 +254,7 @@ Public Class MainWindow
         Else
             Await Parse_Resources()
         End If
-        pb_download_IsIndeterminate(False)
+        pb_download_IsIndeterminate = False
     End Sub
 
     Async Sub downloadindexesfinished(sender As Object, e As System.ComponentModel.AsyncCompletedEventArgs)
@@ -275,7 +272,7 @@ Public Class MainWindow
     End Sub
 
     Async Function Parse_Resources() As Task
-        pb_download.IsIndeterminate = False
+        pb_download_IsIndeterminate = False
         Await Task.Run(New Action(Sub()
                                       Write("Lade Resourcen herunter")
                                       Dim indexjo As JObject = JObject.Parse(File.ReadAllText(indexesfile(assets_index_name).FullName))
@@ -305,7 +302,7 @@ Public Class MainWindow
 
     Sub DownloadResources()
         If resourcesdownloadindex < resourcesindexes.objects.Count Then
-            pb_download_Value(resourcesdownloadindex / resourcesindexes.objects.Count - 1 * 100)
+            pb_download_Value = resourcesdownloadindex / resourcesindexes.objects.Count - 1 * 100
             currentresourcesobject = resourcesindexes.objects.Item(resourcesdownloadindex)
             Dim resource As New FileInfo(resourcefile(currentresourcesobject.hash).FullName.Replace("/", "\"))
             Dim todownload As Boolean = True
@@ -393,12 +390,12 @@ Public Class MainWindow
             bytes = e.BytesReceived / 1000000
             Einheit = "MB"
         End If
-        'lbl_downloadstatus_Content(String.Format("{0}% - {1} {2} von {3} {4} heruntergeladen", e.ProgressPercentage, Math.Round(bytes, 2), Einheit, Math.Round(totalbytes, 2), Einheit))
+        lbl_downloadstatus_Content = String.Format("{0}% - {1} {2} von {3} {4} heruntergeladen", e.ProgressPercentage, Math.Round(bytes, 2), Einheit, Math.Round(totalbytes, 2), Einheit)
     End Sub
 
     Private Sub wc_libraries_DownloadProgressChanged(sender As Object, e As DownloadProgressChangedEventArgs) Handles wc_libraries.DownloadProgressChanged
         If librariesdownloadindex < Startinfos.Versionsinfo.libraries.Count Then
-            pb_download_Value((librariesdownloadindex / Startinfos.Versionsinfo.libraries.Count) * 100 + e.ProgressPercentage / Startinfos.Versionsinfo.libraries.Count)
+            pb_download_Value = (librariesdownloadindex / Startinfos.Versionsinfo.libraries.Count) * 100 + e.ProgressPercentage / Startinfos.Versionsinfo.libraries.Count
         End If
     End Sub
 
@@ -602,7 +599,7 @@ Public Class MainWindow
 
     Async Sub DownloadLibraries()
         Try
-            pb_download_Value(librariesdownloadindex / Startinfos.Versionsinfo.libraries.Count * 100)
+            pb_download_Value = librariesdownloadindex / Startinfos.Versionsinfo.libraries.Count * 100
             If librariesdownloadindex < Startinfos.Versionsinfo.libraries.Count Then
                 Currentlibrary = Startinfos.Versionsinfo.libraries.Item(librariesdownloadindex)
                 Dim allowdownload As Boolean = True
@@ -1189,7 +1186,7 @@ Public Class MainWindow
     End Function
 
     Private Sub wcversionsdownload_DownloadProgressChanged(sender As Object, e As DownloadProgressChangedEventArgs) Handles wcversionsdownload.DownloadProgressChanged
-        pb_download_Value(e.ProgressPercentage)
+        pb_download_Value = e.ProgressPercentage
     End Sub
 
     Private Sub tb_ausgabe_TextChanged(sender As Object, e As TextChangedEventArgs) Handles tb_ausgabe.TextChanged
@@ -1551,6 +1548,7 @@ Public Class MainWindow
 
     Async Function Load_Servers() As Task
         servers_dat.Refresh()
+        lb_servers.Items.Clear()
         If servers_dat.Exists = True Then
             lbl_no_servers.Visibility = Windows.Visibility.Collapsed
             ViewModel.Servers = New ObservableCollection(Of ServerList.Server)
@@ -1586,9 +1584,9 @@ Public Class MainWindow
             '            }
             '        servers.Servers.Add(server)
             '    Next
-            'For Each item As ServerList.Server In ViewModel.Servers
-            '    lb_servers.Items.Add(item)
-            'Next
+            For Each item As ServerList.Server In ViewModel.Servers
+                lb_servers.Items.Add(item)
+            Next
             If lb_servers.SelectedIndex = -1 Then
                 lb_servers.SelectedIndex = 0
             Else
@@ -1615,6 +1613,9 @@ Public Class MainWindow
                                                      End Sub)
         Catch
         End Try
+        If servers_dat.Exists And Not servers_dat.IsLocked Then
+            ServerList.Save()
+        End If
     End Sub
 
     Private Sub CheckOnline(ByVal i As Integer)
@@ -1637,7 +1638,6 @@ Public Class MainWindow
             '                                 lb_servers.Items.Insert(i, ViewModel.Servers.Item(i))
             '                                 lb_servers.SelectedIndex = selected
             '                             End Sub))
-            ServerList.Save()
         Catch null As ArgumentNullException
             'hostNameOrAddress ist null.
         Catch socket As SocketException
@@ -1959,4 +1959,10 @@ Public Class MainWindow
 
 #End Region
 
+    Sub OnDataUpdated(data As IList(Of Object), changedItem As Object, oldindex As Integer, newIndex As Integer)
+
+        ViewModel.Servers.Move(oldindex, newIndex)
+        ServerList.Save()
+        'MessageBox.Show(String.Join(Environment.NewLine, ViewModel.Servers))
+    End Sub
 End Class

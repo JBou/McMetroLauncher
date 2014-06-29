@@ -7,7 +7,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:Behaviours="clr-namespace:MahApps.Metro.Behaviours;assembly=MahApps.Metro"
     GlowBrush="{DynamicResource AccentColorBrush}"   
-    Title="Minecraft Forge" Height="450" Width="680" MinHeight="450" MinWidth="680" Icon="../images/favicon.ico" ResizeMode="CanResizeWithGrip" WindowStartupLocation="CenterScreen">
+    Title="Minecraft Forge" Height="450" Width="680" MinHeight="450" MinWidth="680" Icon="/images/favicon.ico" ResizeMode="CanResizeWithGrip" WindowStartupLocation="CenterScreen">
 
     <Window.Resources>
         <ResourceDictionary>

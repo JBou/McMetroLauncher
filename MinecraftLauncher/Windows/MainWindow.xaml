@@ -1,4 +1,4 @@
-﻿<Controls:MetroWindow  x:Class="MainWindow"
+﻿<Controls:MetroWindow  x:Class="MainWindow" x:Name="window"
     xmlns:local="clr-namespace:McMetroLauncher"
     xmlns:params="http://schemas.codeplex.com/elysium/params"
     xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
@@ -190,8 +190,8 @@
                         <Image x:Name="img_avatar" Height="69" Width="69" Margin="5,0,0,0"/>
                     </StackPanel>
                     <Button x:Name="btn_startMC" Content="Play" HorizontalAlignment="Right" Margin="0,0,10,10" VerticalAlignment="Bottom" Width="150" Height="69" FontSize="30" TabIndex="11"/>
-                    <Controls:MetroProgressBar Foreground="{DynamicResource AccentColorBrush}" x:Name="pb_download" Height="5" Margin="10,0,10,84" VerticalAlignment="Bottom"/>
-                    <Label x:Name="lbl_downloadstatus" HorizontalAlignment="Left" Margin="343,0,0,62" VerticalAlignment="Bottom" Width="418" Height="33"/>
+                    <Controls:MetroProgressBar Foreground="{DynamicResource AccentColorBrush}" Height="5" Margin="10,0,10,84" VerticalAlignment="Bottom" IsIndeterminate="{Binding pb_download_IsIndeterminate, ElementName=window}" Value="{Binding pb_download_Value, ElementName=window}"/>
+                    <Label x:Name="lbl_downloadstatus" HorizontalAlignment="Left" Margin="353,0,0,42" VerticalAlignment="Bottom" Width="418" Height="33" Content="{Binding lbl_downloadstatus_Content, ElementName=window}"/>
                     <Button x:Name="btn_new_profile" Content="Neu" HorizontalAlignment="Left" Margin="10,0,0,10" VerticalAlignment="Bottom" Width="26" Height="33" MinWidth="50" TabIndex="4"/>
                     <Button x:Name="btn_edit_profile" Content="Bearbeiten" HorizontalAlignment="Left" Margin="65,0,0,10" VerticalAlignment="Bottom" Width="89" Height="33" TabIndex="5"/>
                     <ComboBox ItemsSource="{Binding Path=Profiles}" SelectedItem="{Binding selectedprofile, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" x:Name="cb_profiles" HorizontalAlignment="Left" Margin="10,0,0,48" VerticalAlignment="Bottom" Width="218" Height="31" TabIndex="3"/>
@@ -292,7 +292,7 @@
             <TabItem Header="Servers">
                 <Grid>
                     <TextBlock Margin="10,10,10,10" VerticalAlignment="Top" HorizontalAlignment="Center" Text="Server, dessen Version älter als 1.7 ist, werden als &quot;Offline&quot; angezeigt, Rechtsklick für mehr Optionen" Foreground="Red" FontWeight="Bold" FontSize="16"  />
-                    <ListView x:Name="lb_servers" ItemsSource="{Binding Path=Servers, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="10,42,10,47" HorizontalAlignment="Stretch" BorderThickness="0" >
+                    <ListView x:Name="lb_servers" Margin="10,42,10,47" HorizontalAlignment="Stretch" BorderThickness="0" >
                         <ListView.Resources>
                             <ContextMenu StaysOpen="true" x:Key="ServerlistContextMenu">
                                 <MenuItem Header="Server Addresse kopieren" Name="context_copy_server_address" Click="copy_server_address" >
@@ -468,7 +468,8 @@
                                  IsComposing="True"
                                  Orientation="Vertical"
                                  DragOpacity="0.75"
-                                 DragScale="1.2">
+                                 DragScale="1.2"
+                                 DataUpdated="OnDataUpdated">
                                     <JBouControls:FluidWrapPanel.ElementEasing>
                                         <BackEase EasingMode="EaseOut"
                                       Amplitude="0.35"></BackEase>

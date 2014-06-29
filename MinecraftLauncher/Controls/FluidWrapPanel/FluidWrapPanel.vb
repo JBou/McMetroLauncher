@@ -44,12 +44,14 @@ Namespace JBou.Controls
 #Region "Fields"
 
         Private dragStartPoint As New Point()
+        Private oldIndex As Integer
         Private dragElement As UIElement = Nothing
         Private lastDragElement As UIElement = Nothing
-        Private Property fluidElements As List(Of UIElement) = Nothing
+        Private fluidElements As List(Of UIElement) = Nothing
         Private layoutManager As FluidLayoutManager = Nothing
         Private isInitializeArrangeRequired As Boolean = False
         Private _parentlistbox As ListBox
+        Private updatedata As Boolean = True
 
 #End Region
 
@@ -622,9 +624,9 @@ Namespace JBou.Controls
                 layoutManager = New FluidLayoutManager()
             End If
 
-            Dim maxheight As Double = 0
-            Dim maxwidth As Double = 0
-            For Each child As UIElement In Children
+            Dim maxheight As Double = 1
+            Dim maxwidth As Double = 1
+            For Each child As UIElement In InternalChildren
                 maxheight = Math.Max(maxheight, child.DesiredSize.Height)
                 maxwidth = Math.Max(maxwidth, child.DesiredSize.Width)
             Next
@@ -701,7 +703,6 @@ Namespace JBou.Controls
         Private Sub UpdateFluidLayout(Optional showEasing As Boolean = True)
             ' Iterate through all the fluid elements and animate their
             ' movement to their new location.
-            MeasureOverride(New Size(Me.ActualWidth, Me.ActualHeight))
             For index As Integer = 0 To fluidElements.Count - 1
                 Dim element As UIElement = fluidElements(index)
                 If element Is Nothing Then
@@ -832,7 +833,7 @@ Namespace JBou.Controls
 
                                                   ' Since we are scaling the dragElement by DragScale, the clickPoint also shifts
                                                   dragStartPoint = New Point(position.X * DragScale, position.Y * DragScale)
-
+                                                  oldIndex = fluidElements.IndexOf(child)
                                               End Sub))
         End Sub
 
@@ -904,51 +905,49 @@ Namespace JBou.Controls
 
                                               End Sub))
 
-            'TODO: Fix this - Wrong content
-            Dim newindex As Integer = layoutManager.GetIndexFromPoint(positionInParent)
-            Dim dragCellIndex As Integer = fluidElements.IndexOf(dragElement)
-            Dim parent As ListBox = ParentListBox
-            Dim itemSource As IEnumerable = parent.ItemsSource
-            Dim typeelement As Type = dragElement.GetType()
-            Dim ls As New ObservableCollection(Of Object)(itemSource.Cast(Of Object))
-            Dim Content = ls(dragCellIndex)
-            If itemSource Is Nothing Then
-                parent.Items.Insert(newIndex, Content)
+            'TODO: Fix this - Not working - Getting DisconnectedItem
 
-                'Is the ItemsSource IList or IList? If so, insert the dragged item in the list.
-            ElseIf TypeOf itemSource Is IList Then
-                If TypeOf dragElement Is ICloneable Then
-                    Dim copy As Object = DirectCast(dragElement, ICloneable).Clone
-                    DirectCast(itemSource, IList).RemoveAt(dragCellIndex)
-                    DirectCast(itemSource, IList).Insert(newIndex, copy)
-                Else
-                    DirectCast(itemSource, IList).RemoveAt(dragCellIndex)
-                    DirectCast(itemSource, IList).Insert(newindex, Content)
-                End If
-            Else
-                Dim type As Type = itemSource.GetType()
-                Dim genericIListType As Type = type.GetInterface("IList`1")
-                If genericIListType IsNot Nothing Then
-                    type.GetMethod("Insert").Invoke(itemSource, New Object() {newIndex, Content})
-                End If
+
+            'Dim newindex As Integer = layoutManager.GetIndexFromPoint(positionInParent)
+            'Dim dragCellIndex As Integer = fluidElements.IndexOf(dragElement)
+            'Dim parent As ListBox = ParentListBox
+            'Dim itemSource As IEnumerable = parent.ItemsSource
+            'Dim typeelement As Type = dragElement.GetType()
+            'Dim ls As New ObservableCollection(Of Object)(itemSource.Cast(Of Object))
+            'Dim Content = ls(dragCellIndex)
+            'If itemSource Is Nothing Then
+            '    parent.Items.Insert(newIndex, Content)
+
+            '    'Is the ItemsSource IList or IList? If so, insert the dragged item in the list.
+            'ElseIf TypeOf itemSource Is IList Then
+            '    If TypeOf dragElement Is ICloneable Then
+            '        Dim copy As Object = DirectCast(dragElement, ICloneable).Clone
+            '        DirectCast(itemSource, IList).RemoveAt(dragCellIndex)
+            '        DirectCast(itemSource, IList).Insert(newIndex, copy)
+            '    Else
+            '        DirectCast(itemSource, IList).RemoveAt(dragCellIndex)
+            '        DirectCast(itemSource, IList).Insert(newindex, Content)
+            '    End If
+            'Else
+            '    Dim type As Type = itemSource.GetType()
+            '    Dim genericIListType As Type = type.GetInterface("IList`1")
+            '    If genericIListType IsNot Nothing Then
+            '        type.GetMethod("Insert").Invoke(itemSource, New Object() {newIndex, Content})
+            '    End If
+            'End If
+
+            Dim newindex As Integer = layoutManager.GetIndexFromPoint(positionInParent)
+
+            ' If no valid cell index is obtained, add the child to the end of the 
+            ' fluidElements list.
+            If (newindex = -1) OrElse (newindex >= fluidElements.Count) Then
+                newindex = fluidElements.Count - 1
             End If
 
-            ''Set ItemsControl
-            'Try
-            '    Dim lb As ItemsControl = ParentListBox
-            '    Dim list As Object() = New Object()
-            '    fluidElements.Cast(Of ListViewItem).Select(Function(p) p.Content).ToList.CopyTo(list)
-            '    lb.ItemsSource = list
-            '    fluidElements = lb.ItemsSource.Cast(Of UIElement).ToList
-            '    Dim lb2 = ParentListBox
-            'Catch ex As Exception
-            '    'Listbox / ListView not Found
-            'End Try
+            Dim Content = DirectCast(child, ListViewItem).Content
+            Dim data As IList(Of Object) = fluidElements.Cast(Of ListViewItem)().Select(Function(p) p.Content).ToList
+            RaiseEvent DataUpdated(data, Content, oldIndex, newindex)
         End Sub
-
-        Public Function CastExamp1(Of T)(input As Object) As T
-            Return DirectCast(input, T)
-        End Function
 
         Private ReadOnly Property ParentListBox As ListBox
             Get
@@ -962,6 +961,8 @@ Namespace JBou.Controls
                 Return Me._parentlistbox
             End Get
         End Property
+
+        Public Event DataUpdated(data As IList(Of Object), changedItem As Object, oldindex As Integer, newIndex As Integer)
 
 #End Region
 
