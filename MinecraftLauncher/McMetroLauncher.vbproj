@@ -206,10 +206,11 @@
     <Compile Include="Controls\FluidWrapPanel\FluidLayoutManager.vb" />
     <Compile Include="Controls\FluidWrapPanel\FluidMouseDragBehavior.vb" />
     <Compile Include="Controls\FluidWrapPanel\FluidWrapPanel.vb" />
+    <Compile Include="Converters\ValueConverterGroup.vb" />
     <Compile Include="Helpers\ExtensionMethods.vb" />
     <Compile Include="Models\Accent-ThemeMenuData.vb" />
     <Compile Include="Models\authenticationDatabase.vb" />
-    <Compile Include="Models\Converters.vb" />
+    <Compile Include="Converters\Converters.vb" />
     <Compile Include="Models\CryptedTextAnimation.vb" />
     <Compile Include="Models\Forge.vb" />
     <Compile Include="Models\GlobalInfos.vb" />

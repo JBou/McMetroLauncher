@@ -58,7 +58,7 @@ Public Structure Forge
     End Function
 
     Public Class ForgeBuild
-        Public Property branch As Object
+        Public Property branch As String
         Public Property build As Integer
         <JsonIgnore>
         Public Property files As IList(Of ForgeFileitem)

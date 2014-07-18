@@ -38,8 +38,8 @@
     http://wixtoolset.org/documentation/manual/v3/wixui/wixui_customizations.html -->
 
     <!--<WixVariable Id="WixUILicenseRtf" Value="path\License.rtf" />-->
-    <WixVariable Id="WixUIBannerBmp" Value="Banner.png" />
-    <WixVariable Id="WixUIDialogBmp" Value="Dialog.png" />
+    <WixVariable Id="WixUIBannerBmp" Value="Banner.bmp" />
+    <WixVariable Id="WixUIDialogBmp" Value="Dialog.bmp" />
     <!--<WixVariable Id="WixUIExclamationIco" Value="path\exclamation.ico" />-->
     <!--<WixVariable Id="WixUIInfoIco" Value="path\information.ico" />-->
     <!--<WixVariable Id="WixUINewIco" Value="path\new.ico" />-->

@@ -5,13 +5,13 @@ Imports MahApps.Metro
 Imports System.IO
 Imports Newtonsoft.Json
 Imports Newtonsoft.Json.Linq
+Imports McMetroLauncher.Forge
 
 Class Forge_installer
     WithEvents wc As New WebClient
     Dim wcauto As New WebClient
     Private filename As String
-    Dim version As String
-    Dim mcversion As String
+    Dim build As ForgeBuild
     Dim Legacyforge As Boolean = False
     Dim stripmeta As Boolean = False
     Dim liblist As List(Of Library) = New List(Of Library)
@@ -63,14 +63,14 @@ Class Forge_installer
             pb_download.IsIndeterminate = False
             forge_anleitung.IsSelected = True
             Dim Legacyforgefile As Boolean = False
-            If Forge.LegacyBuildList.Select(Function(p) p.version).Contains(version) Then
+            If Forge.LegacyBuildList.Select(Function(p) p.version).Contains(build.version) Then
                 Legacyforgefile = True
             End If
-            Dim url As New Uri(String.Format("http://files.minecraftforge.net/maven/net/minecraftforge/forge/{0}-{1}/forge-{0}-{1}-installer.jar", mcversion, version))
+            Dim url As New Uri(String.Format("http://files.minecraftforge.net/maven/net/minecraftforge/forge/{0}-{1}/forge-{0}-{1}-installer.jar", build.mcversion, build.version))
             If Legacyforgefile = True Then
-                url = New Uri(String.Format("http://files.minecraftforge.net/minecraftforge/minecraftforge-installer-{0}-{1}.jar", mcversion, version))
+                url = New Uri(String.Format("http://files.minecraftforge.net/minecraftforge/minecraftforge-installer-{0}-{1}.jar", build.mcversion, build.version))
             End If
-            filename = IO.Path.Combine(cachefolder.FullName, String.Format("forge-{0}-{1}-installer.jar", mcversion, version))
+            filename = IO.Path.Combine(cachefolder.FullName, String.Format("forge-{0}-{1}-installer.jar", build.mcversion, build.version))
             wc.DownloadFileAsync(url, filename)
             btn_download.Content = "Abbrechen"
         End If
@@ -103,19 +103,19 @@ Class Forge_installer
                 stripmeta = False
                 controller = Await Me.ShowProgressAsync("Forge wird installiert", "Bitte warten", False, New MetroDialogSettings() With {.ColorScheme = MetroDialogColorScheme.Theme})
                 Legacyforge = False
-                If Forge.LegacyBuildList.Select(Function(p) p.version).Contains(version) Then
+                If Forge.LegacyBuildList.Select(Function(p) p.version).Contains(build.version) Then
                     Legacyforge = True
                 End If
                 'Download Universal
-                Dim extension As String = Forge.ForgeList.Where(Function(p) p.version = version).First.files.Where(Function(p) p.type = "universal").First.extension
+                Dim extension As String = Forge.ForgeList.Where(Function(p) p.version = build.version).First.files.Where(Function(p) p.type = "universal").First.extension
                 If extension = "zip" Then
                     stripmeta = True
                 End If
-                Dim url As New Uri(String.Format("http://files.minecraftforge.net/maven/net/minecraftforge/forge/{1}-{0}/forge-{1}-{0}-universal.jar", version, mcversion, extension))
+                Dim url As New Uri(String.Format("http://files.minecraftforge.net/maven/net/minecraftforge/forge/{1}-{0}{2}/forge-{1}-{0}{2}-universal.jar", build.version, build.mcversion, IIf(build.branch = Nothing, "", "-" & build.branch), extension))
                 If Legacyforge = True Then
-                    url = New Uri(String.Format("http://files.minecraftforge.net/minecraftforge/minecraftforge-universal-{1}-{0}.{2}", version, mcversion, extension))
+                    url = New Uri(String.Format("http://files.minecraftforge.net/minecraftforge/minecraftforge-universal-{1}-{0}.{2}", build.version, build.mcversion, extension))
                 End If
-                filename = IO.Path.Combine(cachefolder.FullName, String.Format("forge-{0}-{1}-universal.jar", mcversion, version))
+                filename = IO.Path.Combine(cachefolder.FullName, String.Format("forge-{0}-{1}{2}-universal.jar", build.mcversion, build.version, IIf(build.branch = Nothing, "", "-" & build.branch)))
                 wcauto.DownloadFileAsync(url, filename)
                 AddHandler wcauto.DownloadFileCompleted, AddressOf Install_Version
                 AddHandler wcauto.DownloadProgressChanged, Sub(sender2 As Object, e2 As Net.DownloadProgressChangedEventArgs)
@@ -133,122 +133,123 @@ Class Forge_installer
     End Sub
     Async Sub Install_Version(sender As Object, e As ComponentModel.AsyncCompletedEventArgs)
         Try
-            Dim versionsname As String = mcversion & "-Forge" & version
+            Dim branch As String = IIf(build.branch = Nothing, "", "-" & build.branch).ToString
+            Dim versionsname As String = build.mcversion & "-Forge" & build.version & branch
             If e.Cancelled = False And e.Error Is Nothing Then
-                    Dim legacyinstallation As Boolean = False
-                    'Extract version.json and copy to versionsfolder
+                Dim legacyinstallation As Boolean = False
+                'Extract version.json and copy to versionsfolder
+                Try
+                    Using zip1 As ZipFile = ZipFile.Read(filename)
+                        If zip1.Entries.Select(Function(p) p.FileName).Contains("version.json") Then
+                            ' here, we extract every entry, but we could extract conditionally,
+                            ' based on entry name, size, date, checkbox status, etc.   
+                            For Each i As ZipEntry In zip1
+                                If i.FileName = "version.json" Then
+                                    i.Extract(IO.Path.GetDirectoryName(filename), ExtractExistingFileAction.OverwriteSilently)
+                                    With New FileInfo(Path.Combine(versionsfolder.FullName, versionsname, versionsname & ".json"))
+                                        If .Directory.Exists = False Then
+                                            .Directory.Create()
+                                        End If
+                                        File.Copy(Path.Combine(Path.GetDirectoryName(filename), "version.json"), .FullName, True)
+                                        Exit For
+                                    End With
+                                End If
+                            Next
+                        Else
+                            legacyinstallation = True
+                        End If
+                    End Using
+                Catch ex As ZipException
+                    'ShowError
+                    'Write("Fehler beim entpacken der natives: " & ex.Message, LogLevel.ERROR)
+                End Try
+                'Copy verisons.jar and download if doesn't exist
+                With New FileInfo(Path.Combine(versionsfolder.FullName, build.mcversion, build.mcversion & ".jar"))
+                    Dim jsonfile As New FileInfo(Path.Combine(versionsfolder.FullName, build.mcversion, build.mcversion & ".json"))
+                    Dim output As String = .FullName
+                    Dim jsonoutput As String = jsonfile.FullName
+                    Dim VersionsURl As String = "https://s3.amazonaws.com/Minecraft.Download/versions/" & build.mcversion & "/" & build.mcversion
                     Try
-                        Using zip1 As ZipFile = ZipFile.Read(filename)
-                            If zip1.Entries.Select(Function(p) p.FileName).Contains("version.json") Then
-                                ' here, we extract every entry, but we could extract conditionally,
-                                ' based on entry name, size, date, checkbox status, etc.   
-                                For Each i As ZipEntry In zip1
-                                    If i.FileName = "version.json" Then
-                                        i.Extract(IO.Path.GetDirectoryName(filename), ExtractExistingFileAction.OverwriteSilently)
-                                        With New FileInfo(Path.Combine(versionsfolder.FullName, versionsname, versionsname & ".json"))
-                                            If .Directory.Exists = False Then
-                                                .Directory.Create()
-                                            End If
-                                            File.Copy(Path.Combine(Path.GetDirectoryName(filename), "version.json"), .FullName, True)
-                                            Exit For
-                                        End With
-                                    End If
-                                Next
-                            Else
-                                legacyinstallation = True
-                            End If
-                        End Using
-                    Catch ex As ZipException
-                        'ShowError
-                        'Write("Fehler beim entpacken der natives: " & ex.Message, LogLevel.ERROR)
-                    End Try
-                    'Copy verisons.jar and download if doesn't exist
-                    With New FileInfo(Path.Combine(versionsfolder.FullName, mcversion, mcversion & ".jar"))
-                        Dim jsonfile As New FileInfo(Path.Combine(versionsfolder.FullName, mcversion, mcversion & ".json"))
-                        Dim output As String = .FullName
-                        Dim jsonoutput As String = jsonfile.FullName
-                        Dim VersionsURl As String = "https://s3.amazonaws.com/Minecraft.Download/versions/" & mcversion & "/" & mcversion
-                        Try
-                            If .Exists = False Then
-                                'Download
-                                wcauto = New WebClient
-                                controller.SetMessage("Lade Version herunter...")
-                                AddHandler wcauto.DownloadProgressChanged, Sub(sender2 As Object, e2 As Net.DownloadProgressChangedEventArgs)
-                                                                               Dim progress As Double = 1 / 3 + e2.ProgressPercentage / 100 / 3
-                                                                               If progress <= 1 Then
-                                                                                   controller.SetProgress(progress)
-                                                                               End If
-                                                                           End Sub
-                                If .Directory.Exists = False Then
-                                    .Directory.Create()
-                                End If
-                                Await wcauto.DownloadFileTaskAsync(New Uri(VersionsURl & ".jar"), output)
-                            End If
-                            If jsonfile.Exists = False Then
-                                If .Directory.Exists = False Then
-                                    .Directory.Create()
-                                End If
-                                Await New WebClient().DownloadFileTaskAsync(New Uri(VersionsURl & ".json"), jsonoutput)
-                            End If
-                        Catch ex As Exception
-                            'Show Error
-                        End Try
-                        'Copy
-                        controller.SetMessage("Installiere Version...")
-                        Dim targetpath As New FileInfo(Path.Combine(versionsfolder.FullName, versionsname, versionsname & ".jar"))
-                        If targetpath.Directory.Exists = False Then
-                            targetpath.Directory.Create()
-                        End If
-                        If stripmeta = True Then
-                            CopyandStrip(New FileInfo(output), targetpath)
-                        Else
-                            File.Copy(output, targetpath.FullName, True)
-                        End If
-                        If legacyinstallation Then
-                            'Patch jar with Forge:
-                            Copytojar(New FileInfo(filename), targetpath)
-                            'Copy json and change the id:
-                            Dim targetoutput As String = Path.Combine(versionsfolder.FullName, versionsname, versionsname & ".json")
-                            File.Copy(jsonoutput, targetoutput, True)
-                            Dim text As String = File.ReadAllText(targetoutput)
-                            Dim versioninfo As VersionsInfo = Await JsonConvert.DeserializeObjectAsync(Of VersionsInfo)(text)
-                            versioninfo.id = versionsname
-                            File.WriteAllText(targetoutput, Await JsonConvert.SerializeObjectAsync(versioninfo, Formatting.Indented))
-                        End If
-                        controller.SetProgress(2 / 3)
-                        'Copy universal to corresponding library
-                        Dim o As String = File.ReadAllText(Path.Combine(versionsfolder.FullName, versionsname, versionsname & ".json"))
-                        'Converter because some Forge Versions(10.12.0.1054) has Double as minimumlauncherversion, expected integer. It rounds the double to an integer
-                        Dim Versionsinfos As VersionsInfo = Await JsonConvert.DeserializeObjectAsync(Of VersionsInfo)(o, New JsonSerializerSettings() With {.NullValueHandling = NullValueHandling.Ignore, .Converters = New List(Of JsonConverter) From {New CustomIntConverter()}})
-                        Dim libpath As String = Nothing
-                        If Versionsinfos.libraries.Select(Function(p) p.name.Split(CChar(":"))(1)).Contains("forge") Then
-                        libpath = String.Format(Path.Combine(librariesfolder.FullName, "net", "minecraftforge", "{2}\{1}-{0}\{2}-{1}-{0}.jar"), version, mcversion, "forge")
-                        Else
-                        libpath = String.Format(Path.Combine(librariesfolder.FullName, "net", "minecraftforge", "{1}\{0}\{1}-{0}.jar"), version, "minecraftforge")
-                        End If
-                        With New FileInfo(libpath)
+                        If .Exists = False Then
+                            'Download
+                            wcauto = New WebClient
+                            controller.SetMessage("Lade Version herunter...")
+                            AddHandler wcauto.DownloadProgressChanged, Sub(sender2 As Object, e2 As Net.DownloadProgressChangedEventArgs)
+                                                                           Dim progress As Double = 1 / 3 + e2.ProgressPercentage / 100 / 3
+                                                                           If progress <= 1 Then
+                                                                               controller.SetProgress(progress)
+                                                                           End If
+                                                                       End Sub
                             If .Directory.Exists = False Then
                                 .Directory.Create()
                             End If
-                            File.Copy(filename, .FullName, True)
-                        End With
-                        'Download other Libraries
-                        liblist.Clear()
-                        For Each item As Library In Versionsinfos.libraries.Where(Function(p) p.url <> Nothing)
-                            If item.url.Contains("files.minecraftforge.net") And item.name.Split(CChar(":"))(1) <> "forge" And item.name.Split(CChar(":"))(1) <> "minecraftforge" Then
-                                liblist.Add(item)
+                            Await wcauto.DownloadFileTaskAsync(New Uri(VersionsURl & ".jar"), output)
+                        End If
+                        If jsonfile.Exists = False Then
+                            If .Directory.Exists = False Then
+                                .Directory.Create()
                             End If
-                        Next
-                        libdownloadindex = 0
-                        Await Downloadlibs()
+                            Await New WebClient().DownloadFileTaskAsync(New Uri(VersionsURl & ".json"), jsonoutput)
+                        End If
+                    Catch ex As Exception
+                        'Show Error
+                    End Try
+                    'Copy
+                    controller.SetMessage("Installiere Version...")
+                    Dim targetpath As New FileInfo(Path.Combine(versionsfolder.FullName, versionsname, versionsname & ".jar"))
+                    If targetpath.Directory.Exists = False Then
+                        targetpath.Directory.Create()
+                    End If
+                    If stripmeta = True Then
+                        CopyandStrip(New FileInfo(output), targetpath)
+                    Else
+                        File.Copy(output, targetpath.FullName, True)
+                    End If
+                    If legacyinstallation Then
+                        'Patch jar with Forge:
+                        Copytojar(New FileInfo(filename), targetpath)
+                        'Copy json and change the id:
+                        Dim targetoutput As String = Path.Combine(versionsfolder.FullName, versionsname, versionsname & ".json")
+                        File.Copy(jsonoutput, targetoutput, True)
+                        Dim text As String = File.ReadAllText(targetoutput)
+                        Dim versioninfo As VersionsInfo = Await JsonConvert.DeserializeObjectAsync(Of VersionsInfo)(text)
+                        versioninfo.id = versionsname
+                        File.WriteAllText(targetoutput, Await JsonConvert.SerializeObjectAsync(versioninfo, Formatting.Indented))
+                    End If
+                    controller.SetProgress(2 / 3)
+                    'Copy universal to corresponding library
+                    Dim o As String = File.ReadAllText(Path.Combine(versionsfolder.FullName, versionsname, versionsname & ".json"))
+                    'Converter because some Forge Versions(10.12.0.1054) has Double as minimumlauncherversion, expected integer. It rounds the double to an integer
+                    Dim Versionsinfos As VersionsInfo = Await JsonConvert.DeserializeObjectAsync(Of VersionsInfo)(o, New JsonSerializerSettings() With {.NullValueHandling = NullValueHandling.Ignore, .Converters = New List(Of JsonConverter) From {New CustomIntConverter()}})
+                    Dim libpath As String = Nothing
+                    If Versionsinfos.libraries.Select(Function(p) p.name.Split(CChar(":"))(1)).Contains("forge") Then
+                        libpath = String.Format(Path.Combine(librariesfolder.FullName, "net", "minecraftforge", "forge\{1}-{0}{2}\forge-{1}-{0}{2}.jar"), build.version, build.mcversion, branch)
+                    Else
+                        libpath = String.Format(Path.Combine(librariesfolder.FullName, "net", "minecraftforge", "{1}\{0}\{1}-{0}.jar"), build.version, "minecraftforge")
+                    End If
+                    With New FileInfo(libpath)
+                        If .Directory.Exists = False Then
+                            .Directory.Create()
+                        End If
+                        File.Copy(filename, .FullName, True)
                     End With
+                    'Download other Libraries
+                    liblist.Clear()
+                    For Each item As Library In Versionsinfos.libraries.Where(Function(p) p.url <> Nothing)
+                        If item.url.Contains("files.minecraftforge.net") And item.name.Split(CChar(":"))(1) <> "forge" And item.name.Split(CChar(":"))(1) <> "minecraftforge" Then
+                            liblist.Add(item)
+                        End If
+                    Next
+                    libdownloadindex = 0
+                    Await Downloadlibs()
+                End With
             ElseIf e.Error IsNot Nothing Then
-                    controller.SetMessage("Fehler beim herunterladen: " & e.Error.Message & Environment.NewLine & libpath.FullName)
-                    controller.SetCancelable(True)
-                    While controller.IsCanceled = False
-                        Await Task.Delay(10)
-                    End While
-                    Await controller.CloseAsync()
+                controller.SetMessage("Fehler beim herunterladen: " & e.Error.Message & Environment.NewLine & libpath.FullName)
+                controller.SetCancelable(True)
+                While controller.IsCanceled = False
+                    Await Task.Delay(10)
+                End While
+                Await controller.CloseAsync()
             End If
         Catch ex As Exception
             MsgBox(ex.Message & Environment.NewLine & ex.StackTrace)
@@ -257,7 +258,7 @@ Class Forge_installer
     End Sub
 
     Async Function Downloadlibs() As Task
-        If mcversion = "1.5.2" Then
+        If build.mcversion = "1.5.2" Then
             controller.SetMessage("Bitte warten, erforderliche Libraries werden heruntergeladen")
             controller.SetIndeterminate()
             Try
@@ -275,11 +276,14 @@ Class Forge_installer
         If libdownloadindex < liblist.Count Then
             Using a As New WebClient
                 With liblist.ElementAt(libdownloadindex)
-                    libpath = New FileInfo(IO.Path.Combine(librariesfolder.FullName, .path))
+                    libpath = New FileInfo(IO.Path.Combine(librariesfolder.FullName, .path) & ".pack.xz")
                     Dim customurl As String = .url
-                    Dim url As String = customurl & .path
+                    Dim url As String = customurl & .path & ".pack.xz"
                     controller.SetMessage("Lade Library herunter: " & libpath.FullName)
-                    a.DownloadFileAsync(New Uri(url & ".pack.xz"), libpath.FullName & ".pack.xz")
+                    If Not libpath.Directory.Exists Then
+                        libpath.Directory.Create()
+                    End If
+                    a.DownloadFileAsync(New Uri(url), libpath.FullName)
                     AddHandler a.DownloadFileCompleted, AddressOf Downloadlibcompleted
                     AddHandler a.DownloadProgressChanged, Sub(sender2 As Object, e2 As Net.DownloadProgressChangedEventArgs)
                                                               Dim progress As Double = 2 / 3 + (libdownloadindex + e2.ProgressPercentage / 100) / 3 / liblist.Count
@@ -290,10 +294,11 @@ Class Forge_installer
                 End With
             End Using
         Else
-            'Install Finfished
+            'Install Finished
             Await controller.CloseAsync()
             Me.Hide()
-            Dim profileedit As New Forge_ProfileEditor With {.Versionname = mcversion & "-Forge" & version}
+            Dim branch As String = IIf(build.branch = Nothing, "", "-" & build.branch).ToString
+            Dim profileedit As New Forge_ProfileEditor With {.Versionname = build.mcversion & "-Forge" & build.version & branch}
             profileedit.ShowDialog()
             Me.Close()
         End If
@@ -345,9 +350,8 @@ Class Forge_installer
 
     Async Sub Downloadlibcompleted(sender As Object, e As ComponentModel.AsyncCompletedEventArgs)
         If e.Cancelled = False And e.Error Is Nothing Then
-            Dim input As New FileInfo(libpath.FullName & ".pack.xz")
             controller.SetMessage("Entpacke Library : " & libpath.FullName)
-            If Await Unpack.Unpack(input, libpath) = False Then
+            If Await Unpack.Unpack(libpath, libpath) = False Then
                 controller.SetMessage("Fehler beim entpacken: " & libpath.FullName)
                 controller.SetCancelable(True)
                 While controller.IsCanceled = False
@@ -358,7 +362,7 @@ Class Forge_installer
                 libdownloadindex += 1
                 Await Downloadlibs()
             End If
-            input.Delete()
+            'libpath.Delete()
         ElseIf e.Error IsNot Nothing Then
             controller.SetMessage("Fehler beim herunterladen: " & e.Error.Message & Environment.NewLine & libpath.FullName)
             controller.SetCancelable(True)
@@ -370,10 +374,9 @@ Class Forge_installer
     End Sub
 
     Private Sub lst_SelectionChanged(sender As Object, e As SelectionChangedEventArgs) Handles lst.SelectionChanged
-        version = DirectCast(lst.SelectedItem, Forge.ForgeBuild).version
-        mcversion = DirectCast(lst.SelectedItem, Forge.ForgeBuild).mcversion
+        build = DirectCast(lst.SelectedItem, Forge.ForgeBuild)
         If DirectCast(lst.SelectedItem, Forge.ForgeBuild).files.Select(Function(p) p.type).Contains("universal") Then
-            If mcversion <> "1.6.1" And mcversion <> "1.6.2" Then
+            If build.mcversion <> "1.6.1" And build.mcversion <> "1.6.2" Then
                 btn_download_auto.IsEnabled = True
             Else
                 btn_download_auto.IsEnabled = False

@@ -15,7 +15,7 @@ Public Class Forge_ProfileEditor
             Dim selectedprofile As Profiles.Profile = Await Profiles.FromName(cb_profiles.SelectedItem.ToString)
             selectedprofile.lastVersionId = Versionname
             Await Profiles.Edit(selectedprofile.name, selectedprofile)
-            ' Profiles.Get_Profiles()
+            'Profiles.Get_Profiles()
             Me.Close()
         Else
             If Profiles.List.Contains(tb_newprofilename.Text) Then

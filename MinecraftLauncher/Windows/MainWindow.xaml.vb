@@ -34,6 +34,7 @@ Imports McMetroLauncher.JBou.Authentication
 Imports McMetroLauncher.JBou.Authentication.Session
 Imports System.Collections.ObjectModel
 Imports System.Runtime.CompilerServices
+Imports McMetroLauncher.Forge
 
 #End Region
 
@@ -684,15 +685,25 @@ Public Class MainWindow
                         Dim forgeuniversal As Boolean = False
                         Dim version As String = Currentlibrary.name.Split(CChar(":"))(2)
                         'legacy = "minecraftforge", new versions = "forge"
-                        If Currentlibrary.name.Split(CChar(":"))(1) = "minecraftforge" Or Currentlibrary.name.Split(CChar(":"))(1) = "forge" And Forge.ForgeList.Select(Function(p) p.version).Contains(version) Then
-                            Dim mcversion As String = Forge.ForgeList.Where(Function(p) p.version = version).First.mcversion
+                        If Currentlibrary.name.Split(CChar(":"))(1) = "minecraftforge" And Forge.ForgeList.Select(Function(p) p.version).Contains(version) OrElse Currentlibrary.name.Split(CChar(":"))(1) = "forge" And Forge.ForgeList.Select(Function(p) p.mcversion & "-" & p.version & IIf(p.branch = Nothing, "", "-" & p.branch).ToString).Contains(version) Then
+                            Dim build As ForgeBuild
+                            If Currentlibrary.name.Split(CChar(":"))(1) = "minecraftforge" Then
+                                build = Forge.ForgeList.Where(Function(p) p.version = version).First
+                            Else
+                                build = Forge.ForgeList.Where(Function(p) (p.mcversion & "-" & p.version & IIf(p.branch = Nothing, "", "-" & p.branch).ToString) = version).First
+                            End If
                             'Buildlist durchsuchen
                             downloadforgelib = True
                             forgeuniversal = True
+                            Dim branch As String = IIf(build.branch = Nothing, "", "-" & build.branch).ToString
                             If Forge.LegacyBuildList.Select(Function(p) p.version).Contains(version) Then
-                                url = String.Format("http://files.minecraftforge.net/minecraftforge/minecraftforge-universal-{1}-{0}.jar", version, mcversion)
+                                url = String.Format("http://files.minecraftforge.net/minecraftforge/minecraftforge-universal-{1}-{0}.jar", version, build.mcversion)
                             Else
-                                url = String.Format("http://files.minecraftforge.net/maven/net/minecraftforge/forge/{1}-{0}/forge-{1}-{0}-universal.jar", version, mcversion)
+                                If Currentlibrary.name.Split(CChar(":"))(1) = "minecraftforge" Then
+                                    url = String.Format("http://files.minecraftforge.net/maven/net/minecraftforge/forge/{1}-{0}{2}/forge-{1}-{0}{2}-universal.jar", version, build.mcversion, branch)
+                                Else
+                                    url = String.Format("http://files.minecraftforge.net/maven/net/minecraftforge/forge/{0}/forge-{0}-universal.jar", version)
+                                End If
                             End If
                         End If
                         Dim outputfile As String = librarypath.FullName
@@ -707,7 +718,7 @@ Public Class MainWindow
                             If forgeuniversal = True Then
                                 Write("Minecraft Forge Library wird automatisch heruntergeladen (Versuch " & librariesdownloadtry & "): " & librarypath.FullName)
                             Else
-                                Write("Versuche Library von alternativer Quelle herunterzuladen herunterzuladen (Versuch " & librariesdownloadtry & "): " & librarypath.FullName)
+                                Write("Versuche Library von alternativer Quelle herunterzuladen (Versuch " & librariesdownloadtry & "): " & librarypath.FullName)
                             End If
                         End If
                         If downloadforgelib = False Then
@@ -749,6 +760,10 @@ Public Class MainWindow
                 Write("Ein Fehler ist beim Löschen einer Library aufgetreten!", LogLevel.WARNING)
             End Try
             DownloadLibraries()
+        End If
+        If e.Cancelled Then
+            Dim libpath As FileInfo = New FileInfo(Path.Combine(librariesfolder.FullName, Currentlibrary.path))
+            libpath.Delete()
         End If
         If e.Cancelled = False And e.Error Is Nothing Then
             Dim libpath As String = Path.Combine(librariesfolder.FullName, Currentlibrary.path)
@@ -1067,8 +1082,8 @@ Public Class MainWindow
                         If Versions.versions.Select(Function(p) p.id).Contains(Startinfos.Profile.lastVersionId) Then
                             Startinfos.Version = Versions.versions.Where(Function(p) p.id = Startinfos.Profile.lastVersionId).First
                         Else
-                            Startinfos.Profile = Nothing
                             Write(Startinfos.Profile.lastVersionId & ".jar und/oder " & Startinfos.Profile.lastVersionId & ".json existiert nicht" & Environment.NewLine & "---Wähle eine andere Version aus oder, falls du gerade Forge gestartet hast, installiere es erneut!", LogLevel.ERROR)
+                            Startinfos.Profile = Nothing
                             Exit Sub
                         End If
                     Else

@@ -36,6 +36,8 @@
     </WixExtension>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Banner.bmp" />
+    <Content Include="Dialog.bmp" />
     <Content Include="Dialog.png" />
     <Content Include="Banner.png" />
   </ItemGroup>

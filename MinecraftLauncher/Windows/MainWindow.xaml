@@ -28,6 +28,11 @@
             <local:FormattingcodesDocumentConverter x:Key="FormattingcodesDocumentConverter"/>
             <local:MODS_installed_imageConverter x:Key="MODS_installed_imageConverter" />
             <local:Playerlist_Namesstring_Converter x:Key="Playerlist_Namesstring_Converter"/>
+            <local:ValueConverterGroup x:Key="InversedBoolToVis_Converter">
+                <BooleanToVisibilityConverter />
+                <local:InverseBooleanConverter />
+            </local:ValueConverterGroup>
+            <BooleanToVisibilityConverter x:Key="BoolToVis_Converter" />
             <Style x:Key="MinecraftFont">
                 <Setter Property="TextElement.FontFamily" Value="Fonts/#Minecraft" />
             </Style>
@@ -163,7 +168,7 @@
                             <Grid>
                                 <awe:WebControl x:Name="Webcontrol_news" Margin="10,10,10,0" Source="http://mcupdate.tumblr.com/" />
                                 <Grid HorizontalAlignment="Center" VerticalAlignment="Center" Height="100">
-                                    <Label x:Name="lbl_news_loading" Content="Neuigkeiten werden geladen..."  FontSize="60" VerticalAlignment="Top"  />
+                                    <Label x:Name="lbl_news_loading" Content="Neuigkeiten werden geladen..."  FontSize="60" VerticalAlignment="Top" />
                                     <Controls:MetroProgressBar x:Name="pb_news_loading" IsIndeterminate="True" VerticalAlignment="Bottom" Height="10" />
                                 </Grid>
                             </Grid>
