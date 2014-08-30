@@ -165,14 +165,6 @@ Public Class MainWindow
         'Set the Webbrowser Source:
         Webcontrol_news.WebSession = WebCore.CreateWebSession(New WebPreferences() With {.CustomCSS = Scrollbarcss})
         'wc_mod_video.WebSession = WebCore.CreateWebSession(New WebPreferences() With {.CustomCSS = Scrollbarcss})
-        If lb_mods.SelectedIndex <> -1 Then
-            Dim youtubeMatch As Match = YoutubeVideoRegex.Match(DirectCast(lb_mods.SelectedItem, Modifications.Mod).video)
-            Dim id As String = String.Empty
-            If youtubeMatch.Success Then
-                id = youtubeMatch.Groups(1).Value
-                wc_mod_video.Source = New Uri("http://www.youtube.com/embed/" & id)
-            End If
-        End If
         While Webcontrol_news.IsLoading = True
             Await Task.Delay(10)
         End While
@@ -1182,7 +1174,7 @@ Public Class MainWindow
         If profile.javaDir <> Nothing Then
             Return profile.javaDir
         Else
-            Return Path.Combine(GetJavaPath(), "bin", "java.exe")
+            Return GetJavaPath()
         End If
     End Function
     Public Shared Async Function GetJavaVersionInformation() As Task(Of String)
@@ -1248,36 +1240,38 @@ Public Class MainWindow
     End Sub
 
 #Region "Mods"
-    Public Async Function Load_ModVersions() As Task
+    Public Sub Load_ModVersions()
         cb_modversions.Items.Clear()
-        Dim modversionslist As IList(Of String) = Await Modifications.List_all_Mod_Vesions
+        Dim modversionslist As IList(Of String) = Modifications.List_all_Mod_Vesions
         For Each Modversion As String In modversionslist
             cb_modversions.Items.Add(Modversion)
         Next
         cb_modversions.SelectedIndex = 0
-    End Function
+    End Sub
     Private Sub Filter_Mods()
         Dim selectedmod As String = Nothing
         If lb_mods.SelectedItem IsNot Nothing Then selectedmod = DirectCast(lb_mods.SelectedItem, Modifications.Mod).name
         lb_mods.Items.Clear()
         Modifications.Check_installed(modsfolderPath)
-        Dim mods_with_selectedversion As IList(Of Modifications.Mod) = Modifications.ModList.Where(Function(p) p.versions.Select(Function(i) i.version).Contains(cb_modversions.SelectedItem.ToString)).ToList
-        For Each Moditem As Modifications.Mod In mods_with_selectedversion
-            If Moditem.name.ToLower.Contains(tb_search_mods.Text.ToLower) = True Then
-                lb_mods.Items.Add(Moditem)
-            End If
-        Next
-        If selectedmod <> Nothing Then
-            If lb_mods.Items.Cast(Of Modifications.Mod).Select(Function(p) p.name).Contains(selectedmod) Then
-                lb_mods.SelectedItem = lb_mods.Items.Cast(Of Modifications.Mod).Where(Function(p) p.name = selectedmod).First
+        If cb_modversions.SelectedItem IsNot Nothing Then
+            Dim mods_with_selectedversion As IList(Of Modifications.Mod) = Modifications.ModList.Where(Function(p) p.versions.Select(Function(i) i.version).Contains(cb_modversions.SelectedItem.ToString)).ToList
+            For Each Moditem As Modifications.Mod In mods_with_selectedversion
+                If Moditem.name.ToLower.Contains(tb_search_mods.Text.ToLower) = True Then
+                    lb_mods.Items.Add(Moditem)
+                End If
+            Next
+            If selectedmod <> Nothing Then
+                If lb_mods.Items.Cast(Of Modifications.Mod).Select(Function(p) p.name).Contains(selectedmod) Then
+                    lb_mods.SelectedItem = lb_mods.Items.Cast(Of Modifications.Mod).Where(Function(p) p.name = selectedmod).First
+                Else
+                    If lb_mods.Items.Count > 0 Then
+                        lb_mods.SelectedIndex = 0
+                    End If
+                End If
             Else
                 If lb_mods.Items.Count > 0 Then
                     lb_mods.SelectedIndex = 0
                 End If
-            End If
-        Else
-            If lb_mods.Items.Count > 0 Then
-                lb_mods.SelectedIndex = 0
             End If
         End If
     End Sub
@@ -1310,16 +1304,16 @@ Public Class MainWindow
             Else
                 btn_downloadmod.Content = "Installieren"
             End If
-            lbl_name.Content = selected.name
-            lbl_autor.Content = selected.autor
-            cb_mods_description_language.Items.Clear()
-            For Each Language As String In selected.descriptions.Select(Function(p) p.id)
-                cb_mods_description_language.Items.Add(Language)
-            Next
+            'cb_mods_description_language.Items.Clear()
+            'For Each Language As String In selected.descriptions.Select(Function(p) p.id)
+            '    cb_mods_description_language.Items.Add(Language)
+            'Next
+
+            'TODO: Move into Converter and set the first selected item to the selected language, instead of de:
             If selected.descriptions.Select(Function(p) p.id).Contains("de") Then
-                cb_mods_description_language.SelectedItem = "de"
+                cb_mods_description_language.SelectedItem = cb_mods_description_language.Items.Cast(Of Modifications.Mod.Description).Where(Function(p) p.id = "de").First
             ElseIf selected.descriptions.Select(Function(p) p.id).Contains("en") Then
-                cb_mods_description_language.SelectedItem = "en"
+                cb_mods_description_language.SelectedItem = cb_mods_description_language.Items.Cast(Of Modifications.Mod.Description).Where(Function(p) p.id = "en").First
             Else
                 cb_mods_description_language.SelectedItem = selected.descriptions.First.id
             End If
@@ -1331,28 +1325,18 @@ Public Class MainWindow
                 Case Else
                     lbl_type.Content = "Type: " & DirectCast(lb_mods.SelectedItem, Modifications.Mod).type
             End Select
-            Dim oldsource As String = Nothing
-            If wc_mod_video.Source <> Nothing Then
-                oldsource = wc_mod_video.Source.ToString
-            End If
-            Dim youtubeMatch As Match = YoutubeVideoRegex.Match(DirectCast(lb_mods.SelectedItem, Modifications.Mod).video)
-            Dim id As String = String.Empty
-            If youtubeMatch.Success Then
-                id = youtubeMatch.Groups(1).Value
-                If oldsource <> id Then
-                    wc_mod_video.Source = New Uri("http://www.youtube.com/embed/" & id)
-                End If
-            End If
         End If
     End Sub
-    Private Sub cb_mods_description_language_SelectionChanged(sender As Object, e As SelectionChangedEventArgs) Handles cb_mods_description_language.SelectionChanged
-        If lb_mods.SelectedIndex <> -1 Then
-            If cb_mods_description_language.SelectedIndex <> -1 Then
-                Dim selected As Modifications.Mod = DirectCast(lb_mods.SelectedItem, Modifications.Mod)
-                tb_description.Text = selected.descriptions.Where(Function(p) p.id = cb_mods_description_language.SelectedItem.ToString).First.text
-            End If
-        End If
-    End Sub
+
+    'Private Sub cb_mods_description_language_SelectionChanged(sender As Object, e As SelectionChangedEventArgs) Handles cb_mods_description_language.SelectionChanged
+    '    If lb_mods.SelectedIndex <> -1 Then
+    '        If cb_mods_description_language.SelectedIndex <> -1 Then
+    '            Dim selected As Modifications.Mod = DirectCast(lb_mods.SelectedItem, Modifications.Mod)
+    '            tb_description.Text = selected.descriptions.Where(Function(p) p.id = cb_mods_description_language.SelectedItem.ToString).First.text
+    '        End If
+    '    End If
+    'End Sub
+
     Private Async Function RefreshMods() As Task
         Try
             If rb_mods_profile.IsChecked = True Then
@@ -1364,7 +1348,7 @@ Public Class MainWindow
             Dim selectedversion As String = cb_modversions.SelectedItem.ToString
             Dim selectedmod As Integer = lb_mods.SelectedIndex
             Dim SelectedItems As IList(Of String) = DirectCast(lb_mods.SelectedItems, IList(Of Modifications.Mod)).Select(Function(p) p.id).ToList
-            Await Load_ModVersions()
+            Load_ModVersions()
             Filter_Mods()
             For i = 0 To lb_mods.Items.Count - 1
                 If SelectedItems.Contains(DirectCast(lb_mods.Items.Item(i), Modifications.Mod).id) Then
@@ -1964,12 +1948,16 @@ Public Class MainWindow
         lbl_Username.Content = Account.displayName
         lbl_user_state.Content = If(Guid.TryParse(Account.userid, New Guid), "Premium", "Cracked")
         lbl_user_state.Foreground = If(Guid.TryParse(Account.userid, New Guid), Brushes.Green, Brushes.Red)
-        Dim WebRequest As HttpWebRequest = DirectCast(HttpWebRequest.Create("https://minotar.net/helm/" & Account.displayName & "/100"), HttpWebRequest)
-        Using WebReponse As HttpWebResponse = DirectCast(Await WebRequest.GetResponseAsync, HttpWebResponse)
-            Using stream As Stream = WebReponse.GetResponseStream
-                img_avatar.Source = ImageConvert.GetImageStream(System.Drawing.Image.FromStream(stream))
+        Try
+            Dim WebRequest As HttpWebRequest = DirectCast(HttpWebRequest.Create("https://minotar.net/avatar/" & Account.displayName & "/100"), HttpWebRequest)
+            Using WebReponse As HttpWebResponse = DirectCast(Await WebRequest.GetResponseAsync, HttpWebResponse)
+                Using stream As Stream = WebReponse.GetResponseStream
+                    img_avatar.Source = ImageConvert.GetImageStream(System.Drawing.Image.FromStream(stream))
+                End Using
             End Using
-        End Using
+        Catch ex As WebException
+            'Failed to load Avatar
+        End Try
     End Function
 
     Private Async Sub btn_logout_Click(sender As Object, e As RoutedEventArgs) Handles btn_logout.Click

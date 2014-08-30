@@ -29,10 +29,10 @@ Public Class ForgeEditor
     'Private Sub btn_save_Click(sender As Object, e As RoutedEventArgs) Handles btn_save.Click
     '    'Überprüfen ob es eine gültige Uri ist:
 
-    '    If tb_description.Text = Nothing Or tb_downloadlink.Text = Nothing Or tb_name.Text = Nothing Or tb_video.Text = Nothing Or tb_website.Text = Nothing Or tb_autor.Text = Nothing Then
+    '    If tb_description.Text = Nothing Or tb_downloadlink.Text = Nothing Or tb_name.Text = Nothing Or tb_video.Text = Nothing Or tb_website.Text = Nothing Or tb_author.Text = Nothing Then
     '        MessageBox.Show("Bitte fülle alle Felder aus!", "Fehler", MessageBoxButton.OK, MessageBoxImage.Information)
     '    Else
-    '        Dim frgMod As New ForgeMod(tb_name.Text, tb_autor.Text, cb_versions.SelectedItem.ToString, tb_description.Text, tb_downloadlink.Text, tb_video.Text, tb_website.Text, lb_needed_mods.Items.Cast(Of String)().ToList)
+    '        Dim frgMod As New ForgeMod(tb_name.Text, tb_author.Text, cb_versions.SelectedItem.ToString, tb_description.Text, tb_downloadlink.Text, tb_video.Text, tb_website.Text, lb_needed_mods.Items.Cast(Of String)().ToList)
     '        If NewMod = True Then
     '            'Shauen ob es bereits existiert
     '            If Mods.Get_Mods(cb_versions.SelectedItem.ToString).Contains(tb_name.Text.ToString) Then

@@ -45,7 +45,7 @@ Public Class Settings
         File.WriteAllText(SettingsFile.FullName, text)
     End Sub
     Public Class cls_Settings
-        Private _mcpfad As String, _accent As String, _Theme As String, _ServerAddress As String, _DirectJoin As Boolean, _WindowState As WindowState
+        Private _mcpfad As String, _accent As String, _Theme As String, _ServerAddress As String, _DirectJoin As Boolean, _WindowState As WindowState, _JavaPath As String
         Public Sub New()
 
         End Sub
@@ -55,6 +55,14 @@ Public Class Settings
             End Get
             Set(value As String)
                 _mcpfad = value
+            End Set
+        End Property
+        Public Property JavaPath As String
+            Get
+                Return _JavaPath
+            End Get
+            Set(value As String)
+                _JavaPath = value
             End Set
         End Property
         <DefaultValue("Blue")>

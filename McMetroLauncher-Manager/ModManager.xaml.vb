@@ -76,7 +76,7 @@ Public Class ModManager
     '            lbl_website.Content = DirectCast(lb_mods.SelectedItem, ForgeMod).Website
     '            lbl_video.Content = DirectCast(lb_mods.SelectedItem, ForgeMod).video
     '            lbl_downloadlink.Content = DirectCast(lb_mods.SelectedItem, ForgeMod).Downloadlink
-    '            lbl_autor.Content = DirectCast(lb_mods.SelectedItem, ForgeMod).autor
+    '            lbl_author.Content = DirectCast(lb_mods.SelectedItem, ForgeMod).author
     '            lb_needed_mods.Items.Clear()
     '            For Each item As String In DirectCast(lb_mods.SelectedItem, ForgeMod).needed_mods
     '                lb_needed_mods.Items.Add(item)
@@ -89,7 +89,7 @@ Public Class ModManager
     '        '    lbl_website.Content = Mods.websiteAt(cb_modversions.SelectedItem.ToString, lb_mods.SelectedIndex)
     '        '    lbl_video.Content = Mods.videoAt(cb_modversions.SelectedItem.ToString, lb_mods.SelectedIndex)
     '        '    lbl_downloadlink.Content = Mods.downloadlinkAt(cb_modversions.SelectedItem.ToString, lb_mods.SelectedIndex)
-    '        '    lbl_autor.Content = Mods.AutorAt(cb_modversions.SelectedItem.ToString, lb_mods.SelectedIndex)
+    '        '    lbl_author.Content = Mods.authorAt(cb_modversions.SelectedItem.ToString, lb_mods.SelectedIndex)
     '        '    lb_needed_mods.Items.Clear()
     '        '    For Each item As String In Mods.needed_modsAt(cb_modversions.SelectedItem.ToString, lb_mods.SelectedIndex)
     '        '        lb_needed_mods.Items.Add(item)
@@ -109,7 +109,7 @@ Public Class ModManager
             'tb_description.Text = DirectCast(lb_mods.SelectedItem, ForgeMod).description
             lbl_website.Content = DirectCast(lb_mods.SelectedItem, Modifications.Mod).website
             lbl_video.Content = DirectCast(lb_mods.SelectedItem, Modifications.Mod).video
-            lbl_autor.Content = DirectCast(lb_mods.SelectedItem, Modifications.Mod).autor
+            lbl_author.Content = DirectCast(lb_mods.SelectedItem, Modifications.Mod).author
             lbl_ID.Content = DirectCast(lb_mods.SelectedItem, Modifications.Mod).id
             lbl_extension.Content = DirectCast(lb_mods.SelectedItem, Modifications.Mod).extension
             lbl_type.Content = DirectCast(lb_mods.SelectedItem, Modifications.Mod).type

@@ -18,7 +18,7 @@
         </ResourceDictionary>
     </UserControl.Resources>
     <StackPanel>
-        <GroupBox Header="Mit bestehendem Account einloggen:" VerticalAlignment="Top" Margin="10,10,10,0" Height="80">
+        <GroupBox x:Name="gb_existingaccount" Header="Mit bestehendem Account einloggen:" VerticalAlignment="Top" Margin="10,10,10,0" Height="80">
             <Grid>
                 <ComboBox x:Name="cb_existing_users" VerticalAlignment="Top" Margin="10,10,168,0" Height="25" VerticalContentAlignment="Center" HorizontalContentAlignment="Stretch" >
                     <ComboBox.ItemContainerStyle>

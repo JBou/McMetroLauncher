@@ -57,10 +57,7 @@ Public Structure Modifications
         Next
     End Sub
 
-    Public Shared Async Function List_all_Mod_Vesions() As Task(Of IList(Of String))
-        If ModList Is Nothing Then
-            Await Load()
-        End If
+    Public Shared Function List_all_Mod_Vesions() As IList(Of String)
         Dim list As IList(Of String) = New List(Of String)
         For Each item As [Mod] In ModList
             For Each version As String In item.versions.Select(Function(p) p.version.ToString)
@@ -112,15 +109,15 @@ Public Structure Modifications
             End Set
         End Property
         Private m_name As String
-        Public Property autor() As String
+        Public Property author() As String
             Get
-                Return m_autor
+                Return m_author
             End Get
             Set(value As String)
-                m_autor = value
+                m_author = value
             End Set
         End Property
-        Private m_autor As String
+        Private m_author As String
         Public Property descriptions() As IList(Of Description)
             Get
                 Return m_description

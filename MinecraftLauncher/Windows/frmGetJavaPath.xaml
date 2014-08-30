@@ -1,0 +1,39 @@
+﻿<Controls:MetroWindow x:Class="frmGetJavaPath"
+                      Style="{StaticResource MetroWindow}"
+                      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                      xmlns:Controls="http://metro.mahapps.com/winfx/xaml/controls"
+                      xmlns:local="clr-namespace:McMetroLauncher"
+                      Title="{StaticResource JavaPathNotFound}"
+                      Width="500" SizeToContent="Height"
+                      ResizeMode="NoResize" 
+                      x:Name="window"
+                      WindowStartupLocation="CenterScreen" >
+    <Window.Resources>
+        <local:FalseOnEmptyStringConverter x:Key="FalseOnEmptyString"/>
+    </Window.Resources>
+    <StackPanel Orientation="Vertical" Margin="10">
+        <TextBlock Text="{StaticResource JavaPathNotFoundText}" TextWrapping="Wrap"/>
+        <Grid Margin="0,10,0,10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="10"/>
+                <ColumnDefinition Width="50"/>
+            </Grid.ColumnDefinitions>
+            <TextBox x:Name="txtPath" IsReadOnly="True" Text="{Binding ElementName=window,Path=JavaPath}"/>
+            <Button Grid.Column="2" Content="..." Command="{Binding ElementName=window,Path=ChoosePath}"/>
+        </Grid>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="10"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="10"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Button Grid.Column="0" Content="{StaticResource OK}" IsEnabled="{Binding ElementName=txtPath,Path=Text,Converter={StaticResource FalseOnEmptyString}}" local:ButtonHelper.DialogResult="True" IsDefault="True"/>
+            <Button Grid.Column="2" Content="{StaticResource Download}" Command="{Binding ElementName=window,Path=DownloadJava}" local:ButtonHelper.DialogResult="False" IsCancel="False"/>
+            <Button Grid.Column="4" Content="{StaticResource Close}" local:ButtonHelper.DialogResult="False" IsCancel="False"/>
+        </Grid>
+    </StackPanel>
+</Controls:MetroWindow>

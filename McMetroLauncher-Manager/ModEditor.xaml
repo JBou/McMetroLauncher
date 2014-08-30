@@ -55,7 +55,7 @@
         </ListBox>
         <Label Content="Versionen:" HorizontalAlignment="Left" Margin="564,10,0,0" VerticalAlignment="Top" Width="294" HorizontalContentAlignment="Center" Foreground="#FF00B9FF" FontSize="25" Height="43"/>
         <Label Content="Autor:" HorizontalAlignment="Left" Margin="10,54,0,0" VerticalAlignment="Top" Height="26" Width="119" Padding="0" VerticalContentAlignment="Center" FontSize="13"/>
-        <TextBox x:Name="tb_autor" HorizontalAlignment="Left" Height="33" Margin="134,51,0,0" VerticalAlignment="Top" Width="425" MaxLines="1"/>
+        <TextBox x:Name="tb_author" HorizontalAlignment="Left" Height="33" Margin="134,51,0,0" VerticalAlignment="Top" Width="425" MaxLines="1"/>
         <Label Content="ID:" HorizontalAlignment="Left" Margin="10,0,0,86" VerticalAlignment="Bottom" Width="119" Height="32" VerticalContentAlignment="Center" Padding="0,-1,0,0" FontSize="13"/>
         <Label Content="Type:" HorizontalAlignment="Left" Margin="615,0,0,86" VerticalAlignment="Bottom" Width="65" Height="35" VerticalContentAlignment="Center" Padding="0,-1,0,0" FontSize="13"/>
         <TextBox x:Name="tb_id" HorizontalAlignment="Left" Height="32" Margin="134,0,0,86" VerticalAlignment="Bottom" Width="351" MaxLines="1"/>

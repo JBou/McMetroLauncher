@@ -1,19 +1,26 @@
 ﻿<Controls:MetroWindow  x:Class="MainWindow" x:Name="window"
-    xmlns:local="clr-namespace:McMetroLauncher"
-    xmlns:params="http://schemas.codeplex.com/elysium/params"
-    xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:awe="clr-namespace:Awesomium.Windows.Controls;assembly=Awesomium.Windows.Controls"
-    xmlns:Behaviours="clr-namespace:MahApps.Metro.Behaviours;assembly=MahApps.Metro"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity" 
-    xmlns:chart="clr-namespace:De.TorstenMandelkow.MetroChart;assembly=De.TorstenMandelkow.MetroChart" 
-    xmlns:JBouControls="clr-namespace:McMetroLauncher.JBou.Controls"
-    GlowBrush="{DynamicResource AccentColorBrush}"            
-    Title="McMetroLauncher" Height="610" Width="950"
-    ForceCursor="True" MinHeight="610" MinWidth="950" Icon="/images/favicon.ico" ResizeMode="CanResizeWithGrip" UseLayoutRounding="False" ScrollViewer.CanContentScroll="True" >
+                       Style="{StaticResource MetroWindow}"
+                       xmlns:local="clr-namespace:McMetroLauncher"
+                       xmlns:params="http://schemas.codeplex.com/elysium/params"
+                       xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+                       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                       xmlns:awe="clr-namespace:Awesomium.Windows.Controls;assembly=Awesomium.Windows.Controls"
+                       xmlns:Behaviours="clr-namespace:MahApps.Metro.Behaviours;assembly=MahApps.Metro"
+                       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                       xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity" 
+                       xmlns:chart="clr-namespace:De.TorstenMandelkow.MetroChart;assembly=De.TorstenMandelkow.MetroChart" 
+                       xmlns:JBouControls="clr-namespace:McMetroLauncher.JBou.Controls"        
+                       Title="McMetroLauncher" 
+                       Height="610" 
+                       Width="950"
+                       ForceCursor="True"
+                       MinHeight="610"
+                       MinWidth="950"
+                       ResizeMode="CanResizeWithGrip" 
+                       UseLayoutRounding="False" 
+                       ScrollViewer.CanContentScroll="True" >
     
     <!--Für IMAc Screenshots-->
     <!--Title="McMetroLauncher" Height="676" Width="1200"-->
@@ -28,11 +35,13 @@
             <local:FormattingcodesDocumentConverter x:Key="FormattingcodesDocumentConverter"/>
             <local:MODS_installed_imageConverter x:Key="MODS_installed_imageConverter" />
             <local:Playerlist_Namesstring_Converter x:Key="Playerlist_Namesstring_Converter"/>
+            <local:YoutubeVideo_Embed_Converter x:Key="YoutubeVideo_Embed_Converter" />
             <local:ValueConverterGroup x:Key="InversedBoolToVis_Converter">
                 <BooleanToVisibilityConverter />
                 <local:InverseBooleanConverter />
             </local:ValueConverterGroup>
             <BooleanToVisibilityConverter x:Key="BoolToVis_Converter" />
+            <local:Text_FlowDocument_Converter x:Key="Text_FlowDocument_Converter" />
             <Style x:Key="MinecraftFont">
                 <Setter Property="TextElement.FontFamily" Value="Fonts/#Minecraft" />
             </Style>
@@ -93,14 +102,14 @@
             </Style>
         </ResourceDictionary>
     </Window.Resources>
-
-    <Controls:MetroWindow.WindowCommands>
+    <Controls:MetroWindow.RightWindowCommands>
         <Controls:WindowCommands>
-            <Button Content="Einstellungen" Click="ShowSettings"/>
-            <Button Content="?" Click="Help"/>
+            <Controls:WindowCommands>
+                <Button Content="Einstellungen" Click="ShowSettings"/>
+                <Button Content="?" Click="Help"/>
+            </Controls:WindowCommands>
         </Controls:WindowCommands>
-
-    </Controls:MetroWindow.WindowCommands>
+    </Controls:MetroWindow.RightWindowCommands>
 
     <Controls:MetroWindow.Flyouts>
         <Controls:FlyoutsControl>
@@ -215,19 +224,19 @@
             <TabItem Header="Tools">
                 <Grid Margin="24,37,18,-7" Width="900">
                     <Button Content="Forge installieren" x:Name="install_forge" Click="forge_installer" Margin="0,10,10,0" Height="74" VerticalAlignment="Top" HorizontalAlignment="Right" Width="165"/>
-                    <TextBlock TextWrapping="Wrap" Margin="274,18,180,422" Padding="5" Text="Minecraft Forge ist ein ModLoader mit dem ihr einfacher Mods installieren könnt. Er hilft dabei, dass die Mods untereinander kompatibel sind. Die meisten Mods basieren auf Forge. Du kannst Mods für Forge unter dem Tab &quot;Mods&quot; installieren." VerticalAlignment="Top" />
-                    <Image Margin="26,10,0,0" Height="74" VerticalAlignment="Top" HorizontalAlignment="Left" Width="243" Source="/images/forge_banner.png"/>
+                    <TextBlock TextWrapping="Wrap" Margin="274,18,180,422" Padding="5" Text="{Binding Source={StaticResource ForgeDescription}}" VerticalAlignment="Top" />
+                    <Image Margin="26,10,0,0" Height="74" VerticalAlignment="Top" HorizontalAlignment="Left" Width="243" Source="/resources/images/forge_banner.png"/>
                     <Button Content="LiteLoader installieren" x:Name="install_liteloader" Click="liteloader_installer" Margin="0,110,10,0" Height="74" VerticalAlignment="Top" HorizontalAlignment="Right" Width="165"/>
-                    <TextBlock TextWrapping="Wrap" Margin="274,101,180,323" Padding="5" Text="LiteLoader ist ein ModLoader der dafür entwickelt wurde, grundlegende Loader Funktionalitaten für Mods anzubieten, die nicht den Spielmechanismus ändern müssen. Er wurde dafür entwickelt, neben Minecraft Forge zu laufen und zwischen LiteLoader und Forge Mods treten keine Konflikte auf." VerticalAlignment="Top" />
-                    <Image Margin="25,89,0,0" Height="83" VerticalAlignment="Top" HorizontalAlignment="Left" Width="243" Source="/images/liteloader_header_xmas.png"/>
-                    <TextBlock TextWrapping="Wrap" Margin="274,199,180,229" Padding="5" Text="Mit den Technic Launcher kannst du viele bekannte Modpacks spielen wie z.B. Tekkit, Hexxit, Volt.... Auserdem kannst du eigene Modpacks hinzufügen und spielen. Diese findest du auf http://technicpack.net." VerticalAlignment="Top" Height="70" />
+                    <TextBlock TextWrapping="Wrap" Margin="274,101,180,323" Padding="5" Text="{Binding Source={StaticResource LiteLoaderDescription}}" VerticalAlignment="Top" />
+                    <Image Margin="25,89,0,0" Height="83" VerticalAlignment="Top" HorizontalAlignment="Left" Width="243" Source="/resources/images/liteloader_header_xmas.png"/>
+                    <TextBlock Margin="274,199,180,229" TextWrapping="Wrap" Padding="5" Text="{Binding Source={StaticResource TechnicLauncherDescription}}" VerticalAlignment="Top" Height="70" />
                     <Button Content="Herunterladen" x:Name="btn_download_techniclauncher" Click="download_techniclauncher" Margin="0,215,10,0" Height="35" VerticalAlignment="Top" HorizontalAlignment="Right" Width="165"/>
                     <Button Content="Starten" x:Name="btn_start_techniclauncher"  Click="start_techniclauncher" Margin="0,255,10,0" Height="35" VerticalAlignment="Top" HorizontalAlignment="Right" Width="165"/>
-                    <Image Margin="10,183,0,0" Height="91" VerticalAlignment="Top" HorizontalAlignment="Left" Width="259" Source="/images/tl.png"/>
-                    <TextBlock TextWrapping="Wrap" Margin="274,293,180,135" Padding="5" Text="Mit den Feed The Beast Launcher kannst du viele bekannte Modpacks spielen wie z.B. Unleashed, Unhinged, FTB Ultimate, Direwolf 20... die sehr viele Mods beinhalten. Mehr Infos findest du auf http://feed-the-beast.com." VerticalAlignment="Top" Height="70" />
+                    <Image Margin="10,183,0,0" Height="91" VerticalAlignment="Top" HorizontalAlignment="Left" Width="259" Source="/resources/images/tl.png"/>
+                    <TextBlock TextWrapping="Wrap" Margin="274,293,180,135" Padding="5" Text="{Binding Source={StaticResource FeedTheBeastDescription}}" VerticalAlignment="Top" Height="70" />
                     <Button Content="Herunterladen" x:Name="btn_download_feedthebeast" Click="download_feedthebeast" Margin="0,295,10,0" Height="35" VerticalAlignment="Top" HorizontalAlignment="Right" Width="165"/>
                     <Button Content="Starten" x:Name="btn_start_feedthebeast"  Click="start_feedthebeast" Margin="0,335,10,0" Height="35" VerticalAlignment="Top" HorizontalAlignment="Right" Width="165"/>
-                    <Image Margin="74,270,0,0" Height="86" VerticalAlignment="Top" HorizontalAlignment="Left" Width="134" Source="/images/web-ftb-logo_0.png"/>
+                    <Image Margin="74,270,0,0" Height="86" VerticalAlignment="Top" HorizontalAlignment="Left" Width="134" Source="/resources/images/web-ftb-logo_0.png"/>
                 </Grid>
             </TabItem>
             <TabItem Header="Mods" x:Name="tabitem_Mods">
@@ -243,7 +252,7 @@
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>
                                 <GridViewColumn Header="Name" DisplayMemberBinding="{Binding name}" Width="300"/>
-                                <!--<GridViewColumn Header="Autor" DisplayMemberBinding="{Binding Path=autor}" />-->
+                                <!--<GridViewColumn Header="author" DisplayMemberBinding="{Binding Path=author}" />-->
                             </GridView>
                         </ListView.View>
                     </ListView>
@@ -251,8 +260,8 @@
                     <TextBox x:Name="tb_modsfolder" Margin="517,41,110,0" VerticalAlignment="Top" IsReadOnly="True" Height="26"/>
                     <Button x:Name="btn_resetmodsfoler" Margin="0,41,41,0" Content="Standard" HorizontalAlignment="Right" VerticalAlignment="Top" Height="26" />
                     <Button x:Name="btn_selectmodsfolder" Margin="0,41,10,0" Content="..." HorizontalAlignment="Right" VerticalAlignment="Top" Width="26" Height="26" />
-                    <Image x:Name="img_installed" Height="23" Width="23" Margin="367,78,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Source="/images/check_green.png"/>
-                    <Label x:Name="lbl_name" Margin="395,72,110,0" VerticalAlignment="Top" Height="29" FontWeight="Bold" VerticalContentAlignment="Center" Background="#00000000" Foreground="#FF1F94F5" FontSize="15" />
+                    <Image x:Name="img_installed" Height="23" Width="23" Margin="367,78,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Source="/resources/images/check_green.png"/>
+                    <Label Margin="395,72,110,0" VerticalAlignment="Top" Height="29" FontWeight="Bold" VerticalContentAlignment="Center" Background="#00000000" Foreground="#FF1F94F5" FontSize="15" Content="{Binding ElementName=lb_mods, Path=SelectedItem.name}" />
                     <DockPanel  Margin="367,0,10,10" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Height="32" >
                         <Button x:Name="btn_website" Content="Website besuchen" Height="32" Width="125" Margin="0,0,5,0" />
                         <Button x:Name="btn_video" Content="Video ansehen" Height="32" Width="125" Margin="5,0" />
@@ -262,22 +271,29 @@
                     <ScrollViewer Margin="367,106,10,47">
                         <StackPanel >
                             <Label x:Name="lbl_type" VerticalAlignment="Top" Height="29" FontWeight="Bold" VerticalContentAlignment="Center" Background="{x:Null}" Foreground="#FFF51F1F" FontSize="15" />
-                            <TextBox x:Name="tb_description" TextWrapping="Wrap" BorderThickness="0" HorizontalScrollBarVisibility="Visible" AcceptsReturn="True" IsReadOnly="True" VerticalContentAlignment="Top" VerticalScrollBarVisibility="Auto" Text="Markdown + Video in einen Webbrowser per html. Das ganze dann noch in eine Scrollview" Padding="5"/>
+                            <TextBox x:Name="tb_description" Text="{Binding ElementName=cb_mods_description_language, Path=SelectedItem.text}" TextWrapping="Wrap" BorderThickness="0" HorizontalScrollBarVisibility="Visible" AcceptsReturn="True" IsReadOnly="True" VerticalContentAlignment="Top" VerticalScrollBarVisibility="Auto" Padding="5"/>
                             <JBouControls:AspectRatioLayoutDecorator AspectRatio="1.77777778" >
-                                <awe:WebControl x:Name="wc_mod_video" />
+                                <awe:WebControl> 
+                                    <awe:WebControl.Source>
+                                        <MultiBinding Converter="{StaticResource YoutubeVideo_Embed_Converter}" >
+                                            <Binding ElementName="lb_mods" Path="SelectedItem" />
+                                            <Binding RelativeSource="{RelativeSource Self}" />
+                                        </MultiBinding>
+                                    </awe:WebControl.Source>
+                                </awe:WebControl>
                             </JBouControls:AspectRatioLayoutDecorator>
                         </StackPanel>
                     </ScrollViewer>
                     <ComboBox x:Name="cb_modversions" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="352" Height="26"/>
                     <Button x:Name="btn_play" Content="Play" Margin="192,466,628,24" Visibility="Hidden" />
                     <TextBox x:Name="tb_downloadlink" HorizontalAlignment="Left" Height="26" Margin="362,439,-17,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="597" Visibility="Hidden"/>
-                    <Label x:Name="lbl_autor" Content="" Margin="517,72,80,0" VerticalAlignment="Top" Height="29" FontWeight="Bold" VerticalContentAlignment="Center" HorizontalContentAlignment="Right" Background="#00000000" Foreground="#FF1F94F5" FontSize="15"/>
+                    <Label Margin="517,72,80,0" VerticalAlignment="Top" Height="29" FontWeight="Bold" VerticalContentAlignment="Center" HorizontalContentAlignment="Right" Background="#00000000" Foreground="#FF1F94F5" FontSize="15" Content="{Binding ElementName=lb_mods, Path=SelectedItem.author}" />
                     <TextBox x:Name="tb_search_mods" Controls:TextboxHelper.ClearTextButton="True" Controls:TextboxHelper.Watermark="Suche" Margin="10,41,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="352" />
                     <ComboBox ItemsSource="{Binding Path=Profiles}" SelectedItem="{Binding selectedprofile, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" x:Name="cb_mods_profilename" HorizontalAlignment="Left" Margin="517,10,0,0" VerticalAlignment="Top" Width="168" Height="26"/>
                     <RadioButton x:Name="rb_mods_profile" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="488,10,0,0" Height="26" Width="24" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
                     <RadioButton x:Name="rb_mods_folder" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="488,41,0,0" Width="24" Height="26" IsChecked="True" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
                     <Label Content="SHIFT oder STRG für Mehrfachauswahl" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="10,0,0,10" Height="19" Width="352" Padding="5,0" HorizontalContentAlignment="Center"/>
-                    <ComboBox x:Name="cb_mods_description_language" HorizontalAlignment="Right" Margin="0,72,10,0" VerticalAlignment="Top" Width="65" Height="29"/>
+                    <ComboBox x:Name="cb_mods_description_language" DisplayMemberPath="id" HorizontalAlignment="Right" Margin="0,72,10,0" VerticalAlignment="Top" Width="65" Height="29" ItemsSource="{Binding ElementName=lb_mods, Path=SelectedItem.descriptions}" />
                 </Grid>
             </TabItem>
             <TabItem Header="ResourcePacks" Visibility="Collapsed">
@@ -304,7 +320,7 @@
                                     <MenuItem.Icon>
                                         <Rectangle Height="28" Width="28" Fill="{DynamicResource BlackBrush}">
                                             <Rectangle.OpacityMask>
-                                                <ImageBrush ImageSource="/images/light/appbar.page.copy.png"/>
+                                                <ImageBrush ImageSource="/resources/images/light/appbar.page.copy.png"/>
                                             </Rectangle.OpacityMask>
                                         </Rectangle>
                                     </MenuItem.Icon>
@@ -313,7 +329,7 @@
                                     <MenuItem.Icon>
                                         <Rectangle Height="28" Width="28" Fill="{DynamicResource BlackBrush}">
                                             <Rectangle.OpacityMask>
-                                                <ImageBrush ImageSource="/images/light/appbar.control.play.png"/>
+                                                <ImageBrush ImageSource="/resources/images/light/appbar.control.play.png"/>
                                             </Rectangle.OpacityMask>
                                         </Rectangle>
                                     </MenuItem.Icon>
@@ -341,7 +357,7 @@
                                     <MenuItem.Icon>
                                         <Rectangle Height="28" Width="28" Fill="{DynamicResource BlackBrush}">
                                             <Rectangle.OpacityMask>
-                                                <ImageBrush ImageSource="/images/light/appbar.control.play.png"/>
+                                                <ImageBrush ImageSource="/resources/images/light/appbar.control.play.png"/>
                                             </Rectangle.OpacityMask>
                                         </Rectangle>
                                     </MenuItem.Icon>
@@ -545,7 +561,7 @@
                     <StackPanel Orientation="Horizontal">
                         <Rectangle Height="28" Width="28" Fill="{DynamicResource BlackBrush}">
                             <Rectangle.OpacityMask>
-                                <ImageBrush ImageSource="/images/light/appbar.social.github.octocat.png"/>
+                                <ImageBrush ImageSource="/resources/images/light/appbar.social.github.octocat.png"/>
                             </Rectangle.OpacityMask>
                         </Rectangle>
                         <TextBlock Text="Github" VerticalAlignment="Center" />
@@ -557,7 +573,7 @@
                     <StackPanel Orientation="Horizontal">
                         <Rectangle Height="28" Width="28" Fill="{DynamicResource BlackBrush}">
                             <Rectangle.OpacityMask>
-                                <ImageBrush ImageSource="/images/light/appbar.globe.png"/>
+                                <ImageBrush ImageSource="/resources/images/light/appbar.globe.png"/>
                             </Rectangle.OpacityMask>
                         </Rectangle>
                         <TextBlock Text="Website" VerticalAlignment="Center" />

@@ -141,6 +141,15 @@
           <Component Id="De.TorstenMandelkow.MetroChart" Guid="{3FC3143B-D705-416B-ACC8-A267D3CE6FF0}">
             <File Id="De.TorstenMandelkow.MetroChart" Name="De.TorstenMandelkow.MetroChart.dll" Source="$(var.McMetroLauncher.TargetDir)De.TorstenMandelkow.MetroChart.dll" />
           </Component>
+          <Component Id="Exceptionless" Guid="{5D8553F3-D1A2-4A97-BC48-D3809405D1FF}">
+            <File Id="Exceptionless" Name="Exceptionless.dll" Source="$(var.McMetroLauncher.TargetDir)Exceptionless.dll" />
+          </Component>
+          <Component Id="Exceptionless.Models" Guid="{985B5367-5F9F-4F5C-B3D1-6295CC8624C8}">
+            <File Id="Exceptionless.Models" Name="Exceptionless.Models.dll" Source="$(var.McMetroLauncher.TargetDir)Exceptionless.Models.dll" />
+          </Component>
+          <Component Id="Exceptionless.Wpf" Guid="{71D17243-64E8-49A7-A7A3-A8241090A999}">
+            <File Id="Exceptionless.Wpf" Name="Exceptionless.Wpf.dll" Source="$(var.McMetroLauncher.TargetDir)Exceptionless.Wpf.dll" />
+          </Component>
             <!-- Awesomium SDK wird installiert, deshalb brauche ich diese Libraries nicht: -->
             <!--<File Id="avcodec_53" Name="avcodec-53.dll" Source="$(var.McMetroLauncher.ProjectDir)bin\$(var.McMetroLauncher.Configuration)\avcodec-53.dll" />
               <File Id="avformat_53" Name="avformat-53.dll" Source="$(var.McMetroLauncher.ProjectDir)bin\$(var.McMetroLauncher.Configuration)\avformat-53.dll" />
@@ -179,9 +188,9 @@
       
     <DirectoryRef Id="FontsFolder">
       <Component Id="Fonts" Guid="{107BE247-5F22-4D28-ACC7-C1CB97B1BBF5}">
-        <File Id="Minecraft" Source="$(var.McMetroLauncher.TargetDir)Fonts\Minecraft.ttf" TrueType="yes" />
-        <File Id="Minecraftia" Source="$(var.McMetroLauncher.TargetDir)Fonts\Minecraftia.ttf" TrueType="yes" />
-        <File Id="ProFontWindows" Source="$(var.McMetroLauncher.TargetDir)Fonts\ProFontWindows.ttf" TrueType="yes" />
+        <File Id="Minecraft" Source="$(var.McMetroLauncher.TargetDir)resources\fonts\Minecraft.ttf" TrueType="yes" />
+        <File Id="Minecraftia" Source="$(var.McMetroLauncher.TargetDir)resources\fonts\Minecraftia.ttf" TrueType="yes" />
+        <File Id="ProFontWindows" Source="$(var.McMetroLauncher.TargetDir)resources\fonts\ProFontWindows.ttf" TrueType="yes" />
       </Component>
     </DirectoryRef>
       
@@ -200,27 +209,26 @@
       <ComponentRef Id="Craft.Net.Anvil"/>
       <ComponentRef Id="MarkdownSharp"/>
       <ComponentRef Id="De.TorstenMandelkow.MetroChart"/>
+      <ComponentRef Id="Exceptionless"/>
+      <ComponentRef Id="Exceptionless.Models"/>
+      <ComponentRef Id="Exceptionless.Wpf"/>
     </ComponentGroup>
       
     <DirectoryRef Id="TARGETDIR">
       <Component Id="RegistryEntries" Guid="{54FE49BB-EFB5-4C87-828C-A50AE5C62215}">
         <RegistryKey  Root="HKCR"
-                      Key="mclauncher"
-                      Action="createAndRemoveOnUninstall">
+                      Key="mclauncher">
           <RegistryValue Type="string" Value="URL:McMetroLauncher protocol" />
           <RegistryValue Type="string" Name="URL Protocol" Value=""/>
         </RegistryKey>
         <RegistryKey  Root="HKCR"
-                      Key="mclauncher\Shell"
-                      Action="createAndRemoveOnUninstall">
+                      Key="mclauncher\Shell">
         </RegistryKey>
         <RegistryKey  Root="HKCR"
-                      Key="mclauncher\Shell\open"
-                      Action="createAndRemoveOnUninstall">
+                      Key="mclauncher\Shell\open">
         </RegistryKey>
         <RegistryKey  Root="HKCR"
-                      Key="mclauncher\Shell\open\command"
-                      Action="createAndRemoveOnUninstall">
+                      Key="mclauncher\Shell\open\command">
           <RegistryValue Type="string" Value="&quot;[#MyApplicationFile]&quot; %1" />
         </RegistryKey>
       </Component>

@@ -26,7 +26,7 @@
         <Label Content="Name:" HorizontalAlignment="Right" Margin="0,10,690,0" VerticalAlignment="Top"/>
         <Label Content="Description:" HorizontalAlignment="Right" Margin="0,45,298,0" VerticalAlignment="Top" Width="78"/>
         <ComboBox x:Name="cb_descriptions" DisplayMemberPath="id" HorizontalAlignment="Right" Margin="0,45,214,0" VerticalAlignment="Top" Width="79"/>
-        <Label Content="Autor:" HorizontalAlignment="Right" Margin="0,45,690,0" VerticalAlignment="Top" Width="44"/>
+        <Label Content="author:" HorizontalAlignment="Right" Margin="0,45,690,0" VerticalAlignment="Top" Width="44"/>
         <ListView x:Name="lb_mods" Margin="10,10,739,10" BorderThickness="0">
             <ListView.View>
                 <!--<GridView ColumnHeaderContainerStyle="{StaticResource myHeaderStyle}" AllowsColumnReorder="False">
@@ -71,7 +71,7 @@
             </ListBox.ItemContainerStyle>
         </ListBox>
         <Label Content="Versionen:" HorizontalAlignment="Right" Margin="0,4,10,0" VerticalAlignment="Top" Width="199" HorizontalContentAlignment="Center" Foreground="{StaticResource AccentColorBrush}" FontSize="18" Height="35"/>
-        <Label x:Name="lbl_autor" HorizontalAlignment="Right" Height="27" Margin="0,44,383,0"  VerticalAlignment="Top" Width="302" FontSize="14" Padding="5,0" VerticalContentAlignment="Center" RenderTransformOrigin="0.5,0.5" />
+        <Label x:Name="lbl_author" HorizontalAlignment="Right" Height="27" Margin="0,44,383,0"  VerticalAlignment="Top" Width="302" FontSize="14" Padding="5,0" VerticalContentAlignment="Center" RenderTransformOrigin="0.5,0.5" />
         <Label Content="Video:" HorizontalAlignment="Right" Margin="0,0,669,117" VerticalAlignment="Bottom" Width="65" Height="31"/>
         <Label x:Name="lbl_video" HorizontalAlignment="Right" Height="31" Margin="0,0,10,81"  VerticalAlignment="Bottom" Width="654"/>
         <Label Content="ID:" HorizontalAlignment="Right" Margin="0,0,669,45" VerticalAlignment="Bottom" Width="65" Height="31"/>

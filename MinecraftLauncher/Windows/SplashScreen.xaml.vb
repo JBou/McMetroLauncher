@@ -13,6 +13,7 @@ Imports McMetroLauncher.JBou.Authentication.Session
 Imports McMetroLauncher.JBou.Authentication
 Imports System.Collections.Specialized
 Imports System.Web
+Imports Exceptionless
 
 Public Class SplashScreen
     Dim dlversion As New WebClient
@@ -46,89 +47,89 @@ Public Class SplashScreen
     End Sub
 
     Private Async Sub SplashScreen_Loaded(sender As Object, e As RoutedEventArgs) Handles Me.Loaded
-        Try
-            Await Settings.Load()
-            If Settings.Settings.Accent <> Nothing And ThemeManager.Accents.Select(Function(p) p.Name).Contains(Settings.Settings.Accent) Then
-                Dim theme = ThemeManager.DetectAppStyle(Application.Current)
-                Dim accent = ThemeManager.Accents.Where(Function(p) p.Name = Settings.Settings.Accent).FirstOrDefault
-                If accent Is Nothing Then accent = ThemeManager.Accents.First
-                ThemeManager.ChangeAppStyle(Application.Current, accent, theme.Item1)
-            End If
-            If Settings.Settings.Theme <> Nothing And ThemeManager.AppThemes.Select(Function(p) p.Name).Contains(Settings.Settings.Theme) Then
-                Dim theme = ThemeManager.DetectAppStyle(Application.Current)
-                Dim appTheme = ThemeManager.AppThemes.Where(Function(p) p.Name = Settings.Settings.Theme).FirstOrDefault
-                If appTheme Is Nothing Then appTheme = ThemeManager.AppThemes.First
-                ThemeManager.ChangeAppStyle(Application.Current, theme.Item2, appTheme)
-            End If
-            Dim oAssembly As System.Reflection.AssemblyName = _
-      System.Reflection.Assembly.GetExecutingAssembly().GetName
-            ' Versionsnummer
-            Dim sVersion As String = oAssembly.Version.ToString()
+        Await Settings.Load()
+        If Settings.Settings.Accent <> Nothing And ThemeManager.Accents.Select(Function(p) p.Name).Contains(Settings.Settings.Accent) Then
+            Dim theme = ThemeManager.DetectAppStyle(Application.Current)
+            Dim accent = ThemeManager.Accents.Where(Function(p) p.Name = Settings.Settings.Accent).FirstOrDefault
+            If accent Is Nothing Then accent = ThemeManager.Accents.First
+            ThemeManager.ChangeAppStyle(Application.Current, accent, theme.Item1)
+        End If
+        If Settings.Settings.Theme <> Nothing And ThemeManager.AppThemes.Select(Function(p) p.Name).Contains(Settings.Settings.Theme) Then
+            Dim theme = ThemeManager.DetectAppStyle(Application.Current)
+            Dim appTheme = ThemeManager.AppThemes.Where(Function(p) p.Name = Settings.Settings.Theme).FirstOrDefault
+            If appTheme Is Nothing Then appTheme = ThemeManager.AppThemes.First
+            ThemeManager.ChangeAppStyle(Application.Current, theme.Item2, appTheme)
+        End If
+        Dim oAssembly As System.Reflection.AssemblyName = _
+    System.Reflection.Assembly.GetExecutingAssembly().GetName
+        ' Versionsnummer
+        Dim sVersion As String = oAssembly.Version.ToString()
 
-            ' Haupt-Versionsnummer
-            Dim sMajor As String = oAssembly.Version.Major.ToString()
-            ' Neben-Versionsnummern
-            Dim sMinor As String = oAssembly.Version.Minor.ToString()
-            ' Build-Nr.
-            Dim sBuild As String = oAssembly.Version.Build.ToString()
+        ' Haupt-Versionsnummer
+        Dim sMajor As String = oAssembly.Version.Major.ToString()
+        ' Neben-Versionsnummern
+        Dim sMinor As String = oAssembly.Version.Minor.ToString()
+        ' Build-Nr.
+        Dim sBuild As String = oAssembly.Version.Build.ToString()
 
-            lbl_Version.Content = "Version " & sVersion
-            Dim attributes As Object() = Assembly.GetExecutingAssembly().GetCustomAttributes(GetType(AssemblyCopyrightAttribute), False)
-            If attributes.Length > 0 Then
-                Dim CopyrightAttribute As AssemblyCopyrightAttribute = DirectCast(attributes(0), AssemblyCopyrightAttribute)
-                If CopyrightAttribute.Copyright <> "" Then
-                    lbl_copyright.Content = CopyrightAttribute.Copyright
-                End If
+        lbl_Version.Content = "Version " & sVersion
+        Dim attributes As Object() = Assembly.GetExecutingAssembly().GetCustomAttributes(GetType(AssemblyCopyrightAttribute), False)
+        If attributes.Length > 0 Then
+            Dim CopyrightAttribute As AssemblyCopyrightAttribute = DirectCast(attributes(0), AssemblyCopyrightAttribute)
+            If CopyrightAttribute.Copyright <> "" Then
+                lbl_copyright.Content = CopyrightAttribute.Copyright
             End If
-            If Applicationdata.Exists = False Then
-                Applicationdata.Create()
-            End If
-            If Applicationcache.Exists = False Then
-                Applicationcache.Create()
-            End If
+        End If
+        If Applicationdata.Exists = False Then
+            Applicationdata.Create()
+        End If
+        If Applicationcache.Exists = False Then
+            Applicationcache.Create()
+        End If
 
 
-            If internetconnection() = True Then
-                If GetJavaPath() = Nothing OrElse New FileInfo(Path.Combine(GetJavaPath(), "bin", "java.exe")).Exists = False Then
-                    Dim result As MessageDialogResult = Await ShowMessageAsync("Java nicht vorhanden", "Du musst Java installieren, um den McMetroLauncher und Minecraft nutzen zu können." & Environment.NewLine & "Ansonsten werden einige Funktionen nicht funktionieren!!" & Environment.NewLine & "Jetzt herunterladen?", MessageDialogStyle.AffirmativeAndNegative)
-                    If result = MessageDialogResult.Affirmative Then
-                        Process.Start("http://java.com/de/download")
-                    Else
-                        Application.Current.Shutdown()
-                    End If
-                End If
-
-                If cachefolder.Exists = False Then
-                    cachefolder.Create()
-                End If
-                Dim standartprofile As New JObject(
-                    New JProperty("profiles",
-                    New JObject(
-                        New JProperty("Default",
-                            New JObject(
-                                New JProperty("name", "Default"))))),
-                    New JProperty("selectedProfile", "Default"))
-                Dim o As String
-                If launcher_profiles_json.Exists = False Then
-                    o = Nothing
+        If internetconnection() = True Then
+            If GetJavaPath() = Nothing OrElse New FileInfo(GetJavaPath()).Exists = False Then
+                Settings.Settings.JavaPath = Nothing
+                Settings.Save()
+                Dim result As New frmGetJavaPath()
+                result.ShowDialog()
+                If result.DialogResult = True Then
+                    Settings.Settings.JavaPath = result.JavaPath
+                    Settings.Save()
                 Else
-                    o = File.ReadAllText(launcher_profiles_json.FullName)
+                    Application.Current.Shutdown()
                 End If
-                If o = Nothing Then
-                    'StandartProfile schreiben
-                    File.WriteAllText(launcher_profiles_json.FullName, standartprofile.ToString)
-                End If
-                lbl_status.Content = "Prüfe auf Updates"
-                dlversion.DownloadStringAsync(New Uri(versionurl))
-                AddHandler dlversion.DownloadStringCompleted, AddressOf downloadchangelog
-                AddHandler dlversion.DownloadProgressChanged, AddressOf dlprogresschanged
-            Else
-                lbl_statustitle.Content = "Fehler"
-                lbl_status.Content = "Bitte überprüfe deine Internetverbindung!"
             End If
-        Catch ex As Exception
-            MessageBox.Show(ex.Message & Environment.NewLine & ex.StackTrace)
-        End Try
+
+            If cachefolder.Exists = False Then
+                cachefolder.Create()
+            End If
+            Dim standartprofile As New JObject(
+                New JProperty("profiles",
+                New JObject(
+                    New JProperty("Default",
+                        New JObject(
+                            New JProperty("name", "Default"))))),
+                New JProperty("selectedProfile", "Default"))
+            Dim o As String
+            If launcher_profiles_json.Exists = False Then
+                o = Nothing
+            Else
+                o = File.ReadAllText(launcher_profiles_json.FullName)
+            End If
+            If o = Nothing Then
+                'StandartProfile schreiben
+                File.WriteAllText(launcher_profiles_json.FullName, standartprofile.ToString)
+            End If
+            lbl_status.Content = "Prüfe auf Updates"
+            dlversion.DownloadStringAsync(New Uri(versionurl))
+            AddHandler dlversion.DownloadStringCompleted, AddressOf downloadchangelog
+            AddHandler dlversion.DownloadProgressChanged, AddressOf dlprogresschanged
+        Else
+            lbl_statustitle.Content = "Fehler"
+            lbl_status.Content = "Bitte überprüfe deine Internetverbindung!"
+        End If
     End Sub
 
     Private Sub downloadchangelog(sender As Object, e As DownloadStringCompletedEventArgs)
@@ -230,75 +231,66 @@ Public Class SplashScreen
 
     Private Async Sub DownloadsFinished(sender As Object, e As ComponentModel.AsyncCompletedEventArgs)
         If e.Cancelled = False And e.Error Is Nothing Then
-            Try
-                lbl_status.Content = "Launcher startet..."
-                Await ServerList.Load
-                Await authenticationDatabase.Load()
-                Await Modifications.Load()
-                Await Forge.Load()
-                Await LiteLoader.Load()
-                Downloads.Load()
-                Await Start()
-            Catch ex As Exception
-                MessageBox.Show(ex.Message & Environment.NewLine & ex.StackTrace)
-            End Try
+            lbl_status.Content = "Launcher startet..."
+            Await ServerList.Load
+            Await authenticationDatabase.Load()
+            Await Modifications.Load()
+            Await Forge.Load()
+            Await LiteLoader.Load()
+            Downloads.Load()
+            Await Start()
         ElseIf e.Cancelled = False And e.Error IsNot Nothing Then
             MessageBox.Show("Ein Fehler ist aufgetreten: " & Environment.NewLine & e.Error.Message & Environment.NewLine & e.Error.StackTrace)
         End If
     End Sub
 
     Async Function Start() As Task
+        If Settings.Settings.WindowState <> Windows.WindowState.Minimized Then
+            Main.WindowState = Settings.Settings.WindowState
+        End If
+        Main.Webcontrol_news.Visibility = Windows.Visibility.Collapsed
+        Main.tb_modsfolder.Text = modsfolder.FullName
+        Main.Load_ModVersions()
+        Profiles.Get_Profiles()
+        Main.cb_direct_join.IsChecked = Settings.Settings.DirectJoin
+        ViewModel.Directjoinaddress = Settings.Settings.ServerAddress
         Try
-            ShowWindowCommandsOnTop = False
-            If Settings.Settings.WindowState <> Windows.WindowState.Minimized Then
-                Main.WindowState = Settings.Settings.WindowState
-            End If
-            Main.Webcontrol_news.Visibility = Windows.Visibility.Collapsed
-            Main.tb_modsfolder.Text = modsfolder.FullName
-            Await Main.Load_ModVersions()
-            Profiles.Get_Profiles()
-            Main.cb_direct_join.IsChecked = Settings.Settings.DirectJoin
-            ViewModel.Directjoinaddress = Settings.Settings.ServerAddress
-            Try
-                If CommandLineArgs.Count > 1 Then
-                    Dim url As New Uri(CommandLineArgs(1))
-                    'Console.WriteLine("Protocol: {0}", url.Scheme)
-                    'Console.WriteLine("Host: {0}", url.Host)
-                    'Console.WriteLine("Path: {0}", HttpUtility.UrlDecode(url.AbsolutePath))
-                    'Console.WriteLine("Query: {0}", url.Query)
-                    'Dim Parms As NameValueCollection = HttpUtility.ParseQueryString(url.Query)
-                    'Console.WriteLine("Parms: {0}", Parms.Count)
-                    'For Each x As String In Parms.AllKeys
-                    '    Console.WriteLine(vbTab & "Parm: {0} = {1}", x, Parms(x))
-                    'Next
-                    If url.Host = "join" Then
-                        If url.Segments.Count > 1 Then
-                            ViewModel.Directjoinaddress = url.Segments.ElementAt(1)
-                            Main.cb_direct_join.IsChecked = True
-                        End If
+            If CommandLineArgs.Count > 1 Then
+                Dim url As New Uri(CommandLineArgs(1))
+                'Console.WriteLine("Protocol: {0}", url.Scheme)
+                'Console.WriteLine("Host: {0}", url.Host)
+                'Console.WriteLine("Path: {0}", HttpUtility.UrlDecode(url.AbsolutePath))
+                'Console.WriteLine("Query: {0}", url.Query)
+                'Dim Parms As NameValueCollection = HttpUtility.ParseQueryString(url.Query)
+                'Console.WriteLine("Parms: {0}", Parms.Count)
+                'For Each x As String In Parms.AllKeys
+                '    Console.WriteLine(vbTab & "Parm: {0} = {1}", x, Parms(x))
+                'Next
+                If url.Host = "join" Then
+                    If url.Segments.Count > 1 Then
+                        ViewModel.Directjoinaddress = url.Segments.ElementAt(1)
+                        Main.cb_direct_join.IsChecked = True
                     End If
-                    If url.Host = "mods" Then
-                        If url.Segments.Count > 2 Then
-                            If url.Segments.ElementAt(1).Replace("/", "") = "show" Then
-                                Main.cb_modversions.SelectedItem = Main.cb_modversions.Items.Cast(Of String).Where(Function(p) p = url.Segments.ElementAt(2).Replace("/", "")).First
-                                If url.Segments.Count > 3 Then
-                                    Main.lb_mods.SelectedItem = Main.lb_mods.Items.Cast(Of Modifications.Mod).Where(Function(p) p.id = url.Segments.ElementAt(3).Replace("/", "")).First
-                                End If
-                                Main.tabitem_Mods.IsSelected = True
+                End If
+                If url.Host = "mods" Then
+                    If url.Segments.Count > 2 Then
+                        If url.Segments.ElementAt(1).Replace("/", "") = "show" Then
+                            Main.cb_modversions.SelectedItem = Main.cb_modversions.Items.Cast(Of String).Where(Function(p) p = url.Segments.ElementAt(2).Replace("/", "")).First
+                            If url.Segments.Count > 3 Then
+                                Main.lb_mods.SelectedItem = Main.lb_mods.Items.Cast(Of Modifications.Mod).Where(Function(p) p.id = url.Segments.ElementAt(3).Replace("/", "")).First
                             End If
+                            Main.tabitem_Mods.IsSelected = True
                         End If
                     End If
                 End If
-            Catch
-            End Try
-            Await Main.Load_Servers()
-            Main.Ping_servers()
-            Main.Check_Tools_Downloaded()
-            Main.Show()
-            Me.Close()
-        Catch ex As Exception
-            MessageBox.Show(ex.Message & Environment.NewLine & ex.StackTrace)
+            End If
+        Catch
         End Try
+        Await Main.Load_Servers()
+        Main.Ping_servers()
+        Main.Check_Tools_Downloaded()
+        Main.Show()
+        Me.Close()
     End Function
 
     Sub dlprogresschanged(sender As Object, e As DownloadProgressChangedEventArgs)

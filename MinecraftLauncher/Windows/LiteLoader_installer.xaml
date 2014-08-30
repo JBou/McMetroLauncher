@@ -1,12 +1,14 @@
 ﻿<Controls:MetroWindow x:Class="LiteLoader_installer"
-    xmlns:metro="http://schemas.codeplex.com/elysium"
-    xmlns:params="http://schemas.codeplex.com/elysium/params"
-    xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:Behaviours="clr-namespace:MahApps.Metro.Behaviours;assembly=MahApps.Metro"
-    GlowBrush="{DynamicResource AccentColorBrush}"   
-    Title="Minecraft Forge" Height="448" Width="660" Icon="/images/favicon.ico" ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
+                      Style="{StaticResource MetroWindow}"
+                      xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+                      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                      xmlns:Behaviours="clr-namespace:MahApps.Metro.Behaviours;assembly=MahApps.Metro"
+                      Title="Minecraft Forge" 
+                      Height="448" 
+                      Width="660"
+                      ResizeMode="NoResize" 
+                      WindowStartupLocation="CenterScreen">
     <DockPanel>
         <Controls:MetroProgressBar Foreground="{DynamicResource AccentColorBrush}" x:Name="pb_download" Height="10" Margin="10" VerticalAlignment="Bottom" DockPanel.Dock="Bottom" />
         <Controls:MetroAnimatedTabControl>
@@ -21,7 +23,7 @@
                     <TextBlock Margin="10,15,10,0" FontSize="18" TextWrapping="WrapWithOverflow" Height="89" VerticalAlignment="Top" Text="Nachdem der LiteLoader Installer heruntergeladen wurde, öffnet sich ein Fenster. Wähle dort &quot;Install LiteLoader&quot; aus und wähle beim Installationspfad folgenden Ordner aus:"/>
                     <TextBox x:Name="tb_mcpfad" Margin="10,103,47,0" FontSize="13" Height="32" VerticalAlignment="Top" IsReadOnly="True" Controls:TextboxHelper.SelectAllOnFocus="True" />
                     <Button x:Name="btn_copy" Margin="0,103,10,0" FontSize="13" Height="32" VerticalAlignment="Top" HorizontalAlignment="Right" Width="32" ToolTip="Pfad in die Zwischenablage kopieren" >
-                        <Image x:Name="btn_copy_image" Source="../images/light/appbar.page.copy.png" ToolTip="Pfad in die Zwischenablage kopieren"/>
+                        <Image x:Name="btn_copy_image" Source="/resources/images/light/appbar.page.copy.png" ToolTip="Pfad in die Zwischenablage kopieren"/>
                     </Button>
                     <TextBlock Margin="10,146,10,-11" FontSize="18" TextWrapping="WrapWithOverflow" Height="193" VerticalAlignment="Top" Text="Falls du LiteLoader mit Minecraft Forge Installieren willst, aktiviere den Hacken: &quot;Chain to Minecraft Forge ...&quot; (Dafür musst du zuerst Forge installieren). Klicke anschließend auf &quot;OK&quot; und gleich darauf erscheint eine Meldung, dass LiteLoader erfolgreich installiert wurde. Nun wurde ein neues Profil namens &quot;LiteLoader...&quot; hinzugefügt und du kannst nun unter dem Tab &quot;Mods&quot; Modifikationen installieren. Du kannst Forge auch einem anderem Profil zuordnen, indem du einfach die Version im Profileeditor änderst." />
                 </Grid>

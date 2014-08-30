@@ -112,15 +112,15 @@ Public Structure Modifications
             End Set
         End Property
         Private m_name As String
-        Public Property autor() As String
+        Public Property author() As String
             Get
-                Return m_autor
+                Return m_author
             End Get
             Set(value As String)
-                m_autor = value
+                m_author = value
             End Set
         End Property
-        Private m_autor As String
+        Private m_author As String
         Public Property descriptions() As IList(Of Description)
             Get
                 Return m_description
@@ -418,7 +418,7 @@ End Structure
 '                Else
 '                    installed = False
 '                End If
-'                list.Add(New ForgeMod(Mods.NameAt(version, i), Mods.AutorAt(version, i), version, Mods.descriptionAt(version, i), Mods.downloadlinkAt(version, i), Mods.videoAt(version, i), Mods.websiteAt(version, i), Mods.idAt(version, i), extension,Mods.typeAt(version, i), Mods.needed_modsAt(version, i), installed))
+'                list.Add(New ForgeMod(Mods.NameAt(version, i), Mods.authorAt(version, i), version, Mods.descriptionAt(version, i), Mods.downloadlinkAt(version, i), Mods.videoAt(version, i), Mods.websiteAt(version, i), Mods.idAt(version, i), extension,Mods.typeAt(version, i), Mods.needed_modsAt(version, i), installed))
 '            Next
 '            list = list.OrderBy(Function(p) p.name).ToList
 '            Return list
@@ -433,8 +433,8 @@ End Structure
 '        Return versionsinfo
 '    End Function
 
-'    Public Shared Function AutorAt(ByVal version As String, index As Integer) As String
-'        Dim versionsinfo As String = modsjo("mods")(version).ElementAt(index).Value(Of String)("autor").ToString
+'    Public Shared Function authorAt(ByVal version As String, index As Integer) As String
+'        Dim versionsinfo As String = modsjo("mods")(version).ElementAt(index).Value(Of String)("author").ToString
 '        Return versionsinfo
 '    End Function
 
@@ -491,7 +491,7 @@ End Structure
 '        Dim modproperties As JObject = New JObject
 
 '        modproperties.Add(New JProperty("name", ForgeMod.name))
-'        modproperties.Add(New JProperty("autor", ForgeMod.autor))
+'        modproperties.Add(New JProperty("author", ForgeMod.author))
 '        modproperties.Add(New JProperty("description", ForgeMod.description))
 '        modproperties.Add(New JProperty("downloadlink", ForgeMod.Downloadlink))
 '        modproperties.Add(New JProperty("video", ForgeMod.video))
@@ -524,7 +524,7 @@ End Structure
 '        'Dim modproperties As JObject = New JObject
 '        'Dim modarray As JArray = CType(modsjo("mods")(editedmodversion), JArray)
 '        'modproperties.Add(New JProperty("name", ForgeMod.name))
-'        'modproperties.Add(New JProperty("autor", ForgeMod.autor))
+'        'modproperties.Add(New JProperty("author", ForgeMod.author))
 '        'modproperties.Add(New JProperty("description", ForgeMod.description))
 '        'modproperties.Add(New JProperty("downloadlink", ForgeMod.Downloadlink))
 '        'modproperties.Add(New JProperty("video", ForgeMod.video))
@@ -615,7 +615,7 @@ End Structure
 'End Class
 
 'Public Class ForgeMod
-'    Private _name As String, _autor As String, _version As String, _video As String, _description As String, _downloadlink As String, _website As String, _id As String, _extension As String, _type As String, _needed_mods As IList(Of String), _installed As Boolean
+'    Private _name As String, _author As String, _version As String, _video As String, _description As String, _downloadlink As String, _website As String, _id As String, _extension As String, _type As String, _needed_mods As IList(Of String), _installed As Boolean
 
 '    Public Property name As String
 '        Get
@@ -635,12 +635,12 @@ End Structure
 '        End Set
 '    End Property
 
-'    Public Property autor As String
+'    Public Property author As String
 '        Get
-'            Return _autor
+'            Return _author
 '        End Get
 '        Set(value As String)
-'            _autor = value
+'            _author = value
 '        End Set
 '    End Property
 
@@ -726,7 +726,7 @@ End Structure
 '        End Set
 '    End Property
 
-'    Public Sub New(name As String, autor As String, version As String, description As String, downloadlink As String, video As String, website As String, id As String, extension As String, type As String, needed_mods As IList(Of String), installed As Boolean)
+'    Public Sub New(name As String, author As String, version As String, description As String, downloadlink As String, video As String, website As String, id As String, extension As String, type As String, needed_mods As IList(Of String), installed As Boolean)
 '        Me.name = name
 '        Me.description = description
 '        Me.downloadlink = downloadlink
@@ -737,7 +737,7 @@ End Structure
 '        Me.extension = extension
 '        Me.type = type
 '        Me.needed_mods = needed_mods
-'        Me.autor = autor
+'        Me.author = author
 '        Me.installed = installed
 '    End Sub
 'End Class

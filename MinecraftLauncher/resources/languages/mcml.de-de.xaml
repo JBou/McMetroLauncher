@@ -1,0 +1,45 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:System="clr-namespace:System;assembly=mscorlib">
+    <!-- Generell -->
+    <System:String x:Key="Yes">Ja</System:String>
+    <System:String x:Key="No">Nein</System:String>
+    <System:String x:Key="OK">Ok</System:String>
+    <System:String x:Key="apply">Anwenden</System:String>
+    <System:String x:Key="search">Suchen</System:String>
+    <System:String x:Key="DateFormat">HH:mm:ss dd.MM.yyyy</System:String>
+    <System:String x:Key="Close">Schließen</System:String>
+    <System:String x:Key="Download">Herunterladen</System:String>
+    
+    <!-- Header -->
+    <System:String x:Key="Console">Konsole</System:String>
+    <System:String x:Key="Player">Spieler</System:String>
+    <System:String x:Key="Server">Server</System:String>
+    <System:String x:Key="Settings">Einstellungen</System:String>
+
+    <!-- Exception -->
+    <System:String x:Key="ExceptionTitle">McMetroLauncher Fehler</System:String>
+    <System:String x:Key="ExceptionTitleWindow">Minecraft Server Launcher hat einen Fehler festgestellt und muss beendet werden. Wir entschuldigen uns für die Unannehmlichkeiten</System:String>
+    <System:String x:Key="ExceptionText">Wir haben einen Fehlerbericht erstellt, welchen sie uns senden können. Wir werden diesen Fehler als vertraulich und anonym behandeln.</System:String>
+    <System:String x:Key="ExceptionNote">Um uns zu helfen, die Ursache des Fehlers zu diagnostizieren und die Anwendung zu verbessern, können sie hier eine Anmerkung hinterlassen (Optional):</System:String>
+    <System:String x:Key="Exception">Fehler</System:String>
+    <System:String x:Key="ExceptionSendErrorAndClose">Fehlerbericht senden und schließen</System:String>
+
+    <!-- GetJavaPath -->
+    <System:String x:Key="JavaPathNotFound">Java-Pfad nicht gefunden</System:String>
+    <System:String x:Key="JavaPathNotFoundText">Leider konnten wir den Pfad zu Java nicht finden. Bitte wählen sie die java.exe manuell aus oder installieren Sie Java, wenn sie es nicht bereits getan haben.</System:String>
+    <System:String x:Key="OFDJavaPathTitle">Bitte wählen sie die "java.exe" aus</System:String>
+    <System:String x:Key="ExectuableFiles">Ausführbare Dateien</System:String>
+
+    <!-- Update -->
+    <System:String x:Key="UpdateFound">Aktualisierungen verfügbar</System:String>
+    <System:String x:Key="CurrentVersion">Aktuelle Version</System:String>
+    <System:String x:Key="NewVersion">Neue Version</System:String>
+    <System:String x:Key="Update">Aktualisieren</System:String>
+    <System:String x:Key="UpdatePackageTitle">Änderungen in der Version {0} (Veröffentlicht am: {1})</System:String>
+
+    <!-- Tools Descriptions -->
+    <System:String x:Key="TechnicLauncherDescription">Mit den Technic Launcher kannst du viele bekannte Modpacks spielen wie z.B. Tekkit, Hexxit, Volt.... Auserdem kannst du eigene Modpacks hinzufügen und spielen. Diese findest du auf http://technicpack.net.</System:String>
+    <System:String x:Key="LiteLoaderDescription">LiteLoader ist ein ModLoader der dafür entwickelt wurde, grundlegende Loader Funktionalitaten für Mods anzubieten, die nicht den Spielmechanismus ändern müssen. Er wurde dafür entwickelt, neben Minecraft Forge zu laufen und zwischen LiteLoader und Forge Mods treten keine Konflikte auf.</System:String>
+    <System:String x:Key="ForgeDescription">Minecraft Forge ist ein ModLoader mit dem ihr einfacher Mods installieren könnt. Er hilft dabei, dass die Mods untereinander kompatibel sind. Die meisten Mods basieren auf Forge. Du kannst Mods für Forge unter dem Tab &quot;Mods&quot; installieren.</System:String>
+    <System:String x:Key="FeedTheBeastDescription">Mit den Feed The Beast Launcher kannst du viele bekannte Modpacks spielen wie z.B. Unleashed, Unhinged, FTB Ultimate, Direwolf 20... die sehr viele Mods beinhalten. Mehr Infos findest du auf http://feed-the-beast.com.</System:String>
+</ResourceDictionary>

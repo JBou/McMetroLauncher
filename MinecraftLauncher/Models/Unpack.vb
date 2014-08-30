@@ -9,7 +9,7 @@ Public Class Unpack
             Dim result As Boolean = Await Task.Run(Function() As Boolean
                                                        Dim p As New Process
                                                        With p.StartInfo
-                                                           .FileName = Path.Combine(GetJavaPath(), "bin", "java.exe")
+                                                           .FileName = GetJavaPath()
                                                            .Arguments = args
                                                            ' Arbeitsverzeichnis setzen falls nötig
                                                            .WorkingDirectory = ""

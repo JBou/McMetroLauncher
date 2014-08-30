@@ -1,0 +1,40 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:System="clr-namespace:System;assembly=mscorlib">
+    <!-- Generell -->
+    <System:String x:Key="Yes">Yes</System:String>
+    <System:String x:Key="No">No</System:String>
+    <System:String x:Key="OK">Ok</System:String>
+    <System:String x:Key="apply">Apply</System:String>
+    <System:String x:Key="search">search</System:String>
+    <System:String x:Key="DateFormat">HH:mm:ss tt mm/dd/yyyy</System:String>
+    <System:String x:Key="Close">Close</System:String>
+    <System:String x:Key="Download">Download</System:String>
+
+    <!-- Header -->
+    <System:String x:Key="Console">Console</System:String>
+    <System:String x:Key="News">News</System:String>
+    <System:String x:Key="Tools">Tools</System:String>
+    <System:String x:Key="Mods">Mods</System:String>
+
+    <!-- Exception -->
+    <System:String x:Key="ExceptionTitle">McMetroLauncher Error</System:String>
+    <System:String x:Key="ExceptionTitleWindow">Minecraft Server Launcher has encountered a problem and needs to close. We are sorry for the inconvenience.</System:String>
+    <System:String x:Key="ExceptionText">We have created an error report that you can send to us. We will treat this error as confidential and anonymous.</System:String>
+    <System:String x:Key="ExceptionNote">To help us diagnose the cause of this error and improve the software, you can write down a note (optional):</System:String>
+    <System:String x:Key="Exception">Error</System:String>
+    <System:String x:Key="ExceptionSendErrorAndClose">Send report and close</System:String>
+
+    <!-- GetJavaPath -->
+    <System:String x:Key="JavaPathNotFound">Java path not found</System:String>
+    <System:String x:Key="JavaPathNotFoundText">Unfortunately we couldn't find the path to Java. Please select the "java.exe" or install java if it isn't already installed.</System:String>
+    <System:String x:Key="OFDJavaPathTitle">Please select the "java.exe"</System:String>
+    <System:String x:Key="ExectuableFiles">Exectuable Files</System:String>
+
+    <!-- Update -->
+    <System:String x:Key="UpdateFound">Updates available</System:String>
+    <System:String x:Key="CurrentVersion">Current version</System:String>
+    <System:String x:Key="NewVersion">New version</System:String>
+    <System:String x:Key="Update">Update</System:String>
+    <System:String x:Key="UpdatePackageTitle">Changes in version {0} (Published on: {1})</System:String>
+    
+</ResourceDictionary>

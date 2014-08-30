@@ -186,22 +186,27 @@ Public Class MainViewModel
 
     Public Sub Check_service_statuses()
         Using wc As New WebClient
-            Dim status As String = wc.DownloadString("http://status.mojang.com/check")
-            Dim ja As JArray = JArray.Parse(status)
             Dim ls As New List(Of AccentColorMenuData)
-            For Each Item As JObject In ja
-                Dim name As String = Item.Properties.Select(Function(p) p.Name).First
-                Dim value As String = Item.Value(Of String)(name)
-                Dim service As New AccentColorMenuData() With {.Name = name}
-                If value.ToString = "green" Then
-                    service.ColorBrush = CType(ThemeManager.Accents.Where(Function(p) p.Name = "Green").First.Resources("AccentColorBrush"), System.Windows.Media.Brush)
-                ElseIf value.ToString = "yellow" Then
-                    service.ColorBrush = CType(ThemeManager.Accents.Where(Function(p) p.Name = "Yellow").First.Resources("AccentColorBrush"), System.Windows.Media.Brush)
-                Else
-                    service.ColorBrush = CType(ThemeManager.Accents.Where(Function(p) p.Name = "Red").First.Resources("AccentColorBrush"), System.Windows.Media.Brush)
-                End If
-                ls.Add(service)
-            Next
+            Try
+                Dim status As String = wc.DownloadString("http://status.mojang.com/check")
+                Dim ja As JArray = JArray.Parse(status)
+                For Each Item As JObject In ja
+                    Dim name As String = Item.Properties.Select(Function(p) p.Name).First
+                    Dim value As String = Item.Value(Of String)(name)
+                    Dim service As New AccentColorMenuData() With {.Name = name}
+                    If value.ToString = "green" Then
+                        service.ColorBrush = CType(ThemeManager.Accents.Where(Function(p) p.Name = "Green").First.Resources("AccentColorBrush"), System.Windows.Media.Brush)
+                    ElseIf value.ToString = "yellow" Then
+                        service.ColorBrush = CType(ThemeManager.Accents.Where(Function(p) p.Name = "Yellow").First.Resources("AccentColorBrush"), System.Windows.Media.Brush)
+                    Else
+                        service.ColorBrush = CType(ThemeManager.Accents.Where(Function(p) p.Name = "Red").First.Resources("AccentColorBrush"), System.Windows.Media.Brush)
+                    End If
+                    ls.Add(service)
+                Next
+            Catch ex As WebException
+                ls.Add(New AccentColorMenuData() With {.Name = "Fehler beim laden", .ColorBrush = CType(ThemeManager.Accents.Where(Function(p) p.Name = "Red").First.Resources("AccentColorBrush"), System.Windows.Media.Brush)})
+                'TODO: Failed to get Service Statuses
+            End Try
             ServiceStatuses = New ObservableCollection(Of AccentColorMenuData)(ls)
         End Using
     End Sub

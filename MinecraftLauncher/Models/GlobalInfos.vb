@@ -48,7 +48,8 @@ Public Module GlobalInfos
             Next
         End If
     End Function
-    Public Function GetJavaPath() As String
+
+    Public Function GetJavaHome() As String
         Dim environmentPath As String = Environment.GetEnvironmentVariable("JAVA_HOME")
         If environmentPath IsNot Nothing Then
             Return environmentPath
@@ -77,6 +78,17 @@ Public Module GlobalInfos
         End Using
         Return Nothing
     End Function
+
+    Public Function GetJavaPath() As String
+        If Not Settings.Settings.JavaPath = Nothing Then
+            Return Settings.Settings.JavaPath()
+        End If
+        If Not GetJavaHome() = Nothing Then
+            Return Path.Combine(GetJavaHome(), "bin", "java.exe")
+        End If
+        Return Nothing
+    End Function
+
 #End Region
     Public Class Startinfos
         Public Class Server

@@ -40,13 +40,9 @@ Public Class Login
                 cb_existing_users.Items.Add(item)
             Next
             cb_existing_users.SelectedIndex = 0
-            cb_existing_users.Visibility = System.Windows.Visibility.Visible
-            btn_play.Visibility = System.Windows.Visibility.Visible
-            btn_logout.Visibility = System.Windows.Visibility.Visible
+            gb_existingaccount.Visibility = System.Windows.Visibility.Visible
         Else
-            cb_existing_users.Visibility = System.Windows.Visibility.Collapsed
-            btn_play.Visibility = System.Windows.Visibility.Collapsed
-            btn_logout.Visibility = System.Windows.Visibility.Collapsed
+            gb_existingaccount.Visibility = System.Windows.Visibility.Collapsed
         End If
     End Sub
 

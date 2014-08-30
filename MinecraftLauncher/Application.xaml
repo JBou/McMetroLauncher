@@ -1,8 +1,9 @@
 ﻿<Application x:Class="Application"
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    StartupUri="Windows\SplashScreen.xaml"
-ShutdownMode="OnLastWindowClose">
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:Controls="http://metro.mahapps.com/winfx/xaml/controls"
+             StartupUri="Windows\SplashScreen.xaml"
+             ShutdownMode="OnLastWindowClose">
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -12,7 +13,160 @@ ShutdownMode="OnLastWindowClose">
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Colors.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/Blue.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/BaseLight.xaml" />
+                <ResourceDictionary Source="resources/Languages/mcml.de-de.xaml"/>
             </ResourceDictionary.MergedDictionaries>
+            <Style TargetType="{x:Type TabItem}" x:Key="UnderTab">
+                <Setter Property="BorderBrush" Value="{DynamicResource AccentColorBrush}"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="TabItem">
+                            <StackPanel>
+                                <Border x:Name="border" BorderBrush="{TemplateBinding BorderBrush}"
+                                        Padding="12,2,24,2" 
+                                        BorderThickness="0,0,0,4" 
+                                        Margin="2,2,2,0"
+                                        SnapsToDevicePixels="True">
+                                    <Border.Style>
+                                        <Style TargetType="Border">
+                                            <Setter Property="Background">
+                                                <Setter.Value>
+                                                    <SolidColorBrush Color="#FFF3F3F3"/>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Style>
+                                    </Border.Style>
+                                    <Label x:Name="root" FontSize="15">
+                                        <Label.Style>
+                                            <Style TargetType="Label">
+                                                <Setter Property="Foreground">
+                                                    <Setter.Value>
+                                                        <SolidColorBrush Color="{DynamicResource BlackColor}" />
+                                                    </Setter.Value>
+                                                </Setter>
+                                            </Style>
+                                        </Label.Style>
+                                        <ContentPresenter ContentSource="Header" RecognizesAccessKey="True" />
+                                    </Label>
+                                </Border>
+                                <Canvas Height="10" Width="20" x:Name="arrow" Margin="25,0,0,0"
+                                        HorizontalAlignment="Left" SnapsToDevicePixels="True">
+                                    <Path Data="M 0 0 H 20 L 10 10 Z"
+                                          StrokeThickness="0"
+                                          Fill="{DynamicResource AccentColorBrush}"/>
+                                </Canvas>
+                            </StackPanel>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsSelected" Value="true">
+                                    <Setter TargetName="root" Property="Foreground">
+                                        <Setter.Value>
+                                            <SolidColorBrush Color="{DynamicResource WhiteColor}" />
+                                        </Setter.Value>
+                                    </Setter>
+                                    <Setter TargetName="border" Property="Background">
+                                        <Setter.Value>
+                                            <SolidColorBrush Color="{DynamicResource AccentColor}"/>
+                                        </Setter.Value>
+                                    </Setter>
+                                    <Setter TargetName="border" Property="BorderBrush">
+                                        <Setter.Value>
+                                            <SolidColorBrush Color="{DynamicResource AccentColor}"/>
+                                        </Setter.Value>
+                                    </Setter>
+                                    <Setter TargetName="arrow" Property="Visibility" Value="Visible"/>
+                                </Trigger>
+                                <Trigger Property="IsSelected" Value="false">
+                                    <Setter  TargetName="root" Property="Foreground">
+                                        <Setter.Value>
+                                            <SolidColorBrush Color="{DynamicResource BlackColor}" />
+                                        </Setter.Value>
+                                    </Setter>
+                                    <Setter TargetName="arrow" Property="Visibility" Value="Hidden"/>
+                                </Trigger>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="root" Property="Foreground">
+                                        <Setter.Value>
+                                            <SolidColorBrush Color="{DynamicResource WhiteColor}" />
+                                        </Setter.Value>
+                                    </Setter>
+                                    <Setter TargetName="border" Property="BorderBrush" Value="{DynamicResource AccentColorBrush}"></Setter>
+                                    <Setter TargetName="border" Property="Background">
+                                        <Setter.Value>
+                                            <SolidColorBrush Color="{DynamicResource AccentColor}"/>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+            <Style TargetType="{x:Type TabControl}" x:Key="VerticalTabControl">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type TabControl}">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Orientation="Vertical"
+            Background="{TemplateBinding Background}"
+             Grid.Column="0"
+              Panel.ZIndex="1"
+            IsItemsHost="True"/>
+
+                                <Border
+             Grid.Column="1"
+             BorderBrush="Black"
+              BorderThickness="0"
+              Background="{TemplateBinding Background}"
+           CornerRadius="0">
+                                    <ContentPresenter
+               ContentSource="SelectedContent" />
+                                </Border>
+                            </Grid>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+            <Style TargetType="{x:Type TabItem}" x:Key="VerticalTabItem">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type TabItem}">
+                            <Grid>
+                                <Grid Name="BG" Height="50" Width="150">
+                                    <Polygon x:Name="arrow" Points="8,0 0,5 8,10" Stroke="white" Fill="white" Height="12" Width="8" RenderOptions.EdgeMode="Unspecified" Visibility="Hidden" Margin="142,0,0,0" />
+                                    <TextBlock Name="tb" Text="{TemplateBinding Header}" TextAlignment="Center" HorizontalAlignment="Stretch" VerticalAlignment="Center" Foreground="Black"/>
+                                </Grid>
+                            </Grid>
+
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsSelected" Value="True">
+                                    <Setter Property="IsEnabled" Value="False"/>
+                                    <Setter TargetName="arrow" Property="Visibility" Value="Visible"/>
+                                    <Setter TargetName="tb" Property="Foreground" Value="White"/>
+                                    <Setter TargetName="BG" Property="Background" Value="#41b1e1"/>
+                                    <Trigger.EnterActions >
+                                        <BeginStoryboard >
+                                            <Storyboard >
+                                                <ThicknessAnimation From="150,0,0,0" To="142,0,0,0" Duration="00:00:00.100" Storyboard.TargetName="arrow" Storyboard.TargetProperty="Margin"/>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </Trigger.EnterActions>
+                                </Trigger>
+                                <Trigger SourceName="BG" Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="tb" Property="Foreground" Value="White"/>
+                                    <Setter TargetName="BG" Property="Background" Value="#CCA2E4FF"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+            <Style TargetType="{x:Type Controls:MetroWindow}" x:Key="MetroWindow">
+                <Setter Property="Icon" Value="/resources/images/favicon.ico"/>
+                <Setter Property="GlowBrush" Value="{DynamicResource AccentColorBrush}"/>
+            </Style>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

@@ -118,44 +118,6 @@ Public Class ProfileEditor
         If Not Char.IsNumber(CChar(e.Text)) Then e.Handled = True
     End Sub
 
-    Private Sub cb_Click(sender As Object, e As RoutedEventArgs) Handles cb_game_directory.Checked, cb_game_directory.Unchecked, cb_java_arguments.Checked, cb_java_arguments.Unchecked, cb_java_path.Checked, cb_java_path.Unchecked, cb_resolution.Checked, cb_resolution.Unchecked
-        Check_cb_Status()
-    End Sub
-
-    Sub Check_cb_Status()
-        If cb_game_directory.IsChecked = True Then
-            tb_gameDir.IsEnabled = True
-            btn_selectgamedir.IsEnabled = True
-        Else
-            tb_gameDir.IsEnabled = False
-            btn_selectgamedir.IsEnabled = False
-        End If
-
-        If cb_java_path.IsChecked = True Then
-            tb_java_executable.IsEnabled = True
-            btn_selectjavadir.IsEnabled = True
-        Else
-            tb_java_executable.IsEnabled = False
-            btn_selectjavadir.IsEnabled = False
-        End If
-
-        If cb_java_arguments.IsChecked = True Then
-            tb_java_arguments.IsEnabled = True
-        Else
-            tb_java_arguments.IsEnabled = False
-        End If
-
-        If cb_resolution.IsChecked = True Then
-            tb_res_height.IsEnabled = True
-            tb_res_width.IsEnabled = True
-            lbl_x.IsEnabled = True
-        Else
-            tb_res_height.IsEnabled = False
-            tb_res_width.IsEnabled = False
-            lbl_x.IsEnabled = False
-        End If
-    End Sub
-
     Private Async Sub ProfileEditor_Loaded(sender As Object, e As RoutedEventArgs) Handles Me.Loaded
         Try
             Await Versions_Load()
@@ -166,7 +128,6 @@ Public Class ProfileEditor
             Else
                 Await Load_ProfileInfos()
             End If
-            Check_cb_Status()
         Catch ex As Exception
             MessageBox.Show(ex.Message & Environment.NewLine & ex.StackTrace)
         End Try
@@ -305,9 +266,17 @@ Public Class ProfileEditor
         p.Start()
     End Sub
 
-    Private Async Sub cb_old_alpha_PreviewMouseDown(sender As Object, e As RoutedEventArgs) Handles cb_snapshots.Checked, cb_old_beta.Checked, cb_old_alpha.Checked, cb_snapshots.Unchecked, cb_old_beta.Unchecked, cb_old_alpha.Unchecked
-        If DirectCast(sender, CheckBox).IsChecked = True Then
+    Private Sub cb_checked_unchecked(sender As Object, e As RoutedEventArgs) Handles cb_snapshots.Checked, cb_old_beta.Checked, cb_old_alpha.Checked, cb_snapshots.Unchecked, cb_old_beta.Unchecked, cb_old_alpha.Unchecked
+        Get_Versions()
+        If cb_versions.SelectedIndex = -1 Then
+            cb_versions.SelectedIndex = 0
+        End If
+    End Sub
+
+    Private Async Sub cb_old_alpha_beta_PreviewMouseDown(sender As Object, e As RoutedEventArgs) Handles cb_old_beta.PreviewMouseDown, cb_old_alpha.PreviewMouseDown
+        If Not DirectCast(sender, CheckBox).IsChecked Then
             If sender Is cb_old_beta Or sender Is cb_old_alpha Then
+                e.Handled = True
                 Dim msgtext As String = "Diese Versionen sind sehr veraltet und können unstabil sein. Alle Fehler, Abstürze, fehlende Funktionen oder andere Defekte die du finden könnstest werden in diesen Versionen nicht mehr behoben." & Environment.NewLine & "Es wird stark empfohlen, dass du diese Versionen in einem separatem Verzeichniss spielst, um Datenverlust zu vermeiden. Wir sind nicht verantwortlich für den Schaden an deinen Daten!" & Environment.NewLine & Environment.NewLine & "Bist du dir sicher, dass du fortsetzen möchstest?"
                 Dim result As MessageDialogResult = Await Me.ShowMessageAsync("Achtung", msgtext, MessageDialogStyle.AffirmativeAndNegativeAndSingleAuxiliary, New MetroDialogSettings() With {.AffirmativeButtonText = "Ja", .NegativeButtonText = "Nein", .FirstAuxiliaryButtonText = "Abbrechen", .ColorScheme = MetroDialogColorScheme.Accented, .AnimateShow = True, .AnimateHide = True})
 
@@ -317,15 +286,7 @@ Public Class ProfileEditor
                 Else
                     DirectCast(sender, CheckBox).IsChecked = False
                 End If
-            Else
-                Get_Versions()
             End If
-        Else
-            Get_Versions()
-        End If
-        If cb_versions.SelectedIndex = -1 Then
-            cb_versions.SelectedIndex = 0
         End If
     End Sub
-
 End Class

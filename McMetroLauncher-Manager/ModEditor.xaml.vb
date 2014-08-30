@@ -57,7 +57,7 @@ Public Class ModEditor
         tb_name.Text = Moditem.name
         tb_website.Text = Moditem.website
         tb_video.Text = Moditem.video
-        tb_autor.Text = Moditem.autor
+        tb_author.Text = Moditem.author
         tb_id.Text = Moditem.id
         cb_extension.SelectedItem = Moditem.extension
         cb_type.SelectedItem = Moditem.type
@@ -103,7 +103,7 @@ Public Class ModEditor
         End With
     End Sub
 
-    Private Sub tb_autor_TextChanged(sender As Object, e As TextChangedEventArgs) Handles tb_name.TextChanged
+    Private Sub tb_author_TextChanged(sender As Object, e As TextChangedEventArgs) Handles tb_name.TextChanged
         Moditem.name = tb_name.Text
     End Sub
 
@@ -116,8 +116,8 @@ Public Class ModEditor
         End If
     End Sub
 
-    Private Sub tb_autor_TextChanged_1(sender As Object, e As TextChangedEventArgs) Handles tb_autor.TextChanged
-        Moditem.autor = tb_autor.Text
+    Private Sub tb_author_TextChanged_1(sender As Object, e As TextChangedEventArgs) Handles tb_author.TextChanged
+        Moditem.author = tb_author.Text
     End Sub
 
     Private Sub tb_id_TextChanged(sender As Object, e As TextChangedEventArgs) Handles tb_id.TextChanged
@@ -175,7 +175,7 @@ Public Class ModEditor
 
     Private Async Sub btn_save_Click(sender As Object, e As RoutedEventArgs) Handles btn_save.Click
         Dim allinformation As Boolean = True
-        If tb_name.Text = Nothing Or tb_autor.Text = Nothing Or tb_id.Text = Nothing Or tb_video.Text = Nothing Or tb_website.Text = Nothing Or cb_extension.SelectedIndex = -1 Or cb_type.SelectedIndex = -1 Then
+        If tb_name.Text = Nothing Or tb_author.Text = Nothing Or tb_id.Text = Nothing Or tb_video.Text = Nothing Or tb_website.Text = Nothing Or cb_extension.SelectedIndex = -1 Or cb_type.SelectedIndex = -1 Then
             allinformation = False
         End If
         If lb_versions.Items.Count = 0 Then
@@ -187,7 +187,7 @@ Public Class ModEditor
         Else
             Dim Modification As New Modifications.Mod() With {
                 .descriptions = Moditem.descriptions,
-                .autor = tb_autor.Text,
+                .author = tb_author.Text,
                 .extension = cb_extension.SelectedItem.ToString,
                 .id = tb_id.Text,
                 .name = tb_name.Text,
@@ -258,7 +258,7 @@ End Class
 '        tb_video.Text = Mods.videoAt(loadedversion, loadedmodindex)
 '        tb_downloadlink.Text = Mods.downloadlinkAt(loadedversion, loadedmodindex)
 '        tb_description.Text = Mods.descriptionAt(loadedversion, loadedmodindex)
-'        tb_autor.Text = Mods.AutorAt(loadedversion, loadedmodindex)
+'        tb_author.Text = Mods.authorAt(loadedversion, loadedmodindex)
 '        tb_filename.Text = Mods.idAt(loadedversion, loadedmodindex)
 '        For Each item As String In Mods.needed_modsAt(loadedversion, loadedmodindex)
 '            lb_needed_mods.Items.Add(item)
@@ -270,10 +270,10 @@ End Class
 '    Private Sub btn_save_Click(sender As Object, e As RoutedEventArgs) Handles btn_save.Click
 '        'Überprüfen ob es eine gültige Uri ist:
 
-'        If tb_description.Text = Nothing Or tb_downloadlink.Text = Nothing Or tb_name.Text = Nothing Or tb_video.Text = Nothing Or tb_website.Text = Nothing Or tb_autor.Text = Nothing Then
+'        If tb_description.Text = Nothing Or tb_downloadlink.Text = Nothing Or tb_name.Text = Nothing Or tb_video.Text = Nothing Or tb_website.Text = Nothing Or tb_author.Text = Nothing Then
 '            MessageBox.Show("Bitte fülle alle Felder aus!", "Fehler", MessageBoxButton.OK, MessageBoxImage.Information)
 '        Else
-'            Dim frgMod As New ForgeMod(tb_name.Text, tb_autor.Text, cb_versions.SelectedItem.ToString, tb_description.Text, tb_downloadlink.Text, tb_video.Text, tb_website.Text, tb_filename.Text, cb_extension.SelectedItem.ToString, cb_type.SelectedItem.ToString, lb_needed_mods.Items.Cast(Of String)().ToList, False)
+'            Dim frgMod As New ForgeMod(tb_name.Text, tb_author.Text, cb_versions.SelectedItem.ToString, tb_description.Text, tb_downloadlink.Text, tb_video.Text, tb_website.Text, tb_filename.Text, cb_extension.SelectedItem.ToString, cb_type.SelectedItem.ToString, lb_needed_mods.Items.Cast(Of String)().ToList, False)
 '            If NewMod = True Then
 '                'Shauen ob es bereits existiert
 '                If Mods.Get_Mods(cb_versions.SelectedItem.ToString, modsfolder).Select(Function(p) p.name.ToString).Contains(tb_name.Text.ToString) Then

@@ -71,7 +71,7 @@
     <OptionInfer>On</OptionInfer>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>images\favicon.ico</ApplicationIcon>
+    <ApplicationIcon>resources\images\favicon.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
     <ManifestCertificateThumbprint>E4048A92FC2D1130D9F12937A305BCB65CDD9C59</ManifestCertificateThumbprint>
@@ -87,31 +87,6 @@
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationManifest>My Project\app.manifest</ApplicationManifest>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Erstellen|AnyCPU'">
-    <DefineTrace>true</DefineTrace>
-    <OutputPath>bin\Erstellen\</OutputPath>
-    <DocumentationFile>McMetroLauncher.xml</DocumentationFile>
-    <Optimize>true</Optimize>
-    <NoWarn>42314</NoWarn>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <WarningsAsErrors>41999,42016,42017,42018,42019,42020,42021,42022,42032,42036</WarningsAsErrors>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>true</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Test|AnyCPU'">
-    <DebugSymbols>true</DebugSymbols>
-    <DefineDebug>true</DefineDebug>
-    <DefineTrace>true</DefineTrace>
-    <OutputPath>bin\Test\</OutputPath>
-    <DocumentationFile>McMetroLauncher.xml</DocumentationFile>
-    <NoWarn>42314</NoWarn>
-    <DebugType>full</DebugType>
-    <PlatformTarget>x86</PlatformTarget>
-    <WarningsAsErrors>41999,42016,42017,42018,42019,42020,42021,42022,42032,42036</WarningsAsErrors>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject>
@@ -142,6 +117,15 @@
     </Reference>
     <Reference Include="De.TorstenMandelkow.MetroChart">
       <HintPath>..\libraries\De.TorstenMandelkow.MetroChart.dll</HintPath>
+    </Reference>
+    <Reference Include="Exceptionless">
+      <HintPath>..\packages\Exceptionless.1.5.2092\lib\net45\Exceptionless.dll</HintPath>
+    </Reference>
+    <Reference Include="Exceptionless.Models">
+      <HintPath>..\packages\Exceptionless.1.5.2092\lib\net45\Exceptionless.Models.dll</HintPath>
+    </Reference>
+    <Reference Include="Exceptionless.Wpf">
+      <HintPath>..\packages\Exceptionless.Wpf.1.5.2092\lib\net45\Exceptionless.Wpf.dll</HintPath>
     </Reference>
     <Reference Include="fNbt">
       <HintPath>..\libraries\fNbt.dll</HintPath>
@@ -206,11 +190,12 @@
     <Compile Include="Controls\FluidWrapPanel\FluidLayoutManager.vb" />
     <Compile Include="Controls\FluidWrapPanel\FluidMouseDragBehavior.vb" />
     <Compile Include="Controls\FluidWrapPanel\FluidWrapPanel.vb" />
-    <Compile Include="Converters\ValueConverterGroup.vb" />
+    <Compile Include="Extensions\ButtonHelper.vb" />
+    <Compile Include="Extensions\Converters\ValueConverterGroup.vb" />
     <Compile Include="Helpers\ExtensionMethods.vb" />
     <Compile Include="Models\Accent-ThemeMenuData.vb" />
     <Compile Include="Models\authenticationDatabase.vb" />
-    <Compile Include="Converters\Converters.vb" />
+    <Compile Include="Extensions\Converters\Converters.vb" />
     <Compile Include="Models\CryptedTextAnimation.vb" />
     <Compile Include="Models\Forge.vb" />
     <Compile Include="Models\GlobalInfos.vb" />
@@ -218,28 +203,18 @@
     <Compile Include="Models\Session.vb" />
     <Compile Include="Models\SimpleCommand.vb" />
     <Compile Include="Models\Unpack.vb" />
-    <Compile Include="Resources\Resource.de.Designer.vb">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resource.de.resx</DependentUpon>
-    </Compile>
-    <Compile Include="Resources\Resource.en.Designer.vb">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resource.en.resx</DependentUpon>
-    </Compile>
     <Compile Include="ViewModelBase\BindableBase.vb" />
     <Compile Include="ViewModelBase\PropertyChangedBase.vb" />
     <Compile Include="ViewModelBase\RelayCommand.vb" />
-    <Compile Include="Views\MainView.xaml.vb">
-      <DependentUpon>MainView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Windows\Forge_installer.xaml.vb">
       <DependentUpon>Forge_installer.xaml</DependentUpon>
     </Compile>
     <Compile Include="Models\Formattingcodes.vb" />
     <Compile Include="Windows\Forge_ProfileEditor.xaml.vb">
       <DependentUpon>Forge_ProfileEditor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\frmGetJavaPath.xaml.vb">
+      <DependentUpon>frmGetJavaPath.xaml</DependentUpon>
     </Compile>
     <Compile Include="Windows\LiteLoader_installer.xaml.vb">
       <DependentUpon>LiteLoader_installer.xaml</DependentUpon>
@@ -267,6 +242,9 @@
     <Compile Include="Windows\SplashScreen.xaml.vb">
       <DependentUpon>SplashScreen.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Windows\SubmitException.xaml.vb">
+      <DependentUpon>SubmitException.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Windows\Updater.xaml.vb">
       <DependentUpon>Updater.xaml</DependentUpon>
     </Compile>
@@ -275,7 +253,11 @@
     <Compile Include="Windows\ProfileEditor.xaml.vb">
       <DependentUpon>ProfileEditor.xaml</DependentUpon>
     </Compile>
-    <Page Include="Views\MainView.xaml">
+    <Page Include="resources\languages\mcml.de-de.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="resources\languages\mcml.en-us.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -288,6 +270,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="Windows\Forge_ProfileEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\frmGetJavaPath.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -312,6 +298,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Windows\ProfileEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\SubmitException.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -366,25 +356,15 @@
       <SubType>Designer</SubType>
       <LastGenOutput>Resources.Designer.vb</LastGenOutput>
     </EmbeddedResource>
-    <Content Include="Fonts\Minecraft.ttf">
+    <Content Include="resources\fonts\Minecraft.ttf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Fonts\Minecraftia.ttf">
+    <Content Include="resources\fonts\Minecraftia.ttf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Fonts\ProFontWindows.ttf">
+    <Content Include="resources\fonts\ProFontWindows.ttf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <EmbeddedResource Include="Resources\Resource.de.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resource.de.Designer.vb</LastGenOutput>
-      <CustomToolNamespace>My.Resources</CustomToolNamespace>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Resources\Resource.en.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resource.en.Designer.vb</LastGenOutput>
-      <CustomToolNamespace>My.Resources</CustomToolNamespace>
-    </EmbeddedResource>
     <None Include="My Project\app.manifest" />
     <None Include="My Project\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -399,10 +379,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <None Include="images\minecraft_block.png" />
+    <None Include="resources\images\minecraft_block.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="images\favicon.ico" />
+    <Resource Include="resources\images\favicon.ico" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
@@ -425,40 +405,44 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="images\transparent64_64.png" />
-    <Resource Include="images\check_green.png" />
+    <Resource Include="resources\images\transparent64_64.png" />
+    <Resource Include="resources\images\check_green.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="images\dark\appbar.delete.png" />
-    <Resource Include="images\dark\appbar.refresh.png" />
-    <Resource Include="images\light\appbar.delete.png" />
-    <Resource Include="images\light\appbar.refresh.png" />
+    <Resource Include="resources\images\dark\appbar.delete.png" />
+    <Resource Include="resources\images\dark\appbar.refresh.png" />
+    <Resource Include="resources\images\light\appbar.delete.png" />
+    <Resource Include="resources\images\light\appbar.refresh.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="images\forge_banner.png" />
+    <Resource Include="resources\images\forge_banner.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="images\light\appbar.page.copy.png" />
+    <Resource Include="resources\images\light\appbar.page.copy.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="images\dark\appbar.page.copy.png" />
+    <Resource Include="resources\images\dark\appbar.page.copy.png" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="resources\images\light\appbar.alert.png" />
+    <Resource Include="resources\images\dark\appbar.alert.png" />
     <Content Include="tools\Pack_xz_Extractor.jar">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Resource Include="minecraft_block.png" />
-    <Resource Include="images\web-ftb-logo_0.png" />
-    <Resource Include="images\light\appbar.control.play.png" />
-    <Resource Include="images\dark\appbar.control.play.png" />
-    <Resource Include="images\liteloader_header_xmas.png" />
-    <Resource Include="images\light\appbar.social.github.octocat.png" />
-    <Resource Include="images\dark\appbar.social.github.octocat.png" />
-    <Resource Include="images\dark\appbar.globe.png" />
-    <Resource Include="images\light\appbar.globe.png" />
-    <Content Include="images\logo_technic_launcher.png" />
-    <Resource Include="images\tl.png" />
+    <Resource Include="resources\images\web-ftb-logo_0.png" />
+    <Resource Include="resources\images\light\appbar.control.play.png" />
+    <Resource Include="resources\images\dark\appbar.control.play.png" />
+    <Resource Include="resources\images\liteloader_header_xmas.png" />
+    <Resource Include="resources\images\light\appbar.social.github.octocat.png" />
+    <Resource Include="resources\images\dark\appbar.social.github.octocat.png" />
+    <Resource Include="resources\images\dark\appbar.globe.png" />
+    <Resource Include="resources\images\light\appbar.globe.png" />
+    <Content Include="resources\images\logo_technic_launcher.png" />
+    <Resource Include="resources\images\tl.png" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Views\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
 </Project>
