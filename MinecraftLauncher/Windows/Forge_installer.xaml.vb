@@ -24,7 +24,7 @@ Class Forge_installer
         Dim list As IList(Of Forge.ForgeBuild) = New List(Of Forge.ForgeBuild)
         For Each item As Forge.ForgeBuild In Forge.ForgeList
             Dim lstitems As IList(Of String) = list.Select(Function(p) p.version).ToList
-            If item.files.Select(Function(o) o.type).Contains("universal") And lstitems.Contains(item.version) = False Then
+            If item.files.Select(Function(o) o.type).Contains("universal") AndAlso lstitems.Contains(item.version) = False Then
                 list.Add(item)
             End If
         Next
@@ -135,7 +135,7 @@ Class Forge_installer
         Try
             Dim branch As String = IIf(build.branch = Nothing, "", "-" & build.branch).ToString
             Dim versionsname As String = build.mcversion & "-Forge" & build.version & branch
-            If e.Cancelled = False And e.Error Is Nothing Then
+            If e.Cancelled = False AndAlso e.Error Is Nothing Then
                 Dim legacyinstallation As Boolean = False
                 'Extract version.json and copy to versionsfolder
                 Try
@@ -236,7 +236,7 @@ Class Forge_installer
                     'Download other Libraries
                     liblist.Clear()
                     For Each item As Library In Versionsinfos.libraries.Where(Function(p) p.url <> Nothing)
-                        If item.url.Contains("files.minecraftforge.net") And item.name.Split(CChar(":"))(1) <> "forge" And item.name.Split(CChar(":"))(1) <> "minecraftforge" Then
+                        If item.url.Contains("files.minecraftforge.net") AndAlso item.name.Split(CChar(":"))(1) <> "forge" AndAlso item.name.Split(CChar(":"))(1) <> "minecraftforge" Then
                             liblist.Add(item)
                         End If
                     Next
@@ -349,7 +349,7 @@ Class Forge_installer
     End Sub
 
     Async Sub Downloadlibcompleted(sender As Object, e As ComponentModel.AsyncCompletedEventArgs)
-        If e.Cancelled = False And e.Error Is Nothing Then
+        If e.Cancelled = False AndAlso e.Error Is Nothing Then
             controller.SetMessage("Entpacke Library : " & libpath.FullName)
             If Await Unpack.Unpack(libpath, libpath) = False Then
                 controller.SetMessage("Fehler beim entpacken: " & libpath.FullName)
@@ -376,7 +376,7 @@ Class Forge_installer
     Private Sub lst_SelectionChanged(sender As Object, e As SelectionChangedEventArgs) Handles lst.SelectionChanged
         build = DirectCast(lst.SelectedItem, Forge.ForgeBuild)
         If DirectCast(lst.SelectedItem, Forge.ForgeBuild).files.Select(Function(p) p.type).Contains("universal") Then
-            If build.mcversion <> "1.6.1" And build.mcversion <> "1.6.2" Then
+            If build.mcversion <> "1.6.1" AndAlso build.mcversion <> "1.6.2" Then
                 btn_download_auto.IsEnabled = True
             Else
                 btn_download_auto.IsEnabled = False

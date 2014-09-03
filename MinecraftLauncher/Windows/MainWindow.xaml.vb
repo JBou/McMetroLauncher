@@ -345,7 +345,7 @@ Public Class MainWindow
     End Sub
 
     Private Sub wcresources_DownloadFileCompleted(sender As Object, e As System.ComponentModel.AsyncCompletedEventArgs) Handles wcresources.DownloadFileCompleted
-        If e.Cancelled = False And e.Error Is Nothing Then
+        If e.Cancelled = False AndAlso e.Error Is Nothing Then
             If resourcesdownloadtry > 3 Then
                 Write("Der Download wurde aufgrund zu vieler Fehlversuche abgebrochen!", LogLevel.ERROR)
                 Startinfos.IsStarting = False
@@ -491,7 +491,7 @@ Public Class MainWindow
         Dim Outputfile As New FileInfo(Path.Combine(versionsfolder.FullName, versionid, versionid & ".jar"))
         Dim CacheOutputfile As New FileInfo(Path.Combine(cachefolder.FullName, "versions", versionid, versionid & ".jar"))
 
-        If e.Error Is Nothing And e.Cancelled = False Then
+        If e.Error Is Nothing AndAlso e.Cancelled = False Then
             If Outputfile.Exists Then
                 Outputfile.Delete()
             End If
@@ -558,7 +558,7 @@ Public Class MainWindow
         Dim versionid As String = Startinfos.Version.id
         Dim OutputfileJSON As New FileInfo(Path.Combine(versionsfolder.FullName, versionid, versionid & ".json"))
         Dim CacheOutputfileJSON As New FileInfo(Path.Combine(cachefolder.FullName, "versions", versionid, versionid & ".json"))
-        If e.Error Is Nothing And e.Cancelled = False Then
+        If e.Error Is Nothing AndAlso e.Cancelled = False Then
             If OutputfileJSON.Exists Then
                 OutputfileJSON.Delete()
             End If
@@ -677,7 +677,7 @@ Public Class MainWindow
                         Dim forgeuniversal As Boolean = False
                         Dim version As String = Currentlibrary.name.Split(CChar(":"))(2)
                         'legacy = "minecraftforge", new versions = "forge"
-                        If Currentlibrary.name.Split(CChar(":"))(1) = "minecraftforge" And Forge.ForgeList.Select(Function(p) p.version).Contains(version) OrElse Currentlibrary.name.Split(CChar(":"))(1) = "forge" And Forge.ForgeList.Select(Function(p) p.mcversion & "-" & p.version & IIf(p.branch = Nothing, "", "-" & p.branch).ToString).Contains(version) Then
+                        If Currentlibrary.name.Split(CChar(":"))(1) = "minecraftforge" AndAlso Forge.ForgeList.Select(Function(p) p.version).Contains(version) OrElse Currentlibrary.name.Split(CChar(":"))(1) = "forge" AndAlso Forge.ForgeList.Select(Function(p) p.mcversion & "-" & p.version & IIf(p.branch = Nothing, "", "-" & p.branch).ToString).Contains(version) Then
                             Dim build As ForgeBuild
                             If Currentlibrary.name.Split(CChar(":"))(1) = "minecraftforge" Then
                                 build = Forge.ForgeList.Where(Function(p) p.version = version).First
@@ -700,7 +700,7 @@ Public Class MainWindow
                         End If
                         Dim outputfile As String = librarypath.FullName
                         'Auser bei forge universal lib
-                        If url.Contains("files.minecraftforge.net") And forgeuniversal = False Then
+                        If url.Contains("files.minecraftforge.net") AndAlso forgeuniversal = False Then
                             downloadforgelib = True
                             Tounpack = True
                             url = url.Insert(url.Length, ".pack.xz")
@@ -757,7 +757,7 @@ Public Class MainWindow
             Dim libpath As FileInfo = New FileInfo(Path.Combine(librariesfolder.FullName, Currentlibrary.path))
             libpath.Delete()
         End If
-        If e.Cancelled = False And e.Error Is Nothing Then
+        If e.Cancelled = False AndAlso e.Error Is Nothing Then
             Dim libpath As String = Path.Combine(librariesfolder.FullName, Currentlibrary.path)
             If Tounpack = True Then
                 Dim input As New FileInfo(libpath & ".pack.xz")
@@ -838,29 +838,27 @@ Public Class MainWindow
                                                           End If
                                                       End If
                                                   End If
-                                                  If .natives IsNot Nothing And allowdownload = True Then
-                                                      If .natives.windows <> Nothing Then
-                                                          Dim librarypath As New FileInfo(IO.Path.Combine(librariesfolder.FullName, .path.Replace("/", "\")))
-                                                          If IO.Directory.Exists(librarypath.DirectoryName) = False Then
-                                                              IO.Directory.CreateDirectory(librarypath.DirectoryName)
-                                                          End If
-                                                          Try
-                                                              Using zip1 As ZipFile = ZipFile.Read(librarypath.FullName)
-                                                                  ' here, we extract every entry, but we could extract conditionally,
-                                                                  ' based on entry name, size, date, checkbox status, etc.   
-                                                                  For Each e As ZipEntry In zip1
-                                                                      Dim ls As IList(Of String) = .extract.exclude
-                                                                      For Each file As String In ls
-                                                                          If e.FileName.StartsWith(file) = False Then
-                                                                              e.Extract(UnpackDirectory, ExtractExistingFileAction.OverwriteSilently)
-                                                                          End If
-                                                                      Next
-                                                                  Next
-                                                              End Using
-                                                          Catch ex As ZipException
-                                                              Write("Fehler beim entpacken der natives: " & ex.Message, LogLevel.ERROR)
-                                                          End Try
+                                                  If .natives IsNot Nothing AndAlso .natives.windows IsNot Nothing AndAlso allowdownload = True Then
+                                                      Dim librarypath As New FileInfo(IO.Path.Combine(librariesfolder.FullName, .path.Replace("/", "\")))
+                                                      If IO.Directory.Exists(librarypath.DirectoryName) = False Then
+                                                          IO.Directory.CreateDirectory(librarypath.DirectoryName)
                                                       End If
+                                                      Try
+                                                          Using zip1 As ZipFile = ZipFile.Read(librarypath.FullName)
+                                                              ' here, we extract every entry, but we could extract conditionally,
+                                                              ' based on entry name, size, date, checkbox status, etc.   
+                                                              For Each e As ZipEntry In zip1
+                                                                  Dim ls As IList(Of String) = .extract.exclude
+                                                                  For Each file As String In ls
+                                                                      If e.FileName.StartsWith(file) = False Then
+                                                                          e.Extract(UnpackDirectory, ExtractExistingFileAction.OverwriteSilently)
+                                                                      End If
+                                                                  Next
+                                                              Next
+                                                          End Using
+                                                      Catch ex As ZipException
+                                                          Write("Fehler beim entpacken der natives: " & ex.Message, LogLevel.ERROR)
+                                                      End Try
                                                   End If
                                               End With
                                           Next
@@ -960,13 +958,13 @@ Public Class MainWindow
                                           javaargs = "-Xmx" & "1024" & "M"
                                       End If
 
-                                      If Startinfos.Profile.resolution.height <> Nothing And Startinfos.Profile.resolution.height <> "0" Then
+                                      If Startinfos.Profile.resolution.height <> Nothing AndAlso Startinfos.Profile.resolution.height <> "0" Then
                                           height = " --height " & Startinfos.Profile.resolution.height
                                       Else
                                           height = Nothing
                                       End If
 
-                                      If Startinfos.Profile.resolution.width <> Nothing And Startinfos.Profile.resolution.width <> "0" Then
+                                      If Startinfos.Profile.resolution.width <> Nothing AndAlso Startinfos.Profile.resolution.width <> "0" Then
                                           width = " --width " & Startinfos.Profile.resolution.width
                                       Else
                                           width = Nothing
@@ -1629,7 +1627,7 @@ Public Class MainWindow
                                                      End Sub)
         Catch
         End Try
-        If servers_dat.Exists And Not servers_dat.IsLocked Then
+        If servers_dat.Exists AndAlso Not servers_dat.IsLocked Then
             ServerList.Save()
         End If
     End Sub

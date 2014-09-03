@@ -48,13 +48,13 @@ Public Class SplashScreen
 
     Private Async Sub SplashScreen_Loaded(sender As Object, e As RoutedEventArgs) Handles Me.Loaded
         Await Settings.Load()
-        If Settings.Settings.Accent <> Nothing And ThemeManager.Accents.Select(Function(p) p.Name).Contains(Settings.Settings.Accent) Then
+        If Settings.Settings.Accent <> Nothing AndAlso ThemeManager.Accents.Select(Function(p) p.Name).Contains(Settings.Settings.Accent) Then
             Dim theme = ThemeManager.DetectAppStyle(Application.Current)
             Dim accent = ThemeManager.Accents.Where(Function(p) p.Name = Settings.Settings.Accent).FirstOrDefault
             If accent Is Nothing Then accent = ThemeManager.Accents.First
             ThemeManager.ChangeAppStyle(Application.Current, accent, theme.Item1)
         End If
-        If Settings.Settings.Theme <> Nothing And ThemeManager.AppThemes.Select(Function(p) p.Name).Contains(Settings.Settings.Theme) Then
+        If Settings.Settings.Theme <> Nothing AndAlso ThemeManager.AppThemes.Select(Function(p) p.Name).Contains(Settings.Settings.Theme) Then
             Dim theme = ThemeManager.DetectAppStyle(Application.Current)
             Dim appTheme = ThemeManager.AppThemes.Where(Function(p) p.Name = Settings.Settings.Theme).FirstOrDefault
             If appTheme Is Nothing Then appTheme = ThemeManager.AppThemes.First
@@ -133,7 +133,7 @@ Public Class SplashScreen
     End Sub
 
     Private Sub downloadchangelog(sender As Object, e As DownloadStringCompletedEventArgs)
-        If e.Cancelled = False And e.Error Is Nothing Then
+        If e.Cancelled = False AndAlso e.Error Is Nothing Then
             Try
                 onlineversion = e.Result
                 dlchangelog.DownloadStringAsync(New Uri(changelogurl))
@@ -142,13 +142,13 @@ Public Class SplashScreen
             Catch ex As Exception
                 MessageBox.Show(ex.Message & Environment.NewLine & ex.StackTrace)
             End Try
-        ElseIf e.Cancelled = False And e.Error IsNot Nothing Then
+        ElseIf e.Cancelled = False AndAlso e.Error IsNot Nothing Then
             MessageBox.Show("Ein Fehler ist aufgetreten: " & Environment.NewLine & e.Error.Message & Environment.NewLine & e.Error.StackTrace)
         End If
     End Sub
 
     Private Sub downloadversionsjson(sender As Object, e As DownloadStringCompletedEventArgs)
-        If e.Cancelled = False And e.Error Is Nothing Then
+        If e.Cancelled = False AndAlso e.Error Is Nothing Then
             Try
                 changelog = e.Result
                 If Check_Updates() = True Then
@@ -165,13 +165,13 @@ Public Class SplashScreen
             Catch ex As Exception
                 MessageBox.Show(ex.Message & Environment.NewLine & ex.StackTrace)
             End Try
-        ElseIf e.Cancelled = False And e.Error IsNot Nothing Then
+        ElseIf e.Cancelled = False AndAlso e.Error IsNot Nothing Then
             MessageBox.Show("Ein Fehler ist aufgetreten: " & Environment.NewLine & e.Error.Message & Environment.NewLine & e.Error.StackTrace)
         End If
     End Sub
 
     Private Async Sub downloadmodsfile(sender As Object, e As ComponentModel.AsyncCompletedEventArgs)
-        If e.Cancelled = False And e.Error Is Nothing Then
+        If e.Cancelled = False AndAlso e.Error Is Nothing Then
             Try
                 Await Versions_Load()
                 lbl_status.Content = "Lade Mod-Liste herunter"
@@ -181,13 +181,13 @@ Public Class SplashScreen
             Catch ex As Exception
                 MessageBox.Show(ex.Message & Environment.NewLine & ex.StackTrace)
             End Try
-        ElseIf e.Cancelled = False And e.Error IsNot Nothing Then
+        ElseIf e.Cancelled = False AndAlso e.Error IsNot Nothing Then
             MessageBox.Show("Ein Fehler ist aufgetreten: " & Environment.NewLine & e.Error.Message & Environment.NewLine & e.Error.StackTrace)
         End If
     End Sub
 
     Private Sub downloadlegacyforgefile(sender As Object, e As ComponentModel.AsyncCompletedEventArgs)
-        If e.Cancelled = False And e.Error Is Nothing Then
+        If e.Cancelled = False AndAlso e.Error Is Nothing Then
             Dim valid As Boolean = True
             Try
                 JContainer.Parse(File.ReadAllText(Legacyforgefile.FullName))
@@ -206,15 +206,15 @@ Public Class SplashScreen
                     MessageBox.Show(ex.Message & Environment.NewLine & ex.StackTrace)
                 End Try
             End If
-        ElseIf e.Cancelled = False And e.Error IsNot Nothing Then
+        ElseIf e.Cancelled = False AndAlso e.Error IsNot Nothing Then
             MessageBox.Show("Ein Fehler ist aufgetreten: " & Environment.NewLine & e.Error.Message & Environment.NewLine & e.Error.StackTrace)
         End If
     End Sub
 
     Private Sub downloadlegacyforgefilefinfished(sender As Object, e As ComponentModel.AsyncCompletedEventArgs)
-        If e.Cancelled = False And e.Error Is Nothing Then
+        If e.Cancelled = False AndAlso e.Error Is Nothing Then
             Downloadforgefile()
-        ElseIf e.Cancelled = False And e.Error IsNot Nothing Then
+        ElseIf e.Cancelled = False AndAlso e.Error IsNot Nothing Then
             MessageBox.Show("Ein Fehler ist aufgetreten: " & Environment.NewLine & e.Error.Message & Environment.NewLine & e.Error.StackTrace)
         End If
     End Sub
@@ -230,7 +230,7 @@ Public Class SplashScreen
     End Sub
 
     Private Async Sub DownloadsFinished(sender As Object, e As ComponentModel.AsyncCompletedEventArgs)
-        If e.Cancelled = False And e.Error Is Nothing Then
+        If e.Cancelled = False AndAlso e.Error Is Nothing Then
             lbl_status.Content = "Launcher startet..."
             Await ServerList.Load
             Await authenticationDatabase.Load()
@@ -239,7 +239,7 @@ Public Class SplashScreen
             Await LiteLoader.Load()
             Downloads.Load()
             Await Start()
-        ElseIf e.Cancelled = False And e.Error IsNot Nothing Then
+        ElseIf e.Cancelled = False AndAlso e.Error IsNot Nothing Then
             MessageBox.Show("Ein Fehler ist aufgetreten: " & Environment.NewLine & e.Error.Message & Environment.NewLine & e.Error.StackTrace)
         End If
     End Sub

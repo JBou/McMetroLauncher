@@ -15,7 +15,7 @@
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/BaseLight.xaml" />
                 <ResourceDictionary Source="resources/Languages/mcml.de-de.xaml"/>
             </ResourceDictionary.MergedDictionaries>
-            <Style TargetType="{x:Type TabItem}" x:Key="UnderTab">
+            <Style TargetType="{x:Type TabItem}" x:Key="UnderTab" BasedOn="{StaticResource MetroTabItem}">
                 <Setter Property="BorderBrush" Value="{DynamicResource AccentColorBrush}"/>
                 <Setter Property="Template">
                     <Setter.Value>
@@ -30,7 +30,7 @@
                                         <Style TargetType="Border">
                                             <Setter Property="Background">
                                                 <Setter.Value>
-                                                    <SolidColorBrush Color="#FFF3F3F3"/>
+                                                    <SolidColorBrush Color="{DynamicResource Gray10}"/>
                                                 </Setter.Value>
                                             </Setter>
                                         </Style>
@@ -48,11 +48,13 @@
                                         <ContentPresenter ContentSource="Header" RecognizesAccessKey="True" />
                                     </Label>
                                 </Border>
-                                <Canvas Height="10" Width="20" x:Name="arrow" Margin="25,0,0,0"
-                                        HorizontalAlignment="Left" SnapsToDevicePixels="True">
-                                    <Path Data="M 0 0 H 20 L 10 10 Z"
+                                <Canvas Height="10" Width="20" x:Name="arrow"
+                                        HorizontalAlignment="Stretch" SnapsToDevicePixels="True" ClipToBounds="True">
+                                    <Path x:Name="arrowpath" 
+                                          Data="M 0 0 H 20 L 10 10 Z"
                                           StrokeThickness="0"
-                                          Fill="{DynamicResource AccentColorBrush}"/>
+                                          Fill="{DynamicResource AccentColorBrush}" 
+                                          HorizontalAlignment="Center"/>
                                 </Canvas>
                             </StackPanel>
                             <ControlTemplate.Triggers>
@@ -73,6 +75,13 @@
                                         </Setter.Value>
                                     </Setter>
                                     <Setter TargetName="arrow" Property="Visibility" Value="Visible"/>
+                                    <Trigger.EnterActions >
+                                        <BeginStoryboard >
+                                            <Storyboard >
+                                                <ThicknessAnimation From="0,-8,0,0" To="0,0,0,0" Duration="00:00:00.100" Storyboard.TargetName="arrowpath" Storyboard.TargetProperty="Margin"/>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </Trigger.EnterActions>
                                 </Trigger>
                                 <Trigger Property="IsSelected" Value="false">
                                     <Setter  TargetName="root" Property="Foreground">
@@ -100,7 +109,7 @@
                     </Setter.Value>
                 </Setter>
             </Style>
-            <Style TargetType="{x:Type TabControl}" x:Key="VerticalTabControl">
+            <Style TargetType="{x:Type TabControl}" x:Key="VerticalTabControl" BasedOn="{StaticResource MetroTabControl}">
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="{x:Type TabControl}">
@@ -129,7 +138,7 @@
                     </Setter.Value>
                 </Setter>
             </Style>
-            <Style TargetType="{x:Type TabItem}" x:Key="VerticalTabItem">
+            <Style TargetType="{x:Type TabItem}" x:Key="VerticalTabItem" BasedOn="{StaticResource MetroTabItem}">
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="{x:Type TabItem}">

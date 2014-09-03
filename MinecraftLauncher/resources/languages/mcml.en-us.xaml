@@ -36,5 +36,8 @@
     <System:String x:Key="NewVersion">New version</System:String>
     <System:String x:Key="Update">Update</System:String>
     <System:String x:Key="UpdatePackageTitle">Changes in version {0} (Published on: {1})</System:String>
-    
+
+    <!-- Launcher Settings -->
+    <System:String x:Key="Language">Language</System:String>
+
 </ResourceDictionary>

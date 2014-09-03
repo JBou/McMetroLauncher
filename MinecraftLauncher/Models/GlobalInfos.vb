@@ -31,7 +31,7 @@ Public Module GlobalInfos
                 End If
             Next
             For Each Version As String In list_versions
-                If File.Exists(Path.Combine(versionsfolder.FullName, Version, Version & ".jar")) And File.Exists(Path.Combine(versionsfolder.FullName, Version, Version & ".json")) = True Then
+                If File.Exists(Path.Combine(versionsfolder.FullName, Version, Version & ".jar")) AndAlso File.Exists(Path.Combine(versionsfolder.FullName, Version, Version & ".json")) Then
                     Dim jo As JObject = JObject.Parse(File.ReadAllText(Path.Combine(versionsfolder.FullName, Version, Version & ".json")))
                     If jo("id").ToString = Version Then
                         Dim versionitem As New Versionslist.Version() With {
@@ -42,7 +42,7 @@ Public Module GlobalInfos
                             .custom = True}
                         GlobalInfos.Versions.versions.Add(versionitem)
                     Else
-                        'Falsche id wurde gefunden
+                        'TODO: Falsche id wurde gefunden
                     End If
                 End If
             Next

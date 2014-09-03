@@ -78,7 +78,7 @@ Public Class ForgeEditor
     End Sub
 
     Private Async Sub btn_save_Click(sender As Object, e As RoutedEventArgs) Handles btn_save.Click
-        If tb_build.Text = Nothing Or tb_downloadlink.Text = Nothing Or tb_time.Text = Nothing Then
+        If tb_build.Text = Nothing OrElse tb_downloadlink.Text = Nothing OrElse tb_time.Text = Nothing Then
             MessageBox.Show("Bitte fülle alle Felder aus!", "Fehler", MessageBoxButton.OK, MessageBoxImage.Information)
         Else
             Dim frg As New Forge.Forgeeintrag() With {

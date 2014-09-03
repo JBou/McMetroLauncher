@@ -67,7 +67,7 @@ Public Class ModEditor
     Private Sub ModEditor_Closing(sender As Object, e As ComponentModel.CancelEventArgs) Handles Me.Closing
         If saved = False Then
             Dim result As MessageBoxResult = MessageBox.Show("Beenden ohne zu spechern?", "Achtung", MessageBoxButton.YesNoCancel, MessageBoxImage.Information)
-            If result = MessageBoxResult.No Or result = MessageBoxResult.Cancel Then
+            If result = MessageBoxResult.No OrElse result = MessageBoxResult.Cancel Then
                 e.Cancel = True
             End If
         End If
@@ -175,7 +175,7 @@ Public Class ModEditor
 
     Private Async Sub btn_save_Click(sender As Object, e As RoutedEventArgs) Handles btn_save.Click
         Dim allinformation As Boolean = True
-        If tb_name.Text = Nothing Or tb_author.Text = Nothing Or tb_id.Text = Nothing Or tb_video.Text = Nothing Or tb_website.Text = Nothing Or cb_extension.SelectedIndex = -1 Or cb_type.SelectedIndex = -1 Then
+        If tb_name.Text = Nothing OrElse tb_author.Text = Nothing OrElse tb_id.Text = Nothing OrElse tb_video.Text = Nothing OrElse tb_website.Text = Nothing OrElse cb_extension.SelectedIndex = -1 OrElse cb_type.SelectedIndex = -1 Then
             allinformation = False
         End If
         If lb_versions.Items.Count = 0 Then

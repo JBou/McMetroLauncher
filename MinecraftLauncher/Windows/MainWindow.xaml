@@ -147,7 +147,7 @@
     </Controls:MetroWindow.Flyouts>
 
     <Grid>
-        <TabControl x:Name="TabControl_main" TabIndex="15">
+        <TabControl x:Name="TabControl_main" TabIndex="15" ItemContainerStyle="{StaticResource UnderTab}">
             <TabItem Header="Minecraft" x:Name="tabitem_Minecraft">
                 <Grid>
                     <Grid.ColumnDefinitions>
@@ -552,6 +552,34 @@
                         </StackPanel>
                     </StackPanel>
                 </Grid>
+            </TabItem>
+            <TabItem Header="Settings">
+                <TabControl ItemContainerStyle="{StaticResource VerticalTabItem}" TabStripPlacement="Left">
+                    <TabItem Header="Allgemein">
+                        <StackPanel Orientation="Vertical" Margin="10">
+                            <Grid Margin="0,10,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="250"/>
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="{DynamicResource Language}" VerticalAlignment="Center"/>
+                                    <TextBlock Text=":" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                                </StackPanel>
+                                <ComboBox Width="150" ItemsSource="{Binding Settings.Settings.lstLanguages}" SelectedItem="{Binding Settings.Settings.ActivLanguage, UpdateSourceTrigger=PropertyChanged}" Grid.Column="1" HorizontalAlignment="Left">
+                                    <ComboBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <StackPanel Orientation="Horizontal">
+                                                <Image Width="20" Height="20" DockPanel.Dock="Right" Source="{Binding Icon}"/>
+                                                <TextBlock Text="{Binding Name}" VerticalAlignment="Center" Margin="10,0,0,0"/>
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </ComboBox.ItemTemplate>
+                                </ComboBox>
+                            </Grid>
+                        </StackPanel>
+                    </TabItem>
+                </TabControl>
             </TabItem>
         </TabControl>
 

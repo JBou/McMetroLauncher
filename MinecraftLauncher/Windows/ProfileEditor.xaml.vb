@@ -168,7 +168,7 @@ Public Class ProfileEditor
                 javaArgs = tb_java_arguments.Text
             End If
             If cb_resolution.IsChecked = True Then
-                If tb_res_height.Text = Nothing Or tb_res_width.Text = Nothing Then
+                If tb_res_height.Text = Nothing OrElse tb_res_width.Text = Nothing Then
                     Await Me.ShowMessageAsync("Fehler", "Bitte geben Sie eine gültige Auflösung ein!", MessageDialogStyle.Affirmative, New MetroDialogSettings() With {.AffirmativeButtonText = "Ok", .ColorScheme = MetroDialogColorScheme.Accented})
                     Exit Sub
                 End If
@@ -176,7 +176,7 @@ Public Class ProfileEditor
                 resolution_height = tb_res_height.Text
             End If
 
-            If cb_snapshots.IsChecked Or cb_old_beta.IsChecked Or cb_old_alpha.IsChecked Then
+            If cb_snapshots.IsChecked OrElse cb_old_beta.IsChecked OrElse cb_old_alpha.IsChecked Then
                 If cb_snapshots.IsChecked = True Then
                     allowedReleaseTypes.Add("snapshot")
                 End If
@@ -195,7 +195,7 @@ Public Class ProfileEditor
                                     .height = resolution_height,
                                     .width = resolution_width
                 }
-            If resolution_height = Nothing And resolution_width = Nothing Then
+            If resolution_height = Nothing AndAlso resolution_width = Nothing Then
                 res = Nothing
             End If
 
@@ -219,10 +219,10 @@ Public Class ProfileEditor
             Else
                 Dim oldprofile As Profiles.Profile = Await Profiles.FromName(loadedprofile)
                 prof.playerUUID = oldprofile.playerUUID
-                If Profiles.List.Contains(tb_profile_name.Text.ToString) And tb_profile_name.Text.ToString <> loadedprofile Then
-                Await Me.ShowMessageAsync("Profil existiert bereits", "Dieses Profil existiert bereits!", MessageDialogStyle.Affirmative, New MetroDialogSettings() With {.AffirmativeButtonText = "Ok", .ColorScheme = MetroDialogColorScheme.Accented})
+                If Profiles.List.Contains(tb_profile_name.Text.ToString) AndAlso tb_profile_name.Text.ToString <> loadedprofile Then
+                    Await Me.ShowMessageAsync("Profil existiert bereits", "Dieses Profil existiert bereits!", MessageDialogStyle.Affirmative, New MetroDialogSettings() With {.AffirmativeButtonText = "Ok", .ColorScheme = MetroDialogColorScheme.Accented})
                 Else
-                Await Profiles.Edit(loadedprofile, prof)
+                    Await Profiles.Edit(loadedprofile, prof)
                 End If
             End If
 
@@ -275,7 +275,7 @@ Public Class ProfileEditor
 
     Private Async Sub cb_old_alpha_beta_PreviewMouseDown(sender As Object, e As RoutedEventArgs) Handles cb_old_beta.PreviewMouseDown, cb_old_alpha.PreviewMouseDown
         If Not DirectCast(sender, CheckBox).IsChecked Then
-            If sender Is cb_old_beta Or sender Is cb_old_alpha Then
+            If sender Is cb_old_beta OrElse sender Is cb_old_alpha Then
                 e.Handled = True
                 Dim msgtext As String = "Diese Versionen sind sehr veraltet und können unstabil sein. Alle Fehler, Abstürze, fehlende Funktionen oder andere Defekte die du finden könnstest werden in diesen Versionen nicht mehr behoben." & Environment.NewLine & "Es wird stark empfohlen, dass du diese Versionen in einem separatem Verzeichniss spielst, um Datenverlust zu vermeiden. Wir sind nicht verantwortlich für den Schaden an deinen Daten!" & Environment.NewLine & Environment.NewLine & "Bist du dir sicher, dass du fortsetzen möchstest?"
                 Dim result As MessageDialogResult = Await Me.ShowMessageAsync("Achtung", msgtext, MessageDialogStyle.AffirmativeAndNegativeAndSingleAuxiliary, New MetroDialogSettings() With {.AffirmativeButtonText = "Ja", .NegativeButtonText = "Nein", .FirstAuxiliaryButtonText = "Abbrechen", .ColorScheme = MetroDialogColorScheme.Accented, .AnimateShow = True, .AnimateHide = True})

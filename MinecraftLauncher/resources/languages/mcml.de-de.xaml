@@ -42,4 +42,8 @@
     <System:String x:Key="LiteLoaderDescription">LiteLoader ist ein ModLoader der dafür entwickelt wurde, grundlegende Loader Funktionalitaten für Mods anzubieten, die nicht den Spielmechanismus ändern müssen. Er wurde dafür entwickelt, neben Minecraft Forge zu laufen und zwischen LiteLoader und Forge Mods treten keine Konflikte auf.</System:String>
     <System:String x:Key="ForgeDescription">Minecraft Forge ist ein ModLoader mit dem ihr einfacher Mods installieren könnt. Er hilft dabei, dass die Mods untereinander kompatibel sind. Die meisten Mods basieren auf Forge. Du kannst Mods für Forge unter dem Tab &quot;Mods&quot; installieren.</System:String>
     <System:String x:Key="FeedTheBeastDescription">Mit den Feed The Beast Launcher kannst du viele bekannte Modpacks spielen wie z.B. Unleashed, Unhinged, FTB Ultimate, Direwolf 20... die sehr viele Mods beinhalten. Mehr Infos findest du auf http://feed-the-beast.com.</System:String>
+    
+    <!-- Launcher Settings -->
+    <System:String x:Key="Language">Sprache</System:String>
+    
 </ResourceDictionary>

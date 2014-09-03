@@ -130,7 +130,7 @@ Public Class MainViewModel
                     Return "Gib einen Benutzernamen ein"
                 ElseIf Not OnlineMode Then
                     'Username Validation
-                    If Username.Length < 3 Or Username.Length > 16 Then
+                    If Username.Length < 3 OrElse Username.Length > 16 Then
                         Return "3 - 16 Zeichen"
                     Else
                         Dim regex As New Regex("^[A-Za-z0-9_-]{2,16}$")

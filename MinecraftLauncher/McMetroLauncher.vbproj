@@ -199,6 +199,7 @@
     <Compile Include="Models\CryptedTextAnimation.vb" />
     <Compile Include="Models\Forge.vb" />
     <Compile Include="Models\GlobalInfos.vb" />
+    <Compile Include="Models\Language.vb" />
     <Compile Include="ViewModels\MainViewModel.vb" />
     <Compile Include="Models\Session.vb" />
     <Compile Include="Models\SimpleCommand.vb" />

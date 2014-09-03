@@ -45,10 +45,45 @@ Public Class Settings
         File.WriteAllText(SettingsFile.FullName, text)
     End Sub
     Public Class cls_Settings
-        Private _mcpfad As String, _accent As String, _Theme As String, _ServerAddress As String, _DirectJoin As Boolean, _WindowState As WindowState, _JavaPath As String
+        Inherits PropertyChangedBase
+        Private _mcpfad As String, _accent As String, _Theme As String, _ServerAddress As String, _DirectJoin As Boolean, _WindowState As WindowState, _JavaPath As String, _lstLanguages As IList(Of Language)
         Public Sub New()
-
+            _lstLanguages = New List(Of Language) From {New Language("Deutsch", "/resources/languages/MSL.de-de.xaml", "de-de", New Uri("/resources/languages/icons/de.png", UriKind.Relative)), New Language("English", "/resources/languages/MSL.en-us.xaml", "en-us", New Uri("/resources/languages/icons/en.png", UriKind.Relative))}
         End Sub
+
+        Private Sub LoadDefaultLanguage()
+            Dim currentCultur = System.Threading.Thread.CurrentThread.CurrentCulture
+            If currentCultur.TwoLetterISOLanguageName = "de" Then
+                Me.ActivLanguage = lstLanguages(0)
+            Else
+                Me.ActivLanguage = lstLanguages(1)
+            End If
+        End Sub
+
+        Private _lastLanguage As ResourceDictionary
+        Private _ActivLanguage As Language
+
+        Public Property ActivLanguage() As Language
+            Get
+                Return _ActivLanguage
+            End Get
+            Set(ByVal value As Language)
+                SetProperty(value, _ActivLanguage)
+                Dim dic = New ResourceDictionary() With {.Source = New Uri(value.Path, UriKind.Relative)}
+                If _lastLanguage IsNot Nothing Then
+                    Application.Current.Resources.Remove(_lastLanguage)
+                End If
+                Application.Current.Resources.MergedDictionaries.Add(dic)
+                _lastLanguage = dic
+            End Set
+        End Property
+
+        <JsonIgnore>
+        Public ReadOnly Property lstLanguages As IList(Of Language)
+            Get
+                Return _lstLanguages
+            End Get
+        End Property
         Public Property mcpfad As String
             Get
                 Return _mcpfad

@@ -58,7 +58,7 @@ Public Class FormattingCodes
             Dim str1 As String = FormattedTextlist.ElementAt(index).Text
             Dim str2 As String = FormattedTextlist.ElementAt(index + 1).Text
             Dim substring As String = String.Join(Nothing, str1, str2)
-            If Formattingcodes.Select(Function(p) p.Code).Contains(substring) = True Or Colorcodes.Select(Function(p) p.Code).Contains(substring) = True Then
+            If Formattingcodes.Select(Function(p) p.Code).Contains(substring) = True OrElse Colorcodes.Select(Function(p) p.Code).Contains(substring) = True Then
                 FormattedTextlist.RemoveAt(index)
                 FormattedTextlist.RemoveAt(index)
             Else

@@ -55,7 +55,7 @@ Namespace JBou.Controls
             SetOrder(_draggingObject, index)
             Dim topLeft = mousePosition + _delta
             Dim newPosition = New Rect(topLeft, GetPosition(_draggingObject).Size)
-            If ColumnCount = 1 And OnlyVerticalAnimation = True Then
+            If ColumnCount = 1 AndAlso OnlyVerticalAnimation = True Then
                 Dim pos As Point = topLeft
                 pos.X = GetPosition(_draggingObject).X
                 newPosition = New Rect(pos, GetPosition(_draggingObject).Size)
@@ -108,7 +108,7 @@ Namespace JBou.Controls
                 SetDesiredPosition(child, _strategy.GetPosition(index))
             Next
             Dim resultsize As Size = _strategy.ResultSize
-            If Double.IsNaN(_strategy.ResultSize.Width) Or Double.IsInfinity(_strategy.ResultSize.Width) Then
+            If Double.IsNaN(_strategy.ResultSize.Width) OrElse Double.IsInfinity(_strategy.ResultSize.Width) Then
                 resultsize.Width = Me.RenderSize.Width
             End If
             Return resultsize
@@ -121,7 +121,7 @@ Namespace JBou.Controls
                 If Double.IsNaN(position.Top) Then
                     position = GetDesiredPosition(child)
                 End If
-                If Double.IsNaN(_strategy.ResultSize.Width) Or Double.IsInfinity(_strategy.ResultSize.Width) Then
+                If Double.IsNaN(_strategy.ResultSize.Width) OrElse Double.IsInfinity(_strategy.ResultSize.Width) Then
                     position.Width = finalSize.Width
                 End If
                 child.Arrange(position)

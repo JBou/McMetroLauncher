@@ -79,7 +79,7 @@ Public Class ModVersionEditor
     End Sub
 
     Private Sub btn_save_Click(sender As Object, e As RoutedEventArgs) Handles btn_save.Click
-        If cb_versions.SelectedIndex = -1 Or tb_downloadlink.Text = Nothing Then
+        If cb_versions.SelectedIndex = -1 OrElse tb_downloadlink.Text = Nothing Then
             MessageBox.Show("Bitte fülle alle Felder aus!", "Fehler", MessageBoxButton.OK, MessageBoxImage.Information)
         Else
             modVersion = New Modifications.Mod.Version With {
