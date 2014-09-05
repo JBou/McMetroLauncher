@@ -80,8 +80,8 @@ Public Module GlobalInfos
     End Function
 
     Public Function GetJavaPath() As String
-        If Not Settings.Settings.JavaPath = Nothing Then
-            Return Settings.Settings.JavaPath()
+        If Not MainViewModel.Instance.Settings.JavaPath = Nothing Then
+            Return MainViewModel.Instance.Settings.JavaPath()
         End If
         If Not GetJavaHome() = Nothing Then
             Return Path.Combine(GetJavaHome(), "bin", "java.exe")
@@ -162,12 +162,8 @@ Public Module GlobalInfos
 
     '--------supportedLauncherVersion---------
     Public Const supportedLauncherVersion As Integer = 14
-    Public resManager As ResourceManager = My.Resources.ResourceManager
-    Public AccentColors As List(Of AccentColorMenuData) = ThemeManager.Accents.Select(Function(a) New AccentColorMenuData() With {.Name = a.Name, .ColorBrush = CType(a.Resources("AccentColorBrush"), Windows.Media.Brush)}).ToList()
-    Public AppThemes As List(Of AppThemeMenuData) = ThemeManager.AppThemes.Select(Function(a) New AppThemeMenuData() With {.Name = a.Name, .BorderColorBrush = CType(a.Resources("BlackColorBrush"), Windows.Media.Brush), .ColorBrush = CType(a.Resources("WhiteColorBrush"), Windows.Media.Brush)}).ToList
-    Public ViewModel As New MainViewModel
     '--------------MainWindow------------------
-    Public Main As New MainWindow
+    Public Property Main As New MainWindow
     '------------------------------------------
     Public ReadOnly Property AssemblyVersion As String
         Get

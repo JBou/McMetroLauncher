@@ -12,7 +12,7 @@ Public Class ServerList
     Implements INotifyPropertyChanged
 
     Shared Sub New()
-        ViewModel.Servers = New ObservableCollection(Of Server)
+        MainViewModel.Instance.Servers = New ObservableCollection(Of Server)
     End Sub
 
     Public Shared Sub Save()
@@ -23,7 +23,7 @@ Public Class ServerList
         Dim nbt = New NbtFile()
         nbt.RootTag = New NbtCompound("")
         Dim list = New NbtList("servers", NbtTagType.Compound)
-        For Each server As Server In ViewModel.Servers
+        For Each server As Server In MainViewModel.Instance.Servers
             Dim compound = New NbtCompound()
             compound.Add(New NbtString("name", server.name))
             compound.Add(New NbtString("ip", server.ip))
@@ -67,10 +67,10 @@ Public Class ServerList
                                    ls.Add(entry)
                                Next
                                Application.Current.Dispatcher.Invoke((Sub()
-                                                                          ViewModel.Servers = ls
+                                                                          MainViewModel.Instance.Servers = ls
                                                                       End Sub))
                            Else
-                               ViewModel.Servers = New ObservableCollection(Of Server)
+                               MainViewModel.Instance.Servers = New ObservableCollection(Of Server)
                            End If
                        End Sub)
 

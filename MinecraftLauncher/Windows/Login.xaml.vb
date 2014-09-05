@@ -7,15 +7,6 @@ Imports System.ComponentModel
 Imports System.Text.RegularExpressions
 
 Public Class Login
-    Public Sub New()
-
-        ' Dieser Aufruf ist für den Designer erforderlich.
-        InitializeComponent()
-
-        ' Fügen Sie Initialisierungen nach dem InitializeComponent()-Aufruf hinzu.
-        Me.DataContext = ViewModel
-    End Sub
-
 
     Public Session As Session
 
@@ -67,14 +58,14 @@ Public Class Login
                 Await session.Refresh
                 authenticationDatabase.List.Where(Function(p) p.uuid = Account.uuid).First.accessToken = session.AccessToken
                 Await authenticationDatabase.Save()
-                Dim profile As Profiles.Profile = Await Profiles.FromName(ViewModel.selectedprofile)
+                Dim profile As Profiles.Profile = Await Profiles.FromName(MainViewModel.Instance.selectedprofile)
                 profile.playerUUID = session.SelectedProfile.Id
-                Await Profiles.Edit(ViewModel.selectedprofile, profile)
+                Await Profiles.Edit(MainViewModel.Instance.selectedprofile, profile)
                 Await Main.ShowUsername_Avatar(session.ToAccount)
             Else
-                Dim profile As Profiles.Profile = Await Profiles.FromName(ViewModel.selectedprofile)
+                Dim profile As Profiles.Profile = Await Profiles.FromName(MainViewModel.Instance.selectedprofile)
                 profile.playerUUID = Account.uuid.Replace("-", "")
-                Await Profiles.Edit(ViewModel.selectedprofile, profile)
+                Await Profiles.Edit(MainViewModel.Instance.selectedprofile, profile)
                 Await Main.ShowUsername_Avatar(Account)
             End If
             Main.Show()
@@ -108,9 +99,9 @@ Public Class Login
                     End If
                     authenticationDatabase.List.Add(Session.ToAccount)
                     Await authenticationDatabase.Save()
-                    Dim profile As Profiles.Profile = Await Profiles.FromName(ViewModel.selectedprofile)
+                    Dim profile As Profiles.Profile = Await Profiles.FromName(MainViewModel.Instance.selectedprofile)
                     profile.playerUUID = Session.SelectedProfile.Id
-                    Await Profiles.Edit(ViewModel.selectedprofile, profile)
+                    Await Profiles.Edit(MainViewModel.Instance.selectedprofile, profile)
                     Await Main.ShowUsername_Avatar(Session.ToAccount)
                 Else
                     If authenticationDatabase.List.Select(Function(p) p.userid).Contains(tb_username.Text) Then
@@ -123,9 +114,9 @@ Public Class Login
                                                     .userid = tb_username.Text}
                     authenticationDatabase.List.Add(account)
                     Await authenticationDatabase.Save()
-                    Dim profile As Profiles.Profile = Await Profiles.FromName(ViewModel.selectedprofile)
+                    Dim profile As Profiles.Profile = Await Profiles.FromName(MainViewModel.Instance.selectedprofile)
                     profile.playerUUID = account.uuid.Replace("-", "")
-                    Await Profiles.Edit(ViewModel.selectedprofile, profile)
+                    Await Profiles.Edit(MainViewModel.Instance.selectedprofile, profile)
                     Await Main.ShowUsername_Avatar(account)
                 End If
                 Main.Show()
@@ -163,6 +154,8 @@ Public Class Login
     End Sub
 
     Private Sub UpdateValidation()
-        tb_username.GetBindingExpression(TextBox.TextProperty).UpdateSource()
+        If tb_username IsNot Nothing Then
+            tb_username.GetBindingExpression(TextBox.TextProperty).UpdateSource()
+        End If
     End Sub
 End Class

@@ -12,20 +12,6 @@ Public Class Profiles
     Public Shared o As String
     Public Shared profilesjo As JObject
 
-    Private Shared _selectedprofile As String
-    Public Shared Property selectedprofile() As String
-        Get
-            Return _selectedprofile
-        End Get
-        Set(value As String)
-            _selectedprofile = value
-            Dim o As String = IO.File.ReadAllText(launcher_profiles_json.FullName)
-            Dim jo As JObject = JObject.Parse(o)
-            jo("selectedProfile") = ViewModel.selectedprofile
-            IO.File.WriteAllText(launcher_profiles_json.FullName, jo.ToString)
-        End Set
-    End Property
-
     Public Shared Sub Load()
         o = File.ReadAllText(launcher_profiles_json.FullName)
         profilesjo = JObject.Parse(o)
@@ -77,12 +63,12 @@ Public Class Profiles
     Public Shared Sub Get_Profiles()
         Profiles.Load()
         Dim jo As JObject = Profiles.profilesjo
-        ViewModel.Profiles = New ObjectModel.ObservableCollection(Of String)(Profiles.List)
+        MainViewModel.Instance.Profiles = New ObjectModel.ObservableCollection(Of String)(Profiles.List)
         If jo.Properties.Select(Function(p) p.Name).Contains("selectedProfile") = True Then
-            ViewModel.selectedprofile = jo("selectedProfile").ToString
+            MainViewModel.Instance.selectedprofile = jo("selectedProfile").ToString
         Else
-            jo.Add(New JProperty("selectedProfile", ViewModel.Profiles.First))
-            ViewModel.selectedprofile = ViewModel.Profiles.First
+            jo.Add(New JProperty("selectedProfile", MainViewModel.Instance.Profiles.First))
+            MainViewModel.Instance.selectedprofile = MainViewModel.Instance.Profiles.First
         End If
         If Profiles.List.Count = 0 Then
             'StandartProfile schreiben

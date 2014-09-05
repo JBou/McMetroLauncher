@@ -24,10 +24,10 @@ Public Class SplashScreen
     Dim dllegacyforgefile As New WebClient
 
 
-    Public Function internetconnection() As Boolean
+    Public Async Function internetconnection() As Task(Of Boolean)
         Try
             Using client = New WebClient()
-                Using stream = client.OpenRead("http://www.google.com")
+                Using stream = Await client.OpenReadTaskAsync("http://www.google.com")
                     Return True
                 End Using
             End Using
@@ -47,16 +47,16 @@ Public Class SplashScreen
     End Sub
 
     Private Async Sub SplashScreen_Loaded(sender As Object, e As RoutedEventArgs) Handles Me.Loaded
-        Await Settings.Load()
-        If Settings.Settings.Accent <> Nothing AndAlso ThemeManager.Accents.Select(Function(p) p.Name).Contains(Settings.Settings.Accent) Then
+        Await MainViewModel.Instance.LoadSettings()
+        If MainViewModel.Instance.Settings.Accent <> Nothing AndAlso ThemeManager.Accents.Select(Function(p) p.Name).Contains(MainViewModel.Instance.Settings.Accent) Then
             Dim theme = ThemeManager.DetectAppStyle(Application.Current)
-            Dim accent = ThemeManager.Accents.Where(Function(p) p.Name = Settings.Settings.Accent).FirstOrDefault
+            Dim accent = ThemeManager.Accents.Where(Function(p) p.Name = MainViewModel.Instance.Settings.Accent).FirstOrDefault
             If accent Is Nothing Then accent = ThemeManager.Accents.First
             ThemeManager.ChangeAppStyle(Application.Current, accent, theme.Item1)
         End If
-        If Settings.Settings.Theme <> Nothing AndAlso ThemeManager.AppThemes.Select(Function(p) p.Name).Contains(Settings.Settings.Theme) Then
+        If MainViewModel.Instance.Settings.Theme <> Nothing AndAlso ThemeManager.AppThemes.Select(Function(p) p.Name).Contains(MainViewModel.Instance.Settings.Theme) Then
             Dim theme = ThemeManager.DetectAppStyle(Application.Current)
-            Dim appTheme = ThemeManager.AppThemes.Where(Function(p) p.Name = Settings.Settings.Theme).FirstOrDefault
+            Dim appTheme = ThemeManager.AppThemes.Where(Function(p) p.Name = MainViewModel.Instance.Settings.Theme).FirstOrDefault
             If appTheme Is Nothing Then appTheme = ThemeManager.AppThemes.First
             ThemeManager.ChangeAppStyle(Application.Current, theme.Item2, appTheme)
         End If
@@ -88,15 +88,15 @@ Public Class SplashScreen
         End If
 
 
-        If internetconnection() = True Then
+        If Await internetconnection() = True Then
             If GetJavaPath() = Nothing OrElse New FileInfo(GetJavaPath()).Exists = False Then
-                Settings.Settings.JavaPath = Nothing
-                Settings.Save()
+                MainViewModel.Instance.Settings.JavaPath = Nothing
+                MainViewModel.Instance.Settings.Save()
                 Dim result As New frmGetJavaPath()
                 result.ShowDialog()
                 If result.DialogResult = True Then
-                    Settings.Settings.JavaPath = result.JavaPath
-                    Settings.Save()
+                    MainViewModel.Instance.Settings.JavaPath = result.JavaPath
+                    MainViewModel.Instance.Settings.Save()
                 Else
                     Application.Current.Shutdown()
                 End If
@@ -245,15 +245,15 @@ Public Class SplashScreen
     End Sub
 
     Async Function Start() As Task
-        If Settings.Settings.WindowState <> Windows.WindowState.Minimized Then
-            Main.WindowState = Settings.Settings.WindowState
+        If MainViewModel.Instance.Settings.WindowState <> Windows.WindowState.Minimized Then
+            Main.WindowState = MainViewModel.Instance.Settings.WindowState
         End If
         Main.Webcontrol_news.Visibility = Windows.Visibility.Collapsed
         Main.tb_modsfolder.Text = modsfolder.FullName
         Main.Load_ModVersions()
         Profiles.Get_Profiles()
-        Main.cb_direct_join.IsChecked = Settings.Settings.DirectJoin
-        ViewModel.Directjoinaddress = Settings.Settings.ServerAddress
+        Main.cb_direct_join.IsChecked = MainViewModel.Instance.Settings.DirectJoin
+        MainViewModel.Instance.Directjoinaddress = MainViewModel.Instance.Settings.ServerAddress
         Try
             If CommandLineArgs.Count > 1 Then
                 Dim url As New Uri(CommandLineArgs(1))
@@ -268,7 +268,7 @@ Public Class SplashScreen
                 'Next
                 If url.Host = "join" Then
                     If url.Segments.Count > 1 Then
-                        ViewModel.Directjoinaddress = url.Segments.ElementAt(1)
+                        MainViewModel.Instance.Directjoinaddress = url.Segments.ElementAt(1)
                         Main.cb_direct_join.IsChecked = True
                     End If
                 End If

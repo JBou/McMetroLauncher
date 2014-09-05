@@ -122,7 +122,7 @@ Public Class ProfileEditor
         Try
             Await Versions_Load()
             Get_Versions()
-            loadedprofile = ViewModel.selectedprofile
+            loadedprofile = MainViewModel.Instance.selectedprofile
             If Newprofile = True Then
                 Await StandardValues()
             Else

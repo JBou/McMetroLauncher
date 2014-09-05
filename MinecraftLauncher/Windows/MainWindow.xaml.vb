@@ -39,7 +39,6 @@ Imports McMetroLauncher.Forge
 #End Region
 
 Public Class MainWindow
-    Implements INotifyPropertyChanged
 #Region "Variables"
     '****************Webclients*****************
     WithEvents wcresources As New System.Net.WebClient ' Für das WebClient steuerelement mit Events z.b. DownloadProgressChanged... 
@@ -82,51 +81,6 @@ Public Class MainWindow
     '******************Others*******************
 #End Region
 
-#Region "PropertyChanged"
-    Public Event PropertyChanged(sender As Object, e As PropertyChangedEventArgs) Implements INotifyPropertyChanged.PropertyChanged
-
-    ''' <summary>
-    ''' Raises the PropertyChanged event if needed.
-    ''' </summary>
-    ''' <param name="propertyName">The name of the property that changed.</param>
-    Shadows Sub OnPropertyChanged(<CallerMemberName> Optional propertyName As String = "")
-        RaiseEvent PropertyChanged(Me, New PropertyChangedEventArgs(propertyName))
-    End Sub
-#End Region
-
-#Region "GUI"
-    Private _pb_download_Value As Double
-    Private _pb_download_IsIndeterminate As Boolean
-    Private _lbl_downloadstatus_Content As String
-    Public Property pb_download_Value As Double
-        Get
-            Return _pb_download_Value
-        End Get
-        Set(value As Double)
-            _pb_download_Value = value
-            OnPropertyChanged("pb_download_Value")
-        End Set
-    End Property
-    Public Property pb_download_IsIndeterminate As Boolean
-        Get
-            Return _pb_download_IsIndeterminate
-        End Get
-        Set(value As Boolean)
-            _pb_download_IsIndeterminate = value
-            OnPropertyChanged("pb_download_IsIndeterminate")
-        End Set
-    End Property
-    Public Property lbl_downloadstatus_Content As String
-        Get
-            Return _lbl_downloadstatus_Content
-        End Get
-        Set(value As String)
-            _lbl_downloadstatus_Content = value
-            OnPropertyChanged("lbl_downloadstatus_Content")
-        End Set
-    End Property
-#End Region
-
 #Region "Mainwindow Events"
     Public Sub New()
 
@@ -134,7 +88,6 @@ Public Class MainWindow
         InitializeComponent()
 
         ' Fügen Sie Initialisierungen nach dem InitializeComponent()-Aufruf hinzu.
-        Me.DataContext = ViewModel
         AddHandler ThemeManager.IsThemeChanged, AddressOf IsThemeChanged
         Me.MetroDialogOptions.ColorScheme = MetroDialogColorScheme.Theme
     End Sub
@@ -175,9 +128,9 @@ Public Class MainWindow
 #End Region
 
     Sub IsThemeChanged(sender As Object, e As OnThemeChangedEventArgs)
-        Settings.Settings.Theme = e.AppTheme.Name
-        Settings.Settings.Accent = e.Accent.Name
-        Settings.Save()
+        MainViewModel.Instance.Settings.Theme = e.AppTheme.Name
+        MainViewModel.Instance.Settings.Accent = e.Accent.Name
+        MainViewModel.Instance.Settings.Save()
     End Sub
 
     Private Sub ShowSettings(sender As Object, e As RoutedEventArgs)
@@ -250,7 +203,7 @@ Public Class MainWindow
             assets_index_name = "legacy"
         End If
         resourcesdownloading = True
-        pb_download_IsIndeterminate = True
+        MainWindowViewModel.Instance.pb_download_IsIndeterminate = True
         If resources_dir.Exists = False Then
             resources_dir.Create()
         End If
@@ -264,7 +217,7 @@ Public Class MainWindow
         Else
             Await Parse_Resources()
         End If
-        pb_download_IsIndeterminate = False
+        MainWindowViewModel.Instance.pb_download_IsIndeterminate = False
     End Sub
 
     Async Sub downloadindexesfinished(sender As Object, e As System.ComponentModel.AsyncCompletedEventArgs)
@@ -282,7 +235,7 @@ Public Class MainWindow
     End Sub
 
     Async Function Parse_Resources() As Task
-        pb_download_IsIndeterminate = False
+        MainWindowViewModel.Instance.pb_download_IsIndeterminate = False
         Await Task.Run(New Action(Sub()
                                       Write("Lade Resourcen herunter")
                                       Dim indexjo As JObject = JObject.Parse(File.ReadAllText(indexesfile(assets_index_name).FullName))
@@ -312,7 +265,7 @@ Public Class MainWindow
 
     Sub DownloadResources()
         If resourcesdownloadindex < resourcesindexes.objects.Count Then
-            pb_download_Value = resourcesdownloadindex / (resourcesindexes.objects.Count - 1) * 100
+            MainWindowViewModel.Instance.pb_download_Value = resourcesdownloadindex / (resourcesindexes.objects.Count - 1) * 100
             currentresourcesobject = resourcesindexes.objects.Item(resourcesdownloadindex)
             Dim resource As New FileInfo(resourcefile(currentresourcesobject.hash).FullName.Replace("/", "\"))
             Dim todownload As Boolean = True
@@ -400,12 +353,12 @@ Public Class MainWindow
             bytes = e.BytesReceived / 1000000
             Einheit = "MB"
         End If
-        lbl_downloadstatus_Content = String.Format("{0}% - {1} {2} von {3} {4} heruntergeladen", e.ProgressPercentage, Math.Round(bytes, 2), Einheit, Math.Round(totalbytes, 2), Einheit)
+        MainWindowViewModel.Instance.lbl_downloadstatus_Content = String.Format("{0}% - {1} {2} von {3} {4} heruntergeladen", e.ProgressPercentage, Math.Round(bytes, 2), Einheit, Math.Round(totalbytes, 2), Einheit)
     End Sub
 
     Private Sub wc_libraries_DownloadProgressChanged(sender As Object, e As DownloadProgressChangedEventArgs) Handles wc_libraries.DownloadProgressChanged
         If librariesdownloadindex < Startinfos.Versionsinfo.libraries.Count Then
-            pb_download_Value = (librariesdownloadindex / Startinfos.Versionsinfo.libraries.Count) * 100 + e.ProgressPercentage / Startinfos.Versionsinfo.libraries.Count
+            MainWindowViewModel.Instance.pb_download_Value = (librariesdownloadindex / Startinfos.Versionsinfo.libraries.Count) * 100 + e.ProgressPercentage / Startinfos.Versionsinfo.libraries.Count
         End If
     End Sub
 
@@ -609,7 +562,7 @@ Public Class MainWindow
 
     Async Sub DownloadLibraries()
         Try
-            pb_download_Value = librariesdownloadindex / Startinfos.Versionsinfo.libraries.Count * 100
+            MainWindowViewModel.Instance.pb_download_Value = librariesdownloadindex / Startinfos.Versionsinfo.libraries.Count * 100
             If librariesdownloadindex < Startinfos.Versionsinfo.libraries.Count Then
                 Currentlibrary = Startinfos.Versionsinfo.libraries.Item(librariesdownloadindex)
                 Dim allowdownload As Boolean = True
@@ -709,8 +662,6 @@ Public Class MainWindow
                         Else
                             If forgeuniversal = True Then
                                 Write("Minecraft Forge Library wird automatisch heruntergeladen (Versuch " & librariesdownloadtry & "): " & librarypath.FullName)
-                            Else
-                                Write("Versuche Library von alternativer Quelle herunterzuladen (Versuch " & librariesdownloadtry & "): " & librarypath.FullName)
                             End If
                         End If
                         If downloadforgelib = False Then
@@ -876,14 +827,14 @@ Public Class MainWindow
         Dim libraries As String = Nothing
         Dim gamedir As String = Nothing
         Dim argumentreplacements As List(Of String()) = New List(Of String())
-        Dim natives As String = UnpackDirectory
+        Dim natives As String = """" & UnpackDirectory & """"
         Dim javaargs As String = Nothing
         Dim height As String = Nothing
         Dim width As String = Nothing
-
+        Dim Teil_Arguments As String = Nothing
 
         Await Task.Run(New Action(Async Sub()
-                                      Versionsjar = Path.Combine(versionsfolder.FullName, Startinfos.Version.id, Startinfos.Version.id & ".jar")
+                                      Versionsjar = """" & Path.Combine(versionsfolder.FullName, Startinfos.Version.id, Startinfos.Version.id & ".jar") & """"
                                       'Split by Space --> (Chr(32))
                                       If Startinfos.Versionsinfo Is Nothing Then
                                           Await Parse_VersionsInfo(Startinfos.Version)
@@ -891,10 +842,10 @@ Public Class MainWindow
                                       For i = 0 To Startinfos.Versionsinfo.libraries.Count - 1
                                           Dim librarytemp As Library = Startinfos.Versionsinfo.libraries.Item(i)
                                           If librarytemp.natives Is Nothing Then
-                                              libraries &= Path.Combine(librariesfolder.FullName, librarytemp.path.Replace("/", "\") & ";")
+                                              libraries &= """" & Path.Combine(librariesfolder.FullName, librarytemp.path.Replace("/", "\")) & """" & ";"
                                           Else
                                               If librarytemp.natives.windows IsNot Nothing Then
-                                                  libraries &= Path.Combine(librariesfolder.FullName, librarytemp.path.Replace("/", "\") & ";")
+                                                  libraries &= """" & Path.Combine(librariesfolder.FullName, librarytemp.path.Replace("/", "\")) & """" & ";"
                                               End If
                                           End If
                                       Next
@@ -959,24 +910,25 @@ Public Class MainWindow
                                       End If
 
                                       If Startinfos.Profile.resolution.height <> Nothing AndAlso Startinfos.Profile.resolution.height <> "0" Then
-                                          height = " --height " & Startinfos.Profile.resolution.height
+                                          height = "--height " & Startinfos.Profile.resolution.height
                                       Else
                                           height = Nothing
                                       End If
 
                                       If Startinfos.Profile.resolution.width <> Nothing AndAlso Startinfos.Profile.resolution.width <> "0" Then
-                                          width = " --width " & Startinfos.Profile.resolution.width
+                                          width = "--width " & Startinfos.Profile.resolution.width
                                       Else
                                           width = Nothing
                                       End If
 
-                                      Arguments = javaargs & " -Djava.library.path=" & natives & " -cp " & libraries & Versionsjar & " " & mainClass & " " & String.Join(Chr(32), minecraftArguments) & height & width
+                                      Teil_Arguments = String.Join(Chr(32), mainClass, String.Join(Chr(32), minecraftArguments), height, width)
+                                      Arguments = javaargs & " -Djava.library.path=" & natives & " -cp " & libraries & Versionsjar & " " & Teil_Arguments
                                   End Sub))
         'StartArgumente und mainclass ... von JSON IO.File
         'Überprüfen, ob username eingegeben wurde!
         'Libraries zum Start hinzufügen!
         If Startinfos.IsStarting = True Then
-            Start_MC_Process(mainClass & " " & String.Join(Chr(32), minecraftArguments) & height & width)
+            Start_MC_Process(Teil_Arguments)
         End If
     End Sub
 
@@ -1021,10 +973,10 @@ Public Class MainWindow
 
     Public Sub StartfromServerlist()
         If Startinfos.Server.JustStarted = False Then
-            If ViewModel.Directjoinaddress.Contains(":") = False Then
-                Startinfos.Server.ServerAdress = ViewModel.Directjoinaddress
+            If MainViewModel.Instance.Directjoinaddress.Contains(":") = False Then
+                Startinfos.Server.ServerAdress = MainViewModel.Instance.Directjoinaddress
             Else
-                Dim address As String() = ViewModel.Directjoinaddress.Split(CChar(":"))
+                Dim address As String() = MainViewModel.Instance.Directjoinaddress.Split(CChar(":"))
                 Startinfos.Server.ServerAdress = address(0)
                 Startinfos.Server.ServerPort = address(1)
             End If
@@ -1041,7 +993,7 @@ Public Class MainWindow
             '    Await Me.ShowMessageAsync(Nothing, "Gib bitte einen Usernamen ein!", MessageDialogStyle.Affirmative, New MetroDialogSettings() With {.AffirmativeButtonText = "Ok", .ColorScheme = MetroDialogColorScheme.Accented})
         Else
             If Startinfos.Profile Is Nothing Then
-                Startinfos.Profile = Await Profiles.FromName(ViewModel.selectedprofile)
+                Startinfos.Profile = Await Profiles.FromName(MainViewModel.Instance.selectedProfile)
             End If
             Await Versions_Load()
             tabitem_console.IsSelected = True
@@ -1049,12 +1001,12 @@ Public Class MainWindow
             If Await Check_Account() Then
                 If Startinfos.Server.JustStarted = False Then
                     If cb_direct_join.IsChecked = True Then
-                        If ViewModel.Directjoinaddress <> Nothing Then
+                        If MainViewModel.Instance.Directjoinaddress <> Nothing Then
                             If Startinfos.Server.JustStarted = False Then
-                                If ViewModel.Directjoinaddress.Contains(":") = False Then
-                                    Startinfos.Server.ServerAdress = ViewModel.Directjoinaddress
+                                If MainViewModel.Instance.Directjoinaddress.Contains(":") = False Then
+                                    Startinfos.Server.ServerAdress = MainViewModel.Instance.Directjoinaddress
                                 Else
-                                    Dim address As String() = ViewModel.Directjoinaddress.Split(CChar(":"))
+                                    Dim address As String() = MainViewModel.Instance.Directjoinaddress.Split(CChar(":"))
                                     Startinfos.Server.ServerAdress = address(0)
                                     Startinfos.Server.ServerPort = address(1)
                                 End If
@@ -1181,7 +1133,7 @@ Public Class MainWindow
             If Startinfos.IsStarting = True Then
                 profile = Startinfos.Profile
             Else
-                profile = Await Profiles.FromName(ViewModel.selectedprofile)
+                profile = Await Profiles.FromName(MainViewModel.Instance.selectedProfile)
             End If
             Dim procStartInfo As New System.Diagnostics.ProcessStartInfo(Startcmd(profile), "-version")
 
@@ -1208,7 +1160,7 @@ Public Class MainWindow
     End Function
 
     Private Sub wcversionsdownload_DownloadProgressChanged(sender As Object, e As DownloadProgressChangedEventArgs) Handles wcversionsdownload.DownloadProgressChanged
-        pb_download_Value = e.ProgressPercentage
+        MainWindowViewModel.Instance.pb_download_Value = e.ProgressPercentage
     End Sub
 
     Private Sub tb_ausgabe_TextChanged(sender As Object, e As TextChangedEventArgs) Handles tb_ausgabe.TextChanged
@@ -1228,9 +1180,9 @@ Public Class MainWindow
     End Sub
 
     Private Async Sub btn_delete_profile_Click(sender As Object, e As RoutedEventArgs) Handles btn_delete_profile.Click
-        If ViewModel.Profiles.Count > 1 Then
-            Profiles.Remove(ViewModel.selectedprofile)
-            ViewModel.selectedprofile = ViewModel.Profiles.First
+        If MainViewModel.Instance.Profiles.Count > 1 Then
+            Profiles.Remove(MainViewModel.Instance.selectedProfile)
+            MainViewModel.Instance.selectedProfile = MainViewModel.Instance.Profiles.First
             Profiles.Get_Profiles()
         Else
             Await Me.ShowMessageAsync("Fehler", "Das letzte Profil kann nicht gelöscht werden!", MessageDialogStyle.Affirmative, New MetroDialogSettings() With {.AffirmativeButtonText = "Ok", .ColorScheme = MetroDialogColorScheme.Accented})
@@ -1240,7 +1192,7 @@ Public Class MainWindow
 #Region "Mods"
     Public Sub Load_ModVersions()
         cb_modversions.Items.Clear()
-        Dim modversionslist As IList(Of String) = Modifications.List_all_Mod_Vesions
+        Dim modversionslist As IList(Of String) = Modifications.List_all_Mod_Vesions.Reverse.ToList
         For Each Modversion As String In modversionslist
             cb_modversions.Items.Add(Modversion)
         Next
@@ -1308,13 +1260,13 @@ Public Class MainWindow
             'Next
 
             'TODO: Move into Converter and set the first selected item to the selected language, instead of de:
-            If selected.descriptions.Select(Function(p) p.id).Contains("de") Then
-                cb_mods_description_language.SelectedItem = cb_mods_description_language.Items.Cast(Of Modifications.Mod.Description).Where(Function(p) p.id = "de").First
-            ElseIf selected.descriptions.Select(Function(p) p.id).Contains("en") Then
-                cb_mods_description_language.SelectedItem = cb_mods_description_language.Items.Cast(Of Modifications.Mod.Description).Where(Function(p) p.id = "en").First
-            Else
-                cb_mods_description_language.SelectedItem = selected.descriptions.First.id
-            End If
+            'If selected.descriptions.Select(Function(p) p.id).Contains("de") Then
+            '    cb_mods_description_language.SelectedItem = cb_mods_description_language.Items.Cast(Of Modifications.Mod.Description).Where(Function(p) p.id = "de").First
+            'ElseIf selected.descriptions.Select(Function(p) p.id).Contains("en") Then
+            '    cb_mods_description_language.SelectedItem = cb_mods_description_language.Items.Cast(Of Modifications.Mod.Description).Where(Function(p) p.id = "en").First
+            'Else
+            '    cb_mods_description_language.SelectedItem = selected.descriptions.First.id
+            'End If
             Select Case selected.type
                 Case "forge"
                     lbl_type.Content = "Vorraussetzung: Minecraft Forge (Tools->Forge)"
@@ -1416,14 +1368,14 @@ Public Class MainWindow
         End If
     End Sub
     Private Async Sub btn_list_delete_mod_Click(sender As Object, e As RoutedEventArgs) Handles btn_list_delete_mod.Click
-        Dim Version As String = DirectCast(lb_mods.SelectedItem, Modifications.Mod).versions.Where(Function(p) p.version = cb_modversions.SelectedItem.ToString).First.version
+        Dim Version As Modifications.Mod.Version = DirectCast(lb_mods.SelectedItem, Modifications.Mod).versions.Where(Function(p) p.version = cb_modversions.SelectedItem.ToString).First
         Await Delete_Mod(Version)
     End Sub
-    Public Async Function Delete_Mod(Version As String) As Task
+    Public Async Function Delete_Mod(Version As Modifications.Mod.Version) As Task
         Dim capturedException As ExceptionDispatchInfo = Nothing
         For Each selectedmod As Modifications.Mod In lb_mods.SelectedItems
             Try
-                Dim Struktur As String = Version & "\" & Version & "-" & selectedmod.id & "." & selectedmod.extension
+                Dim Struktur As String = Version.version & "\" & Version.version & "-" & selectedmod.id & "." & Version.extension
                 If File.Exists(tb_modsfolder.Text & "\" & Struktur) = True Then
                     File.Delete(tb_modsfolder.Text & "\" & Struktur)
                 End If
@@ -1482,7 +1434,7 @@ Public Class MainWindow
             Dim progress As Double = modsdownloadindex / modsdownloadlist.Count
             controller.SetProgress(progress)
             controller.SetMessage(modsdownloadindex + 1 & " / " & modsdownloadlist.Count & " " & modsdownloadlist.Item(modsdownloadindex).name)
-            Modsfilename = modsdownloadingversion & "\" & modsdownloadingversion & "-" & modsdownloadlist.Item(modsdownloadindex).id & "." & modsdownloadlist.Item(modsdownloadindex).extension
+            Modsfilename = modsdownloadingversion & "\" & modsdownloadingversion & "-" & modsdownloadlist.Item(modsdownloadindex).id & "." & modsdownloadlist.Item(modsdownloadindex).versions.Where(Function(p) p.version = modsdownloadingversion).First.extension
             Dim capturedException As ExceptionDispatchInfo = Nothing
             Try
                 If IO.Directory.Exists(IO.Path.GetDirectoryName(cachefolder.FullName & "\" & Modsfilename)) = False Then
@@ -1565,9 +1517,9 @@ Public Class MainWindow
         lb_servers.Items.Clear()
         If servers_dat.Exists = True Then
             lbl_no_servers.Visibility = Windows.Visibility.Collapsed
-            ViewModel.Servers = New ObservableCollection(Of ServerList.Server)
+            MainViewModel.Instance.Servers = New ObservableCollection(Of ServerList.Server)
             Await ServerList.Load()
-            If ViewModel.Servers.Count = 0 Then
+            If MainViewModel.Instance.Servers.Count = 0 Then
                 lbl_no_servers.Visibility = Windows.Visibility.Visible
             Else
                 lbl_no_servers.Visibility = Windows.Visibility.Collapsed
@@ -1598,7 +1550,7 @@ Public Class MainWindow
             '            }
             '        servers.Servers.Add(server)
             '    Next
-            For Each item As ServerList.Server In ViewModel.Servers
+            For Each item As ServerList.Server In MainViewModel.Instance.Servers
                 lb_servers.Items.Add(item)
             Next
             If lb_servers.SelectedIndex = -1 Then
@@ -1622,9 +1574,9 @@ Public Class MainWindow
 
     Private Sub ThreadProc()
         Try
-            Parallel.For(0, ViewModel.Servers.Count, Sub(b)
-                                                         CheckOnline(b)
-                                                     End Sub)
+            Parallel.For(0, MainViewModel.Instance.Servers.Count, Sub(b)
+                                                                      CheckOnline(b)
+                                                                  End Sub)
         Catch
         End Try
         If servers_dat.Exists AndAlso Not servers_dat.IsLocked Then
@@ -1644,12 +1596,12 @@ Public Class MainWindow
             '                                 lb_servers.Items.Insert(i, servers.Servers.Item(i))
             '                                 lb_servers.SelectedIndex = selected
             '                             End Sub))
-            ViewModel.Servers.Item(i).DoPing()
+            MainViewModel.Instance.Servers.Item(i).DoPing()
             'MsgBox(servers.Item(i).ServerStatus.Players.MaxPlayers)
             'Dispatcher.Invoke(New Action(Sub()
             '                                 Dim selected As Integer = lb_servers.SelectedIndex
             '                                 lb_servers.Items.RemoveAt(i)
-            '                                 lb_servers.Items.Insert(i, ViewModel.Servers.Item(i))
+            '                                 lb_servers.Items.Insert(i, MainViewModel.Instance.Servers.Item(i))
             '                                 lb_servers.SelectedIndex = selected
             '                             End Sub))
         Catch null As ArgumentNullException
@@ -1698,7 +1650,7 @@ Public Class MainWindow
             Dim result As MessageDialogResult = Await Me.ShowMessageAsync("Server löschen", "Bist du dir sicher, dass du den Server " & Chr(34) & DirectCast(lb_servers.SelectedItem, ServerList.Server).name & Chr(34) & " entgültig löschen willst?", MessageDialogStyle.AffirmativeAndNegative, New MetroDialogSettings() With {.AffirmativeButtonText = "Ja", .NegativeButtonText = "Nein", .ColorScheme = MetroDialogColorScheme.Accented})
             If result = MessageDialogResult.Affirmative Then
                 lb_servers.Items.RemoveAt(selected)
-                ViewModel.Servers.RemoveAt(selected)
+                MainViewModel.Instance.Servers.RemoveAt(selected)
                 ServerList.Save()
             End If
         End If
@@ -1712,7 +1664,7 @@ Public Class MainWindow
 
     Sub join_server_from_list()
         If lb_servers.SelectedIndex <> -1 Then
-            ViewModel.Directjoinaddress = DirectCast(lb_servers.SelectedItem, ServerList.Server).ip
+            MainViewModel.Instance.Directjoinaddress = DirectCast(lb_servers.SelectedItem, ServerList.Server).ip
             cb_direct_join.IsChecked = True
             tabitem_Minecraft.IsSelected = True
         End If
@@ -1768,8 +1720,8 @@ Public Class MainWindow
 #End Region
 
     Private Sub cb_direct_join_Click(sender As Object, e As RoutedEventArgs) Handles cb_direct_join.Click
-        Settings.Settings.DirectJoin = cb_direct_join.IsChecked.Value
-        Settings.Save()
+        MainViewModel.Instance.Settings.DirectJoin = cb_direct_join.IsChecked.Value
+        MainViewModel.Instance.Settings.Save()
     End Sub
 
 #Region "Tools"
@@ -1879,8 +1831,8 @@ Public Class MainWindow
 #End Region
 
     Private Sub MainWindow_StateChanged(sender As Object, e As EventArgs) Handles Me.StateChanged
-        Settings.Settings.WindowState = Me.WindowState
-        Settings.Save()
+        MainViewModel.Instance.Settings.WindowState = Me.WindowState
+        MainViewModel.Instance.Settings.Save()
     End Sub
 
 #Region "Auth"
@@ -1896,7 +1848,7 @@ Public Class MainWindow
     Async Function Check_Account() As Task(Of Boolean)
         If cb_profiles.SelectedIndex <> -1 Then
             Await authenticationDatabase.Load()
-            Dim profile As Profiles.Profile = Await Profiles.FromName(ViewModel.selectedprofile)
+            Dim profile As Profiles.Profile = Await Profiles.FromName(MainViewModel.Instance.selectedProfile)
             If profile.playerUUID = Nothing Then
                 LoginScreen.Open()
                 TabControl_main.Visibility = Windows.Visibility.Collapsed
@@ -1962,9 +1914,9 @@ Public Class MainWindow
         'logout / invalidate session
         Dim capturedException As MinecraftAuthenticationException = Nothing
         Try
-            Dim profile As Profiles.Profile = Await Profiles.FromName(ViewModel.selectedprofile)
+            Dim profile As Profiles.Profile = Await Profiles.FromName(MainViewModel.Instance.selectedProfile)
             profile.playerUUID = Nothing
-            Await Profiles.Edit(ViewModel.selectedprofile, profile)
+            Await Profiles.Edit(MainViewModel.Instance.selectedProfile, profile)
             LoginScreen.Open()
             TabControl_main.Visibility = Windows.Visibility.Collapsed
         Catch ex As MinecraftAuthenticationException
@@ -1979,8 +1931,8 @@ Public Class MainWindow
 
     Sub OnDataUpdated(data As IList(Of Object), changedItem As Object, oldindex As Integer, newIndex As Integer)
 
-        ViewModel.Servers.Move(oldindex, newIndex)
+        MainViewModel.Instance.Servers.Move(oldindex, newIndex)
         ServerList.Save()
-        'MessageBox.Show(String.Join(Environment.NewLine, ViewModel.Servers))
+        'MessageBox.Show(String.Join(Environment.NewLine, MainViewModel.Instance.Servers))
     End Sub
 End Class

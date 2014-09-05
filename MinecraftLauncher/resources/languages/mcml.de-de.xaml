@@ -9,6 +9,8 @@
     <System:String x:Key="DateFormat">HH:mm:ss dd.MM.yyyy</System:String>
     <System:String x:Key="Close">Schließen</System:String>
     <System:String x:Key="Download">Herunterladen</System:String>
+    <System:String x:Key="Start">Starten</System:String>
+    <System:String x:Key="Play">Spielen</System:String>
     
     <!-- Header -->
     <System:String x:Key="Console">Konsole</System:String>
@@ -19,15 +21,15 @@
     <!-- Exception -->
     <System:String x:Key="ExceptionTitle">McMetroLauncher Fehler</System:String>
     <System:String x:Key="ExceptionTitleWindow">Minecraft Server Launcher hat einen Fehler festgestellt und muss beendet werden. Wir entschuldigen uns für die Unannehmlichkeiten</System:String>
-    <System:String x:Key="ExceptionText">Wir haben einen Fehlerbericht erstellt, welchen sie uns senden können. Wir werden diesen Fehler als vertraulich und anonym behandeln.</System:String>
-    <System:String x:Key="ExceptionNote">Um uns zu helfen, die Ursache des Fehlers zu diagnostizieren und die Anwendung zu verbessern, können sie hier eine Anmerkung hinterlassen (Optional):</System:String>
+    <System:String x:Key="ExceptionText">Wir haben einen Fehlerbericht erstellt, welchen du uns senden kannst. Wir werden diesen Fehler als vertraulich und anonym behandeln.</System:String>
+    <System:String x:Key="ExceptionNote">Um uns zu helfen, die Ursache des Fehlers zu diagnostizieren und die Anwendung zu verbessern, kannst du hier eine Anmerkung hinterlassen (Optional):</System:String>
     <System:String x:Key="Exception">Fehler</System:String>
     <System:String x:Key="ExceptionSendErrorAndClose">Fehlerbericht senden und schließen</System:String>
 
     <!-- GetJavaPath -->
     <System:String x:Key="JavaPathNotFound">Java-Pfad nicht gefunden</System:String>
-    <System:String x:Key="JavaPathNotFoundText">Leider konnten wir den Pfad zu Java nicht finden. Bitte wählen sie die java.exe manuell aus oder installieren Sie Java, wenn sie es nicht bereits getan haben.</System:String>
-    <System:String x:Key="OFDJavaPathTitle">Bitte wählen sie die "java.exe" aus</System:String>
+    <System:String x:Key="JavaPathNotFoundText">Leider konnten wir den Pfad zu Java nicht finden. Bitte wähle die java.exe manuell aus oder installieren Sie Java, wenn sie es nicht bereits getan haben.</System:String>
+    <System:String x:Key="OFDJavaPathTitle">Bitte wähle die "java.exe" aus</System:String>
     <System:String x:Key="ExectuableFiles">Ausführbare Dateien</System:String>
 
     <!-- Update -->

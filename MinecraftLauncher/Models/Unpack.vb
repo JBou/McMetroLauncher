@@ -4,7 +4,7 @@ Public Class Unpack
     Public Shared Property Errormessage As String
     Public Shared Async Function Unpack(input As FileInfo, output As FileInfo) As Task(Of Boolean)
         Errormessage = Nothing
-        Dim args As String = String.Join(" ", "-jar", "tools/Pack_xz_Extractor.jar", input.FullName, output.FullName)
+        Dim args As String = String.Join(" ", "-jar", "tools/Pack_xz_Extractor.jar", """" & input.FullName & """", """" & output.FullName & """")
         If input.Exists = True Then
             Dim result As Boolean = Await Task.Run(Function() As Boolean
                                                        Dim p As New Process

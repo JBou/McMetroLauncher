@@ -57,9 +57,8 @@ Public Class ModEditor
         tb_name.Text = Moditem.name
         tb_website.Text = Moditem.website
         tb_video.Text = Moditem.video
-        tb_author.Text = Moditem.author
+        tb_authors.Text = String.Join(", ", Moditem.authors)
         tb_id.Text = Moditem.id
-        cb_extension.SelectedItem = Moditem.extension
         cb_type.SelectedItem = Moditem.type
         Get_Versions()
     End Sub
@@ -75,9 +74,6 @@ Public Class ModEditor
 
 
     Private Sub ModEditor_Loaded(sender As Object, e As RoutedEventArgs) Handles Me.Loaded
-        For Each item As String In extensions
-            cb_extension.Items.Add(item)
-        Next
         For Each item As String In types
             cb_type.Items.Add(item)
         Next
@@ -86,7 +82,6 @@ Public Class ModEditor
         Next
         cb_description.SelectedIndex = 0
         If NewMod = True Then
-            cb_extension.SelectedIndex = 0
             cb_type.SelectedIndex = 0
         Else
             Load_ModInfos()
@@ -107,17 +102,14 @@ Public Class ModEditor
         Moditem.name = tb_name.Text
     End Sub
 
-    Private Sub cb_extension_SelectionChanged(sender As Object, e As SelectionChangedEventArgs) Handles cb_extension.SelectionChanged, cb_type.SelectionChanged
-        If cb_extension.SelectedIndex <> -1 Then
-            Moditem.extension = cb_extension.SelectedItem.ToString
-        End If
+    Private Sub cb_extension_SelectionChanged(sender As Object, e As SelectionChangedEventArgs) Handles cb_type.SelectionChanged
         If cb_type.SelectedIndex <> -1 Then
             Moditem.type = cb_type.SelectedItem.ToString
         End If
     End Sub
 
-    Private Sub tb_author_TextChanged_1(sender As Object, e As TextChangedEventArgs) Handles tb_author.TextChanged
-        Moditem.author = tb_author.Text
+    Private Sub tb_author_TextChanged_1(sender As Object, e As TextChangedEventArgs) Handles tb_authors.TextChanged
+        Moditem.authors = tb_authors.Text.Split(CChar(", ")).ToList
     End Sub
 
     Private Sub tb_id_TextChanged(sender As Object, e As TextChangedEventArgs) Handles tb_id.TextChanged
@@ -175,7 +167,7 @@ Public Class ModEditor
 
     Private Async Sub btn_save_Click(sender As Object, e As RoutedEventArgs) Handles btn_save.Click
         Dim allinformation As Boolean = True
-        If tb_name.Text = Nothing OrElse tb_author.Text = Nothing OrElse tb_id.Text = Nothing OrElse tb_video.Text = Nothing OrElse tb_website.Text = Nothing OrElse cb_extension.SelectedIndex = -1 OrElse cb_type.SelectedIndex = -1 Then
+        If tb_name.Text = Nothing OrElse tb_authors.Text = Nothing OrElse tb_id.Text = Nothing OrElse tb_video.Text = Nothing OrElse tb_website.Text = Nothing OrElse cb_type.SelectedIndex = -1 Then
             allinformation = False
         End If
         If lb_versions.Items.Count = 0 Then
@@ -187,8 +179,7 @@ Public Class ModEditor
         Else
             Dim Modification As New Modifications.Mod() With {
                 .descriptions = Moditem.descriptions,
-                .author = tb_author.Text,
-                .extension = cb_extension.SelectedItem.ToString,
+                .authors = tb_authors.Text.Split(CChar(", ")).ToList,
                 .id = tb_id.Text,
                 .name = tb_name.Text,
                 .type = cb_type.SelectedItem.ToString,
@@ -206,7 +197,7 @@ Public Class ModEditor
             Else
                 Modifications.ModList.Item(Modindex) = Modification
             End If
-            Await Modifications.SavetoFile(modsfile)
+            Await Modifications.SavetoFile(New FileInfo(modsfile))
             saved = True
             Me.DialogResult = True
             Me.Close()

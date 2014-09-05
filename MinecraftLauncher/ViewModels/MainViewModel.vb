@@ -5,82 +5,107 @@ Imports Newtonsoft.Json.Linq
 Imports System.Text.RegularExpressions
 Imports System.Net
 Imports MahApps.Metro
+Imports System
 
 Public Class MainViewModel
-    Implements INotifyPropertyChanged, IDataErrorInfo
-    Public Event PropertyChanged(sender As Object, e As PropertyChangedEventArgs) Implements INotifyPropertyChanged.PropertyChanged
+    Inherits PropertyChangedBase
+    Implements IDataErrorInfo
 
-    ''' <summary>
-    ''' Raises the PropertyChanged event if needed.
-    ''' </summary>
-    ''' <param name="propertyName">The name of the property that changed.</param>
-    Protected Overridable Sub OnPropertyChanged(<CallerMemberName> Optional propertyName As String = "")
-        RaiseEvent PropertyChanged(Me, New PropertyChangedEventArgs(propertyName))
+#Region "Singleton & Constructor"
+    Private Shared _Instance As MainViewModel
+    Public Shared ReadOnly Property Instance As MainViewModel
+        Get
+            If _Instance Is Nothing Then _Instance = New MainViewModel
+            Return _Instance
+        End Get
+    End Property
+
+    Public Sub New()
+        Check_RAM_CPU()
+        Check_service_statuses()
     End Sub
 
-    Private m_Servers As New ObservableCollection(Of ServerList.Server)
+#End Region
+
+#Region "Properties"
+
+    Private _Servers As New ObservableCollection(Of ServerList.Server)
     Public Property Servers As ObservableCollection(Of ServerList.Server)
         Get
-            Return m_Servers
+            Return _Servers
         End Get
         Set(value As ObservableCollection(Of ServerList.Server))
-            m_Servers = value
-            OnPropertyChanged("Servers")
+            SetProperty(value, _Servers)
         End Set
     End Property
-
+    Private _AppThemes As List(Of AppThemeMenuData) = ThemeManager.AppThemes.Select(Function(a) New AppThemeMenuData() With {.Name = a.Name, .BorderColorBrush = CType(a.Resources("BlackColorBrush"), Windows.Media.Brush), .ColorBrush = CType(a.Resources("WhiteColorBrush"), Windows.Media.Brush)}).ToList
     Public Property AppThemes As List(Of AppThemeMenuData)
         Get
-            Return GlobalInfos.AppThemes
+            Return _AppThemes
         End Get
         Set(value As List(Of AppThemeMenuData))
-            GlobalInfos.AppThemes = value
-            OnPropertyChanged("AppThemes")
+            SetProperty(value, _AppThemes)
         End Set
     End Property
-
+    Private _AccentColors As List(Of AccentColorMenuData) = ThemeManager.Accents.Select(Function(a) New AccentColorMenuData() With {.Name = a.Name, .ColorBrush = CType(a.Resources("AccentColorBrush"), Windows.Media.Brush)}).ToList()
     Public Property AccentColors As List(Of AccentColorMenuData)
         Get
-            Return GlobalInfos.AccentColors
+            Return _AccentColors
         End Get
         Set(value As List(Of AccentColorMenuData))
-            GlobalInfos.AccentColors = value
-            OnPropertyChanged("AccentColors")
+            SetProperty(value, _AccentColors)
         End Set
     End Property
-
+    Private _profiles As ObservableCollection(Of String) = New ObservableCollection(Of String)
     Public Property Profiles As ObservableCollection(Of String)
         Get
             Return _profiles
         End Get
         Set(value As ObservableCollection(Of String))
-            _profiles = value
-            OnPropertyChanged("Profiles")
+            SetProperty(value, _profiles)
         End Set
     End Property
-    Public Property selectedprofile As String
+    Private _selectedProfile As String
+    Public Property selectedProfile As String
         Get
-            Return McMetroLauncher.Profiles.selectedprofile
+            Return _selectedProfile
         End Get
         Set(value As String)
-            McMetroLauncher.Profiles.selectedprofile = value
-            OnPropertyChanged("selectedprofile")
+            SetProperty(value, _selectedProfile)
+            Dim o As String = IO.File.ReadAllText(launcher_profiles_json.FullName)
+            Dim jo As JObject = JObject.Parse(o)
+            jo("selectedProfile") = value
+            IO.File.WriteAllText(launcher_profiles_json.FullName, jo.ToString)
         End Set
     End Property
-
-#Region "Minecraft"
+    Private _Settings As Settings
+    Public Property Settings() As Settings
+        Get
+            Return _Settings
+        End Get
+        Set(ByVal value As Settings)
+            SetProperty(value, _Settings)
+        End Set
+    End Property
     Private _Directjoinaddress As String
     Public Property Directjoinaddress As String
         Get
             Return _Directjoinaddress
         End Get
         Set(value As String)
-            _Directjoinaddress = value
-            OnPropertyChanged("Directjoinaddress")
-            Settings.Settings.ServerAddress = value
+            SetProperty(value, _Directjoinaddress)
+            MainViewModel.Instance.Settings.ServerAddress = value
             Settings.Save()
         End Set
     End Property
+#End Region
+
+#Region "Methods"
+
+    Public Async Function LoadSettings() As Task
+        Settings = Await Settings.Load()
+    End Function
+
 #End Region
 
 #Region "Login"
@@ -93,8 +118,7 @@ Public Class MainViewModel
             If Equals(value, Username) Then
                 Return
             Else
-                _username = value
-                OnPropertyChanged("Username")
+                SetProperty(value, _username)
             End If
         End Set
     End Property
@@ -107,9 +131,7 @@ Public Class MainViewModel
             If Equals(value, Username) Then
                 Return
             Else
-                _onlineMode = value
-
-                OnPropertyChanged("OnlineMode")
+                SetProperty(value, _onlineMode)
             End If
         End Set
     End Property
@@ -148,11 +170,6 @@ Public Class MainViewModel
 
 #End Region
 
-    Public Sub New()
-        Check_RAM_CPU()
-        Check_service_statuses()
-    End Sub
-
 #Region "Infos"
     Private _servicestatuses As ObservableCollection(Of AccentColorMenuData) = New ObservableCollection(Of AccentColorMenuData)
     Public Property ServiceStatuses As ObservableCollection(Of AccentColorMenuData)
@@ -160,8 +177,7 @@ Public Class MainViewModel
             Return _servicestatuses
         End Get
         Set(value As ObservableCollection(Of AccentColorMenuData))
-            _servicestatuses = value
-            OnPropertyChanged("ServiceStatuses")
+            SetProperty(value, _servicestatuses)
         End Set
     End Property
 
@@ -170,7 +186,6 @@ Public Class MainViewModel
             Return _cpu
         End Get
     End Property
-    Private _profiles As ObservableCollection(Of String) = New ObservableCollection(Of String)
 
     Private ReadOnly _ram As ObservableCollection(Of Ram) = New ObservableCollection(Of Ram)
     Public ReadOnly Property Ram As ObservableCollection(Of Ram)

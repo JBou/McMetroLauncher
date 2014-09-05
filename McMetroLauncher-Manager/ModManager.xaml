@@ -32,15 +32,13 @@
                 <!--<GridView ColumnHeaderContainerStyle="{StaticResource myHeaderStyle}" AllowsColumnReorder="False">
                     <GridViewColumn DisplayMemberBinding="{Binding Path=name}"/>
                 </GridView>-->
-              <GridView>
-                <GridViewColumn DisplayMemberBinding="{Binding Path=name}" />
-              </GridView>
+                <GridView>
+                    <GridViewColumn DisplayMemberBinding="{Binding Path=name}" />
+                </GridView>
             </ListView.View>
         </ListView>
-        <Label Content="Type:" HorizontalAlignment="Right" Margin="0,0,390,45" VerticalAlignment="Bottom" Height="31"/>
-        <Label x:Name="lbl_type" HorizontalAlignment="Right" Height="31" Margin="0,0,182,45"  VerticalAlignment="Bottom" Width="203"/>
-        <Label Content="Extension:" Margin="0,0,114,45" VerticalAlignment="Bottom" Height="31" HorizontalAlignment="Right" />
-        <Label x:Name="lbl_extension" HorizontalAlignment="Right" Height="31" Margin="0,0,10,45"  VerticalAlignment="Bottom" Width="99"/>
+        <Label Content="Type:" HorizontalAlignment="Right" Margin="0,0,284,45" VerticalAlignment="Bottom" Height="31" RenderTransformOrigin="1.079,0.516"/>
+        <Label x:Name="lbl_type" HorizontalAlignment="Right" Height="31" Margin="0,0,10,45"  VerticalAlignment="Bottom" Width="269"/>
         <Label Content="Website:" HorizontalAlignment="Right" Margin="0,0,669,81" VerticalAlignment="Bottom" Width="65" Height="31"/>
         <Label x:Name="lbl_website" HorizontalAlignment="Right" Height="31" Margin="0,0,10,117"  VerticalAlignment="Bottom" Width="654" />
         <ListBox x:Name="lb_versions" DisplayMemberPath="version" HorizontalAlignment="Right" Margin="0,44,10,153" Width="199">
@@ -48,34 +46,27 @@
                 <Style TargetType="ListBoxItem" BasedOn="{StaticResource MetroListBoxItem}">
                     <Setter Property="ToolTip">
                         <Setter.Value>
-                            <StackPanel>
-                                <TextBlock>
-                                    <TextBlock.Text>
-                                        <MultiBinding xml:space="preserve" StringFormat="{}Version: {0}&#10;Downloadlink: {1}">
-                                              <Binding Path="version" />
-                                              <Binding Path="downloadlink" />
-                                        </MultiBinding>
-                                    </TextBlock.Text>
-                                </TextBlock>
-                                <TextBlock>
-                                    <TextBlock.Text>
-                                        <MultiBinding StringFormat="{}{0}">
+                            <TextBlock>
+                                <TextBlock.Text>
+                                    <MultiBinding xml:space="preserve" StringFormat="{}Version: {0}&#10;Downloadlink: {1}&#10;Extension: {2}&#10;{3}">
+                                            <Binding Path="version" />
+                                            <Binding Path="downloadlink" />
+                                            <Binding Path="extension" />
                                             <Binding Path="dependencies" Converter="{StaticResource Dependencies_String_Converter}" />
-                                        </MultiBinding>
-                                    </TextBlock.Text>
-                                </TextBlock>
-                            </StackPanel>
+                                    </MultiBinding>
+                                </TextBlock.Text>
+                            </TextBlock>
                         </Setter.Value>
                     </Setter>
                 </Style>
             </ListBox.ItemContainerStyle>
         </ListBox>
         <Label Content="Versionen:" HorizontalAlignment="Right" Margin="0,4,10,0" VerticalAlignment="Top" Width="199" HorizontalContentAlignment="Center" Foreground="{StaticResource AccentColorBrush}" FontSize="18" Height="35"/>
-        <Label x:Name="lbl_author" HorizontalAlignment="Right" Height="27" Margin="0,44,383,0"  VerticalAlignment="Top" Width="302" FontSize="14" Padding="5,0" VerticalContentAlignment="Center" RenderTransformOrigin="0.5,0.5" />
+        <Label x:Name="lbl_authors" HorizontalAlignment="Right" Height="27" Margin="0,44,383,0"  VerticalAlignment="Top" Width="302" FontSize="14" Padding="5,0" VerticalContentAlignment="Center" RenderTransformOrigin="0.5,0.5" />
         <Label Content="Video:" HorizontalAlignment="Right" Margin="0,0,669,117" VerticalAlignment="Bottom" Width="65" Height="31"/>
         <Label x:Name="lbl_video" HorizontalAlignment="Right" Height="31" Margin="0,0,10,81"  VerticalAlignment="Bottom" Width="654"/>
         <Label Content="ID:" HorizontalAlignment="Right" Margin="0,0,669,45" VerticalAlignment="Bottom" Width="65" Height="31"/>
-        <Label x:Name="lbl_ID" HorizontalAlignment="Right" Height="31" Margin="0,0,433,45"  VerticalAlignment="Bottom" Width="231"/>
+        <Label x:Name="lbl_ID" HorizontalAlignment="Right" Height="31" Margin="0,0,327,45"  VerticalAlignment="Bottom" Width="337"/>
 
     </Grid>
 </Controls:MetroWindow>

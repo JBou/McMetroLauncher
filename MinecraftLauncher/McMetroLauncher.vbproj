@@ -191,6 +191,7 @@
     <Compile Include="Controls\FluidWrapPanel\FluidMouseDragBehavior.vb" />
     <Compile Include="Controls\FluidWrapPanel\FluidWrapPanel.vb" />
     <Compile Include="Extensions\ButtonHelper.vb" />
+    <Compile Include="Extensions\Converters\JSonConverters.vb" />
     <Compile Include="Extensions\Converters\ValueConverterGroup.vb" />
     <Compile Include="Helpers\ExtensionMethods.vb" />
     <Compile Include="Models\Accent-ThemeMenuData.vb" />
@@ -207,6 +208,7 @@
     <Compile Include="ViewModelBase\BindableBase.vb" />
     <Compile Include="ViewModelBase\PropertyChangedBase.vb" />
     <Compile Include="ViewModelBase\RelayCommand.vb" />
+    <Compile Include="ViewModels\MainWindowViewModel.vb" />
     <Compile Include="Windows\Forge_installer.xaml.vb">
       <DependentUpon>Forge_installer.xaml</DependentUpon>
     </Compile>
@@ -427,6 +429,8 @@
   <ItemGroup>
     <Resource Include="resources\images\light\appbar.alert.png" />
     <Resource Include="resources\images\dark\appbar.alert.png" />
+    <Resource Include="resources\languages\icons\de.png" />
+    <Resource Include="resources\languages\icons\en.png" />
     <Content Include="tools\Pack_xz_Extractor.jar">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

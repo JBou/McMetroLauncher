@@ -231,33 +231,31 @@ Public Class Text_FlowDocument_Converter
 
 End Class
 
-#End Region
+Public Class Description_SelectedItem_Converter
+    Implements System.Windows.Data.IMultiValueConverter
 
-#Region "JsonConverters"
-Class CustomIntConverter
-    Inherits JsonConverter
-    Public Overrides Function CanConvert(objectType As Type) As Boolean
-        Return (objectType = GetType(Integer))
-    End Function
-
-    Public Overrides Function ReadJson(reader As JsonReader, objectType As Type, existingValue As Object, serializer As JsonSerializer) As Object
-        Dim jsonValue As JValue = serializer.Deserialize(Of JValue)(reader)
-
-        If jsonValue.Type = JTokenType.Float Then
-            Return CInt(Math.Round(CDbl(jsonValue.Value)))
-        ElseIf jsonValue.Type = JTokenType.[Integer] Then
-            Return CInt(jsonValue.Value)
+    Public Function Convert(values() As Object, targetType As Type, parameter As Object, culture As System.Globalization.CultureInfo) As Object Implements IMultiValueConverter.Convert
+        Dim items As IList(Of Modifications.Mod.Description) = TryCast(values(0), IList(Of Modifications.Mod.Description))
+        Dim langid As String = TryCast(values(1), String)
+        If items IsNot Nothing AndAlso langid IsNot Nothing Then
+            langid = langid.Split(CChar("-"))(0)
+            If items.Select(Function(p) p.id).Contains(langid) Then
+                Return items.Where(Function(p) p.id = langid).First
+            ElseIf items.Select(Function(p) p.id).Contains("en") Then
+                Return items.Where(Function(p) p.id = "en").First
+            Else
+                Return items.First
+            End If
         End If
-
-        Throw New FormatException()
+        Return Binding.DoNothing
     End Function
 
-    Public Overrides Sub WriteJson(writer As JsonWriter, value As Object, serializer As JsonSerializer)
-        Throw New NotImplementedException()
-    End Sub
+    Public Function ConvertBack(values As Object, targetTypes() As Type, parameter As Object, culture As System.Globalization.CultureInfo) As Object() Implements IMultiValueConverter.ConvertBack
+        Return New Object() {Binding.DoNothing, Binding.DoNothing}
+    End Function
+
 End Class
 
-<ValueConversion(GetType(Boolean), GetType(Boolean))> _
 Public Class InverseBooleanConverter
     Implements IValueConverter
 #Region "IValueConverter Members"
@@ -277,5 +275,24 @@ Public Class InverseBooleanConverter
 #End Region
 End Class
 
+''' <summary>
+''' Convertiert eine IList(Of String) zu einem String, getrennt durch Kommas
+''' </summary>
+''' <remarks></remarks>
+Public Class List_String_Converter
+    Implements System.Windows.Data.IValueConverter
+
+    Public Function Convert(value As Object, targetType As Type, parameter As Object, culture As System.Globalization.CultureInfo) As Object Implements System.Windows.Data.IValueConverter.Convert
+        Dim parts As IList(Of String) = TryCast(value, IList(Of String))
+        If parts Is Nothing Then Return Nothing
+        Dim returnstring As String = String.Join(", ", parts)
+        Return returnstring
+    End Function
+
+    Public Function ConvertBack(value As Object, targetType As Type, parameter As Object, culture As System.Globalization.CultureInfo) As Object Implements IValueConverter.ConvertBack
+        Throw New NotImplementedException()
+    End Function
+
+End Class
 
 #End Region

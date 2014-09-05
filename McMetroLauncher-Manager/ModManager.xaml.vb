@@ -21,7 +21,7 @@ Public Class ModManager
         Next
         lb_mods.SelectedIndex = 0
         'Für jede version eine Spalte hinzufügen
-        For Each item As String In Await Modifications.List_all_Mod_Vesions
+        For Each item As String In Modifications.List_all_Mod_Vesions.Reverse.ToList
             If DirectCast(lb_mods.View, GridView).Columns.Select(Function(p) p.Header).Contains(item) = False Then
                 'Declare Binding
                 Dim binding As New Binding
@@ -109,9 +109,8 @@ Public Class ModManager
             'tb_description.Text = DirectCast(lb_mods.SelectedItem, ForgeMod).description
             lbl_website.Content = DirectCast(lb_mods.SelectedItem, Modifications.Mod).website
             lbl_video.Content = DirectCast(lb_mods.SelectedItem, Modifications.Mod).video
-            lbl_author.Content = DirectCast(lb_mods.SelectedItem, Modifications.Mod).author
+            lbl_authors.Content = String.Join(", ", DirectCast(lb_mods.SelectedItem, Modifications.Mod).authors)
             lbl_ID.Content = DirectCast(lb_mods.SelectedItem, Modifications.Mod).id
-            lbl_extension.Content = DirectCast(lb_mods.SelectedItem, Modifications.Mod).extension
             lbl_type.Content = DirectCast(lb_mods.SelectedItem, Modifications.Mod).type
             lb_versions.Items.Clear()
             For Each item As Modifications.Mod.Version In DirectCast(lb_mods.SelectedItem, Modifications.Mod).versions
@@ -168,7 +167,7 @@ Public Class ModManager
             Dim result As MessageBoxResult = MessageBox.Show("Möchtest du wirklich die Mod " & Chr(36) & moditem.name & Chr(36) & " löschen?", "Achtung", MessageBoxButton.YesNoCancel, MessageBoxImage.Information)
             If result = MessageBoxResult.Yes Then
                 Modifications.ModList.Remove(Modifications.ModList.Where(Function(p) p.id = moditem.id).First)
-                Await Modifications.SavetoFile(modsfile)
+                Await Modifications.SavetoFile(New FileInfo(modsfile))
             End If
         End If
     End Sub
@@ -180,7 +179,7 @@ Public Class Dependencies_String_Converter
 
     Public Function Convert(value As Object, targetType As Type, parameter As Object, culture As System.Globalization.CultureInfo) As Object Implements System.Windows.Data.IValueConverter.Convert
         Dim s As IList(Of String) = TryCast(value, IList(Of String))
-        If s Is Nothing Then Return Nothing
+        If s Is Nothing OrElse Not s.Count > 0 Then Return Nothing
         Dim dependecies As String = String.Join(Environment.NewLine, s)
         Dim returnstring As String = String.Join(Environment.NewLine, "Dependencies:", dependecies)
         Return returnstring

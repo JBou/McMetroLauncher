@@ -41,9 +41,9 @@ Public Structure Modifications
                 For Each version As Modifications.Mod.Version In .versions
                     Dim filename As String = Nothing
                     If version.version >= "1.6.4" Then
-                        filename = version.version & "\" & version.version & "-" & .id & "." & .extension
+                        filename = version.version & "\" & version.version & "-" & .id & "." & version.extension
                     Else
-                        filename = version.version & "-" & .id & "." & .extension
+                        filename = version.version & "-" & .id & "." & version.extension
                     End If
                     If File.Exists(Path.Combine(modsfolder, filename)) Then
                         version.installed = True
@@ -66,7 +66,7 @@ Public Structure Modifications
                 End If
             Next
         Next
-        Return list
+        Return list.OrderBy(Function(p) New Version(p)).ToList
     End Function
 
     Public Shared Function Dependencies(ByVal modid As String, version As String) As IList(Of String)
@@ -109,15 +109,15 @@ Public Structure Modifications
             End Set
         End Property
         Private m_name As String
-        Public Property author() As String
+        Public Property authors() As IList(Of String)
             Get
-                Return m_author
+                Return m_authors
             End Get
-            Set(value As String)
-                m_author = value
+            Set(value As IList(Of String))
+                m_authors = value
             End Set
         End Property
-        Private m_author As String
+        Private m_authors As IList(Of String)
         Public Property descriptions() As IList(Of Description)
             Get
                 Return m_description
@@ -163,15 +163,6 @@ Public Structure Modifications
             End Set
         End Property
         Private m_id As String
-        Public Property extension() As String
-            Get
-                Return m_extension
-            End Get
-            Set(value As String)
-                m_extension = value
-            End Set
-        End Property
-        Private m_extension As String
         Public Property type() As String
             Get
                 Return m_type
@@ -235,6 +226,16 @@ Public Structure Modifications
                 End Set
             End Property
             Private m_downloadlink As String
+            Public Property extension() As String
+                Get
+                    Return m_extension
+                End Get
+                Set(value As String)
+                    m_extension = value
+                End Set
+            End Property
+            Private m_extension As String
+            <JsonIgnore>
             Public Property installed() As Boolean
                 Get
                     Return m_installed

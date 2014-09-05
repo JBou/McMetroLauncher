@@ -5,7 +5,6 @@ Public Class Forge_ProfileEditor
     Public Versionname As String = Nothing
 
     Private Sub Forge_ProfileEditor_Loaded(sender As Object, e As RoutedEventArgs) Handles Me.Loaded
-        Me.DataContext = ViewModel
         lbl_header.Content = Versionname
         tb_newprofilename.Text = Versionname
     End Sub

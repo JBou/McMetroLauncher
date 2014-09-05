@@ -7,25 +7,27 @@ Public Structure Modifications
     Public Shared ModList As IList(Of Modifications.Mod)
     Private Shared list_dependencies As IList(Of String) = New List(Of String)
 
-    Public Shared Async Function SavetoFile(filename As String) As Task
+    Public Shared Async Function SavetoFile(filename As FileInfo) As Task
         If ModList Is Nothing Then
             Exit Function
         End If
         ModList = ModList.OrderBy(Function(p) p.name).ToList
         For i As Integer = 0 To ModList.Count - 1
-            ModList.Item(i).versions = ModList.Item(i).versions.OrderByDescending(Function(p) p.version).ToList()
+            ModList.Item(i).versions = ModList.Item(i).versions.OrderByDescending(Function(p) New Version(p.version)).ToList()
             ModList.Item(i).descriptions = ModList.Item(i).descriptions.OrderBy(Function(p) p.id).ToList()
             For a As Integer = 0 To ModList.Item(i).versions.Count - 1
                 If ModList.Item(i).versions.Item(a).dependencies IsNot Nothing Then
-                    ModList.Item(i).versions.Item(a).dependencies = ModList.Item(i).versions.Item(a).dependencies.OrderBy(Function(p) p.ToString).ToList
+                    ModList.Item(i).versions.Item(a).dependencies = ModList.Item(i).versions.Item(a).dependencies.OrderBy(Function(p) p).ToList
                 End If
             Next
         Next
         Dim strModList As JArray = JArray.Parse(Await JsonConvert.SerializeObjectAsync(ModList, Formatting.Indented, New JsonSerializerSettings() With {.NullValueHandling = NullValueHandling.Ignore, .DefaultValueHandling = DefaultValueHandling.Ignore}))
-        Dim o As String = File.ReadAllText(Filename)
+        Dim o As String = File.ReadAllText(filename.FullName)
         Dim jo As JObject = JObject.Parse(o)
         jo("mods") = strModList
-        File.WriteAllText(Filename, jo.ToString)
+        File.WriteAllText(filename.FullName, jo.ToString)
+        Dim s As String = String.Concat(Path.GetDirectoryName(filename.FullName), Path.DirectorySeparatorChar, Path.GetFileNameWithoutExtension(filename.FullName), ".min", Path.GetExtension(filename.FullName))
+        File.WriteAllText(s, jo.ToString(Formatting.None))
     End Function
 
     Public Shared Async Function Load() As Task
@@ -41,9 +43,9 @@ Public Structure Modifications
                 For Each version As Modifications.Mod.Version In .versions
                     Dim filename As String = Nothing
                     If version.version >= "1.6.4" Then
-                        filename = version.version & "\" & version.version & "-" & .id & "." & .extension
+                        filename = version.version & "\" & version.version & "-" & .id & "." & version.extension
                     Else
-                        filename = version.version & "-" & .id & "." & .extension
+                        filename = version.version & "-" & .id & "." & version.extension
                     End If
                     If File.Exists(Path.Combine(modsfolder, filename)) Then
                         version.installed = True
@@ -57,10 +59,7 @@ Public Structure Modifications
         Next
     End Sub
 
-    Public Shared Async Function List_all_Mod_Vesions() As Task(Of IList(Of String))
-        If ModList Is Nothing Then
-            Await Load()
-        End If
+    Public Shared Function List_all_Mod_Vesions() As IList(Of String)
         Dim list As IList(Of String) = New List(Of String)
         For Each item As [Mod] In ModList
             For Each version As String In item.versions.Select(Function(p) p.version.ToString)
@@ -69,7 +68,7 @@ Public Structure Modifications
                 End If
             Next
         Next
-        Return list
+        Return list.OrderBy(Function(p) New Version(p)).ToList
     End Function
 
     Public Shared Function Dependencies(ByVal modid As String, version As String) As IList(Of String)
@@ -112,15 +111,15 @@ Public Structure Modifications
             End Set
         End Property
         Private m_name As String
-        Public Property author() As String
+        Public Property authors() As IList(Of String)
             Get
-                Return m_author
+                Return m_authors
             End Get
-            Set(value As String)
-                m_author = value
+            Set(value As IList(Of String))
+                m_authors = value
             End Set
         End Property
-        Private m_author As String
+        Private m_authors As IList(Of String)
         Public Property descriptions() As IList(Of Description)
             Get
                 Return m_description
@@ -166,15 +165,6 @@ Public Structure Modifications
             End Set
         End Property
         Private m_id As String
-        Public Property extension() As String
-            Get
-                Return m_extension
-            End Get
-            Set(value As String)
-                m_extension = value
-            End Set
-        End Property
-        Private m_extension As String
         Public Property type() As String
             Get
                 Return m_type
@@ -238,6 +228,16 @@ Public Structure Modifications
                 End Set
             End Property
             Private m_downloadlink As String
+            Public Property extension() As String
+                Get
+                    Return m_extension
+                End Get
+                Set(value As String)
+                    m_extension = value
+                End Set
+            End Property
+            Private m_extension As String
+            <JsonIgnore>
             Public Property installed() As Boolean
                 Get
                     Return m_installed

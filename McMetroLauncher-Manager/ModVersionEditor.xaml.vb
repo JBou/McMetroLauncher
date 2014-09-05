@@ -42,12 +42,7 @@ Public Class ModVersionEditor
         lb_depedencies.Items.Clear()
         tb_downloadlink.Text = modVersion.downloadlink
         lb_depedencies.Items.Clear()
-        If modVersion.dependencies IsNot Nothing Then
-            For Each item As String In modVersion.dependencies
-                lb_depedencies.Items.Add(item)
-            Next
-        End If
-
+        cb_extension.SelectedItem = modVersion.extension
     End Sub
 
     Public Sub New()
@@ -73,8 +68,18 @@ Public Class ModVersionEditor
     Private Sub ModEditor_Loaded(sender As Object, e As RoutedEventArgs) Handles Me.Loaded
         Get_Versions()
         Get_Dependencies()
+        For Each item As String In extensions
+            cb_extension.Items.Add(item)
+        Next
         If NewVersion = False Then
             Load_VersionInfos()
+            If modVersion.dependencies IsNot Nothing Then
+                For Each dependency As String In modVersion.dependencies
+                    lb_depedencies.Items.Add(dependency)
+                Next
+            End If
+        Else
+            cb_extension.SelectedIndex = 0
         End If
     End Sub
 
@@ -85,7 +90,8 @@ Public Class ModVersionEditor
             modVersion = New Modifications.Mod.Version With {
                 .version = cb_versions.SelectedItem.ToString,
                 .downloadlink = tb_downloadlink.Text,
-                .dependencies = lb_depedencies.Items.Cast(Of String)().ToList}
+                .dependencies = lb_depedencies.Items.Cast(Of String)().ToList,
+                .extension = cb_extension.SelectedItem.ToString}
             If NewVersion = True Then
                 'Shauen ob es bereits existiert
                 If Moditem.versions.Select(Function(p) p.version).Contains(cb_versions.SelectedItem.ToString) Then

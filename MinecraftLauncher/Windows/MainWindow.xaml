@@ -20,7 +20,8 @@
                        MinWidth="950"
                        ResizeMode="CanResizeWithGrip" 
                        UseLayoutRounding="False" 
-                       ScrollViewer.CanContentScroll="True" >
+                       ScrollViewer.CanContentScroll="True"
+                       DataContext="{x:Static local:MainViewModel.Instance}">
     
     <!--Für IMAc Screenshots-->
     <!--Title="McMetroLauncher" Height="676" Width="1200"-->
@@ -40,8 +41,11 @@
                 <BooleanToVisibilityConverter />
                 <local:InverseBooleanConverter />
             </local:ValueConverterGroup>
+            <local:List_String_Converter x:Key="List_String_Converter"/>
             <BooleanToVisibilityConverter x:Key="BoolToVis_Converter" />
             <local:Text_FlowDocument_Converter x:Key="Text_FlowDocument_Converter" />
+            <local:Description_SelectedItem_Converter x:Key="Description_SelectedItem_Converter" />
+            
             <Style x:Key="MinecraftFont">
                 <Setter Property="TextElement.FontFamily" Value="Fonts/#Minecraft" />
             </Style>
@@ -203,12 +207,12 @@
                         </StackPanel>
                         <Image x:Name="img_avatar" Height="69" Width="69" Margin="5,0,0,0"/>
                     </StackPanel>
-                    <Button x:Name="btn_startMC" Content="Play" HorizontalAlignment="Right" Margin="0,0,10,10" VerticalAlignment="Bottom" Width="150" Height="69" FontSize="30" TabIndex="11"/>
-                    <Controls:MetroProgressBar Foreground="{DynamicResource AccentColorBrush}" Height="5" Margin="10,0,10,84" VerticalAlignment="Bottom" IsIndeterminate="{Binding pb_download_IsIndeterminate, ElementName=window}" Value="{Binding pb_download_Value, ElementName=window}"/>
-                    <Label x:Name="lbl_downloadstatus" HorizontalAlignment="Left" Margin="353,0,0,42" VerticalAlignment="Bottom" Width="418" Height="33" Content="{Binding lbl_downloadstatus_Content, ElementName=window}"/>
+                    <Button x:Name="btn_startMC" Content="{DynamicResource Play}" HorizontalAlignment="Right" Margin="0,0,10,10" VerticalAlignment="Bottom" Width="150" Height="69" FontSize="30" TabIndex="11"/>
+                    <Controls:MetroProgressBar DataContext="{x:Static local:MainWindowViewModel.Instance}" Foreground="{DynamicResource AccentColorBrush}" Height="5" Margin="10,0,10,84" VerticalAlignment="Bottom" IsIndeterminate="{Binding pb_download_IsIndeterminate}" Value="{Binding pb_download_Value}"/>
+                    <Label DataContext="{x:Static local:MainWindowViewModel.Instance}" x:Name="lbl_downloadstatus" HorizontalAlignment="Left" Margin="353,0,0,42" VerticalAlignment="Bottom" Width="418" Height="33" Content="{Binding lbl_downloadstatus_Content}"/>
                     <Button x:Name="btn_new_profile" Content="Neu" HorizontalAlignment="Left" Margin="10,0,0,10" VerticalAlignment="Bottom" Width="26" Height="33" MinWidth="50" TabIndex="4"/>
                     <Button x:Name="btn_edit_profile" Content="Bearbeiten" HorizontalAlignment="Left" Margin="65,0,0,10" VerticalAlignment="Bottom" Width="89" Height="33" TabIndex="5"/>
-                    <ComboBox ItemsSource="{Binding Path=Profiles}" SelectedItem="{Binding selectedprofile, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" x:Name="cb_profiles" HorizontalAlignment="Left" Margin="10,0,0,48" VerticalAlignment="Bottom" Width="218" Height="31" TabIndex="3"/>
+                    <ComboBox ItemsSource="{Binding Path=Profiles}" SelectedItem="{Binding selectedProfile, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" x:Name="cb_profiles" HorizontalAlignment="Left" Margin="10,0,0,48" VerticalAlignment="Bottom" Width="218" Height="31" TabIndex="3"/>
                     <Button x:Name="btn_delete_profile" Content="Löschen" HorizontalAlignment="Left" Margin="159,0,0,10" VerticalAlignment="Bottom" Width="69" Height="33" TabIndex="6"/>
                     <ListBox x:Name="lb_libraries_extract" HorizontalAlignment="Left" Height="271" Margin="648,120,-48,0" VerticalAlignment="Top" Width="342" Visibility="Collapsed"/>
                     <ListBox x:Name="lb_libraries" HorizontalAlignment="Left" Height="271" Margin="-2,120,0,0" VerticalAlignment="Top" Width="320" Visibility="Collapsed"/>
@@ -224,18 +228,18 @@
             <TabItem Header="Tools">
                 <Grid Margin="24,37,18,-7" Width="900">
                     <Button Content="Forge installieren" x:Name="install_forge" Click="forge_installer" Margin="0,10,10,0" Height="74" VerticalAlignment="Top" HorizontalAlignment="Right" Width="165"/>
-                    <TextBlock TextWrapping="Wrap" Margin="274,18,180,422" Padding="5" Text="{Binding Source={StaticResource ForgeDescription}}" VerticalAlignment="Top" />
+                    <TextBlock TextWrapping="Wrap" Margin="274,18,180,422" Padding="5" Text="{DynamicResource ForgeDescription}" VerticalAlignment="Top" />
                     <Image Margin="26,10,0,0" Height="74" VerticalAlignment="Top" HorizontalAlignment="Left" Width="243" Source="/resources/images/forge_banner.png"/>
                     <Button Content="LiteLoader installieren" x:Name="install_liteloader" Click="liteloader_installer" Margin="0,110,10,0" Height="74" VerticalAlignment="Top" HorizontalAlignment="Right" Width="165"/>
-                    <TextBlock TextWrapping="Wrap" Margin="274,101,180,323" Padding="5" Text="{Binding Source={StaticResource LiteLoaderDescription}}" VerticalAlignment="Top" />
+                    <TextBlock TextWrapping="Wrap" Margin="274,101,180,323" Padding="5" Text="{DynamicResource LiteLoaderDescription}" VerticalAlignment="Top" />
                     <Image Margin="25,89,0,0" Height="83" VerticalAlignment="Top" HorizontalAlignment="Left" Width="243" Source="/resources/images/liteloader_header_xmas.png"/>
-                    <TextBlock Margin="274,199,180,229" TextWrapping="Wrap" Padding="5" Text="{Binding Source={StaticResource TechnicLauncherDescription}}" VerticalAlignment="Top" Height="70" />
-                    <Button Content="Herunterladen" x:Name="btn_download_techniclauncher" Click="download_techniclauncher" Margin="0,215,10,0" Height="35" VerticalAlignment="Top" HorizontalAlignment="Right" Width="165"/>
-                    <Button Content="Starten" x:Name="btn_start_techniclauncher"  Click="start_techniclauncher" Margin="0,255,10,0" Height="35" VerticalAlignment="Top" HorizontalAlignment="Right" Width="165"/>
+                    <TextBlock Margin="274,199,180,229" TextWrapping="Wrap" Padding="5" Text="{DynamicResource TechnicLauncherDescription}" VerticalAlignment="Top" Height="70" />
+                    <Button Content="{DynamicResource Download}" x:Name="btn_download_techniclauncher" Click="download_techniclauncher" Margin="0,215,10,0" Height="35" VerticalAlignment="Top" HorizontalAlignment="Right" Width="165"/>
+                    <Button Content="{DynamicResource Start}" x:Name="btn_start_techniclauncher"  Click="start_techniclauncher" Margin="0,255,10,0" Height="35" VerticalAlignment="Top" HorizontalAlignment="Right" Width="165"/>
                     <Image Margin="10,183,0,0" Height="91" VerticalAlignment="Top" HorizontalAlignment="Left" Width="259" Source="/resources/images/tl.png"/>
-                    <TextBlock TextWrapping="Wrap" Margin="274,293,180,135" Padding="5" Text="{Binding Source={StaticResource FeedTheBeastDescription}}" VerticalAlignment="Top" Height="70" />
-                    <Button Content="Herunterladen" x:Name="btn_download_feedthebeast" Click="download_feedthebeast" Margin="0,295,10,0" Height="35" VerticalAlignment="Top" HorizontalAlignment="Right" Width="165"/>
-                    <Button Content="Starten" x:Name="btn_start_feedthebeast"  Click="start_feedthebeast" Margin="0,335,10,0" Height="35" VerticalAlignment="Top" HorizontalAlignment="Right" Width="165"/>
+                    <TextBlock TextWrapping="Wrap" Margin="274,293,180,135" Padding="5" Text="{DynamicResource FeedTheBeastDescription}" VerticalAlignment="Top" Height="70" />
+                    <Button Content="{DynamicResource Download}" x:Name="btn_download_feedthebeast" Click="download_feedthebeast" Margin="0,295,10,0" Height="35" VerticalAlignment="Top" HorizontalAlignment="Right" Width="165"/>
+                    <Button Content="{DynamicResource Start}" x:Name="btn_start_feedthebeast"  Click="start_feedthebeast" Margin="0,335,10,0" Height="35" VerticalAlignment="Top" HorizontalAlignment="Right" Width="165"/>
                     <Image Margin="74,270,0,0" Height="86" VerticalAlignment="Top" HorizontalAlignment="Left" Width="134" Source="/resources/images/web-ftb-logo_0.png"/>
                 </Grid>
             </TabItem>
@@ -252,7 +256,7 @@
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>
                                 <GridViewColumn Header="Name" DisplayMemberBinding="{Binding name}" Width="300"/>
-                                <!--<GridViewColumn Header="author" DisplayMemberBinding="{Binding Path=author}" />-->
+                                <!--<GridViewColumn Header="authors" DisplayMemberBinding="{Binding Path=authors, Converter={StaticResource List_String_Converter}}" />-->
                             </GridView>
                         </ListView.View>
                     </ListView>
@@ -287,13 +291,20 @@
                     <ComboBox x:Name="cb_modversions" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="352" Height="26"/>
                     <Button x:Name="btn_play" Content="Play" Margin="192,466,628,24" Visibility="Hidden" />
                     <TextBox x:Name="tb_downloadlink" HorizontalAlignment="Left" Height="26" Margin="362,439,-17,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="597" Visibility="Hidden"/>
-                    <Label Margin="517,72,80,0" VerticalAlignment="Top" Height="29" FontWeight="Bold" VerticalContentAlignment="Center" HorizontalContentAlignment="Right" Background="#00000000" Foreground="#FF1F94F5" FontSize="15" Content="{Binding ElementName=lb_mods, Path=SelectedItem.author}" />
+                    <Label Margin="517,72,80,0" VerticalAlignment="Top" Height="29" FontWeight="Bold" VerticalContentAlignment="Center" HorizontalContentAlignment="Right" Background="#00000000" Foreground="#FF1F94F5" FontSize="15" Content="{Binding ElementName=lb_mods, Path=SelectedItem.authors, Converter={StaticResource List_String_Converter}}" />
                     <TextBox x:Name="tb_search_mods" Controls:TextboxHelper.ClearTextButton="True" Controls:TextboxHelper.Watermark="Suche" Margin="10,41,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="352" />
-                    <ComboBox ItemsSource="{Binding Path=Profiles}" SelectedItem="{Binding selectedprofile, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" x:Name="cb_mods_profilename" HorizontalAlignment="Left" Margin="517,10,0,0" VerticalAlignment="Top" Width="168" Height="26"/>
+                    <ComboBox ItemsSource="{Binding Path=Profiles}" SelectedItem="{Binding selectedProfile, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" x:Name="cb_mods_profilename" HorizontalAlignment="Left" Margin="517,10,0,0" VerticalAlignment="Top" Width="168" Height="26"/>
                     <RadioButton x:Name="rb_mods_profile" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="488,10,0,0" Height="26" Width="24" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
                     <RadioButton x:Name="rb_mods_folder" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="488,41,0,0" Width="24" Height="26" IsChecked="True" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
                     <Label Content="SHIFT oder STRG für Mehrfachauswahl" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="10,0,0,10" Height="19" Width="352" Padding="5,0" HorizontalContentAlignment="Center"/>
-                    <ComboBox x:Name="cb_mods_description_language" DisplayMemberPath="id" HorizontalAlignment="Right" Margin="0,72,10,0" VerticalAlignment="Top" Width="65" Height="29" ItemsSource="{Binding ElementName=lb_mods, Path=SelectedItem.descriptions}" />
+                    <ComboBox x:Name="cb_mods_description_language" DisplayMemberPath="id" HorizontalAlignment="Right" Margin="0,72,10,0" VerticalAlignment="Top" Width="65" Height="29" ItemsSource="{Binding ElementName=lb_mods, Path=SelectedItem.descriptions}" >
+                        <ComboBox.SelectedItem>
+                            <MultiBinding Converter="{StaticResource Description_SelectedItem_Converter}">
+                                <Binding RelativeSource="{RelativeSource Self}" Path="ItemsSource"/>
+                                <Binding Path="Settings.ActivLanguage.Code"/>
+                            </MultiBinding>
+                        </ComboBox.SelectedItem>
+                    </ComboBox>
                 </Grid>
             </TabItem>
             <TabItem Header="ResourcePacks" Visibility="Collapsed">
@@ -566,7 +577,7 @@
                                     <TextBlock Text="{DynamicResource Language}" VerticalAlignment="Center"/>
                                     <TextBlock Text=":" Margin="0,0,10,0" VerticalAlignment="Center"/>
                                 </StackPanel>
-                                <ComboBox Width="150" ItemsSource="{Binding Settings.Settings.lstLanguages}" SelectedItem="{Binding Settings.Settings.ActivLanguage, UpdateSourceTrigger=PropertyChanged}" Grid.Column="1" HorizontalAlignment="Left">
+                                <ComboBox Width="150" ItemsSource="{Binding Settings.lstLanguages}" SelectedItem="{Binding Settings.ActivLanguage, UpdateSourceTrigger=PropertyChanged}" Grid.Column="1" HorizontalAlignment="Left">
                                     <ComboBox.ItemTemplate>
                                         <DataTemplate>
                                             <StackPanel Orientation="Horizontal">

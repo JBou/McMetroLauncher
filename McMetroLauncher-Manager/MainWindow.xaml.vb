@@ -4,7 +4,7 @@ Imports Newtonsoft.Json
 Imports Newtonsoft.Json.Linq
 
 Module GlobalInfos
-    Public Webspace As String = "http://youyougabbo.square7.ch/"
+    Public Webspace As String = "http://patzleiner.net"
     Public Versionsurl As String = "http://s3.amazonaws.com/Minecraft.Download/versions/versions.json"
     Public mcpfad As String = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\.minecraft"
     Public modsfile As String = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) & "\modlist.json"

@@ -31,23 +31,16 @@
                 <Style TargetType="ListBoxItem" BasedOn="{StaticResource MetroListBoxItem}">
                     <Setter Property="ToolTip">
                         <Setter.Value>
-                            <StackPanel>
-                                <TextBlock>
-                                    <TextBlock.Text>
-                                        <MultiBinding xml:space="preserve" StringFormat="{}Version: {0}&#10;Downloadlink: {1}">
-                                              <Binding Path="version" />
-                                              <Binding Path="downloadlink" />
-                                        </MultiBinding>
-                                    </TextBlock.Text>
-                                </TextBlock>
-                                <TextBlock>
-                                    <TextBlock.Text>
-                                        <MultiBinding StringFormat="{}{0}">
+                            <TextBlock>
+                                <TextBlock.Text>
+                                    <MultiBinding xml:space="preserve" StringFormat="{}Version: {0}&#10;Downloadlink: {1}&#10;Extension: {2}&#10;{3}">
+                                            <Binding Path="version" />
+                                            <Binding Path="downloadlink" />
+                                            <Binding Path="extension" />
                                             <Binding Path="dependencies" Converter="{StaticResource Dependencies_String_Converter}" />
-                                        </MultiBinding>
-                                    </TextBlock.Text>
-                                </TextBlock>
-                            </StackPanel>
+                                    </MultiBinding>
+                                </TextBlock.Text>
+                            </TextBlock>
                         </Setter.Value>
                     </Setter>
                 </Style>
@@ -55,12 +48,11 @@
         </ListBox>
         <Label Content="Versionen:" HorizontalAlignment="Left" Margin="564,10,0,0" VerticalAlignment="Top" Width="294" HorizontalContentAlignment="Center" Foreground="#FF00B9FF" FontSize="25" Height="43"/>
         <Label Content="Autor:" HorizontalAlignment="Left" Margin="10,54,0,0" VerticalAlignment="Top" Height="26" Width="119" Padding="0" VerticalContentAlignment="Center" FontSize="13"/>
-        <TextBox x:Name="tb_author" HorizontalAlignment="Left" Height="33" Margin="134,51,0,0" VerticalAlignment="Top" Width="425" MaxLines="1"/>
+        <TextBox x:Name="tb_authors" HorizontalAlignment="Left" Height="33" Margin="134,51,0,0" VerticalAlignment="Top" Width="425" MaxLines="1"/>
         <Label Content="ID:" HorizontalAlignment="Left" Margin="10,0,0,86" VerticalAlignment="Bottom" Width="119" Height="32" VerticalContentAlignment="Center" Padding="0,-1,0,0" FontSize="13"/>
-        <Label Content="Type:" HorizontalAlignment="Left" Margin="615,0,0,86" VerticalAlignment="Bottom" Width="65" Height="35" VerticalContentAlignment="Center" Padding="0,-1,0,0" FontSize="13"/>
-        <TextBox x:Name="tb_id" HorizontalAlignment="Left" Height="32" Margin="134,0,0,86" VerticalAlignment="Bottom" Width="351" MaxLines="1"/>
-        <ComboBox x:Name="cb_extension" HorizontalAlignment="Left" Margin="490,393,0,0" VerticalAlignment="Top" Width="120" Height="32" />
-        <ComboBox x:Name="cb_type" HorizontalAlignment="Left" Margin="685,390,0,0" VerticalAlignment="Top" Width="173" Height="35"/>
+        <Label Content="Type:" HorizontalAlignment="Left" Margin="564,0,0,86" VerticalAlignment="Bottom" Width="65" Height="35" VerticalContentAlignment="Center" Padding="0,-1,0,0" FontSize="13"/>
+        <TextBox x:Name="tb_id" HorizontalAlignment="Left" Height="32" Margin="134,0,0,86" VerticalAlignment="Bottom" Width="425" MaxLines="1"/>
+        <ComboBox x:Name="cb_type" HorizontalAlignment="Left" Margin="634,390,0,0" VerticalAlignment="Top" Width="224" Height="35"/>
         <Button x:Name="btn_delete_dependencies" Content="Entfernen" HorizontalAlignment="Left" Margin="574,342,0,0" VerticalAlignment="Top" Width="88" Height="33"/>
         <Button x:Name="btn_edit_dependencies" Content="Bearbeiten" HorizontalAlignment="Left" Margin="667,342,0,0" VerticalAlignment="Top" Width="87" Height="33"/>
         <Button x:Name="btn_add_dependencies" Content="Hinzufügen" HorizontalAlignment="Left" Margin="759,342,0,0" VerticalAlignment="Top" Width="88" Height="33"/>
