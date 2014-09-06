@@ -15,7 +15,7 @@ Imports System.Windows
 <Assembly: AssemblyDescription("")> 
 <Assembly: AssemblyCompany("")> 
 <Assembly: AssemblyProduct("McMetroLauncher")> 
-<Assembly: AssemblyCopyright("Developed by JBou 2013-2014")> 
+<Assembly: AssemblyCopyright("© 2013-2014 JBou")> 
 <Assembly: AssemblyTrademark("")> 
 <Assembly: ComVisible(false)>
 
@@ -55,5 +55,5 @@ Imports System.Windows
 ' übernehmen, indem Sie "*" eingeben:
 ' <Assembly: AssemblyVersion("1.0.*")> 
 
-<Assembly: AssemblyVersion("1.1.5.2")> 
-<Assembly: AssemblyFileVersion("1.1.5.2")> 
+<Assembly: AssemblyVersion("1.1.5.3")> 
+<Assembly: AssemblyFileVersion("1.1.5.3")> 

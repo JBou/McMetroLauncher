@@ -1,8 +1,6 @@
 ﻿<Controls:MetroWindow x:Class="Forge_installer"
                       Style="{StaticResource MetroWindow}"
                       xmlns:local="clr-namespace:McMetroLauncher"
-                      xmlns:metro="http://schemas.codeplex.com/elysium"
-                      xmlns:params="http://schemas.codeplex.com/elysium/params"
                       xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
                       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
