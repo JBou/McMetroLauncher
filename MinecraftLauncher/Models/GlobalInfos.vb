@@ -154,6 +154,9 @@ Public Module GlobalInfos
             End Get
             Set(value As Boolean)
                 m_isstarting = value
+                If value = False Then
+                    Version = Nothing
+                End If
             End Set
         End Property
         Private Shared m_isstarting As Boolean

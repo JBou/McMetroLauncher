@@ -28,13 +28,18 @@ Public Class Settings
         Dim text As String = File.ReadAllText(SettingsFile.FullName)
         Return Await JsonConvert.DeserializeObjectAsync(Of Settings)(text, New JsonSerializerSettings() With {.DefaultValueHandling = DefaultValueHandling.Ignore, .NullValueHandling = NullValueHandling.Ignore})
     End Function
-    Public Sub Save()
+    Public Function Save() As Boolean
         If mcpfad = GlobalInfos.mcpfad.FullName Then
             mcpfad = Nothing
         End If
         Dim text As String = JsonConvert.SerializeObject(Me, Newtonsoft.Json.Formatting.Indented, New JsonSerializerSettings() With {.DefaultValueHandling = DefaultValueHandling.Ignore, .NullValueHandling = NullValueHandling.Ignore})
-        File.WriteAllText(SettingsFile.FullName, text)
-    End Sub
+        Try
+            File.WriteAllText(SettingsFile.FullName, text)
+        Catch ex As IOException
+            Return False
+        End Try
+        Return True
+    End Function
 
 #Region "Properties"
     Private _mcpfad As String, _accent As String, _Theme As String, _ServerAddress As String, _DirectJoin As Boolean, _WindowState As WindowState, _JavaPath As String

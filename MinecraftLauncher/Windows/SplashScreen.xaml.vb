@@ -47,6 +47,12 @@ Public Class SplashScreen
     End Sub
 
     Private Async Sub SplashScreen_Loaded(sender As Object, e As RoutedEventArgs) Handles Me.Loaded
+        If Not Applicationdata.Exists Then
+            Applicationdata.Create()
+        End If
+        If Applicationcache.Exists = False Then
+            Applicationcache.Create()
+        End If
         Await MainViewModel.Instance.LoadSettings()
         If MainViewModel.Instance.Settings.Accent <> Nothing AndAlso ThemeManager.Accents.Select(Function(p) p.Name).Contains(MainViewModel.Instance.Settings.Accent) Then
             Dim theme = ThemeManager.DetectAppStyle(Application.Current)
@@ -80,13 +86,6 @@ Public Class SplashScreen
                 lbl_copyright.Content = CopyrightAttribute.Copyright
             End If
         End If
-        If Applicationdata.Exists = False Then
-            Applicationdata.Create()
-        End If
-        If Applicationcache.Exists = False Then
-            Applicationcache.Create()
-        End If
-
 
         If Await internetconnection() = True Then
             If GetJavaPath() = Nothing OrElse New FileInfo(GetJavaPath()).Exists = False Then

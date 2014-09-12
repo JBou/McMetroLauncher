@@ -35,9 +35,13 @@ Public Class authenticationDatabase
         clientToken = If(jo.Properties.Select(Function(p) p.Name).Contains("clientToken"), jo("clientToken").ToString, Guid.NewGuid.ToString)
         If jo.Properties.Select(Function(p) p.Name).Contains("authenticationDatabase") Then
             For Each item As String In jo.Value(Of JObject)("authenticationDatabase").Properties.Select(Function(p) p.Value.ToString)
-                Dim account As Account = Await JsonConvert.DeserializeObjectAsync(Of Account)(item)
-                'Nur wenn alle properties existieren hinzufügen:
-                List.Add(account)
+                Try
+                    Dim account As Account = Await JsonConvert.DeserializeObjectAsync(Of Account)(item)
+                    'Nur wenn alle properties existieren hinzufügen:
+                    List.Add(account)
+                Catch ex As JsonException
+                    'TODO: Cannot load Account, Invalid format (uuid?)
+                End Try
             Next
         End If
     End Function
