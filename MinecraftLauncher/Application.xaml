@@ -144,7 +144,7 @@
                         <ControlTemplate TargetType="{x:Type TabItem}">
                             <Grid>
                                 <Grid Name="BG" Height="50" Width="150">
-                                    <Polygon x:Name="arrow" Points="8,0 0,5 8,10" Stroke="white" Fill="white" Height="12" Width="8" RenderOptions.EdgeMode="Unspecified" Visibility="Hidden" Margin="142,0,0,0" />
+                                    <Polygon x:Name="arrow" Points="8,0 0,5 8,10" Stroke="{DynamicResource WhiteColorBrush}" Fill="{DynamicResource WhiteColorBrush}" Height="12" Width="8" RenderOptions.EdgeMode="Unspecified" Visibility="Hidden" Margin="142,0,0,0" />
                                     <TextBlock Name="tb" Text="{TemplateBinding Header}" TextAlignment="Center" HorizontalAlignment="Stretch" VerticalAlignment="Center" Foreground="Black"/>
                                 </Grid>
                             </Grid>
@@ -153,8 +153,8 @@
                                 <Trigger Property="IsSelected" Value="True">
                                     <Setter Property="IsEnabled" Value="False"/>
                                     <Setter TargetName="arrow" Property="Visibility" Value="Visible"/>
-                                    <Setter TargetName="tb" Property="Foreground" Value="White"/>
-                                    <Setter TargetName="BG" Property="Background" Value="#41b1e1"/>
+                                    <Setter TargetName="tb" Property="Foreground" Value="{DynamicResource WhiteColorBrush}"/>
+                                    <Setter TargetName="BG" Property="Background" Value="{DynamicResource AccentColorBrush}"/>
                                     <Trigger.EnterActions >
                                         <BeginStoryboard >
                                             <Storyboard >
@@ -164,8 +164,8 @@
                                     </Trigger.EnterActions>
                                 </Trigger>
                                 <Trigger SourceName="BG" Property="IsMouseOver" Value="True">
-                                    <Setter TargetName="tb" Property="Foreground" Value="White"/>
-                                    <Setter TargetName="BG" Property="Background" Value="#CCA2E4FF"/>
+                                    <Setter TargetName="tb" Property="Foreground" Value="{DynamicResource WhiteColorBrush}"/>
+                                    <Setter TargetName="BG" Property="Background" Value="{DynamicResource AccentColorBrush}"/>
                                 </Trigger>
                             </ControlTemplate.Triggers>
                         </ControlTemplate>
