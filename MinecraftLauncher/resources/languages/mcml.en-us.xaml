@@ -40,10 +40,10 @@
     <System:String x:Key="UpdatePackageTitle">Changes in version {0} (Published on: {1})</System:String>
 
     <!-- Tools Descriptions -->
-    <System:String x:Key="TechnicLauncherDescription">Mit den Technic Launcher kannst du viele bekannte Modpacks spielen wie z.B. Tekkit, Hexxit, Volt.... Auserdem kannst du eigene Modpacks hinzufügen und spielen. Diese findest du auf http://technicpack.net.</System:String>
-    <System:String x:Key="LiteLoaderDescription">LiteLoader ist ein ModLoader der dafür entwickelt wurde, grundlegende Loader Funktionalitaten für Mods anzubieten, die nicht den Spielmechanismus ändern müssen. Er wurde dafür entwickelt, neben Minecraft Forge zu laufen und zwischen LiteLoader und Forge Mods treten keine Konflikte auf.</System:String>
-    <System:String x:Key="ForgeDescription">Minecraft Forge ist ein ModLoader mit dem ihr einfacher Mods installieren könnt. Er hilft dabei, dass die Mods untereinander kompatibel sind. Die meisten Mods basieren auf Forge. Du kannst Mods für Forge unter dem Tab &quot;Mods&quot; installieren.</System:String>
-    <System:String x:Key="FeedTheBeastDescription">Mit den Feed The Beast Launcher kannst du viele bekannte Modpacks spielen wie z.B. Unleashed, Unhinged, FTB Ultimate, Direwolf 20... die sehr viele Mods beinhalten. Mehr Infos findest du auf http://feed-the-beast.com.</System:String>
+    <System:String x:Key="TechnicLauncherDescription">Using the Technic Launcher you can play lots of well known modpacks such as Tekkit, Hexxit, Volt.... You can add and play your own modpacks as well, though. You can create and find them on http://technicpack.net.</System:String>
+    <System:String x:Key="LiteLoaderDescription">LiteLoader is a modloader to handle simple functionalities for mods that won't change the mechanism of the game. It was developed to run with Forge, so there won't be any conflicts between them.</System:String>
+    <System:String x:Key="ForgeDescription">Minecraft Forge is a modloader that eases the installation of mods. It'll remove most of the incompatibilities betwenn mods. Also most of the mods are based on Forge. You can install forge-mods under the tab &quot;Mods&quot;.</System:String>
+    <System:String x:Key="FeedTheBeastDescription">Using the Feed The Beast launcher you can play plenty of cool modpacks within Unleashed, Unhinged, FTB Ultimate, Direwolf 20.... See more on http://feed-the-beast.com.</System:String>
 
     <!-- Launcher Settings -->
     <System:String x:Key="Language">Language</System:String>
