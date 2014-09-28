@@ -864,9 +864,9 @@ Public Class MainWindow
                                       End If
                                       argumentreplacements.Add(New String() {"${auth_player_name}", Startinfos.Session.SelectedProfile.Name})
                                       argumentreplacements.Add(New String() {"${version_name}", Startinfos.Version.id})
-                                      argumentreplacements.Add(New String() {"${game_directory}", gamedir})
-                                      argumentreplacements.Add(New String() {"${game_assets}", assets_dir})
-                                      argumentreplacements.Add(New String() {"${assets_root}", assets_dir})
+                                      argumentreplacements.Add(New String() {"${game_directory}", """" & gamedir & """"})
+                                      argumentreplacements.Add(New String() {"${game_assets}", """" & assets_dir & """"})
+                                      argumentreplacements.Add(New String() {"${assets_root}", """" & assets_dir & """"})
                                       argumentreplacements.Add(New String() {"${assets_index_name}", assets_index_name})
                                       argumentreplacements.Add(New String() {"${user_properties}", New JObject().ToString})
 
@@ -977,7 +977,7 @@ Public Class MainWindow
 
     Public Async Sub StartMC()
         If Startinfos.IsStarting = True Then
-            Await Me.ShowMessageAsync(Application.Current.FindResource("Atention").ToString, Application.Current.FindResource("MinecraftAlreadyStarting").ToString & "!", MessageDialogStyle.Affirmative, New MetroDialogSettings() With {.AffirmativeButtonText = Application.Current.FindResource("OK").ToString, .ColorScheme = MetroDialogColorScheme.Accented})
+            Await Me.ShowMessageAsync(Application.Current.FindResource("Attention").ToString, Application.Current.FindResource("MinecraftAlreadyStarting").ToString & "!", MessageDialogStyle.Affirmative, New MetroDialogSettings() With {.AffirmativeButtonText = Application.Current.FindResource("OK").ToString, .ColorScheme = MetroDialogColorScheme.Accented})
         ElseIf cb_profiles.SelectedIndex = -1 Then
             Await Me.ShowMessageAsync(Nothing, Application.Current.FindResource("PleaseSelectProfile").ToString & "!", MessageDialogStyle.Affirmative, New MetroDialogSettings() With {.AffirmativeButtonText = Application.Current.FindResource("OK").ToString, .ColorScheme = MetroDialogColorScheme.Accented})
             'ElseIf tb_username.Text = Nothing Then
@@ -1255,9 +1255,9 @@ Public Class MainWindow
             'End If
             Select Case selected.type
                 Case "forge"
-                    lbl_type.Content = String.Format("{0}: {1} ({2}->{1})", Application.Current.FindResource("Prerequisite").ToString, Application.Current.FindResource("LiteLoader").ToString, Application.Current.FindResource("Tools").ToString)
-                Case "liteloader"
                     lbl_type.Content = String.Format("{0}: {1} ({2}->{1})", Application.Current.FindResource("Prerequisite").ToString, Application.Current.FindResource("MinecraftForge").ToString, Application.Current.FindResource("Tools").ToString)
+                Case "liteloader"
+                    lbl_type.Content = String.Format("{0}: {1} ({2}->{1})", Application.Current.FindResource("Prerequisite").ToString, Application.Current.FindResource("LiteLoader").ToString, Application.Current.FindResource("Tools").ToString)
                 Case Else
                     lbl_type.Content = Application.Current.FindResource("Typ").ToString & ": " & DirectCast(lb_mods.SelectedItem, Modifications.Mod).type
             End Select

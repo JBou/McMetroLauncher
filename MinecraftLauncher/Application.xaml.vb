@@ -23,6 +23,7 @@ Class Application
 
     Private Sub Application_DispatcherUnhandledException(sender As Object, e As Windows.Threading.DispatcherUnhandledExceptionEventArgs) Handles Me.DispatcherUnhandledException
         e.Handled = True
+        OnExceptionOccurred(e.Exception)
     End Sub
 
     Private Sub OnExceptionOccurred(ex As Exception)
