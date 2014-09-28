@@ -18,7 +18,7 @@ Public Class Forge_ProfileEditor
             Me.Close()
         Else
             If Profiles.List.Contains(tb_newprofilename.Text) Then
-                Await Me.ShowMessageAsync("Fehler", "Profil existiert bereits: " & tb_newprofilename.Text)
+                Await Me.ShowMessageAsync(Application.Current.FindResource("Error").ToString, Application.Current.FindResource("ProfileExists").ToString & ": " & tb_newprofilename.Text)
             Else
                 Await Profiles.Add(New Profiles.Profile With {.name = tb_newprofilename.Text, .lastVersionId = Versionname})
                 Profiles.Get_Profiles()

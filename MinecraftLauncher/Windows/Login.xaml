@@ -18,7 +18,7 @@
         </ResourceDictionary>
     </UserControl.Resources>
     <StackPanel>
-        <GroupBox x:Name="gb_existingaccount" Header="Mit bestehendem Account einloggen:" VerticalAlignment="Top" Margin="10,10,10,0" Height="80">
+        <GroupBox x:Name="gb_existingaccount" Header="{DynamicResource LoginWithExistingUser}" VerticalAlignment="Top" Margin="10,10,10,0" Height="80">
             <Grid>
                 <ComboBox x:Name="cb_existing_users" VerticalAlignment="Top" Margin="10,10,168,0" Height="25" VerticalContentAlignment="Center" HorizontalContentAlignment="Stretch" >
                     <ComboBox.ItemContainerStyle>
@@ -34,11 +34,11 @@
                                         <Style TargetType="{x:Type TextBlock}">
                                             <Style.Triggers>
                                                 <DataTrigger Binding="{Binding userid, Converter={StaticResource userid_OnlineModeConverter}}" Value="True">
-                                                    <Setter Property="Text" Value="Premium" />
+                                                    <Setter Property="Text" Value="{DynamicResource Premium}" />
                                                     <Setter Property="Foreground" Value="Green" />
                                                 </DataTrigger>
                                                 <DataTrigger Binding="{Binding userid, Converter={StaticResource userid_OnlineModeConverter}}" Value="False">
-                                                    <Setter Property="Text" Value="Cracked" />
+                                                    <Setter Property="Text" Value="{DynamicResource Cracked}" />
                                                     <Setter Property="Foreground" Value="Red" />
                                                 </DataTrigger>
                                             </Style.Triggers>
@@ -50,20 +50,20 @@
                         </DataTemplate>
                     </ComboBox.ItemTemplate>
                 </ComboBox>
-                <Button x:Name="btn_play" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,10,89,0" Width="74" Content="Play" Height="25" />
-                <Button x:Name="btn_logout" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,10,10,0" Width="74" Content="Logout" Height="25" />
+                <Button x:Name="btn_play" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,10,89,0" Width="74" Content="{DynamicResource Play}" Height="25" />
+                <Button x:Name="btn_logout" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,10,10,0" Width="74" Content="{DynamicResource Logout}" Height="25" />
             </Grid>
         </GroupBox>
-        <GroupBox Header="Mit neuem Account einloggen:" Margin="10,10,10,10" Height="250">
+        <GroupBox Header="{DynamicResource LoginWithNewAccount}" Margin="10,10,10,10" Height="250">
             <Grid>
-                <CheckBox x:Name="cb_online_mode" Checked="UpdateValidation" Unchecked="UpdateValidation" IsChecked="{Binding OnlineMode, Mode=TwoWay, NotifyOnValidationError=True, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" VerticalAlignment="Top" Margin="10,10,10,0" Height="25" Content="Online Mode (Premium Account)" VerticalContentAlignment="Center" />
+                <CheckBox x:Name="cb_online_mode" Checked="UpdateValidation" Unchecked="UpdateValidation" IsChecked="{Binding OnlineMode, Mode=TwoWay, NotifyOnValidationError=True, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" VerticalAlignment="Top" Margin="10,10,10,0" Height="25" Content="{DynamicResource OnlineModePremiumAccount}" VerticalContentAlignment="Center" />
                 <Label VerticalAlignment="Top" Margin="10,40,10,0" Height="26" >
                     <Label.Style>
                         <Style TargetType="Label">
-                            <Setter Property="Content" Value="Email Addresse oder Username:" />
+                            <Setter Property="Content" Value="{DynamicResource EmailAddressOrUsername}" />
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding ElementName=cb_online_mode,Path=IsChecked}" Value="False" >
-                                    <Setter Property="Content" Value="Username:" />
+                                    <Setter Property="Content" Value="{DynamicResource Username}" />
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
@@ -72,18 +72,18 @@
                 <TextBox x:Name="tb_username" Text="{Binding Path=Username, Mode=TwoWay, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged, NotifyOnValidationError=True}" VerticalAlignment="Top" Margin="10,71,10,0" Height="26" />
                 <TextBlock VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,97,10,0" Height="26" FontSize="9" >
                     <Hyperlink NavigateUri="https://help.mojang.com/customer/portal/articles/1233873" RequestNavigate="Hyperlink_RequestNavigate">
-                        Was soll ich nehmen?
+                        <TextBlock Text="{DynamicResource WhichDoIUse}"/>
                     </Hyperlink>
                 </TextBlock>
-                <Label VerticalAlignment="Top" Margin="10,102,10,0" Height="26" Content="Passwort:" IsEnabled="{Binding ElementName=cb_online_mode,Path=IsChecked}" />
+                <Label VerticalAlignment="Top" Margin="10,102,10,0" Height="26" Content="{DynamicResource Password}" IsEnabled="{Binding ElementName=cb_online_mode,Path=IsChecked}" />
                 <PasswordBox x:Name="pb_password" VerticalAlignment="Top" Margin="10,133,10,0" Height="26" IsEnabled="{Binding ElementName=cb_online_mode,Path=IsChecked}" />
                 <TextBlock VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,159,6,0" Height="26" FontSize="9" >         
                     <Hyperlink NavigateUri="https://help.mojang.com/customer/portal/articles/329524" RequestNavigate="Hyperlink_RequestNavigate">
-                        Passwort vergessen?
+                        <TextBlock Text="{DynamicResource ForgotPassword}"/>
                     </Hyperlink>
                 </TextBlock>
-                <Button x:Name="btn_register" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10,182,0,-5" Width="210" Content="Register" Height="25" Click="open_register" />
-                <Button x:Name="btn_login" IsEnabled="{Binding ElementName=tb_username,Path=(Validation.HasError),Converter={StaticResource InverseBooleanConverter}}" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,182,10,-5" Width="210" Content="Login" Height="25" />
+                <Button x:Name="btn_register" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10,182,0,-5" Width="210" Content="{DynamicResource Register}" Height="25" Click="open_register" />
+                <Button x:Name="btn_login" IsEnabled="{Binding ElementName=tb_username,Path=(Validation.HasError),Converter={StaticResource InverseBooleanConverter}}" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,182,10,-5" Width="210" Content="{DynamicResource Login}" Height="25" />
             </Grid>
         </GroupBox>
 

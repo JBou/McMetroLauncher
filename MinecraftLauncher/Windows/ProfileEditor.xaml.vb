@@ -19,7 +19,7 @@ Public Class ProfileEditor
             selectedid = DirectCast(cb_versions.SelectedItem, Versionslist.Version).id
         End If
         cb_versions.Items.Clear()
-        cb_versions.Items.Add(New Versionslist.Version() With {.type = "Neueste Version"})
+        cb_versions.Items.Add(New Versionslist.Version() With {.type = Application.Current.FindResource("LatestVersion").ToString})
         For Each item As Versionslist.Version In Versions.versions
             If item.type = "release" Then
                 cb_versions.Items.Add(item)
@@ -111,7 +111,6 @@ Public Class ProfileEditor
         tb_res_width.Text = "854"
         tb_java_executable.Text = MainWindow.Startcmd(Await Profiles.FromName(loadedprofile))
         tb_java_arguments.Text = "-Xmx1G"
-
     End Function
 
     Private Sub tb_res_PreviewTextInput(ByVal sender As System.Object, ByVal e As System.Windows.Input.TextCompositionEventArgs) Handles tb_res_height.PreviewTextInput, tb_res_width.PreviewTextInput
@@ -136,10 +135,9 @@ Public Class ProfileEditor
     Private Async Sub btn_save_Click(sender As Object, e As RoutedEventArgs) Handles btn_save.Click
 
         If tb_profile_name.Text = Nothing Then
-            Await Me.ShowMessageAsync("Namen eingeben", "Geben Sie bitte einen Profil Namen ein!", MessageDialogStyle.Affirmative, New MetroDialogSettings() With {.AffirmativeButtonText = "Ok", .ColorScheme = MetroDialogColorScheme.Accented})
+            Await Me.ShowMessageAsync(Application.Current.FindResource("MissingProfileName").ToString, Application.Current.FindResource("EnterProfileName").ToString, MessageDialogStyle.Affirmative, New MetroDialogSettings() With {.AffirmativeButtonText = Application.Current.FindResource("OK").ToString, .ColorScheme = MetroDialogColorScheme.Accented})
             Exit Sub
         Else
-
             Dim name As String = tb_profile_name.Text
             Dim gameDir As String = Nothing
             Dim lastVersionId As String = Nothing
@@ -169,7 +167,7 @@ Public Class ProfileEditor
             End If
             If cb_resolution.IsChecked = True Then
                 If tb_res_height.Text = Nothing OrElse tb_res_width.Text = Nothing Then
-                    Await Me.ShowMessageAsync("Fehler", "Bitte geben Sie eine gültige Auflösung ein!", MessageDialogStyle.Affirmative, New MetroDialogSettings() With {.AffirmativeButtonText = "Ok", .ColorScheme = MetroDialogColorScheme.Accented})
+                    Await Me.ShowMessageAsync(Application.Current.FindResource("Error").ToString, Application.Current.FindResource("EnterValidResolution").ToString, MessageDialogStyle.Affirmative, New MetroDialogSettings() With {.AffirmativeButtonText = Application.Current.FindResource("OK").ToString, .ColorScheme = MetroDialogColorScheme.Accented})
                     Exit Sub
                 End If
                 resolution_width = tb_res_width.Text
@@ -211,7 +209,7 @@ Public Class ProfileEditor
 
             If Newprofile = True Then
                 If Profiles.List.Contains(tb_profile_name.Text) = True Then
-                    Await Me.ShowMessageAsync("Profil existiert bereits", "Dieses Profil existiert bereits!", MessageDialogStyle.Affirmative, New MetroDialogSettings() With {.AffirmativeButtonText = "Ok", .ColorScheme = MetroDialogColorScheme.Accented})
+                    Await Me.ShowMessageAsync(Application.Current.FindResource("Error").ToString, Application.Current.FindResource("ProfileExists").ToString, MessageDialogStyle.Affirmative, New MetroDialogSettings() With {.AffirmativeButtonText = "Ok", .ColorScheme = MetroDialogColorScheme.Accented})
                 Else
                     Await Profiles.Add(prof)
                 End If
@@ -220,7 +218,7 @@ Public Class ProfileEditor
                 Dim oldprofile As Profiles.Profile = Await Profiles.FromName(loadedprofile)
                 prof.playerUUID = oldprofile.playerUUID
                 If Profiles.List.Contains(tb_profile_name.Text.ToString) AndAlso tb_profile_name.Text.ToString <> loadedprofile Then
-                    Await Me.ShowMessageAsync("Profil existiert bereits", "Dieses Profil existiert bereits!", MessageDialogStyle.Affirmative, New MetroDialogSettings() With {.AffirmativeButtonText = "Ok", .ColorScheme = MetroDialogColorScheme.Accented})
+                    Await Me.ShowMessageAsync(Application.Current.FindResource("Error").ToString, Application.Current.FindResource("ProfileExists").ToString, MessageDialogStyle.Affirmative, New MetroDialogSettings() With {.AffirmativeButtonText = "Ok", .ColorScheme = MetroDialogColorScheme.Accented})
                 Else
                     Await Profiles.Edit(loadedprofile, prof)
                 End If
@@ -233,8 +231,8 @@ Public Class ProfileEditor
 
     Private Sub btn_selectgamedir_Click(sender As Object, e As RoutedEventArgs) Handles btn_selectgamedir.Click
         Dim fd As New VistaFolderBrowserDialog
-        fd.Description = "Spiel Pfad auswählen"
-        fd.RootFolder = Environment.SpecialFolder.MyComputer
+        fd.Description = Application.Current.FindResource("SelectGameDirectory").ToString
+        fd.RootFolder = Environment.SpecialFolder.ApplicationData
         fd.SelectedPath = mcpfad.FullName
         fd.ShowNewFolderButton = True
         If fd.ShowDialog = True Then
@@ -244,14 +242,17 @@ Public Class ProfileEditor
 
     Private Sub btn_selectjavadir_Click(sender As Object, e As RoutedEventArgs) Handles btn_selectjavadir.Click
         Dim fd As New VistaOpenFileDialog
+        fd.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles)
         If tb_java_executable.Text = Nothing Then
             fd.FileName = Nothing
         Else
             fd.FileName = tb_java_executable.Text
         End If
         fd.Multiselect = False
-        fd.DefaultExt = ".exe"
-        fd.Title = "Java Datei auswählen"
+        fd.CheckFileExists = True
+        fd.CheckPathExists = True
+        fd.Filter = String.Format("{0}|*.exe", Application.Current.FindResource("ExectuableFiles").ToString())
+        fd.Title = Application.Current.FindResource("OFDJavaPathTitle").ToString
         If fd.ShowDialog = True Then
             tb_java_executable.Text = fd.FileName
         End If
@@ -273,12 +274,13 @@ Public Class ProfileEditor
         End If
     End Sub
 
-    Private Async Sub cb_old_alpha_beta_PreviewMouseDown(sender As Object, e As RoutedEventArgs) Handles cb_old_beta.PreviewMouseDown, cb_old_alpha.PreviewMouseDown
+    Private Async Sub cb_old_alpha_beta_PreviewMouseDown(sender As Object, e As RoutedEventArgs) Handles cb_old_beta.PreviewMouseDown, cb_old_alpha.PreviewMouseDown, cb_snapshots.PreviewMouseDown
         If Not DirectCast(sender, CheckBox).IsChecked Then
-            If sender Is cb_old_beta OrElse sender Is cb_old_alpha Then
+            If sender Is cb_old_beta OrElse sender Is cb_old_alpha OrElse sender Is cb_snapshots Then
                 e.Handled = True
-                Dim msgtext As String = "Diese Versionen sind sehr veraltet und können unstabil sein. Alle Fehler, Abstürze, fehlende Funktionen oder andere Defekte die du finden könnstest werden in diesen Versionen nicht mehr behoben." & Environment.NewLine & "Es wird stark empfohlen, dass du diese Versionen in einem separatem Verzeichniss spielst, um Datenverlust zu vermeiden. Wir sind nicht verantwortlich für den Schaden an deinen Daten!" & Environment.NewLine & Environment.NewLine & "Bist du dir sicher, dass du fortsetzen möchstest?"
-                Dim result As MessageDialogResult = Await Me.ShowMessageAsync("Achtung", msgtext, MessageDialogStyle.AffirmativeAndNegativeAndSingleAuxiliary, New MetroDialogSettings() With {.AffirmativeButtonText = "Ja", .NegativeButtonText = "Nein", .FirstAuxiliaryButtonText = "Abbrechen", .ColorScheme = MetroDialogColorScheme.Accented, .AnimateShow = True, .AnimateHide = True})
+                Dim msgtext As String = Application.Current.FindResource("OldVersionsMessage").ToString
+                If sender Is cb_snapshots Then msgtext = Application.Current.FindResource("SnapshotVersionsMessage").ToString
+                Dim result As MessageDialogResult = Await Me.ShowMessageAsync(Application.Current.FindResource("Attention").ToString, msgtext, MessageDialogStyle.AffirmativeAndNegativeAndSingleAuxiliary, New MetroDialogSettings() With {.AffirmativeButtonText = Application.Current.FindResource("Yes").ToString, .NegativeButtonText = Application.Current.FindResource("No").ToString, .FirstAuxiliaryButtonText = Application.Current.FindResource("Cancel").ToString, .ColorScheme = MetroDialogColorScheme.Accented, .AnimateShow = True, .AnimateHide = True})
 
                 If result = MessageDialogResult.Affirmative Then
                     Get_Versions()

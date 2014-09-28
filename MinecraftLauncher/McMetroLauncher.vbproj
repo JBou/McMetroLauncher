@@ -83,7 +83,7 @@
     <GenerateManifests>true</GenerateManifests>
   </PropertyGroup>
   <PropertyGroup>
-    <SignManifests>true</SignManifests>
+    <SignManifests>false</SignManifests>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationManifest>My Project\app.manifest</ApplicationManifest>
@@ -191,7 +191,8 @@
     <Compile Include="Controls\FluidWrapPanel\FluidMouseDragBehavior.vb" />
     <Compile Include="Controls\FluidWrapPanel\FluidWrapPanel.vb" />
     <Compile Include="Extensions\ButtonHelper.vb" />
-    <Compile Include="Extensions\Converters\JSonConverters.vb" />
+    <Compile Include="Extensions\Converters\JsonConverters.vb" />
+    <Compile Include="Extensions\Converters\NullToBooleanConverter.vb" />
     <Compile Include="Extensions\Converters\ValueConverterGroup.vb" />
     <Compile Include="Helpers\ExtensionMethods.vb" />
     <Compile Include="Models\Accent-ThemeMenuData.vb" />
@@ -201,6 +202,9 @@
     <Compile Include="Models\Forge.vb" />
     <Compile Include="Models\GlobalInfos.vb" />
     <Compile Include="Models\Language.vb" />
+    <Compile Include="ViewModels\UpdaterViewModel.vb" />
+    <Compile Include="ViewModels\LiteLoaderInstallerViewModel.vb" />
+    <Compile Include="ViewModels\ForgeInstallerViewModel.vb" />
     <Compile Include="ViewModels\MainViewModel.vb" />
     <Compile Include="Models\Session.vb" />
     <Compile Include="Models\SimpleCommand.vb" />

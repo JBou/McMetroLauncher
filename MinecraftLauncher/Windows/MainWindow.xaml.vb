@@ -208,7 +208,7 @@ Public Class MainWindow
             resources_dir.Create()
         End If
         If indexesfile(assets_index_name).Exists = False Then
-            Write("Lade Resourcen-Liste herunter")
+            Write(Application.Current.FindResource("DownloadingResourcesIndexes").ToString)
             AddHandler wcindexes.DownloadFileCompleted, AddressOf downloadindexesfinished
             If cacheindexesfile(assets_index_name).Directory.Exists = False Then
                 cacheindexesfile(assets_index_name).Directory.Create()
@@ -237,7 +237,7 @@ Public Class MainWindow
     Async Function Parse_Resources() As Task
         MainWindowViewModel.Instance.pb_download_IsIndeterminate = False
         Await Task.Run(New Action(Sub()
-                                      Write("Lade Resourcen herunter")
+                                      Write(Application.Current.FindResource("DownloadingResources").ToString)
                                       Dim indexjo As JObject = JObject.Parse(File.ReadAllText(indexesfile(assets_index_name).FullName))
                                       Dim indexesobjects As IList(Of resourcesindexobject) = New List(Of resourcesindexobject)
                                       Dim virtual As Boolean
@@ -286,7 +286,7 @@ Public Class MainWindow
                     resource.Directory.Create()
                 End If
                 wcresources.DownloadFileAsync(New Uri(resourceurl(currentresourcesobject.hash)), resource.FullName)
-                Write("Resource wird heruntergeladen (Versuch " & resourcesdownloadtry & "): " & resource.FullName)
+                Write(Application.Current.FindResource("DownloadingResource").ToString & " (" & Application.Current.FindResource("Try").ToString & " " & resourcesdownloadtry & "): " & resource.FullName)
             Else
                 resourcesdownloadindex += 1
                 DownloadResources()
@@ -300,7 +300,7 @@ Public Class MainWindow
     Private Sub wcresources_DownloadFileCompleted(sender As Object, e As System.ComponentModel.AsyncCompletedEventArgs) Handles wcresources.DownloadFileCompleted
         If e.Cancelled = False AndAlso e.Error Is Nothing Then
             If resourcesdownloadtry > 3 Then
-                Write("Der Download wurde aufgrund zu vieler Fehlversuche abgebrochen!", LogLevel.ERROR)
+                Write(Application.Current.FindResource("DownloadCanceledTooManyAttempts").ToString & "!", LogLevel.ERROR)
                 Startinfos.IsStarting = False
                 resourcesdownloading = False
                 Exit Sub
@@ -310,9 +310,9 @@ Public Class MainWindow
                     'Nächste Resource Downloaden
                     resourcesdownloadindex += 1
                     resourcesdownloadtry = 1
-                    Write("Resource erfolgreich heruntergeladen und Hash verglichen")
+                    Write(Application.Current.FindResource("DownloadingResourceSuccessful").ToString)
                 Else
-                    'Resource erneut heruntergeladen, Versuch erhöhen:
+                    'Resource erneut herunterladen, Versuch erhöhen:
                     resourcesdownloadtry += 1
                 End If
                 DownloadResources()
@@ -324,7 +324,7 @@ Public Class MainWindow
         resourcesdownloading = False
         If resourcesindexes.virtual = True Then
             'Alle keys in den ordner :"virtual\legacy" kopieren
-            Write("Virtuelle Resourcen werden erstellt")
+            Write(String.Format(Application.Current.FindResource("CreateVirtualResources").ToString, assetspath.FullName))
             For Each item As resourcesindexobject In resourcesindexes.objects
                 Dim destination As New FileInfo(Path.Combine(assetspath.FullName, "virtual", assets_index_name, item.key.Replace("/", "\")))
                 If destination.Directory.Exists = False Then
@@ -353,7 +353,7 @@ Public Class MainWindow
             bytes = e.BytesReceived / 1000000
             Einheit = "MB"
         End If
-        MainWindowViewModel.Instance.lbl_downloadstatus_Content = String.Format("{0}% - {1} {2} von {3} {4} heruntergeladen", e.ProgressPercentage, Math.Round(bytes, 2), Einheit, Math.Round(totalbytes, 2), Einheit)
+        MainWindowViewModel.Instance.lbl_downloadstatus_Content = String.Format(Application.Current.FindResource("DownloadProgressFormat").ToString, e.ProgressPercentage, Math.Round(bytes, 2), Einheit, Math.Round(totalbytes, 2))
     End Sub
 
     Private Sub wc_libraries_DownloadProgressChanged(sender As Object, e As DownloadProgressChangedEventArgs) Handles wc_libraries.DownloadProgressChanged
@@ -379,8 +379,7 @@ Public Class MainWindow
     Public Function MD5FileHash(ByVal sFile As String) As String
         Dim MD5 As New MD5CryptoServiceProvider
         Dim Hash As Byte()
-        Dim Result As String = ""
-        Dim Tmp As String = ""
+        Dim Result As String = Nothing
 
         Dim FN As New FileStream(sFile, FileMode.Open, FileAccess.Read, FileShare.Read, 8192)
         MD5.ComputeHash(FN)
@@ -398,7 +397,7 @@ Public Class MainWindow
         Dim CacheOutputfile As New FileInfo(Path.Combine(cachefolder.FullName, "versions", versionid, versionid & ".jar"))
 
         'Jar File download
-        Write("Prüfe, ob die Version aktuell ist")
+        Write(Application.Current.FindResource("CheckVersionUpToDate").ToString)
         Dim todownload As Boolean = False
         If Outputfile.Exists = False Then
             todownload = True
@@ -422,7 +421,7 @@ Public Class MainWindow
             End If
         End If
         If todownload = True Then
-            Write("Lade Minecraft Version " & versionid & " herunter")
+            Write(String.Format(Application.Current.FindResource("DownloadingMinecraftVersion").ToString, versionid))
             Try
                 If CacheOutputfile.Directory.Exists = False Then
                     CacheOutputfile.Directory.Create()
@@ -431,7 +430,7 @@ Public Class MainWindow
                 wcversionsdownload.DownloadFileAsync(New Uri(VersionsURl), CacheOutputfile.FullName)
                 AddHandler wcversionsdownload.DownloadFileCompleted, AddressOf versiondownloadfinished
             Catch ex As Exception
-                Write("Fehler beim herunterladen von Minecraft " & versionid & " :" & Environment.NewLine & ex.Message, LogLevel.ERROR)
+                Write(String.Format(Application.Current.FindResource("ErrorDownloadingMinecraftVersion").ToString, versionid) & ":" & Environment.NewLine & ex.Message & Environment.NewLine & ex.StackTrace, LogLevel.ERROR)
                 Startinfos.IsStarting = False
             End Try
         Else
@@ -454,7 +453,7 @@ Public Class MainWindow
             CacheOutputfile.MoveTo(Outputfile.FullName)
             Await downloadversionsjson()
         Else
-            Write("Fehler beim herunterladen von Minecraft " & Startinfos.Version.id & " :" & Environment.NewLine & e.Error.Message, LogLevel.ERROR)
+            Write(String.Format(Application.Current.FindResource("ErrorDownloadingMinecraftVersion").ToString, Startinfos.Version.id) & ":" & Environment.NewLine & e.Error.Message & Environment.NewLine & e.Error.StackTrace, LogLevel.ERROR)
             Startinfos.IsStarting = False
         End If
     End Sub
@@ -499,7 +498,7 @@ Public Class MainWindow
                 wcversionsjsondownload.DownloadFileAsync(New Uri(VersionsJSONURL), CacheOutputfileJSON.FullName)
                 AddHandler wcversionsjsondownload.DownloadFileCompleted, AddressOf jsondownloadfinished
             Catch ex As Exception
-                Write("Fehler beim herunterladen von Minecraft " & versionid & " :" & Environment.NewLine & ex.Message, LogLevel.ERROR)
+                Write(String.Format(Application.Current.FindResource("ErrorDownloadingMinecraftVersion").ToString, versionid) & ":" & Environment.NewLine & ex.Message & Environment.NewLine & ex.StackTrace, LogLevel.ERROR)
                 Startinfos.IsStarting = False
             End Try
         Else
@@ -521,7 +520,7 @@ Public Class MainWindow
             CacheOutputfileJSON.MoveTo(OutputfileJSON.FullName)
             Await Versiondownloadfinished_start()
         ElseIf e.Error IsNot Nothing Then
-            Write("Ein Fehler ist beim herunterladen der Version aufgetreten: " & e.Error.Message, LogLevel.ERROR)
+            Write(String.Format(Application.Current.FindResource("ErrorDownloadingMinecraftVersion").ToString, versionid) & ":" & Environment.NewLine & e.Error.Message & Environment.NewLine & e.Error.StackTrace, LogLevel.ERROR)
             Startinfos.IsStarting = False
         End If
     End Sub
@@ -531,7 +530,7 @@ Public Class MainWindow
         If Startinfos.Versionsinfo Is Nothing Then
             Await Parse_VersionsInfo(Startinfos.Version)
             If Startinfos.Versionsinfo.minimumLauncherVersion > supportedLauncherVersion Then
-                Write("Diese Minecraft Version wird vom Launcher noch nicht vollständig unterstützt. Es könnte zu Fehlern kommen!", LogLevel.ERROR)
+                Write(Application.Current.FindResource("VersionNotSupported").ToString, LogLevel.ERROR)
             End If
         End If
         If Startinfos.IsStarting = True Then
@@ -658,21 +657,21 @@ Public Class MainWindow
                             Tounpack = True
                             url = url.Insert(url.Length, ".pack.xz")
                             outputfile = outputfile.Insert(outputfile.Length, ".pack.xz")
-                            Write("Library wird von den Forge Servern heruntergeladen (Versuch " & librariesdownloadtry & "): " & librarypath.FullName)
+                            Write(Application.Current.FindResource("DownloadingLibraryFromForgeServer").ToString & " (" & Application.Current.FindResource("Try").ToString & " " & librariesdownloadtry & "): " & librarypath.FullName)
                         Else
                             If forgeuniversal = True Then
-                                Write("Minecraft Forge Library wird automatisch heruntergeladen (Versuch " & librariesdownloadtry & "): " & librarypath.FullName)
+                                Write(Application.Current.FindResource("DownloadingMinecraftForgeAutomatically").ToString & " (" & Application.Current.FindResource("Try").ToString & " " & librariesdownloadtry & "): " & librarypath.FullName)
                             End If
                         End If
                         If downloadforgelib = False Then
-                            Write("Library wird heruntergeladen (Versuch " & librariesdownloadtry & "): " & outputfile)
+                            Write(Application.Current.FindResource("DownloadingLibrary").ToString & " (" & Application.Current.FindResource("Try").ToString & " " & librariesdownloadtry & "): " & outputfile)
                         End If
                         wc_libraries.DownloadFileAsync(New Uri(url), outputfile)
                     Else
                         If String.IsNullOrWhiteSpace(Currentlibrarysha1) Then
-                            Write("Library konnte nicht auf Hash überprüft werden und wird übersprungen, in der Annahme, dass die lokale Datei gut ist: " & librarypath.FullName, LogLevel.WARNING)
+                            Write(Application.Current.FindResource("LibraryExistsNotChecksumMatched").ToString & ": " & librarypath.FullName, LogLevel.WARNING)
                         Else
-                            Write("Library existiert bereits: " & librarypath.FullName)
+                            Write(Application.Current.FindResource("LibraryAlreadyExists").ToString & ": " & librarypath.FullName)
                         End If
                         librariesdownloadindex += 1
                         DownloadLibraries()
@@ -693,14 +692,14 @@ Public Class MainWindow
 
     Private Async Sub wc_libraries_DownloadFileCompleted(sender As Object, e As System.ComponentModel.AsyncCompletedEventArgs) Handles wc_libraries.DownloadFileCompleted
         If e.Error IsNot Nothing Then
-            Write("Library konnte nicht heruntergeladen werden: " & e.Error.Message & Environment.NewLine & "Falls du gerade Forge gestartet hast, installiere es erneut!", LogLevel.ERROR)
+            Write(Application.Current.FindResource("ErrorDownloadingLibrary").ToString & ": " & e.Error.Message & Environment.NewLine & Application.Current.FindResource("ReinstallForgeIfStarted").ToString & "!", LogLevel.ERROR)
             librariesdownloadindex += 1
             librariesdownloadtry = 1
             librariesdownloadfailures += 1
             Try
                 File.Delete(Path.Combine(librariesfolder.FullName, Currentlibrary.path))
             Catch Ex As Exception
-                Write("Ein Fehler ist beim Löschen einer Library aufgetreten!", LogLevel.WARNING)
+                Write(Application.Current.FindResource("ErrorDeletingLibrary").ToString & "!", LogLevel.WARNING)
             End Try
             DownloadLibraries()
         End If
@@ -713,16 +712,16 @@ Public Class MainWindow
             If Tounpack = True Then
                 Dim input As New FileInfo(libpath & ".pack.xz")
                 Dim output As New FileInfo(libpath)
-                Write("Library wird entpackt: " & libpath)
+                Write(Application.Current.FindResource("UnpackingLibrary").ToString & ": " & libpath)
                 If Await Unpack.Unpack(input, output) = False Then
                     'ShowError
-                    Write("Fehler beim entpacken von: " & libpath)
+                    Write(Application.Current.FindResource("ErrorUnpackingLibrary").ToString & ": " & libpath)
                 End If
                 input.Delete()
             End If
             If librariesdownloadtry > 3 Then
                 librariesdownloadfailures += 1
-                Write("Der Download wurde aufgrund zu vieler Fehlversuche abgebrochen!" & Environment.NewLine & "Falls du gerade Forge gestartet hast, installiere es erneut!", LogLevel.ERROR)
+                Write(Application.Current.FindResource("DownloadCanceledTooManyAttempts").ToString & "!" & Environment.NewLine & Application.Current.FindResource("ReinstallForgeIfStarted").ToString & "!", LogLevel.ERROR)
                 Startinfos.IsStarting = False
                 librariesdownloading = False
             Else
@@ -731,14 +730,14 @@ Public Class MainWindow
                     'Nächste Library Downloaden
                     librariesdownloadindex += 1
                     librariesdownloadtry = 1
-                    Write("Library erfolgreich heruntergeladen")
+                    Write(Application.Current.FindResource("DownloadingLibrarySuccessful").ToString)
                 Else
                     'Hash überprüfen
                     If SHA1FileHash(libpath).ToLower = Currentlibrarysha1 Then
                         'Nächste Library Downloaden
                         librariesdownloadindex += 1
                         librariesdownloadtry = 1
-                        Write("Library erfolgreich heruntergeladen und Hash verglichen")
+                        Write(Application.Current.FindResource("DownloadingLibrarySuccessfulAndChecksumMatched").ToString)
                     Else
                         'Library erneut heruntergeladen, Versuch erhöhen:
                         librariesdownloadtry += 1
@@ -759,7 +758,7 @@ Public Class MainWindow
     Async Function Unzip() As Task
         Await Task.Run(New Action(Sub()
                                       Try
-                                          Write("Natives werden entpackt")
+                                          Write(Application.Current.FindResource("UnpackingNatives").ToString)
                                           UnpackDirectory = Path.Combine(versionsfolder.FullName, Startinfos.Version.id, Startinfos.Version.id & "-natives-" & DateTime.Now.Ticks.ToString)
                                           If startedversions.Contains(UnpackDirectory) = False Then
                                               startedversions.Add(UnpackDirectory)
@@ -808,20 +807,20 @@ Public Class MainWindow
                                                               Next
                                                           End Using
                                                       Catch ex As ZipException
-                                                          Write("Fehler beim entpacken der natives: " & ex.Message, LogLevel.ERROR)
+                                                          Write(Application.Current.FindResource("ErrorUnpackingNatives").ToString & ": " & ex.Message, LogLevel.ERROR)
                                                       End Try
                                                   End If
                                               End With
                                           Next
                                       Catch ex As Exception
-                                          Write("Fehler beim entpacken der natives. Wahrscheinlich wurde die erforderliche Library nicht heruntergeladen" & Environment.NewLine & ex.Message, LogLevel.ERROR)
+                                          Write(Application.Current.FindResource("ErrorUnpackingNativesLibraryMissing").ToString & Environment.NewLine & ex.Message & Environment.NewLine & ex.StackTrace, LogLevel.ERROR)
                                       End Try
                                   End Sub))
     End Function
 
     Async Sub Get_Startinfos()
         Await Unzip()
-        Write("Startinfos werden ausgelesen")
+        Write(Application.Current.FindResource("GettingStartInfos").ToString)
         Dim mainClass As String = Startinfos.Versionsinfo.mainClass
         Dim minecraftArguments As List(Of String) = Startinfos.Versionsinfo.minecraftArguments.Split(Chr(32)).ToList
         Dim libraries As String = Nothing
@@ -933,16 +932,8 @@ Public Class MainWindow
     End Sub
 
     Async Sub Start_MC_Process(Optional Teil_Arguments As String = Nothing)
-        ' Anwendungspfad setzen -> hier liegt es im Anwendungsordner
-        If Startcmd(Startinfos.Profile) = Nothing Then
-            Dim result As MessageDialogResult = Await Me.ShowMessageAsync("Java nicht vorhanden", "Du musst Java installieren, um Minecraft zu spielen. Jetzt herunterladen?", MessageDialogStyle.AffirmativeAndNegative)
-            If result = MessageDialogResult.Affirmative Then
-                Process.Start("http://java.com/de/download")
-            End If
-            Exit Sub
-        End If
         If Teil_Arguments = Nothing Then Teil_Arguments = Arguments
-        Write("Starte Minecraft (Java " & Await GetJavaArch() & " Bit): " & Teil_Arguments)
+        Write(Application.Current.FindResource("StartingMinecraft").ToString & " (" & String.Format(Application.Current.FindResource("JavaArchitecture").ToString, Await GetJavaArch()) & "): " & Teil_Arguments)
         mc = New Process()
         With mc.StartInfo
             .FileName = Startcmd(Startinfos.Profile)
@@ -986,9 +977,9 @@ Public Class MainWindow
 
     Public Async Sub StartMC()
         If Startinfos.IsStarting = True Then
-            Await Me.ShowMessageAsync("Achtung", "Minecraft wird bereits gestartet!", MessageDialogStyle.Affirmative, New MetroDialogSettings() With {.AffirmativeButtonText = "Ok", .ColorScheme = MetroDialogColorScheme.Accented})
+            Await Me.ShowMessageAsync(Application.Current.FindResource("Atention").ToString, Application.Current.FindResource("MinecraftAlreadyStarting").ToString & "!", MessageDialogStyle.Affirmative, New MetroDialogSettings() With {.AffirmativeButtonText = Application.Current.FindResource("OK").ToString, .ColorScheme = MetroDialogColorScheme.Accented})
         ElseIf cb_profiles.SelectedIndex = -1 Then
-            Await Me.ShowMessageAsync(Nothing, "Wähle bitte ein Profil aus!", MessageDialogStyle.Affirmative, New MetroDialogSettings() With {.AffirmativeButtonText = "Ok", .ColorScheme = MetroDialogColorScheme.Accented})
+            Await Me.ShowMessageAsync(Nothing, Application.Current.FindResource("PleaseSelectProfile").ToString & "!", MessageDialogStyle.Affirmative, New MetroDialogSettings() With {.AffirmativeButtonText = Application.Current.FindResource("OK").ToString, .ColorScheme = MetroDialogColorScheme.Accented})
             'ElseIf tb_username.Text = Nothing Then
             '    Await Me.ShowMessageAsync(Nothing, "Gib bitte einen Usernamen ein!", MessageDialogStyle.Affirmative, New MetroDialogSettings() With {.AffirmativeButtonText = "Ok", .ColorScheme = MetroDialogColorScheme.Accented})
         Else
@@ -1024,7 +1015,7 @@ Public Class MainWindow
                         If Versions.versions.Select(Function(p) p.id).Contains(Startinfos.Profile.lastVersionId) Then
                             Startinfos.Version = Versions.versions.Where(Function(p) p.id = Startinfos.Profile.lastVersionId).First
                         Else
-                            Write(Startinfos.Profile.lastVersionId & ".jar und/oder " & Startinfos.Profile.lastVersionId & ".json existiert nicht" & Environment.NewLine & "---Wähle eine andere Version aus oder, falls du gerade Forge gestartet hast, installiere es erneut!", LogLevel.ERROR)
+                            Write(String.Format(Application.Current.FindResource("JarOrJsonNotFound").ToString, Startinfos.Profile.lastVersionId, Startinfos.Profile.lastVersionId) & Environment.NewLine & Application.Current.FindResource("ReinstallForgeIfStarted").ToString & "!", LogLevel.ERROR)
                             Startinfos.Profile = Nothing
                             Exit Sub
                         End If
@@ -1092,9 +1083,9 @@ Public Class MainWindow
             Case MainWindow.LogLevel.INFO
                 Dispatcher.Invoke(New WriteA(AddressOf Append), Line, tb_ausgabe)
             Case MainWindow.LogLevel.WARNING
-                Dispatcher.Invoke(New WriteColored(AddressOf Append), "[WARNING] " & Line, tb_ausgabe, Brushes.Orange)
+                Dispatcher.Invoke(New WriteColored(AddressOf Append), "[" & Application.Current.FindResource("Warning").ToString & "] " & Line, tb_ausgabe, Brushes.Orange)
             Case MainWindow.LogLevel.ERROR
-                Dispatcher.Invoke(New WriteColored(AddressOf Append), "[ERROR] " & Line, tb_ausgabe, Brushes.Red)
+                Dispatcher.Invoke(New WriteColored(AddressOf Append), "[" & Application.Current.FindResource("Error").ToString & "] " & Line, tb_ausgabe, Brushes.Red)
         End Select
         '-Dfml.ignoreInvalidMinecraftCertificates=true -Dfml.ignorePatchDiscrepancies=true
 
@@ -1105,7 +1096,7 @@ Public Class MainWindow
         'or you are using a base editing jar that is changing this class (and likely others too). If you REALLY want to run minecraft in this configuration,
         'add the flag -Dfml.ignoreInvalidMinecraftCertificates=true to the 'JVM settings' in your launcher profile.
         If Line.Contains("add the flag -Dfml.ignoreInvalidMinecraftCertificates=true to the 'JVM settings' in your launcher profile") Then
-            Write("Ein Fehler ist aufgetreten. Bitte versuche, im ProfileEditor bei den ""JVM Argumenten"" folgendes hinzuzufügen: ""-Dfml.ignoreInvalidMinecraftCertificates=true""", MainWindow.LogLevel.ERROR)
+            Write(Application.Current.FindResource("ignoreInvalidMinecraftCertificatesMessage").ToString, MainWindow.LogLevel.ERROR)
         End If
     End Sub
     Public Enum LogLevel
@@ -1185,7 +1176,7 @@ Public Class MainWindow
             MainViewModel.Instance.selectedProfile = MainViewModel.Instance.Profiles.First
             Profiles.Get_Profiles()
         Else
-            Await Me.ShowMessageAsync("Fehler", "Das letzte Profil kann nicht gelöscht werden!", MessageDialogStyle.Affirmative, New MetroDialogSettings() With {.AffirmativeButtonText = "Ok", .ColorScheme = MetroDialogColorScheme.Accented})
+            Await Me.ShowMessageAsync(Application.Current.FindResource("Error").ToString, Application.Current.FindResource("CannotDeleteLastProfile").ToString & "!", MessageDialogStyle.Affirmative, New MetroDialogSettings() With {.AffirmativeButtonText = Application.Current.FindResource("OK").ToString, .ColorScheme = MetroDialogColorScheme.Accented})
         End If
     End Sub
 
@@ -1249,11 +1240,6 @@ Public Class MainWindow
                 img_installed.Source = Nothing
                 btn_list_delete_mod.IsEnabled = False
             End If
-            If lb_mods.SelectedItems.Count > 1 Then
-                btn_downloadmod.Content = lb_mods.SelectedItems.Count & " Installieren"
-            Else
-                btn_downloadmod.Content = "Installieren"
-            End If
             'cb_mods_description_language.Items.Clear()
             'For Each Language As String In selected.descriptions.Select(Function(p) p.id)
             '    cb_mods_description_language.Items.Add(Language)
@@ -1269,11 +1255,11 @@ Public Class MainWindow
             'End If
             Select Case selected.type
                 Case "forge"
-                    lbl_type.Content = "Vorraussetzung: Minecraft Forge (Tools->Forge)"
+                    lbl_type.Content = String.Format("{0}: {1} ({2}->{1})", Application.Current.FindResource("Prerequisite").ToString, Application.Current.FindResource("LiteLoader").ToString, Application.Current.FindResource("Tools").ToString)
                 Case "liteloader"
-                    lbl_type.Content = "Vorraussetzung: LiteLoader (Tools->LiteLoader)"
+                    lbl_type.Content = String.Format("{0}: {1} ({2}->{1})", Application.Current.FindResource("Prerequisite").ToString, Application.Current.FindResource("MinecraftForge").ToString, Application.Current.FindResource("Tools").ToString)
                 Case Else
-                    lbl_type.Content = "Type: " & DirectCast(lb_mods.SelectedItem, Modifications.Mod).type
+                    lbl_type.Content = Application.Current.FindResource("Typ").ToString & ": " & DirectCast(lb_mods.SelectedItem, Modifications.Mod).type
             End Select
         End If
     End Sub
@@ -1322,7 +1308,7 @@ Public Class MainWindow
         End Try
         Dim fd As New VistaFolderBrowserDialog
         fd.UseDescriptionForTitle = True
-        fd.Description = "Mods Ordner auswählen"
+        fd.Description = Application.Current.FindResource("SelectModsFolder").ToString
         fd.RootFolder = Environment.SpecialFolder.MyComputer
         fd.SelectedPath = modsfolder.FullName
         fd.ShowNewFolderButton = True
@@ -1340,7 +1326,7 @@ Public Class MainWindow
         End Try
     End Sub
     Private Sub rb_mods_folder_Checked(sender As Object, e As RoutedEventArgs) Handles rb_mods_folder.Checked
-        If tb_modsfolder.Text <> Nothing Then
+        If tb_modsfolder IsNot Nothing AndAlso tb_modsfolder.Text <> Nothing Then
             modsfolderPath = tb_modsfolder.Text
             Filter_Mods()
         End If
@@ -1383,7 +1369,7 @@ Public Class MainWindow
                 capturedException = ExceptionDispatchInfo.Capture(ex)
             End Try
             If capturedException IsNot Nothing Then
-                Await Me.ShowMessageAsync("Fehler", "Mod konnte nicht gelöscht werden: " & selectedmod.name & Environment.NewLine & "Falls der Mod in Minecraft geöffnet ist, schließe Minecraft zuerst!")
+                Await Me.ShowMessageAsync(Application.Current.FindResource("Error").ToString, String.Format(Application.Current.FindResource("ErrorDeletingMod").ToString & "!", selectedmod.name))
             End If
         Next
         Dim selected As Integer = lb_mods.SelectedIndex
@@ -1393,7 +1379,7 @@ Public Class MainWindow
     End Function
     Private Async Sub btn_downloadmod_Click(sender As Object, e As RoutedEventArgs) Handles btn_downloadmod.Click
         If moddownloading = True Then
-            Await Me.ShowMessageAsync("Download läuft", "Eine Mod wird bereits heruntergeladen. Warte bitte, bis diese fertig ist!", MessageDialogStyle.Affirmative, New MetroDialogSettings() With {.AffirmativeButtonText = "Ok", .ColorScheme = MetroDialogColorScheme.Accented})
+            'Await Me.ShowMessageAsync("Download läuft", "Eine Mod wird bereits heruntergeladen. Warte bitte, bis diese fertig ist!", MessageDialogStyle.Affirmative, New MetroDialogSettings() With {.AffirmativeButtonText = Application.Current.FindResource("OK").ToString, .ColorScheme = MetroDialogColorScheme.Accented})
         Else
             modsdownloadingversion = cb_modversions.SelectedItem.ToString
             btn_resetmodsfoler.IsEnabled = False
@@ -1418,7 +1404,7 @@ Public Class MainWindow
             Next
             modsdownloadindex = 0
 
-            controller = Await Me.ShowProgressAsync("Mods werden installiert", "Bitte warten")
+            controller = Await Me.ShowProgressAsync(Application.Current.FindResource("InstallingMods").ToString, Application.Current.FindResource("PleaseWait").ToString)
             'controller.SetCancelable(True)
 
             download_mod()
@@ -1426,10 +1412,6 @@ Public Class MainWindow
     End Sub
     Private Async Sub download_mod()
         If modsdownloadindex < modsdownloadlist.Count Then
-            If modsfolderPath.Contains(IO.Path.GetInvalidPathChars) = True Then
-                Await Me.ShowMessageAsync("Fehler", "Der Pfad des Mods Ordners enthält ungültige Zeichen", MessageDialogStyle.Affirmative, New MetroDialogSettings() With {.AffirmativeButtonText = "Ok", .ColorScheme = MetroDialogColorScheme.Accented})
-                Exit Sub
-            End If
             Dim url As New Uri(modsdownloadlist.Item(modsdownloadindex).versions.Where(Function(p) p.version = modsdownloadingversion).First.downloadlink)
             Dim progress As Double = modsdownloadindex / modsdownloadlist.Count
             controller.SetProgress(progress)
@@ -1462,7 +1444,7 @@ Public Class MainWindow
             Await controller.CloseAsync()
         ElseIf e.Cancelled = True Then
             'lbl_mods_status.Content = "Abgebrochen
-            controller.SetMessage("Abgebrochen")
+            controller.SetMessage(Application.Current.FindResource("Canceled").ToString)
         Else
             Try
                 Dim path As String = modsfolderPath & "\" & Modsfilename
@@ -1482,11 +1464,11 @@ Public Class MainWindow
 
     Private Async Function Mod_Download_finished(Optional Errormessage As String = Nothing) As Task
         If Errormessage = Nothing Then
-            controller.SetMessage("Mods erfolgreich Installiert")
+            controller.SetMessage(Application.Current.FindResource("InstallingModsSuccessful").ToString)
             Await Task.Delay(1000)
             Await controller.CloseAsync()
         Else
-            controller.SetMessage("Fehler beim Installieren der Mods: " & Errormessage)
+            controller.SetMessage(Application.Current.FindResource("ErrorInstallingMods").ToString & ": " & Errormessage)
             controller.SetCancelable(True)
         End If
         moddownloading = False
@@ -1647,7 +1629,7 @@ Public Class MainWindow
     Private Async Sub btn_delete_servers_Click(sender As Object, e As RoutedEventArgs) Handles btn_delete_servers.Click
         Dim selected As Integer = lb_servers.SelectedIndex
         If selected <> -1 Then
-            Dim result As MessageDialogResult = Await Me.ShowMessageAsync("Server löschen", "Bist du dir sicher, dass du den Server " & Chr(34) & DirectCast(lb_servers.SelectedItem, ServerList.Server).name & Chr(34) & " entgültig löschen willst?", MessageDialogStyle.AffirmativeAndNegative, New MetroDialogSettings() With {.AffirmativeButtonText = "Ja", .NegativeButtonText = "Nein", .ColorScheme = MetroDialogColorScheme.Accented})
+            Dim result As MessageDialogResult = Await Me.ShowMessageAsync(Application.Current.FindResource("DeleteServer").ToString, String.Format(Application.Current.FindResource("DeleteServerMessage").ToString, DirectCast(lb_servers.SelectedItem, ServerList.Server).name), MessageDialogStyle.AffirmativeAndNegative, New MetroDialogSettings() With {.AffirmativeButtonText = Application.Current.FindResource("Yes").ToString, .NegativeButtonText = Application.Current.FindResource("No").ToString, .ColorScheme = MetroDialogColorScheme.Accented})
             If result = MessageDialogResult.Affirmative Then
                 lb_servers.Items.RemoveAt(selected)
                 MainViewModel.Instance.Servers.RemoveAt(selected)
@@ -1692,14 +1674,24 @@ Public Class MainWindow
                                                          Await Versions_Load()
                                                          '1.6.2-1.7.4
 
-                                                         If Version.Contains("Spigot") Then
-                                                             Dim ver As String = Version.Replace("Spigot ", "")
-                                                             Startinfos.Version = Versions.versions.Where(Function(p) p.id = ver).FirstOrDefault
-                                                         ElseIf Version.Contains("CraftBukkit") Then
-                                                             Dim ver As String = Version.Replace("CraftBukkit ", "")
-                                                             Startinfos.Version = Versions.versions.Where(Function(p) p.id = ver).FirstOrDefault
-                                                         ElseIf Version.Contains("-") = True Then
-                                                             Startinfos.Version = Versions.versions.Where(Function(p) p.id = Version.Split(CChar("-"))(1)).FirstOrDefault
+                                                         Dim check As Boolean = True
+                                                         Dim Servers() As String = {"Spigot", "CraftBukkit", "BungeeCord"}
+                                                         For Each item As String In Servers
+                                                             If Version.Contains(item) Then
+                                                                 Dim ver As String = Version.Replace(item & " ", "")
+                                                                 Startinfos.Version = Versions.versions.Where(Function(p) p.id = ver).FirstOrDefault
+                                                                 check = False
+                                                                 Exit For
+                                                             End If
+                                                         Next
+                                                         If check = True Then
+                                                             If Version.Split(CChar(" ")).Count > 1 Then
+                                                                 Startinfos.Version = Versions.versions.Where(Function(p) p.id = Version.Split(CChar(" ")).Last).FirstOrDefault
+                                                             ElseIf Version.Contains("-") = True Then
+                                                                 Startinfos.Version = Versions.versions.Where(Function(p) p.id = Version.Split(CChar("-"))(1)).FirstOrDefault
+                                                             Else
+                                                                 Startinfos.Version = Versions.versions.Where(Function(p) p.id = Version).FirstOrDefault
+                                                             End If
                                                          Else
                                                              Startinfos.Version = Versions.versions.Where(Function(p) p.id = Version).FirstOrDefault
                                                          End If
@@ -1737,7 +1729,7 @@ Public Class MainWindow
     End Sub
 
     Private Async Sub download_feedthebeast()
-        toolscontroller = Await Me.ShowProgressAsync("Feed the Beast wird heruntergeladen", "Bitte warten")
+        toolscontroller = Await Me.ShowProgressAsync(Application.Current.FindResource("DownloadingFTB").ToString, Application.Current.FindResource("PleaseWait").ToString)
         Dim url As New Uri(Downloads.Downloadsjo("feedthebeast").Value(Of String)("url"))
         Dim filename As String = Downloads.Downloadsjo("feedthebeast").Value(Of String)("filename")
         Dim path As New FileInfo(IO.Path.Combine(mcpfad.FullName, "tools", filename))
@@ -1775,7 +1767,7 @@ Public Class MainWindow
     End Sub
 
     Private Async Sub download_techniclauncher()
-        toolscontroller = Await Me.ShowProgressAsync("Technic Launcher wird heruntergeladen", "Bitte warten")
+        toolscontroller = Await Me.ShowProgressAsync(Application.Current.FindResource("DownloadingTechnicLauncher").ToString, Application.Current.FindResource("PleaseWait").ToString)
         Dim url As String = "http://launcher.technicpack.net/launcher/{0}/TechnicLauncher.jar"
         Dim filename As String = "TechnicLauncher.jar"
         Dim path As New FileInfo(IO.Path.Combine(mcpfad.FullName, "tools", filename))
@@ -1858,7 +1850,7 @@ Public Class MainWindow
                 'Login with access token
                 Try
                     If authenticationDatabase.List.Select(Function(p) p.uuid.Replace("-", "")).Contains(profile.playerUUID) Then
-                        Write("Anmelden mit access token")
+                        Write(Application.Current.FindResource("LoggingInWithAccessToken").ToString)
                         Dim Account = authenticationDatabase.List.Where(Function(p) p.uuid.Replace("-", "") = profile.playerUUID).First
                         If Guid.TryParse(Account.userid, New Guid) Then
                             Startinfos.Session = New Session() With {.AccessToken = Account.accessToken,
@@ -1895,8 +1887,8 @@ Public Class MainWindow
     End Function
 
     Async Function ShowUsername_Avatar(Account As authenticationDatabase.Account) As Task
-        lbl_Username.Content = Account.displayName
-        lbl_user_state.Content = If(Guid.TryParse(Account.userid, New Guid), "Premium", "Cracked")
+        lbl_Username.Text = Account.displayName
+        lbl_user_state.Text = If(Guid.TryParse(Account.userid, New Guid), Application.Current.FindResource("Premium").ToString, Application.Current.FindResource("Cracked").ToString)
         lbl_user_state.Foreground = If(Guid.TryParse(Account.userid, New Guid), Brushes.Green, Brushes.Red)
         Try
             Dim WebRequest As HttpWebRequest = DirectCast(HttpWebRequest.Create("https://minotar.net/avatar/" & Account.displayName & "/100"), HttpWebRequest)

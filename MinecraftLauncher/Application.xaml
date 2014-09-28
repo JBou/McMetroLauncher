@@ -22,7 +22,7 @@
                         <ControlTemplate TargetType="TabItem">
                             <StackPanel>
                                 <Border x:Name="border" BorderBrush="{TemplateBinding BorderBrush}"
-                                        Padding="12,2,24,2" 
+                                        Padding="10,2,10,2" 
                                         BorderThickness="0,0,0,4" 
                                         Margin="2,2,2,0"
                                         SnapsToDevicePixels="True">

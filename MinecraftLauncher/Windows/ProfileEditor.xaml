@@ -4,9 +4,9 @@
                        xmlns:local="clr-namespace:McMetroLauncher"
                        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                       Title="Profile Editor" 
-                       Height="559.187" 
-                       Width="606.897"
+                       Title="{DynamicResource ProfileEditor}" 
+                       Height="560" 
+                       Width="650"
                        ResizeMode="NoResize" 
                        WindowStartupLocation="CenterScreen">
     <Window.Resources>
@@ -16,28 +16,66 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
-        <GroupBox Margin="10,10,10,0" Header="Profile Infos" Height="155" VerticalAlignment="Top">
+        <GroupBox Margin="10,10,10,0" Header="{DynamicResource ProfileInfos}" Height="155" VerticalAlignment="Top">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
-                <Label Content="Profil Name:" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Height="26" Width="119" Padding="0" VerticalContentAlignment="Center"/>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Height="26" Width="119">
+                    <TextBlock Text="{DynamicResource ProfileName}" VerticalAlignment="Center"/>
+                    <TextBlock Text=":" VerticalAlignment="Center"/>
+                </StackPanel>
                 <TextBox x:Name="tb_profile_name" Height="26" Margin="134,10,10,0" VerticalAlignment="Top" MaxLines="1"/>
                 <Button x:Name="btn_selectgamedir" HorizontalAlignment="Right" Height="26" Margin="0,42,10,0" VerticalAlignment="Top" Width="25" Content="..." IsEnabled="{Binding ElementName=cb_game_directory, Path=IsChecked}"/>
                 <Label x:Name="lbl_x" Content="x" HorizontalAlignment="Left" Margin="280,77,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Padding="0" IsEnabled="{Binding ElementName=cb_resolution, Path=IsChecked}" />
                 <TextBox x:Name="tb_res_height" HorizontalAlignment="Left" Height="26" Margin="296,72,0,0" VerticalAlignment="Top" Width="135" MaxLines="1" MaxLength="4" IsEnabled="{Binding ElementName=cb_resolution, Path=IsChecked}" />
                 <TextBox x:Name="tb_res_width" HorizontalAlignment="Left" Height="26" Margin="134,72,0,0" VerticalAlignment="Top" Width="135" MaxLines="1" MaxLength="4" IsEnabled="{Binding ElementName=cb_resolution, Path=IsChecked}" />
                 <TextBox x:Name="tb_gameDir" Height="26" Margin="134,41,40,0" VerticalAlignment="Top" MaxLines="1" IsReadOnly="True" IsEnabled="{Binding ElementName=cb_game_directory, Path=IsChecked}"/>
-                <CheckBox x:Name="cb_game_directory" Content="Spiel Pfad:" HorizontalAlignment="Left" Margin="10,41,0,0" VerticalAlignment="Top" Width="119" Height="26" VerticalContentAlignment="Center"/>
-                <CheckBox x:Name="cb_resolution" Content="Auflösung:" HorizontalAlignment="Left" Margin="10,72,0,0" VerticalAlignment="Top" Width="142" Height="26" VerticalContentAlignment="Center"/>
+                <CheckBox x:Name="cb_game_directory" HorizontalAlignment="Left" Margin="10,41,0,0" VerticalAlignment="Top" Width="119" Height="26" VerticalContentAlignment="Center">
+                    <CheckBox.Content>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{DynamicResource GameDirectory}" VerticalAlignment="Center"/>
+                            <TextBlock Text=":" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </CheckBox.Content>
+                </CheckBox>
+                <CheckBox x:Name="cb_resolution" HorizontalAlignment="Left" Margin="10,72,0,0" VerticalAlignment="Top" Width="119" Height="26" VerticalContentAlignment="Center">
+                    <CheckBox.Content>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{DynamicResource Resolution}" VerticalAlignment="Center"/>
+                            <TextBlock Text=":" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </CheckBox.Content>
+                </CheckBox>
             </Grid>
         </GroupBox>
-        <GroupBox Margin="10,170,10,0" Header="Version" Height="184" VerticalAlignment="Top">
+        <GroupBox Margin="10,170,10,0" Header="{DynamicResource Version}" Height="184" VerticalAlignment="Top">
             <Grid>
-                <CheckBox x:Name="cb_snapshots" Content="Aktiviere experimentelle Entwickler-Versionen (&quot;snapshots&quot;)" Margin="10,10,10,0" VerticalAlignment="Top" Height="26" VerticalContentAlignment="Center" Padding="4,-1,0,0"/>
-                <CheckBox x:Name="cb_old_beta" Content="Erlaube die Benutzung von alten &quot;Beta&quot; Minecraft Versionen (Von 2010-2011)" Margin="10,41,10,0" VerticalAlignment="Top" Height="26" VerticalContentAlignment="Center" Padding="4,-1,0,0"/>
-                <CheckBox x:Name="cb_old_alpha" Content="Erlaube die Benutzung von alten &quot;alpha&quot; Minecraft Versionen (Von 2010)" Margin="10,72,10,0" VerticalAlignment="Top" Height="26" VerticalContentAlignment="Center" Padding="4,-1,0,0"/>
-                <ComboBox x:Name="cb_versions" Margin="135,103,10,0" VerticalAlignment="Top" Height="35">
+                <CheckBox x:Name="cb_snapshots" Margin="10,10,10,0" VerticalAlignment="Top" Height="26" VerticalContentAlignment="Center" Padding="4,-1,0,0">
+                    <CheckBox.Content>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{DynamicResource EnableSnapshots}" VerticalAlignment="Center"/>
+                            <TextBlock Text=":" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </CheckBox.Content>
+                </CheckBox>
+                <CheckBox x:Name="cb_old_beta" Margin="10,41,10,0" VerticalAlignment="Top" Height="26" VerticalContentAlignment="Center" Padding="4,-1,0,0">
+                    <CheckBox.Content>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{DynamicResource EnableOldBeta}" VerticalAlignment="Center"/>
+                            <TextBlock Text=":" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </CheckBox.Content>
+                </CheckBox>
+                <CheckBox x:Name="cb_old_alpha" Margin="10,72,10,0" VerticalAlignment="Top" Height="26" VerticalContentAlignment="Center" Padding="4,-1,0,0">
+                    <CheckBox.Content>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{DynamicResource EnableOldAlpha}" VerticalAlignment="Center"/>
+                            <TextBlock Text=":" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </CheckBox.Content>
+                </CheckBox>
+                <ComboBox x:Name="cb_versions" Margin="135,103,10,0" VerticalAlignment="Top" Height="32">
                     <ComboBox.ItemTemplate>
                         <DataTemplate>
                             <TextBlock>
@@ -51,14 +89,31 @@
                         </DataTemplate>
                     </ComboBox.ItemTemplate>
                 </ComboBox>
-                <Label Content="Version:" HorizontalAlignment="Left" Margin="10,102,0,0" VerticalAlignment="Top"  Height="35" Width="52" Padding="0" VerticalContentAlignment="Center"/>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="10,103,0,0" VerticalAlignment="Top"  Height="32" Width="52">
+                    <TextBlock Text="{DynamicResource Version}" VerticalAlignment="Center"/>
+                    <TextBlock Text=":" VerticalAlignment="Center"/>
+                </StackPanel>
             </Grid>
         </GroupBox>
-        <GroupBox Margin="10,359,10,0" Header="Java Einstellungen (Erweitert)" Height="125" VerticalAlignment="Top">
+        <GroupBox Margin="10,359,10,0" Header="{DynamicResource JavaSettings}" Height="125" VerticalAlignment="Top">
             <Grid>
-                <CheckBox x:Name="cb_java_arguments" Content="JVM Argumente:" HorizontalAlignment="Left" Margin="10,5,0,0" VerticalAlignment="Top" Width="120" Height="26" VerticalContentAlignment="Center"/>
+                <CheckBox x:Name="cb_java_arguments" HorizontalAlignment="Left" Margin="10,5,0,0" VerticalAlignment="Top" Width="120" Height="26" VerticalContentAlignment="Center">
+                    <CheckBox.Content>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{DynamicResource JVMArguments}" VerticalAlignment="Center"/>
+                            <TextBlock Text=":" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </CheckBox.Content>
+                </CheckBox>
                 <TextBox x:Name="tb_java_arguments" Height="26" Margin="135,5,10,0" VerticalAlignment="Top" MaxLines="1" IsEnabled="{Binding ElementName=cb_java_arguments, Path=IsChecked}" />
-                <CheckBox x:Name="cb_java_path" Content="Java Datei:" HorizontalAlignment="Left" Margin="10,35,0,0" VerticalAlignment="Top" Width="120" Height="26" VerticalContentAlignment="Center"/>
+                <CheckBox x:Name="cb_java_path" HorizontalAlignment="Left" Margin="10,35,0,0" VerticalAlignment="Top" Width="120" Height="26" VerticalContentAlignment="Center">
+                    <CheckBox.Content>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{DynamicResource JavaExecutable}" VerticalAlignment="Center"/>
+                            <TextBlock Text=":" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </CheckBox.Content>
+                </CheckBox>
                 <TextBox x:Name="tb_java_executable" Height="26" Margin="135,35,40,0" VerticalAlignment="Top" MaxLines="1" IsReadOnly="True" IsEnabled="{Binding ElementName=cb_java_path, Path=IsChecked}" />
                 <Button x:Name="btn_selectjavadir" HorizontalAlignment="Right" Height="26" Margin="0,35,10,0" VerticalAlignment="Top" Width="25" Content="..." IsEnabled="{Binding ElementName=cb_java_path, Path=IsChecked}"/>
             </Grid>

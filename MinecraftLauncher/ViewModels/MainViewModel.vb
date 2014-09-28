@@ -149,17 +149,17 @@ Public Class MainViewModel
         Get
             If columnName = "Username" Then
                 If String.IsNullOrWhiteSpace(Username) Then
-                    Return "Gib einen Benutzernamen ein"
+                    Return Application.Current.FindResource("UsernameMissing").ToString
                 ElseIf Not OnlineMode Then
                     'Username Validation
                     If Username.Length < 3 OrElse Username.Length > 16 Then
-                        Return "3 - 16 Zeichen"
+                        Return "3 - 16 " & Application.Current.FindResource("Characters").ToString
                     Else
                         Dim regex As New Regex("^[A-Za-z0-9_-]{2,16}$")
                         Dim match As Match = regex.Match(Username)
 
                         If Not match.Success Then
-                            Return "Nur Buchstaben, Zahlen, Binde- und Unterstriche"
+                            Return Application.Current.FindResource("NoSpecialChars").ToString
                         End If
                     End If
                 End If
@@ -219,7 +219,7 @@ Public Class MainViewModel
                     ls.Add(service)
                 Next
             Catch ex As WebException
-                ls.Add(New AccentColorMenuData() With {.Name = "Fehler beim laden", .ColorBrush = CType(ThemeManager.Accents.Where(Function(p) p.Name = "Red").First.Resources("AccentColorBrush"), System.Windows.Media.Brush)})
+                ls.Add(New AccentColorMenuData() With {.Name = Application.Current.FindResource("ErrorLoading").ToString, .ColorBrush = CType(ThemeManager.Accents.Where(Function(p) p.Name = "Red").First.Resources("AccentColorBrush"), System.Windows.Media.Brush)})
                 'TODO: Failed to get Service Statuses
             End Try
             ServiceStatuses = New ObservableCollection(Of AccentColorMenuData)(ls)

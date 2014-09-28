@@ -78,12 +78,12 @@ Public Class SplashScreen
         ' Build-Nr.
         Dim sBuild As String = oAssembly.Version.Build.ToString()
 
-        lbl_Version.Content = "Version " & sVersion
+        lbl_Version.Text = sVersion
         Dim attributes As Object() = Assembly.GetExecutingAssembly().GetCustomAttributes(GetType(AssemblyCopyrightAttribute), False)
         If attributes.Length > 0 Then
             Dim CopyrightAttribute As AssemblyCopyrightAttribute = DirectCast(attributes(0), AssemblyCopyrightAttribute)
             If CopyrightAttribute.Copyright <> "" Then
-                lbl_copyright.Content = CopyrightAttribute.Copyright
+                lbl_copyright.Text = CopyrightAttribute.Copyright
             End If
         End If
 
@@ -121,13 +121,13 @@ Public Class SplashScreen
                 'StandartProfile schreiben
                 File.WriteAllText(launcher_profiles_json.FullName, standartprofile.ToString)
             End If
-            lbl_status.Content = "Prüfe auf Updates"
+            lbl_status.Content = Application.Current.FindResource("CheckingForUpdates").ToString
             dlversion.DownloadStringAsync(New Uri(versionurl))
             AddHandler dlversion.DownloadStringCompleted, AddressOf downloadchangelog
             AddHandler dlversion.DownloadProgressChanged, AddressOf dlprogresschanged
         Else
-            lbl_statustitle.Content = "Fehler"
-            lbl_status.Content = "Bitte überprüfe deine Internetverbindung!"
+            lbl_statustitle.Content = Application.Current.FindResource("Error").ToString
+            lbl_status.Content = Application.Current.FindResource("CheckInternetConnection").ToString & "!"
         End If
     End Sub
 
@@ -142,7 +142,7 @@ Public Class SplashScreen
                 MessageBox.Show(ex.Message & Environment.NewLine & ex.StackTrace)
             End Try
         ElseIf e.Cancelled = False AndAlso e.Error IsNot Nothing Then
-            MessageBox.Show("Ein Fehler ist aufgetreten: " & Environment.NewLine & e.Error.Message & Environment.NewLine & e.Error.StackTrace)
+            MessageBox.Show(Application.Current.FindResource("Error").ToString & ": " & Environment.NewLine & e.Error.Message & Environment.NewLine & e.Error.StackTrace)
         End If
     End Sub
 
@@ -151,12 +151,12 @@ Public Class SplashScreen
             Try
                 changelog = e.Result
                 If Check_Updates() = True Then
-                    lbl_status.Content = "Update gefunden"
+                    lbl_status.Content = Application.Current.FindResource("Error").ToString
                     Dim updater As New Updater
                     updater.Show()
                     Me.Close()
                 Else
-                    lbl_status.Content = "Lade Versions-Liste herunter"
+                    lbl_status.Content = Application.Current.FindResource("MsgDownloadingVersions").ToString
                     dlversionsjson.DownloadFileAsync(New Uri(Versionsurl), outputjsonversions.FullName)
                     AddHandler dlversionsjson.DownloadFileCompleted, AddressOf downloadmodsfile
                     AddHandler dlversionsjson.DownloadProgressChanged, AddressOf dlprogresschanged
@@ -165,7 +165,7 @@ Public Class SplashScreen
                 MessageBox.Show(ex.Message & Environment.NewLine & ex.StackTrace)
             End Try
         ElseIf e.Cancelled = False AndAlso e.Error IsNot Nothing Then
-            MessageBox.Show("Ein Fehler ist aufgetreten: " & Environment.NewLine & e.Error.Message & Environment.NewLine & e.Error.StackTrace)
+            MessageBox.Show(Application.Current.FindResource("Error").ToString & ": " & Environment.NewLine & e.Error.Message & Environment.NewLine & e.Error.StackTrace)
         End If
     End Sub
 
@@ -173,7 +173,7 @@ Public Class SplashScreen
         If e.Cancelled = False AndAlso e.Error Is Nothing Then
             Try
                 Await Versions_Load()
-                lbl_status.Content = "Lade Mod-Liste herunter"
+                lbl_status.Content = Application.Current.FindResource("MsgDownloadingModlist").ToString
                 dlmodsfile.DownloadFileAsync(New Uri(modfileurl), modsfile.FullName)
                 AddHandler dlmodsfile.DownloadFileCompleted, AddressOf downloadlegacyforgefile
                 AddHandler dlmodsfile.DownloadProgressChanged, AddressOf dlprogresschanged
@@ -181,7 +181,7 @@ Public Class SplashScreen
                 MessageBox.Show(ex.Message & Environment.NewLine & ex.StackTrace)
             End Try
         ElseIf e.Cancelled = False AndAlso e.Error IsNot Nothing Then
-            MessageBox.Show("Ein Fehler ist aufgetreten: " & Environment.NewLine & e.Error.Message & Environment.NewLine & e.Error.StackTrace)
+            MessageBox.Show(Application.Current.FindResource("Error").ToString & ": " & Environment.NewLine & e.Error.Message & Environment.NewLine & e.Error.StackTrace)
         End If
     End Sub
 
@@ -197,7 +197,7 @@ Public Class SplashScreen
                 Downloadforgefile()
             Else
                 Try
-                    lbl_status.Content = "Lade Forge-Build-Liste herunter"
+                    lbl_status.Content = Application.Current.FindResource("MsgDownloadingForgeBuilds").ToString
                     dlforgefile.DownloadFileAsync(New Uri(Legacyforgeurl), Legacyforgefile.FullName)
                     AddHandler dlforgefile.DownloadFileCompleted, AddressOf downloadlegacyforgefilefinfished
                     AddHandler dlforgefile.DownloadProgressChanged, AddressOf dlprogresschanged
@@ -206,7 +206,7 @@ Public Class SplashScreen
                 End Try
             End If
         ElseIf e.Cancelled = False AndAlso e.Error IsNot Nothing Then
-            MessageBox.Show("Ein Fehler ist aufgetreten: " & Environment.NewLine & e.Error.Message & Environment.NewLine & e.Error.StackTrace)
+            MessageBox.Show(Application.Current.FindResource("Error").ToString & ": " & Environment.NewLine & e.Error.Message & Environment.NewLine & e.Error.StackTrace)
         End If
     End Sub
 
@@ -214,7 +214,7 @@ Public Class SplashScreen
         If e.Cancelled = False AndAlso e.Error Is Nothing Then
             Downloadforgefile()
         ElseIf e.Cancelled = False AndAlso e.Error IsNot Nothing Then
-            MessageBox.Show("Ein Fehler ist aufgetreten: " & Environment.NewLine & e.Error.Message & Environment.NewLine & e.Error.StackTrace)
+            MessageBox.Show(Application.Current.FindResource("Error").ToString & ": " & Environment.NewLine & e.Error.Message & Environment.NewLine & e.Error.StackTrace)
         End If
     End Sub
 
@@ -230,7 +230,7 @@ Public Class SplashScreen
 
     Private Async Sub DownloadsFinished(sender As Object, e As ComponentModel.AsyncCompletedEventArgs)
         If e.Cancelled = False AndAlso e.Error Is Nothing Then
-            lbl_status.Content = "Launcher startet..."
+            lbl_status.Content = Application.Current.FindResource("LauncherStarting").ToString
             Await ServerList.Load
             Await authenticationDatabase.Load()
             Await Modifications.Load()
@@ -239,7 +239,7 @@ Public Class SplashScreen
             Downloads.Load()
             Await Start()
         ElseIf e.Cancelled = False AndAlso e.Error IsNot Nothing Then
-            MessageBox.Show("Ein Fehler ist aufgetreten: " & Environment.NewLine & e.Error.Message & Environment.NewLine & e.Error.StackTrace)
+            MessageBox.Show(Application.Current.FindResource("Error").ToString & ": " & Environment.NewLine & e.Error.Message & Environment.NewLine & e.Error.StackTrace)
         End If
     End Sub
 

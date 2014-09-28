@@ -5,13 +5,14 @@
                       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                       xmlns:Behaviours="clr-namespace:MahApps.Metro.Behaviours;assembly=MahApps.Metro" 
-                      Title="Minecraft Forge" 
+                      Title="{DynamicResource MinecraftForge}" 
                       Height="450" 
                       Width="680" 
                       MinHeight="450"
                       MinWidth="680" 
                       ResizeMode="CanResizeWithGrip" 
-                      WindowStartupLocation="CenterScreen">
+                      WindowStartupLocation="CenterScreen"
+                      DataContext="{x:Static local:ForgeInstallerViewModel.Instance}">
 
     <Window.Resources>
         <ResourceDictionary>
@@ -22,7 +23,7 @@
     <DockPanel>
         <Controls:MetroProgressBar Foreground="{DynamicResource AccentColorBrush}" x:Name="pb_download" Height="10" Margin="10" VerticalAlignment="Bottom" DockPanel.Dock="Bottom" />
         <Controls:MetroAnimatedTabControl>
-            <TabItem Header="Forge Versionen" x:Name="forge_list">
+            <TabItem Header="{DynamicResource ForgeVersions}" x:Name="forge_list">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition/>
@@ -31,24 +32,35 @@
                     <ListView x:Name="lst" Margin="10,10,10,44" BorderThickness="0" Grid.ColumnSpan="2">
                         <ListView.View>
                             <GridView>
-                                <GridViewColumn Header="Version" HeaderStringFormat="" DisplayMemberBinding="{Binding Path=version}" Width="130"/>
-                                <GridViewColumn Header="Minecraft Version" HeaderStringFormat="" DisplayMemberBinding="{Binding Path=mcversion}" Width="130"/>
-                                <GridViewColumn Header="Datum" DisplayMemberBinding="{Binding Path=modified, Converter={StaticResource Modified_Date_Converter}}" Width="375"/>
+                                <GridViewColumn Header="{DynamicResource Version}" DisplayMemberBinding="{Binding Path=version}" Width="130"/>
+                                <GridViewColumn Header="{DynamicResource MinecraftVersion}" DisplayMemberBinding="{Binding Path=mcversion}" Width="130"/>
+                                <GridViewColumn Header="{DynamicResource Date}" DisplayMemberBinding="{Binding Path=modified, Converter={StaticResource Modified_Date_Converter}}" Width="375"/>
                             </GridView>
                         </ListView.View>
                     </ListView>
-                    <Button x:Name="btn_download" Content="Manuell installieren (Installer)" Margin="10,0,0,0" Width="307" VerticalAlignment="Bottom" HorizontalAlignment="Left" Height="29" Grid.Column="1"/>
-                    <Button x:Name="btn_download_auto" Content="Automatisch installieren" Margin="0,0,10,0" Width="307" VerticalAlignment="Bottom" HorizontalAlignment="Right" Height="29"/>
+                    <Button x:Name="btn_download" Margin="10,0,0,0" Width="307" VerticalAlignment="Bottom" HorizontalAlignment="Left" Height="29" Grid.Column="1">
+                        <Button.Style>
+                            <Style TargetType="Button" BasedOn="{StaticResource MetroButton}">
+                                <Setter Property="Content" Value="{DynamicResource manualInstallInstaller}" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding installerdownloading}" Value="True">
+                                        <Setter Property="Content" Value="{DynamicResource Cancel}" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                    <Button x:Name="btn_download_auto" Content="{DynamicResource autoInstall}" Margin="0,0,10,0" Width="307" VerticalAlignment="Bottom" HorizontalAlignment="Right" Height="29"/>
                 </Grid>
             </TabItem>
-            <TabItem Header="Anleitung (Manuell)" x:Name="forge_anleitung">
+            <TabItem Header="{DynamicResource ForgeInstructionsManual}" x:Name="forge_instructions">
                 <Grid Margin="10">
-                    <TextBlock Margin="10,15,10,0" FontSize="18" TextWrapping="WrapWithOverflow" Height="50" VerticalAlignment="Top" Text="Nachdem Forge heruntergeladen wurde, öffnet sich ein Fenster. Wähle dort &quot;Install Client&quot; aus und wähle beim Installationspfad folgenden Ordner aus:" />
+                    <TextBlock Margin="10,15,10,0" FontSize="18" TextWrapping="WrapWithOverflow" Height="50" VerticalAlignment="Top" Text="{DynamicResource ForgeInstructionsManualText1}" />
                     <TextBox x:Name="tb_mcpfad" Margin="10,80,47,0" FontSize="13" Height="32" VerticalAlignment="Top" IsReadOnly="True" Controls:TextboxHelper.SelectAllOnFocus="True" />
-                    <Button x:Name="btn_copy" Margin="0,80,10,0" FontSize="13" Height="32" VerticalAlignment="Top" HorizontalAlignment="Right" Width="32" ToolTip="Pfad in die Zwischenablage kopieren" >
-                        <Image x:Name="btn_copy_image" Source="../resources/images/light/appbar.page.copy.png" ToolTip="Pfad in die Zwischenablage kopieren"/>
+                    <Button x:Name="btn_copy" Margin="0,80,10,0" FontSize="13" Height="32" VerticalAlignment="Top" HorizontalAlignment="Right" Width="32" ToolTip="{DynamicResource CopyToClipboard}" >
+                        <Image x:Name="btn_copy_image" Source="../resources/images/light/appbar.page.copy.png"/>
                     </Button>
-                    <TextBlock Margin="10,146,10,0" FontSize="18" TextWrapping="WrapWithOverflow" Height="193" VerticalAlignment="Top" Text="Klicke anschließend auf &quot;OK&quot; und es wird Minecraft Forge installiert. Nachdem es einige Dateien heruntergeladen hat und fertig installiert hat, erscheint eine Meldung, dass Forge erfolgreich installiert wurde. Nun wurde ein neues Profil namens &quot;Forge&quot; hinzugefügt und du kannst nun unter dem Tab &quot;Mods&quot; Modifikationen installieren. Du kannst Forge auch einem anderem Profil zuordnen, indem du einfach die Version im Profileeditor änderst." />
+                    <TextBlock Margin="10,146,10,0" FontSize="18" TextWrapping="WrapWithOverflow" Height="193" VerticalAlignment="Top" Text="{DynamicResource ForgeInstructionsManualText2}" />
                 </Grid>
             </TabItem>
         </Controls:MetroAnimatedTabControl>

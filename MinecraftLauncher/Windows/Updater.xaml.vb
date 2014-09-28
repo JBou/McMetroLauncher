@@ -19,8 +19,8 @@ Class Updater
 
         ' Fügen Sie Initialisierungen nach dem InitializeComponent()-Aufruf hinzu.
 
-        lblCurrentVersion.Content = "Aktuelle Version: " & AssemblyVersion
-        lblNewestVersion.Content = "Neuste Version: " & onlineversion
+        lblCurrentVersion.Text = AssemblyVersion
+        lblNewVersion.Text = onlineversion
         wc_Changelog.WebSession = WebCore.CreateWebSession(New WebPreferences() With {.CustomCSS = Scrollbarcss})
     End Sub
 
@@ -33,16 +33,15 @@ Class Updater
         '    btn.Content = "Abbrechen"
         'End If
 
-        If wc.IsBusy Then
+        If UpdaterViewModel.Instance.installerdownloading Then
             wc.CancelAsync()
-            btn.Content = "Update Downloaden"
         Else
             wc = New WebClient
             If IO.Directory.Exists(IO.Path.GetDirectoryName(Installer)) = False Then
                 IO.Directory.CreateDirectory(IO.Path.GetDirectoryName(Installer))
             End If
             wc.DownloadFileAsync(New Uri("http://patzleiner.net/download/McMetroLauncher.msi"), Installer)
-            btn.Content = "Abbrechen"
+            UpdaterViewModel.Instance.installerdownloading = True
         End If
     End Sub
 
@@ -52,6 +51,7 @@ Class Updater
             Process.Start(Installer)
             Application.Current.Shutdown()
         End If
+        UpdaterViewModel.Instance.installerdownloading = False
     End Sub
 
     Private Sub wc_DownloadProgressChanged(sender As Object, e As DownloadProgressChangedEventArgs) Handles wc.DownloadProgressChanged

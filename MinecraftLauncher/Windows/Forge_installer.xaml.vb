@@ -55,13 +55,13 @@ Class Forge_installer
 
     Private Async Sub btn_download_Click(sender As Object, e As RoutedEventArgs) Handles btn_download.Click
         If lst.SelectedIndex = -1 Then
-            Await Me.ShowMessageAsync(Nothing, "Bitte wähle eine Forge Version Aus!", MessageDialogStyle.Affirmative, New MetroDialogSettings() With {.AffirmativeButtonText = "Ok", .ColorScheme = MetroDialogColorScheme.Accented})
+            Await Me.ShowMessageAsync(Nothing, Application.Current.FindResource("ChooseForgeVersion").ToString, MessageDialogStyle.Affirmative, New MetroDialogSettings() With {.AffirmativeButtonText = Application.Current.FindResource("OK").ToString, .ColorScheme = MetroDialogColorScheme.Accented})
         ElseIf wc.IsBusy = True Then
             wc.CancelAsync()
         Else
             btn_download_auto.IsEnabled = False
             pb_download.IsIndeterminate = False
-            forge_anleitung.IsSelected = True
+            forge_instructions.IsSelected = True
             Dim Legacyforgefile As Boolean = False
             If Forge.LegacyBuildList.Select(Function(p) p.version).Contains(build.version) Then
                 Legacyforgefile = True
@@ -72,7 +72,7 @@ Class Forge_installer
             End If
             filename = IO.Path.Combine(cachefolder.FullName, String.Format("forge-{0}-{1}-installer.jar", build.mcversion, build.version))
             wc.DownloadFileAsync(url, filename)
-            btn_download.Content = "Abbrechen"
+            ForgeInstallerViewModel.Instance.installerdownloading = True
         End If
     End Sub
 
@@ -88,7 +88,7 @@ Class Forge_installer
             Process.Start(filename)
         End If
         btn_download_auto.IsEnabled = True
-        btn_download.Content = "Herunterladen und Installieren"
+        ForgeInstallerViewModel.Instance.installerdownloading = False
     End Sub
 
     Private Sub wc_DownloadProgressChanged(sender As Object, e As DownloadProgressChangedEventArgs) Handles wc.DownloadProgressChanged
@@ -98,10 +98,10 @@ Class Forge_installer
     Private Async Sub btn_download_auto_Click(sender As Object, e As RoutedEventArgs) Handles btn_download_auto.Click
         Try
             If lst.SelectedIndex = -1 Then
-                Await Me.ShowMessageAsync(Nothing, "Bitte wähle eine Forge Version Aus!", MessageDialogStyle.Affirmative, New MetroDialogSettings() With {.AffirmativeButtonText = "Ok", .ColorScheme = MetroDialogColorScheme.Accented})
+                Await Me.ShowMessageAsync(Nothing, Application.Current.FindResource("ChooseForgeVersion").ToString, MessageDialogStyle.Affirmative, New MetroDialogSettings() With {.AffirmativeButtonText = Application.Current.FindResource("OK").ToString, .ColorScheme = MetroDialogColorScheme.Accented})
             Else
                 stripmeta = False
-                controller = Await Me.ShowProgressAsync("Forge wird installiert", "Bitte warten", False, New MetroDialogSettings() With {.ColorScheme = MetroDialogColorScheme.Theme})
+                controller = Await Me.ShowProgressAsync(Application.Current.FindResource("InstallingForge").ToString, Application.Current.FindResource("PleaseWait").ToString, False, New MetroDialogSettings() With {.ColorScheme = MetroDialogColorScheme.Theme})
                 Legacyforge = False
                 If Forge.LegacyBuildList.Select(Function(p) p.version).Contains(build.version) Then
                     Legacyforge = True
@@ -173,7 +173,7 @@ Class Forge_installer
                         If .Exists = False Then
                             'Download
                             wcauto = New WebClient
-                            controller.SetMessage("Lade Version herunter...")
+                            controller.SetMessage(Application.Current.FindResource("DownloadingVersion").ToString)
                             AddHandler wcauto.DownloadProgressChanged, Sub(sender2 As Object, e2 As Net.DownloadProgressChangedEventArgs)
                                                                            Dim progress As Double = 1 / 3 + e2.ProgressPercentage / 100 / 3
                                                                            If progress <= 1 Then
@@ -195,7 +195,7 @@ Class Forge_installer
                         'Show Error
                     End Try
                     'Copy
-                    controller.SetMessage("Installiere Version...")
+                    controller.SetMessage(Application.Current.FindResource("InstallingVersion").ToString)
                     Dim targetpath As New FileInfo(Path.Combine(versionsfolder.FullName, versionsname, versionsname & ".jar"))
                     If targetpath.Directory.Exists = False Then
                         targetpath.Directory.Create()
@@ -244,7 +244,7 @@ Class Forge_installer
                     Await Downloadlibs()
                 End With
             ElseIf e.Error IsNot Nothing Then
-                controller.SetMessage("Fehler beim herunterladen: " & e.Error.Message & Environment.NewLine & libpath.FullName)
+                controller.SetMessage(Application.Current.FindResource("ErrorDownloading").ToString & ": " & e.Error.Message & Environment.NewLine & libpath.FullName)
                 controller.SetCancelable(True)
                 While controller.IsCanceled = False
                     Await Task.Delay(10)
@@ -259,7 +259,7 @@ Class Forge_installer
 
     Async Function Downloadlibs() As Task
         If build.mcversion = "1.5.2" Then
-            controller.SetMessage("Bitte warten, erforderliche Libraries werden heruntergeladen")
+            controller.SetMessage(Application.Current.FindResource("DownloadingRequiredLibraries").ToString)
             controller.SetIndeterminate()
             Try
                 Await New WebClient().DownloadFileTaskAsync("http://files.minecraftforge.net/fmllibs/bcprov-jdk15on-148.jar.stash", Path.Combine(mcpfad.FullName, "lib", "bcprov-jdk15on-148.jar"))
@@ -279,7 +279,7 @@ Class Forge_installer
                     libpath = New FileInfo(IO.Path.Combine(librariesfolder.FullName, .path) & ".pack.xz")
                     Dim customurl As String = .url
                     Dim url As String = customurl & .path & ".pack.xz"
-                    controller.SetMessage("Lade Library herunter: " & libpath.FullName)
+                    controller.SetMessage(Application.Current.FindResource("DownloadLibrary").ToString & ": " & libpath.FullName)
                     If Not libpath.Directory.Exists Then
                         libpath.Directory.Create()
                     End If
@@ -350,9 +350,9 @@ Class Forge_installer
 
     Async Sub Downloadlibcompleted(sender As Object, e As ComponentModel.AsyncCompletedEventArgs)
         If e.Cancelled = False AndAlso e.Error Is Nothing Then
-            controller.SetMessage("Entpacke Library : " & libpath.FullName)
+            controller.SetMessage(Application.Current.FindResource("UnpackingLibrary").ToString & ": " & libpath.FullName)
             If Await Unpack.Unpack(libpath, libpath) = False Then
-                controller.SetMessage("Fehler beim entpacken: " & libpath.FullName)
+                controller.SetMessage(Application.Current.FindResource("ErrorUnpacking").ToString & ": " & libpath.FullName)
                 controller.SetCancelable(True)
                 While controller.IsCanceled = False
                     Await Task.Delay(10)
@@ -364,7 +364,7 @@ Class Forge_installer
             End If
             'libpath.Delete()
         ElseIf e.Error IsNot Nothing Then
-            controller.SetMessage("Fehler beim herunterladen: " & e.Error.Message & Environment.NewLine & libpath.FullName)
+            controller.SetMessage(Application.Current.FindResource("ErrorDownloading").ToString & ": " & e.Error.Message & Environment.NewLine & libpath.FullName)
             controller.SetCancelable(True)
             While controller.IsCanceled = False
                 Await Task.Delay(10)

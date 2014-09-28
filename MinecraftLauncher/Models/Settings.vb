@@ -26,7 +26,9 @@ Public Class Settings
 
     Private Shared Async Function ReadSettings() As Task(Of Settings)
         Dim text As String = File.ReadAllText(SettingsFile.FullName)
-        Return Await JsonConvert.DeserializeObjectAsync(Of Settings)(text, New JsonSerializerSettings() With {.DefaultValueHandling = DefaultValueHandling.Ignore, .NullValueHandling = NullValueHandling.Ignore})
+        Dim settings As Settings = Await JsonConvert.DeserializeObjectAsync(Of Settings)(text, New JsonSerializerSettings() With {.DefaultValueHandling = DefaultValueHandling.Ignore, .NullValueHandling = NullValueHandling.Ignore})
+        settings.ActivLanguage = settings.lstLanguages.Where(Function(p) p.Code = settings.ActivLanguage.Code).First
+        Return settings
     End Function
     Public Function Save() As Boolean
         If mcpfad = GlobalInfos.mcpfad.FullName Then

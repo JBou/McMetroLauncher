@@ -1,5 +1,4 @@
-﻿<Controls:MetroWindow  x:Class="MainWindow" x:Name="window"
-                       Style="{StaticResource MetroWindow}"
+﻿<Controls:MetroWindow
                        xmlns:local="clr-namespace:McMetroLauncher"
                        xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
                        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -7,7 +6,8 @@
                        xmlns:awe="clr-namespace:Awesomium.Windows.Controls;assembly=Awesomium.Windows.Controls"
                        xmlns:chart="clr-namespace:De.TorstenMandelkow.MetroChart;assembly=De.TorstenMandelkow.MetroChart" 
                        xmlns:JBouControls="clr-namespace:McMetroLauncher.JBou.Controls"        
-                       Title="McMetroLauncher" 
+                       xmlns:System="clr-namespace:System;assembly=mscorlib"  x:Class="MainWindow" x:Name="window"        
+                       Title="{DynamicResource McMetroLauncher}" 
                        Height="610" 
                        Width="950"
                        ForceCursor="True"
@@ -17,10 +17,10 @@
                        UseLayoutRounding="False" 
                        ScrollViewer.CanContentScroll="True"
                        DataContext="{x:Static local:MainViewModel.Instance}">
-    
-    <!--Für IMAc Screenshots-->
+
+    <!--Für IMac Screenshots-->
     <!--Title="McMetroLauncher" Height="676" Width="1200"-->
-    <Window.Resources>
+    <Controls:MetroWindow.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro.Resources;component/Icons.xaml" />
@@ -32,6 +32,11 @@
             <local:MODS_installed_imageConverter x:Key="MODS_installed_imageConverter" />
             <local:Playerlist_Namesstring_Converter x:Key="Playerlist_Namesstring_Converter"/>
             <local:YoutubeVideo_Embed_Converter x:Key="YoutubeVideo_Embed_Converter" />
+            <local:NullToBooleanConverter x:Key="NullToBooleanConverter" />
+            <local:ValueConverterGroup x:Key="NullToVisibilityConverter">
+                <local:NullToBooleanConverter />
+                <BooleanToVisibilityConverter />
+            </local:ValueConverterGroup>
             <local:ValueConverterGroup x:Key="InversedBoolToVis_Converter">
                 <BooleanToVisibilityConverter />
                 <local:InverseBooleanConverter />
@@ -40,11 +45,11 @@
             <BooleanToVisibilityConverter x:Key="BoolToVis_Converter" />
             <local:Text_FlowDocument_Converter x:Key="Text_FlowDocument_Converter" />
             <local:Description_SelectedItem_Converter x:Key="Description_SelectedItem_Converter" />
-            
+
             <Style x:Key="MinecraftFont">
                 <Setter Property="TextElement.FontFamily" Value="Fonts/#Minecraft" />
             </Style>
-            <Style x:Key="DescriptionHeaderStyle" TargetType="Label">
+            <Style x:Key="DescriptionHeaderStyle" TargetType="{x:Type Label}">
                 <Setter Property="FontSize" Value="22" />
                 <Setter Property="HorizontalAlignment" Value="Center" />
             </Style>
@@ -64,33 +69,33 @@
                    TargetType="{x:Type MenuItem}"
                    BasedOn="{StaticResource MetroMenuItem}">
                 <Setter Property="Command"
-                        Value="{Binding ChangeAccentCommand}" />
+            		Value="{Binding ChangeAccentCommand}" />
                 <Setter Property="Icon"
-                        Value="{StaticResource AppThemeMenuIcon}" />
+            		Value="{StaticResource AppThemeMenuIcon}" />
                 <Setter Property="Header"
-                        Value="{Binding Name, Mode=OneWay}" />
+            		Value="{Binding Name, Mode=OneWay}" />
             </Style>
             <Style x:Key="AccentColorMenuItemStyle"
                    TargetType="{x:Type MenuItem}"
                    BasedOn="{StaticResource MetroMenuItem}">
                 <Setter Property="Command"
-                        Value="{Binding ChangeAccentCommand}" />
+            		Value="{Binding ChangeAccentCommand}" />
                 <Setter Property="Icon"
-                        Value="{StaticResource AccentMenuIcon}" />
+            		Value="{StaticResource AccentMenuIcon}" />
                 <Setter Property="Header"
-                        Value="{Binding Name, Mode=OneWay}" />
+            		Value="{Binding Name, Mode=OneWay}" />
             </Style>
             <Style x:Key="ServiceStatusItemStyle"
                    TargetType="{x:Type MenuItem}"
                    BasedOn="{StaticResource MetroMenuItem}">
                 <Setter Property="Focusable"
-                        Value="False" />
+            		Value="False" />
                 <Setter Property="Icon"
-                        Value="{StaticResource AccentMenuIcon}" />
+            		Value="{StaticResource AccentMenuIcon}" />
                 <Setter Property="Header"
-                        Value="{Binding Name, Mode=OneWay}" />
+            		Value="{Binding Name, Mode=OneWay}" />
             </Style>
-            <Style x:Key="ChartTitleStyle" TargetType="TextBlock">
+            <Style x:Key="ChartTitleStyle" TargetType="{x:Type TextBlock}">
                 <Setter Property="FontSize" Value="26"/>
                 <Setter Property="FontFamily" Value="Segoe UI Light"/>
                 <Setter Property="FontWeight" Value="Light"/>
@@ -100,11 +105,14 @@
                 <Setter Property="Visibility" Value="Collapsed" />
             </Style>
         </ResourceDictionary>
-    </Window.Resources>
+    </Controls:MetroWindow.Resources>
+    <Controls:MetroWindow.Style>
+        <StaticResource ResourceKey="MetroWindow"/>
+    </Controls:MetroWindow.Style>
     <Controls:MetroWindow.RightWindowCommands>
         <Controls:WindowCommands>
             <Controls:WindowCommands>
-                <Button Content="Einstellungen" Click="ShowSettings"/>
+                <!--<Button Content="{DynamicResource Settings}" Click="ShowSettings"/>-->
                 <Button Content="?" Click="Help"/>
             </Controls:WindowCommands>
         </Controls:WindowCommands>
@@ -112,7 +120,7 @@
 
     <Controls:MetroWindow.Flyouts>
         <Controls:FlyoutsControl>
-            <Controls:Flyout x:Name="settingsFlyout" Width="500" Header="Einstellungen" Position="Right" Theme="Accent">
+            <Controls:Flyout x:Name="settingsFlyout" Width="500" Header="{DynamicResource Settings}" Position="Right" Theme="Accent">
                 <Controls:MetroContentControl>
                     <Grid Margin="10">
                         <Grid.RowDefinitions>
@@ -122,21 +130,19 @@
                         </Grid.RowDefinitions>
 
                         <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
-                            <StackPanel Orientation="Vertical">
-
-                            </StackPanel>
+                            <StackPanel Orientation="Vertical"/>
                         </ScrollViewer>
 
                         <UniformGrid Columns="2"
-                                 Grid.Row="2"
-                                 Margin="10">
+            				Grid.Row="2"
+            				Margin="10">
                             <Button Style="{DynamicResource SquareButtonStyle}"
-                                Margin="10"
-                                Content="Speichern" />
+            					Margin="10"
+            					Content="{DynamicResource Save}" />
                             <Button Style="{DynamicResource SquareButtonStyle}"
-                                Margin="10"
-                                Content="Abbrechen"
-                                Click="ShowSettings" />
+            					Margin="10"
+            					Content="{DynamicResource Cancel}"
+            					Click="ShowSettings" />
                         </UniformGrid>
 
                     </Grid>
@@ -147,7 +153,7 @@
 
     <Grid>
         <TabControl x:Name="TabControl_main" TabIndex="15" ItemContainerStyle="{StaticResource UnderTab}">
-            <TabItem Header="Minecraft" x:Name="tabitem_Minecraft">
+            <TabItem Header="{DynamicResource Minecraft}" x:Name="tabitem_Minecraft">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition/>
@@ -158,7 +164,7 @@
                     <TabControl Margin="0,0,0,95" TabStripPlacement="Left">
                         <TabControl.Resources>
                             <Style TargetType="{x:Type TabItem}"
-                                       BasedOn="{StaticResource {x:Type TabItem}}">
+								BasedOn="{StaticResource {x:Type TabItem}}">
                                 <Setter Property="HeaderTemplate">
                                     <Setter.Value>
                                         <DataTemplate>
@@ -172,16 +178,19 @@
                                 </Setter>
                             </Style>
                         </TabControl.Resources>
-                        <TabItem Header="Neuigkeiten" >
+                        <TabItem Header="{DynamicResource News}" >
                             <Grid>
                                 <awe:WebControl x:Name="Webcontrol_news" Margin="10,10,10,0" Source="http://mcupdate.tumblr.com/" />
                                 <Grid HorizontalAlignment="Center" VerticalAlignment="Center" Height="100">
-                                    <Label x:Name="lbl_news_loading" Content="Neuigkeiten werden geladen..."  FontSize="60" VerticalAlignment="Top" />
+                                    <StackPanel x:Name="lbl_news_loading" Orientation="Horizontal" VerticalAlignment="Top">
+                                        <TextBlock FontSize="60" Text="{DynamicResource LoadingNews}" />
+                                        <TextBlock Text="..." FontSize="60" />
+                                    </StackPanel>
                                     <Controls:MetroProgressBar x:Name="pb_news_loading" IsIndeterminate="True" VerticalAlignment="Bottom" Height="10" />
                                 </Grid>
                             </Grid>
                         </TabItem>
-                        <TabItem x:Name="tabitem_console" Header="Console" >
+                        <TabItem x:Name="tabitem_console" Header="{DynamicResource Console}" >
                             <RichTextBox x:Name="tb_ausgabe" VerticalScrollBarVisibility="Auto" IsReadOnly="True" VerticalContentAlignment="Top" Margin="10,10,10,0" HorizontalScrollBarVisibility="Auto" TabIndex="2">
                                 <RichTextBox.Resources>
                                     <Style TargetType="{x:Type Paragraph}">
@@ -191,41 +200,33 @@
                             </RichTextBox>
                         </TabItem>
                     </TabControl>
-                    <ListBox x:Name="Listbox1" HorizontalAlignment="Left" Height="271" Margin="459,10,0,0" VerticalAlignment="Top" Width="473" Visibility="Collapsed"/>
                     <StackPanel Orientation="Horizontal" Margin="0,0,165,10" Height="69"  HorizontalAlignment="Right"  VerticalAlignment="Bottom" >
                         <StackPanel Height="69">
-                            <Label x:Name="lbl_Username" Width="150" Height="25" TabIndex="11" HorizontalAlignment="Center" VerticalAlignment="Center" HorizontalContentAlignment="Center" />
-                            <DockPanel Margin="0,10,0,0">
-                                <Button x:Name="btn_logout" Content="LogOut" TabIndex="11" DockPanel.Dock="Right" Margin="10,0,0,0" />
-                                <Label x:Name="lbl_user_state" TabIndex="11" HorizontalContentAlignment="Right" />
-                            </DockPanel>
+                            <TextBlock x:Name="lbl_Username" Height="22" HorizontalAlignment="Center" />
+                            <TextBlock x:Name="lbl_user_state" Height="22" HorizontalAlignment="Center" />
+                            <Button x:Name="btn_logout" Content="{DynamicResource SwitchUser}" TabIndex="11" HorizontalAlignment="Center"/>
                         </StackPanel>
                         <Image x:Name="img_avatar" Height="69" Width="69" Margin="5,0,0,0"/>
                     </StackPanel>
                     <Button x:Name="btn_startMC" Content="{DynamicResource Play}" HorizontalAlignment="Right" Margin="0,0,10,10" VerticalAlignment="Bottom" Width="150" Height="69" FontSize="30" TabIndex="11"/>
                     <Controls:MetroProgressBar DataContext="{x:Static local:MainWindowViewModel.Instance}" Foreground="{DynamicResource AccentColorBrush}" Height="5" Margin="10,0,10,84" VerticalAlignment="Bottom" IsIndeterminate="{Binding pb_download_IsIndeterminate}" Value="{Binding pb_download_Value}"/>
-                    <Label DataContext="{x:Static local:MainWindowViewModel.Instance}" x:Name="lbl_downloadstatus" HorizontalAlignment="Left" Margin="353,0,0,42" VerticalAlignment="Bottom" Width="418" Height="33" Content="{Binding lbl_downloadstatus_Content}"/>
-                    <Button x:Name="btn_new_profile" Content="Neu" HorizontalAlignment="Left" Margin="10,0,0,10" VerticalAlignment="Bottom" Width="26" Height="33" MinWidth="50" TabIndex="4"/>
-                    <Button x:Name="btn_edit_profile" Content="Bearbeiten" HorizontalAlignment="Left" Margin="65,0,0,10" VerticalAlignment="Bottom" Width="89" Height="33" TabIndex="5"/>
-                    <ComboBox ItemsSource="{Binding Path=Profiles}" SelectedItem="{Binding selectedProfile, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" x:Name="cb_profiles" HorizontalAlignment="Left" Margin="10,0,0,48" VerticalAlignment="Bottom" Width="218" Height="31" TabIndex="3"/>
-                    <Button x:Name="btn_delete_profile" Content="Löschen" HorizontalAlignment="Left" Margin="159,0,0,10" VerticalAlignment="Bottom" Width="69" Height="33" TabIndex="6"/>
-                    <ListBox x:Name="lb_libraries_extract" HorizontalAlignment="Left" Height="271" Margin="648,120,-48,0" VerticalAlignment="Top" Width="342" Visibility="Collapsed"/>
-                    <ListBox x:Name="lb_libraries" HorizontalAlignment="Left" Height="271" Margin="-2,120,0,0" VerticalAlignment="Top" Width="320" Visibility="Collapsed"/>
-                    <ListBox x:Name="lb_libraries_url" HorizontalAlignment="Left" Height="271" Margin="323,120,0,0" VerticalAlignment="Top" Width="320" Visibility="Collapsed"/>
-                    <PasswordBox x:Name="pb_Password" HorizontalAlignment="Right" Height="32" Margin="0,0,138,10" VerticalAlignment="Bottom" Width="148" VerticalContentAlignment="Center" IsEnabled="False" Visibility="Hidden"/>
-                    <CheckBox x:Name="cb_online_mode" HorizontalAlignment="Right" Height="32" Content="Online Mode" Margin="0,0,180,10" VerticalAlignment="Bottom" Width="106" VerticalContentAlignment="Center" IsEnabled="False" Visibility="Hidden"/>
-                    <TextBox Text="{Binding Directjoinaddress, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Controls:TextboxHelper.Watermark="Address" HorizontalAlignment="Left" Height="32" Margin="246,0,0,10" TextWrapping="Wrap" VerticalAlignment="Bottom" Width="148" VerticalContentAlignment="Center" TabIndex="8"/>
-                    <CheckBox x:Name="cb_direct_join" HorizontalAlignment="Left" Height="32" Content="Direct Join" Margin="246,0,0,48" VerticalAlignment="Bottom" Width="148" VerticalContentAlignment="Center" Padding="6,0,0,0" FontSize="15" ToolTip="Tritt nach dem Spielstart automatisch dem festgelegten Server bei" TabIndex="7"/>
+                    <TextBlock DataContext="{x:Static local:MainWindowViewModel.Instance}" x:Name="lbl_downloadstatus" HorizontalAlignment="Center" Margin="10,0,0,79" VerticalAlignment="Bottom" Height="16" Text="{Binding lbl_downloadstatus_Content}"/>
+                    <Button x:Name="btn_new_profile" Content="{DynamicResource New}" HorizontalAlignment="Left" Margin="10,0,0,10" VerticalAlignment="Bottom" Width="26" Height="33" MinWidth="50" TabIndex="4"/>
+                    <Button x:Name="btn_edit_profile" Content="{DynamicResource Edit}" HorizontalAlignment="Left" Margin="65,0,0,10" VerticalAlignment="Bottom" Width="89" Height="33" TabIndex="5"/>
+                    <ComboBox ItemsSource="{Binding Profiles}" SelectedItem="{Binding selectedProfile, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" x:Name="cb_profiles" HorizontalAlignment="Left" Margin="10,0,0,48" VerticalAlignment="Bottom" Width="218" Height="31" TabIndex="3"/>
+                    <Button x:Name="btn_delete_profile" Content="{DynamicResource Delete}" HorizontalAlignment="Left" Margin="159,0,0,10" VerticalAlignment="Bottom" Width="69" Height="33" TabIndex="6"/>
+                    <TextBox Text="{Binding Directjoinaddress, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Controls:TextboxHelper.Watermark="{DynamicResource Address}" HorizontalAlignment="Left" Height="32" Margin="246,0,0,10" TextWrapping="Wrap" VerticalAlignment="Bottom" Width="148" VerticalContentAlignment="Center" TabIndex="8"/>
+                    <CheckBox x:Name="cb_direct_join" HorizontalAlignment="Left" Height="32" Content="{DynamicResource DirectJoin}" Margin="246,0,0,48" VerticalAlignment="Bottom" Width="148" VerticalContentAlignment="Center" Padding="6,0,0,0" FontSize="15" ToolTip="{DynamicResource DirectJoinToolTip}" TabIndex="7"/>
 
 
                 </Grid>
             </TabItem>
-            <TabItem Header="Tools">
+            <TabItem Header="{DynamicResource Tools}">
                 <Grid Margin="24,37,18,-7" Width="900">
-                    <Button Content="Forge installieren" x:Name="install_forge" Click="forge_installer" Margin="0,10,10,0" Height="74" VerticalAlignment="Top" HorizontalAlignment="Right" Width="165"/>
+                    <Button Content="{DynamicResource InstallForge}" x:Name="install_forge" Click="forge_installer" Margin="0,10,10,0" Height="74" VerticalAlignment="Top" HorizontalAlignment="Right" Width="165"/>
                     <TextBlock TextWrapping="Wrap" Margin="274,18,180,422" Padding="5" Text="{DynamicResource ForgeDescription}" VerticalAlignment="Top" />
                     <Image Margin="26,10,0,0" Height="74" VerticalAlignment="Top" HorizontalAlignment="Left" Width="243" Source="/resources/images/forge_banner.png"/>
-                    <Button Content="LiteLoader installieren" x:Name="install_liteloader" Click="liteloader_installer" Margin="0,110,10,0" Height="74" VerticalAlignment="Top" HorizontalAlignment="Right" Width="165"/>
+                    <Button Content="{DynamicResource InstallLiteLoader}" x:Name="install_liteloader" Click="liteloader_installer" Margin="0,110,10,0" Height="74" VerticalAlignment="Top" HorizontalAlignment="Right" Width="165"/>
                     <TextBlock TextWrapping="Wrap" Margin="274,101,180,323" Padding="5" Text="{DynamicResource LiteLoaderDescription}" VerticalAlignment="Top" />
                     <Image Margin="25,89,0,0" Height="83" VerticalAlignment="Top" HorizontalAlignment="Left" Width="243" Source="/resources/images/liteloader_header_xmas.png"/>
                     <TextBlock Margin="274,199,180,229" TextWrapping="Wrap" Padding="5" Text="{DynamicResource TechnicLauncherDescription}" VerticalAlignment="Top" Height="70" />
@@ -238,7 +239,7 @@
                     <Image Margin="74,270,0,0" Height="86" VerticalAlignment="Top" HorizontalAlignment="Left" Width="134" Source="/resources/images/web-ftb-logo_0.png"/>
                 </Grid>
             </TabItem>
-            <TabItem Header="Mods" x:Name="tabitem_Mods">
+            <TabItem Header="{DynamicResource Mods}" x:Name="tabitem_Mods">
                 <Grid>
                     <ListView x:Name="lb_mods" Margin="10,72,0,35" Width="352" HorizontalAlignment="Left" BorderThickness="0" >
                         <ListView.View>
@@ -250,49 +251,57 @@
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>
-                                <GridViewColumn Header="Name" DisplayMemberBinding="{Binding name}" Width="300"/>
-                                <!--<GridViewColumn Header="authors" DisplayMemberBinding="{Binding Path=authors, Converter={StaticResource List_String_Converter}}" />-->
+                                <GridViewColumn Header="{DynamicResource Name}" DisplayMemberBinding="{Binding name}" Width="300"/>
+                                <!--<GridViewColumn Header="{DynamicResource Authors" DisplayMemberBinding="{Binding Path=authors, Converter={StaticResource List_String_Converter}}" />-->
                             </GridView>
                         </ListView.View>
                     </ListView>
-                    <Label Content="Mods installieren in:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="367,10,0,0" Height="26" Padding="5,0" VerticalContentAlignment="Center"/>
-                    <TextBox x:Name="tb_modsfolder" Margin="517,41,110,0" VerticalAlignment="Top" IsReadOnly="True" Height="26"/>
-                    <Button x:Name="btn_resetmodsfoler" Margin="0,41,41,0" Content="Standard" HorizontalAlignment="Right" VerticalAlignment="Top" Height="26" />
-                    <Button x:Name="btn_selectmodsfolder" Margin="0,41,10,0" Content="..." HorizontalAlignment="Right" VerticalAlignment="Top" Width="26" Height="26" />
+                    <DockPanel Margin="367,10,10,0" VerticalAlignment="Top">
+                        <StackPanel Orientation="Horizontal" Height="26" Margin="5,0,5,0">
+                            <TextBlock Text="{DynamicResource InstallModsIn}" />
+                            <TextBlock Text=":" />
+                        </StackPanel>
+                        <StackPanel>
+                            <DockPanel>
+                                <RadioButton x:Name="rb_mods_profile" GroupName="ModsInstallPath" Height="26" Width="24" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+                                <ComboBox ItemsSource="{Binding Profiles}" SelectedItem="{Binding selectedProfile, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" x:Name="cb_mods_profilename" HorizontalAlignment="Left" VerticalAlignment="Top" Width="168" Height="26"/>
+                            </DockPanel>
+                            <DockPanel Margin="0,5,0,0">
+                                <RadioButton x:Name="rb_mods_folder" GroupName="ModsInstallPath" Width="24" Height="26" IsChecked="True" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+                                <Button x:Name="btn_selectmodsfolder" Margin="5,0,0,0" Content="..." HorizontalAlignment="Right" DockPanel.Dock="Right" Width="26" Height="26" />
+                                <Button x:Name="btn_resetmodsfoler" Margin="5,0,0,0" Content="{DynamicResource Default}" HorizontalAlignment="Right" DockPanel.Dock="Right" Height="26" />
+                                <TextBox x:Name="tb_modsfolder" IsReadOnly="True" Height="26"/>
+                            </DockPanel>
+                        </StackPanel>
+                    </DockPanel>
                     <Image x:Name="img_installed" Height="23" Width="23" Margin="367,78,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Source="/resources/images/check_green.png"/>
-                    <Label Margin="395,72,110,0" VerticalAlignment="Top" Height="29" FontWeight="Bold" VerticalContentAlignment="Center" Background="#00000000" Foreground="#FF1F94F5" FontSize="15" Content="{Binding ElementName=lb_mods, Path=SelectedItem.name}" />
+                    <Label Margin="395,72,110,0" VerticalAlignment="Top" Height="29" FontWeight="Bold" VerticalContentAlignment="Center" Background="#00000000" Foreground="#FF1F94F5" FontSize="15" Content="{Binding SelectedItem.name, ElementName=lb_mods}" />
                     <DockPanel  Margin="367,0,10,10" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Height="32" >
-                        <Button x:Name="btn_website" Content="Website besuchen" Height="32" Width="125" Margin="0,0,5,0" />
-                        <Button x:Name="btn_video" Content="Video ansehen" Height="32" Width="125" Margin="5,0" />
-                        <Button x:Name="btn_list_delete_mod" Content="Löschen" Height="32" Width="125" Margin="5,0" />
-                        <Button Foreground="{DynamicResource AccentColorBrush}" x:Name="btn_downloadmod" Content="Installieren" Height="32" FontWeight="Bold" Margin="5,0,0,0" />
+                        <Button x:Name="btn_website" Content="{DynamicResource OpenWebsite}" Height="32" Width="125" Margin="0,0,5,0" />
+                        <Button x:Name="btn_video" Content="{DynamicResource WatchVideo}" Height="32" Width="125" Margin="5,0" />
+                        <Button x:Name="btn_list_delete_mod" Content="{DynamicResource Delete}" Height="32" Width="125" Margin="5,0" />
+                        <Button x:Name="btn_downloadmod" Content="{DynamicResource Install}" Height="32" FontWeight="Bold" Margin="5,0,0,0"  Foreground="{DynamicResource AccentColorBrush}" />
+
                     </DockPanel>
                     <ScrollViewer Margin="367,106,10,47">
                         <StackPanel >
                             <Label x:Name="lbl_type" VerticalAlignment="Top" Height="29" FontWeight="Bold" VerticalContentAlignment="Center" Background="{x:Null}" Foreground="#FFF51F1F" FontSize="15" />
-                            <TextBox x:Name="tb_description" Text="{Binding ElementName=cb_mods_description_language, Path=SelectedItem.text}" TextWrapping="Wrap" BorderThickness="0" HorizontalScrollBarVisibility="Visible" AcceptsReturn="True" IsReadOnly="True" VerticalContentAlignment="Top" VerticalScrollBarVisibility="Auto" Padding="5"/>
+                            <TextBox x:Name="tb_description" Text="{Binding SelectedItem.text, ElementName=cb_mods_description_language}" TextWrapping="Wrap" BorderThickness="0" HorizontalScrollBarVisibility="Visible" AcceptsReturn="True" IsReadOnly="True" VerticalContentAlignment="Top" VerticalScrollBarVisibility="Auto" Padding="5"/>
                             <JBouControls:AspectRatioLayoutDecorator AspectRatio="1.77777778" >
-                                <awe:WebControl> 
-                                    <awe:WebControl.Source>
-                                        <MultiBinding Converter="{StaticResource YoutubeVideo_Embed_Converter}" >
-                                            <Binding ElementName="lb_mods" Path="SelectedItem" />
-                                            <Binding RelativeSource="{RelativeSource Self}" />
-                                        </MultiBinding>
-                                    </awe:WebControl.Source>
+                                <awe:WebControl>
+                                    <MultiBinding Converter="{StaticResource YoutubeVideo_Embed_Converter}" >
+                                        <Binding ElementName="lb_mods" Path="SelectedItem" />
+                                        <Binding RelativeSource="{RelativeSource Self}" />
+                                    </MultiBinding>
                                 </awe:WebControl>
                             </JBouControls:AspectRatioLayoutDecorator>
                         </StackPanel>
                     </ScrollViewer>
                     <ComboBox x:Name="cb_modversions" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="352" Height="26"/>
-                    <Button x:Name="btn_play" Content="Play" Margin="192,466,628,24" Visibility="Hidden" />
-                    <TextBox x:Name="tb_downloadlink" HorizontalAlignment="Left" Height="26" Margin="362,439,-17,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="597" Visibility="Hidden"/>
-                    <Label Margin="517,72,80,0" VerticalAlignment="Top" Height="29" FontWeight="Bold" VerticalContentAlignment="Center" HorizontalContentAlignment="Right" Background="#00000000" Foreground="#FF1F94F5" FontSize="15" Content="{Binding ElementName=lb_mods, Path=SelectedItem.authors, Converter={StaticResource List_String_Converter}}" />
-                    <TextBox x:Name="tb_search_mods" Controls:TextboxHelper.ClearTextButton="True" Controls:TextboxHelper.Watermark="Suche" Margin="10,41,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="352" />
-                    <ComboBox ItemsSource="{Binding Path=Profiles}" SelectedItem="{Binding selectedProfile, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" x:Name="cb_mods_profilename" HorizontalAlignment="Left" Margin="517,10,0,0" VerticalAlignment="Top" Width="168" Height="26"/>
-                    <RadioButton x:Name="rb_mods_profile" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="488,10,0,0" Height="26" Width="24" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
-                    <RadioButton x:Name="rb_mods_folder" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="488,41,0,0" Width="24" Height="26" IsChecked="True" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
-                    <Label Content="SHIFT oder STRG für Mehrfachauswahl" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="10,0,0,10" Height="19" Width="352" Padding="5,0" HorizontalContentAlignment="Center"/>
-                    <ComboBox x:Name="cb_mods_description_language" DisplayMemberPath="id" HorizontalAlignment="Right" Margin="0,72,10,0" VerticalAlignment="Top" Width="65" Height="29" ItemsSource="{Binding ElementName=lb_mods, Path=SelectedItem.descriptions}" >
+                    <Label Margin="517,72,80,0" VerticalAlignment="Top" Height="29" FontWeight="Bold" VerticalContentAlignment="Center" HorizontalContentAlignment="Right" Background="#00000000" Foreground="#FF1F94F5" FontSize="15" Content="{Binding SelectedItem.authors, Converter={StaticResource List_String_Converter}, ElementName=lb_mods}" />
+                    <TextBox x:Name="tb_search_mods" Controls:TextboxHelper.ClearTextButton="True" Controls:TextboxHelper.Watermark="{DynamicResource Search}" Margin="10,41,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="352" />
+                    <Label Content="{DynamicResource ShiftOrControlForMultiselection}" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="10,0,0,10" Height="19" Width="352" Padding="5,0" HorizontalContentAlignment="Center"/>
+                    <ComboBox x:Name="cb_mods_description_language" DisplayMemberPath="id" HorizontalAlignment="Right" Margin="0,72,10,0" VerticalAlignment="Top" Width="65" Height="29" ItemsSource="{Binding SelectedItem.descriptions, ElementName=lb_mods}" >
                         <ComboBox.SelectedItem>
                             <MultiBinding Converter="{StaticResource Description_SelectedItem_Converter}">
                                 <Binding RelativeSource="{RelativeSource Self}" Path="ItemsSource"/>
@@ -302,27 +311,27 @@
                     </ComboBox>
                 </Grid>
             </TabItem>
-            <TabItem Header="ResourcePacks" Visibility="Collapsed">
+            <TabItem Header="{DynamicResource Resourcepacks}" Visibility="Collapsed">
                 <Grid>
                     <ComboBox x:Name="cb_resourcepacksversions" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="350" Height="31"/>
                     <ListView x:Name="lb_resourcepacks" Margin="10,46,0,23" Width="350" HorizontalAlignment="Left" BorderThickness="0" >
                         <ListView.View>
                             <GridView ColumnHeaderContainerStyle="{StaticResource CollapsedHeaderStyle}" AllowsColumnReorder="False">
-                                <GridViewColumn Header="Icon" DisplayMemberBinding="{Binding icon}" />
-                                <GridViewColumn Header="Name" DisplayMemberBinding="{Binding name}" />
-                                <GridViewColumn Header="Website" DisplayMemberBinding="{Binding website}" />
+                                <GridViewColumn Header="{DynamicResource Icon}" DisplayMemberBinding="{Binding icon}" />
+                                <GridViewColumn Header="{DynamicResource Name}" DisplayMemberBinding="{Binding name}" />
+                                <GridViewColumn Header="{DynamicResource Website}" DisplayMemberBinding="{Binding website}" />
                             </GridView>
                         </ListView.View>
                     </ListView>
                 </Grid>
             </TabItem>
-            <TabItem Header="Servers">
+            <TabItem Header="{DynamicResource Servers}">
                 <Grid>
-                    <TextBlock Margin="10,10,10,10" VerticalAlignment="Top" HorizontalAlignment="Center" Text="Server, dessen Version älter als 1.7 ist, werden als &quot;Offline&quot; angezeigt, Rechtsklick für mehr Optionen" Foreground="Red" FontWeight="Bold" FontSize="16"  />
+                    <TextBlock Margin="10,10,10,10" VerticalAlignment="Top" HorizontalAlignment="Center" Text="{DynamicResource ServersOlder1_7Offline}" Foreground="Red" FontWeight="Bold" FontSize="16"  />
                     <ListView x:Name="lb_servers" Margin="10,42,10,47" HorizontalAlignment="Stretch" BorderThickness="0" >
                         <ListView.Resources>
                             <ContextMenu StaysOpen="true" x:Key="ServerlistContextMenu">
-                                <MenuItem Header="Server Addresse kopieren" Name="context_copy_server_address" Click="copy_server_address" >
+                                <MenuItem Header="{DynamicResource CopyServerAddress}" x:Name="context_copy_server_address" Click="copy_server_address" >
                                     <MenuItem.Icon>
                                         <Rectangle Height="28" Width="28" Fill="{DynamicResource BlackBrush}">
                                             <Rectangle.OpacityMask>
@@ -331,7 +340,7 @@
                                         </Rectangle>
                                     </MenuItem.Icon>
                                 </MenuItem>
-                                <MenuItem Header="Direct Join (Auto)" Name="context_join_server_from_list_auto" Click="join_server_from_list_auto" >
+                                <MenuItem Header="{DynamicResource DirectJoinAuto}" x:Name="context_join_server_from_list_auto" Click="join_server_from_list_auto" >
                                     <MenuItem.Icon>
                                         <Rectangle Height="28" Width="28" Fill="{DynamicResource BlackBrush}">
                                             <Rectangle.OpacityMask>
@@ -340,26 +349,29 @@
                                         </Rectangle>
                                     </MenuItem.Icon>
                                     <MenuItem.Style>
-                                        <Style BasedOn="{StaticResource MetroMenuItem}" TargetType="MenuItem" >
+                                        <Style BasedOn="{StaticResource MetroMenuItem}" TargetType="{x:Type MenuItem}" >
+                                            <Setter Property="Visibility" Value="Visible" />
+                                            <Setter Property="Header">
+                                                <Setter.Value>
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <TextBlock Text="{DynamicResource DirectJoin}" />
+                                                        <TextBlock Text=" (" />
+                                                        <TextBlock Text="{DynamicResource Version}" />
+                                                        <TextBlock Text=": " />
+                                                        <TextBlock Text="{Binding ServerStatus.Version.Name}" />
+                                                        <TextBlock Text=")" />
+                                                    </StackPanel>
+                                                </Setter.Value>
+                                            </Setter>
                                             <Style.Triggers>
                                                 <DataTrigger Binding="{Binding ServerStatus.Online}" Value="False">
                                                     <Setter Property="Visibility" Value="Collapsed" />
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding ServerStatus.Online}" Value="True">
-                                                    <Setter Property="Visibility" Value="Visible" />
-                                                    <Setter Property="Header">
-                                                        <Setter.Value>
-                                                            <MultiBinding StringFormat="{}Direct Join (Version: {0})">
-                                                                <Binding Path="ServerStatus.Version.Name" />
-                                                            </MultiBinding>
-                                                        </Setter.Value>
-                                                    </Setter>
                                                 </DataTrigger>
                                             </Style.Triggers>
                                         </Style>
                                     </MenuItem.Style>
                                 </MenuItem>
-                                <MenuItem Header="Direct Join (Manuell)" Name="context_join_server_from_list" Click="join_server_from_list" >
+                                <MenuItem x:Name="context_join_server_from_list" Click="join_server_from_list" Header="{DynamicResource DirectJoinManual}" >
                                     <MenuItem.Icon>
                                         <Rectangle Height="28" Width="28" Fill="{DynamicResource BlackBrush}">
                                             <Rectangle.OpacityMask>
@@ -380,14 +392,10 @@
                                         <Setter Property="ToolTip">
                                             <Setter.Value>
                                                 <StackPanel>
-                                                    <TextBlock>
-                                                        <TextBlock.Text>
-                                                            <Binding Path="ip" />
-                                                        </TextBlock.Text>
-                                                    </TextBlock>
-                                                    <TextBlock>
-                                                        <TextBlock Text="Offline" Foreground="Red" />
-                                                    </TextBlock>
+                                                    <TextBlock Text="{Binding ip}"/>
+                                                    <TextBlock><InlineUIContainer>
+															<TextBlock Text="{DynamicResource Offline}" Foreground="Red" />
+														</InlineUIContainer></TextBlock>
                                                 </StackPanel>
                                             </Setter.Value>
                                         </Setter>
@@ -396,25 +404,19 @@
                                         <Setter Property="ToolTip">
                                             <Setter.Value>
                                                 <StackPanel>
-                                                    <TextBlock>
-                                                        <TextBlock.Text>
-                                                            <MultiBinding xml:space="preserve" StringFormat="{}Addresse: {0}">
-                                                                <Binding Path="ip" />
-                                                            </MultiBinding>
-                                                        </TextBlock.Text>
-                                                    </TextBlock>
-                                                    <TextBlock>
-                                                        <TextBlock Text="Online" Foreground="Green" />
-                                                    </TextBlock>
-                                                    <TextBlock>
-                                                        <TextBlock.Text>
-                                                            <MultiBinding xml:space="preserve" StringFormat="{}Version: {0}&#10;{1}">
-                                                                <Binding Path="ServerStatus.Version.Name" />
-                                                                <Binding Path="ServerStatus.Latency" />
-                                                                <Binding Path="ServerStatus.Players.Players" Converter="{StaticResource Playerlist_Namesstring_Converter}" />
-                                                            </MultiBinding>
-                                                        </TextBlock.Text>
-                                                    </TextBlock>
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <TextBlock Text="{DynamicResource Address}" />
+                                                        <TextBlock Text=": " />
+                                                        <TextBlock Text="{Binding Path=ip}" />
+                                                    </StackPanel>
+                                                    <TextBlock Text="{DynamicResource Online}" Foreground="Green" />
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <TextBlock Text="{DynamicResource Version}" />
+                                                        <TextBlock Text=": " />
+                                                        <TextBlock Text="{Binding Path=ServerStatus.Version.Name}" />
+                                                    </StackPanel>
+                                                    <TextBlock Text="{Binding Path=ServerStatus.Latency}" Visibility="Collapsed" />
+                                                    <TextBlock Text="{Binding Path=ServerStatus.Players.Players, Converter={StaticResource Playerlist_Namesstring_Converter}}" Visibility="{Binding Path=ServerStatus.Players.Players, Converter={StaticResource NullToVisibilityConverter}}" />
                                                 </StackPanel>
                                             </Setter.Value>
                                         </Setter>
@@ -425,14 +427,14 @@
                         <ListView.View>
                             <GridView ColumnHeaderContainerStyle="{StaticResource CollapsedHeaderStyle}"  AllowsColumnReorder="False">
                                 <!--Icon-->
-                                <GridViewColumn Header="Icon" Width="80" >
+                                <GridViewColumn Header="{DynamicResource Icon}" Width="80" >
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
                                             <Image Source="{Binding icon, Converter={StaticResource Base64ImageConverter}}" />
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>
-                                <GridViewColumn Header="Info" Width="800">
+                                <GridViewColumn Header="{DynamicResource Info}" Width="800">
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
                                             <DockPanel LastChildFill="True">
@@ -441,13 +443,13 @@
                                                         <Style TargetType="{x:Type TextBlock}">
                                                             <Style.Triggers>
                                                                 <DataTrigger Binding="{Binding ServerStatus.Online}" Value="False">
-                                                                    <Setter Property="Text" Value="Offline" />
+                                                                    <Setter Property="Text" Value="{DynamicResource Offline}" />
                                                                     <Setter Property="Foreground" Value="Red" />
                                                                 </DataTrigger>
                                                                 <DataTrigger Binding="{Binding ServerStatus.Online}" Value="True">
                                                                     <Setter Property="Text">
                                                                         <Setter.Value>
-                                                                            <MultiBinding StringFormat="{}{0} / {1}&#10;{2}">
+                                                                            <MultiBinding StringFormat="{}{0} / {1}&#xA;{2}">
                                                                                 <Binding Path="ServerStatus.Players.OnlinePlayers" />
                                                                                 <Binding Path="ServerStatus.Players.MaxPlayers" />
                                                                                 <Binding Path="ServerStatus.Version.Name" />
@@ -463,21 +465,24 @@
                                                 <StackPanel>
                                                     <TextBlock Text="{Binding name}" FontSize="20" VerticalAlignment="Top" FontFamily="/McMetroLauncher;component/Fonts/#Minecraftia" />
                                                     <!--Description-->
-                                                    <JBouControls:BindableRichTextBox ContextMenu="{StaticResource ServerlistContextMenu}" x:Name="serverlist_motd" FontSize="15" IsReadOnly="True" Background="Transparent" BorderBrush="{x:Null}" SelectionBrush="{x:Null}" BorderThickness="0,0,0,0" SelectionOpacity="0" Cursor="Arrow" Focusable="False" IsTabStop="False" TabIndex="0" >
-                                                        <RichTextBox.Resources>
+                                                    <JBouControls:BindableRichTextBox x:Name="serverlist_motd" FontSize="15" IsReadOnly="True" Background="Transparent" BorderBrush="{x:Null}" SelectionBrush="{x:Null}" BorderThickness="0,0,0,0" SelectionOpacity="0" Cursor="Arrow" Focusable="False" IsTabStop="False" TabIndex="0" >
+                                                        <JBouControls:BindableRichTextBox.Resources>
                                                             <Style TargetType="{x:Type Paragraph}">
                                                                 <Setter Property="Margin" Value="0"/>
                                                             </Style>
-                                                        </RichTextBox.Resources>
-                                                        <RichTextBox.Style>
+                                                        </JBouControls:BindableRichTextBox.Resources>
+                                                        <JBouControls:BindableRichTextBox.ContextMenu>
+                                                            <StaticResource ResourceKey="ServerlistContextMenu"/>
+                                                        </JBouControls:BindableRichTextBox.ContextMenu>
+                                                        <JBouControls:BindableRichTextBox.Style>
                                                             <Style TargetType="{x:Type JBouControls:BindableRichTextBox}">
                                                                 <Style.Triggers>
                                                                     <DataTrigger Binding="{Binding ServerStatus.Online}" Value="True">
-                                                                        <Setter Property="Document"  Value="{Binding ServerStatus.Description, IsAsync=True, Converter={StaticResource FormattingcodesDocumentConverter}}"/>
+                                                                        <Setter Property="Document"  Value="{Binding ServerStatus.Description, Converter={StaticResource FormattingcodesDocumentConverter}, IsAsync=True}"/>
                                                                     </DataTrigger>
                                                                 </Style.Triggers>
                                                             </Style>
-                                                        </RichTextBox.Style>
+                                                        </JBouControls:BindableRichTextBox.Style>
                                                     </JBouControls:BindableRichTextBox>
                                                 </StackPanel>
                                             </DockPanel>
@@ -489,66 +494,66 @@
                         <ListView.ItemsPanel>
                             <ItemsPanelTemplate>
                                 <JBouControls:FluidWrapPanel 
-                                 HorizontalAlignment="Stretch"
-                                 VerticalAlignment="Stretch"
-                                 Background="Transparent"
-                                 IsComposing="True"
-                                 Orientation="Vertical"
-                                 DragOpacity="0.75"
-                                 DragScale="1.2"
-                                 DataUpdated="OnDataUpdated">
+									HorizontalAlignment="Stretch"
+									VerticalAlignment="Stretch"
+									Background="Transparent"
+									IsComposing="True"
+									Orientation="Vertical"
+									DragOpacity="0.75"
+									DragScale="1.2"
+									DataUpdated="OnDataUpdated">
                                     <JBouControls:FluidWrapPanel.ElementEasing>
                                         <BackEase EasingMode="EaseOut"
-                                      Amplitude="0.35"></BackEase>
+											Amplitude="0.35"/>
                                     </JBouControls:FluidWrapPanel.ElementEasing>
                                     <JBouControls:FluidWrapPanel.DragEasing>
                                         <BackEase EasingMode="EaseOut"
-                                      Amplitude="0.65"></BackEase>
+											Amplitude="0.65"/>
                                     </JBouControls:FluidWrapPanel.DragEasing>
                                 </JBouControls:FluidWrapPanel>
                             </ItemsPanelTemplate>
                         </ListView.ItemsPanel>
                     </ListView>
-                    <Label x:Name="lbl_no_servers" Margin="10,10,10,47" Width="900" VerticalAlignment="Center" HorizontalAlignment="Center" BorderThickness="0" Content="Du hast noch keine gespeicherten Server" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="25" Visibility="Collapsed"/>
+                    <Label x:Name="lbl_no_servers" Margin="10,10,10,47" Width="900" VerticalAlignment="Center" HorizontalAlignment="Center" BorderThickness="0" Content="{DynamicResource NoSavedServers}" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="25" Visibility="Collapsed"/>
                     <DockPanel Margin="10" VerticalAlignment="Bottom" HorizontalAlignment="Center" UseLayoutRounding="False" LastChildFill="False">
-                        <Button x:Name="btn_refresh_servers" Content="Aktualisieren" VerticalAlignment="Bottom" Height="32" HorizontalAlignment="Left" Margin="10,0,10,0"/>
-                        <Button x:Name="btn_add_servers" Content="Hinzufügen" VerticalAlignment="Bottom" Height="32" HorizontalAlignment="Right" Margin="10,0,10,0" />
-                        <Button x:Name="btn_edit_servers" Content="Bearbeiten" VerticalAlignment="Bottom" Height="32" HorizontalAlignment="Right" Margin="10,0,10,0"/>
-                        <Button x:Name="btn_delete_servers" Content="Entfernen" VerticalAlignment="Bottom" Height="32" HorizontalAlignment="Right" Margin="10,0,10,0"/>
+                        <Button x:Name="btn_refresh_servers" Content="{DynamicResource Refresh}" VerticalAlignment="Bottom" Height="32" HorizontalAlignment="Left" Margin="10,0,10,0"/>
+                        <Button x:Name="btn_add_servers" Content="{DynamicResource Add}" VerticalAlignment="Bottom" Height="32" HorizontalAlignment="Right" Margin="10,0,10,0" />
+                        <Button x:Name="btn_edit_servers" Content="{DynamicResource Edit}" VerticalAlignment="Bottom" Height="32" HorizontalAlignment="Right" Margin="10,0,10,0"/>
+                        <Button x:Name="btn_delete_servers" Content="{DynamicResource Delete}" VerticalAlignment="Bottom" Height="32" HorizontalAlignment="Right" Margin="10,0,10,0"/>
                     </DockPanel>
                 </Grid>
             </TabItem>
-            <TabItem Header="Infos">
+            <TabItem Header="{DynamicResource Infos}">
                 <Grid Margin="24,37,18,-7" Width="900">
                     <StackPanel Orientation="Horizontal" >
-                        <chart:RadialGaugeChart ChartTitle="Arbeitspeicher" 
-                                                ChartSubTitle=""
-                                                ChartLegendVisibility="Collapsed"
-                                                VerticalAlignment="Top"
-                                                Background="Transparent" HorizontalAlignment="Left">
+                        <chart:RadialGaugeChart ChartTitle="{DynamicResource Ram}" 
+							ChartSubTitle=""
+							ChartLegendVisibility="Collapsed"
+							VerticalAlignment="Top"
+							Background="Transparent" HorizontalAlignment="Left">
                             <chart:RadialGaugeChart.Series >
                                 <chart:ChartSeries DisplayMember="Name"
-                                ItemsSource="{Binding Path=Ram}"
-                                SeriesTitle="Ram"
-                                ValueMember="Count" />
+									ItemsSource="{Binding Ram}"
+									SeriesTitle="{DynamicResource Ram}"
+									ValueMember="Count" />
                             </chart:RadialGaugeChart.Series>
                         </chart:RadialGaugeChart>
-                        <chart:RadialGaugeChart ChartTitle="CPU"
-                                                ChartSubTitle=""
-                                                ChartLegendVisibility="Collapsed"
-                                                VerticalAlignment="Top"
-                                                Background="Transparent" HorizontalAlignment="Left"
+                        <chart:RadialGaugeChart ChartTitle="{DynamicResource CPU}"
+							ChartSubTitle=""
+							ChartLegendVisibility="Collapsed"
+							VerticalAlignment="Top"
+							Background="Transparent" HorizontalAlignment="Left"
                                                 >
                             <chart:RadialGaugeChart.Series >
                                 <chart:ChartSeries DisplayMember="Name"
-                                    ItemsSource="{Binding Path=CPU}"
-                                    SeriesTitle="CPU"
-                                    ValueMember="Count" />
+									ItemsSource="{Binding CPU}"
+									SeriesTitle="{DynamicResource CPU}"
+									ValueMember="Count" />
                             </chart:RadialGaugeChart.Series>
                         </chart:RadialGaugeChart>
                         <StackPanel Orientation="Vertical" Margin="20,20,0,0" >
-                            <TextBlock Style="{StaticResource ChartTitleStyle}" Text="Service Statuses" />
-                            <Menu ItemContainerStyle="{StaticResource ServiceStatusItemStyle}" ItemsSource="{Binding Path=ServiceStatuses}" Margin="0,10,0,0" >
+                            <TextBlock Style="{StaticResource ChartTitleStyle}" Text="{DynamicResource ServiceStatuses}" />
+                            <Menu ItemContainerStyle="{StaticResource ServiceStatusItemStyle}" ItemsSource="{Binding ServiceStatuses}" Margin="0,10,0,0" >
                                 <Menu.ItemsPanel>
                                     <ItemsPanelTemplate>
                                         <VirtualizingStackPanel Orientation="Vertical"/>
@@ -559,9 +564,9 @@
                     </StackPanel>
                 </Grid>
             </TabItem>
-            <TabItem Header="Settings">
+            <TabItem Header="{DynamicResource Settings}">
                 <TabControl ItemContainerStyle="{StaticResource VerticalTabItem}" TabStripPlacement="Left">
-                    <TabItem Header="Allgemein">
+                    <TabItem Header="{DynamicResource General}">
                         <StackPanel Orientation="Vertical" Margin="10">
                             <Grid Margin="0,10,0,0">
                                 <Grid.ColumnDefinitions>
@@ -598,7 +603,7 @@
                                 <ImageBrush ImageSource="/resources/images/light/appbar.social.github.octocat.png"/>
                             </Rectangle.OpacityMask>
                         </Rectangle>
-                        <TextBlock Text="Github" VerticalAlignment="Center" />
+                        <TextBlock Text="{DynamicResource GitHub}" VerticalAlignment="Center" />
                     </StackPanel>
                 </MenuItem.Header>
             </MenuItem>
@@ -610,16 +615,16 @@
                                 <ImageBrush ImageSource="/resources/images/light/appbar.globe.png"/>
                             </Rectangle.OpacityMask>
                         </Rectangle>
-                        <TextBlock Text="Website" VerticalAlignment="Center" />
+                        <TextBlock Text="{DynamicResource Website}" VerticalAlignment="Center" />
                     </StackPanel>
                 </MenuItem.Header>
             </MenuItem>
-            <MenuItem Header="Theme" 
-                ItemsSource="{Binding Path=AppThemes}"
-                ItemContainerStyle="{StaticResource AppThemeMenuItemStyle}" VerticalAlignment="Center" HorizontalAlignment="Center" />
-            <MenuItem Header="Accent"
-                ItemsSource="{Binding Path=AccentColors}"
-        		ItemContainerStyle="{StaticResource AccentColorMenuItemStyle}" VerticalAlignment="Center" HorizontalAlignment="Center" />
+            <MenuItem Header="{DynamicResource Theme}" 
+				ItemsSource="{Binding AppThemes}"
+				ItemContainerStyle="{StaticResource AppThemeMenuItemStyle}" VerticalAlignment="Center" HorizontalAlignment="Center" />
+            <MenuItem Header="{DynamicResource Accent}"
+				ItemsSource="{Binding AccentColors}"
+				ItemContainerStyle="{StaticResource AccentColorMenuItemStyle}" VerticalAlignment="Center" HorizontalAlignment="Center" />
         </Menu>
         <local:Login x:Name="LoginScreen" Visibility="Collapsed" />
 

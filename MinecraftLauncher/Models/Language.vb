@@ -2,7 +2,7 @@
 
 Public Class Language
     Private _Name As String
-    <JsonIgnore> _
+    <JsonIgnore>
     Public Property Name() As String
         Get
             Return _Name
@@ -13,6 +13,7 @@ Public Class Language
     End Property
 
     Private _path As String
+    <JsonIgnore>
     Public Property Path() As String
         Get
             Return _path

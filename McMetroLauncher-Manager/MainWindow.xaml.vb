@@ -4,13 +4,14 @@ Imports Newtonsoft.Json
 Imports Newtonsoft.Json.Linq
 
 Module GlobalInfos
-    Public Webspace As String = "http://patzleiner.net"
+    Public Website As String = "http://patzleiner.net/"
     Public Versionsurl As String = "http://s3.amazonaws.com/Minecraft.Download/versions/versions.json"
     Public mcpfad As String = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\.minecraft"
     Public modsfile As String = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) & "\modlist.json"
     Public outputjsonversions As String = mcpfad & "\cache\versions.json"
     Public modsfolder As String = mcpfad & "\mods"
     Public cachefolder As String = mcpfad & "\cache"
+    Public modfileurl As String = Website & "download/modlist.json"
     Public downloadfilepath As String
     Public Versions As Versionslist
     Public Moditem As Modifications.Mod
@@ -55,7 +56,7 @@ Public Class Manager
         Await wc.DownloadFileTaskAsync(New Uri(Versionsurl), outputjsonversions)
         If IO.File.Exists(modsfile) = False Then
             wc = New WebClient()
-            Await wc.DownloadFileTaskAsync(New Uri(Webspace & "\minecraft\launcher\modlist.json"), modsfile)
+            Await wc.DownloadFileTaskAsync(New Uri(modfileurl), modsfile)
         End If
         Await Start()
     End Sub
