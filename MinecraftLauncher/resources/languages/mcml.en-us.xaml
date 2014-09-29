@@ -222,6 +222,7 @@
     <System:String x:Key="DownloadingLibraryFromForgeServer">Downloading Library from the Minecraft Forge servers</System:String>
     <System:String x:Key="DownloadingMinecraftForgeAutomatically">Automatically downloading the Minecraft Forge library</System:String>
     <System:String x:Key="LibraryAlreadyExists">Library already exists</System:String>
+    <System:String x:Key="LocalFileMatchesLocalChecksum">Local file matches local checksum, using that</System:String>
     <System:String x:Key="LibraryExistsNotChecksumMatched">Couldn't match checksum, but have local file, assuming it's good</System:String>
     <System:String x:Key="ErrorDownloadingLibrary">Couldn't download Library</System:String>
     <System:String x:Key="ReinstallForgeIfStarted">If you just started Forge, please reinstall it</System:String>

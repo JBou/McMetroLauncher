@@ -600,12 +600,17 @@ Public Class MainWindow
                     If librarypath.Directory.Exists = False Then
                         librarypath.Directory.Create()
                     End If
-                    Try
-                        Await a.DownloadFileTaskAsync(New Uri(url & ".sha1"), librarypath.FullName & ".sha1")
-                    Catch e As Exception
-                        Currentlibrarysha1 = Nothing
-                    End Try
-                    Currentlibrarysha1 = File.ReadAllText(librarypath.FullName & ".sha1")
+                    Dim sha1filehashPath As FileInfo = New FileInfo(librarypath.FullName & ".sha")
+                    Dim hashexisted As Boolean = True
+                    If Not sha1filehashPath.Exists Then
+                        hashexisted = False
+                        Try
+                            Await a.DownloadFileTaskAsync(New Uri(url & ".sha"), sha1filehashPath.FullName)
+                        Catch e As Exception
+                            Currentlibrarysha1 = Nothing
+                        End Try
+                    End If
+                    Currentlibrarysha1 = File.ReadAllText(sha1filehashPath.FullName)
                     If librarypath.Exists Then
                         If String.IsNullOrWhiteSpace(Currentlibrarysha1) Then
                             todownload = False
@@ -671,7 +676,11 @@ Public Class MainWindow
                         If String.IsNullOrWhiteSpace(Currentlibrarysha1) Then
                             Write(Application.Current.FindResource("LibraryExistsNotChecksumMatched").ToString & ": " & librarypath.FullName, LogLevel.WARNING)
                         Else
-                            Write(Application.Current.FindResource("LibraryAlreadyExists").ToString & ": " & librarypath.FullName)
+                            If hashexisted Then
+                                Write(Application.Current.FindResource("LocalFileMatchesLocalChecksum").ToString & ": " & librarypath.FullName)
+                            Else
+                                Write(Application.Current.FindResource("LibraryAlreadyExists").ToString & ": " & librarypath.FullName)
+                            End If
                         End If
                         librariesdownloadindex += 1
                         DownloadLibraries()
