@@ -10,12 +10,6 @@ Public Class LiteLoader_installer
     Private filename As String
 
     Private Async Sub LiteLoader_Loaded(sender As Object, e As RoutedEventArgs) Handles Me.Loaded
-        Dim theme = ThemeManager.DetectAppStyle(Application.Current)
-        If theme.Item1.Name = "BaseLight" Then
-            btn_copy_image.Source = ImageConvert.GetImageStream(My.Resources.appbar_page_copy)
-        Else
-            btn_copy_image.Source = ImageConvert.GetImageStream(My.Resources.appbar_page_copy_dark)
-        End If
         If LiteLoader.LiteLoaderList Is Nothing Then
             Await LiteLoader.Load()
         End If

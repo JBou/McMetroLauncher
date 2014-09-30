@@ -34,8 +34,12 @@
                 <Grid Margin="10">
                     <TextBlock Margin="10,15,10,0" FontSize="18" TextWrapping="WrapWithOverflow" Height="89" VerticalAlignment="Top" Text="{DynamicResource LiteLoaderInstructionsManualText1}"/>
                     <TextBox x:Name="tb_mcpfad" Margin="10,103,47,0" FontSize="13" Height="32" VerticalAlignment="Top" IsReadOnly="True" Controls:TextboxHelper.SelectAllOnFocus="True" />
-                    <Button x:Name="btn_copy" Margin="0,103,10,0" FontSize="13" Height="32" VerticalAlignment="Top" HorizontalAlignment="Right" Width="32" ToolTip="{DynamicResource CopyToClipboard}" >
-                        <Image x:Name="btn_copy_image" Source="/resources/images/light/appbar.page.copy.png"/>
+                    <Button x:Name="btn_copy" Margin="0,103,10,0" FontSize="13" Height="32" VerticalAlignment="Top" HorizontalAlignment="Right" Width="32" Padding="0" ToolTip="{DynamicResource CopyToClipboard}" >
+                        <Rectangle Fill="{DynamicResource BlackBrush}" Height="25" Width="25">
+                            <Rectangle.OpacityMask>
+                                <ImageBrush ImageSource="/resources/images/light/appbar.page.copy.png" />
+                            </Rectangle.OpacityMask>
+                        </Rectangle>
                     </Button>
                     <TextBlock Margin="10,146,10,0" FontSize="18" TextWrapping="WrapWithOverflow" VerticalAlignment="Top" Text="{DynamicResource LiteLoaderInstructionsManualText2}" Height="212" />
                 </Grid>

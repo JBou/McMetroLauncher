@@ -57,8 +57,12 @@
                 <Grid Margin="10">
                     <TextBlock Margin="10,15,10,0" FontSize="18" TextWrapping="WrapWithOverflow" Height="50" VerticalAlignment="Top" Text="{DynamicResource ForgeInstructionsManualText1}" />
                     <TextBox x:Name="tb_mcpfad" Margin="10,80,47,0" FontSize="13" Height="32" VerticalAlignment="Top" IsReadOnly="True" Controls:TextboxHelper.SelectAllOnFocus="True" />
-                    <Button x:Name="btn_copy" Margin="0,80,10,0" FontSize="13" Height="32" VerticalAlignment="Top" HorizontalAlignment="Right" Width="32" ToolTip="{DynamicResource CopyToClipboard}" >
-                        <Image x:Name="btn_copy_image" Source="../resources/images/light/appbar.page.copy.png"/>
+                    <Button x:Name="btn_copy" Margin="0,80,10,0" FontSize="13" Height="32" VerticalAlignment="Top" HorizontalAlignment="Right" Width="32" Padding="0" ToolTip="{DynamicResource CopyToClipboard}" >
+                        <Rectangle Fill="{DynamicResource BlackBrush}" Height="25" Width="25">
+                            <Rectangle.OpacityMask>
+                                <ImageBrush ImageSource="/resources/images/light/appbar.page.copy.png" />
+                            </Rectangle.OpacityMask>
+                        </Rectangle>
                     </Button>
                     <TextBlock Margin="10,146,10,0" FontSize="18" TextWrapping="WrapWithOverflow" Height="193" VerticalAlignment="Top" Text="{DynamicResource ForgeInstructionsManualText2}" />
                 </Grid>
