@@ -6,6 +6,7 @@
                        xmlns:awe="clr-namespace:Awesomium.Windows.Controls;assembly=Awesomium.Windows.Controls"
                        xmlns:chart="clr-namespace:De.TorstenMandelkow.MetroChart;assembly=De.TorstenMandelkow.MetroChart" 
                        xmlns:JBouControls="clr-namespace:McMetroLauncher.JBou.Controls"        
+                       xmlns:Extensions="clr-namespace:McMetroLauncher.Extensions"        
                        xmlns:System="clr-namespace:System;assembly=mscorlib"  x:Class="MainWindow" x:Name="window"        
                        Title="{DynamicResource McMetroLauncher}" 
                        Height="610" 
@@ -45,6 +46,7 @@
             <BooleanToVisibilityConverter x:Key="BoolToVis_Converter" />
             <local:Text_FlowDocument_Converter x:Key="Text_FlowDocument_Converter" />
             <local:Description_SelectedItem_Converter x:Key="Description_SelectedItem_Converter" />
+            <local:Username_Minotar_Converter x:Key="Username_Minotar_Converter" />
 
             <Style x:Key="MinecraftFont">
                 <Setter Property="TextElement.FontFamily" Value="Fonts/#Minecraft" />
@@ -202,11 +204,29 @@
                     </TabControl>
                     <StackPanel Orientation="Horizontal" Margin="0,0,165,10" Height="69"  HorizontalAlignment="Right"  VerticalAlignment="Bottom" >
                         <StackPanel Height="69">
-                            <TextBlock x:Name="lbl_Username" Height="22" HorizontalAlignment="Center" />
-                            <TextBlock x:Name="lbl_user_state" Height="22" HorizontalAlignment="Center" />
+                            <TextBlock x:Name="lbl_Username" Height="22" HorizontalAlignment="Center" Text="{Binding Account.displayName}" />
+                            <TextBlock x:Name="lbl_user_state" Height="22" HorizontalAlignment="Center">
+                                <TextBlock.Style>
+                                    <Style TargetType="{x:Type TextBlock}">
+                                        <Setter Property="Text" Value="{DynamicResource Premium}" />
+                                        <Setter Property="Foreground" Value="Green" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Account.userid, Converter={StaticResource userid_OnlineModeConverter}}" Value="False">
+                                                <Setter Property="Text" Value="{DynamicResource Cracked}" />
+                                                <Setter Property="Foreground" Value="Red" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
                             <Button x:Name="btn_logout" Content="{DynamicResource SwitchUser}" TabIndex="11" HorizontalAlignment="Center"/>
                         </StackPanel>
-                        <Image x:Name="img_avatar" Height="69" Width="69" Margin="5,0,0,0"/>
+                        <Image x:Name="img_avatar" Height="69" Width="69" Margin="5,0,0,0" Extensions:ImageAsyncHelper.SourceUri="{Binding Path=Account.displayName, Converter={StaticResource Username_Minotar_Converter}, ConverterParameter=69}" />
+                        <!--<Image x:Name="img_avatar" Height="69" Width="69" Margin="5,0,0,0">
+                            <Extensions:ImageAsyncHelper.SourceUri>
+                                <Binding StringFormat="" Path="Account.displayName" />
+                            </Extensions:ImageAsyncHelper.SourceUri>
+                        </Image>-->
                     </StackPanel>
                     <Button x:Name="btn_startMC" Content="{DynamicResource Play}" HorizontalAlignment="Right" Margin="0,0,10,10" VerticalAlignment="Bottom" Width="150" Height="69" FontSize="30" TabIndex="11"/>
                     <Controls:MetroProgressBar DataContext="{x:Static local:MainWindowViewModel.Instance}" Foreground="{DynamicResource AccentColorBrush}" Height="5" Margin="10,0,10,84" VerticalAlignment="Bottom" IsIndeterminate="{Binding pb_download_IsIndeterminate}" Value="{Binding pb_download_Value}"/>

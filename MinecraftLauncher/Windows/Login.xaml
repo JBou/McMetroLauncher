@@ -5,7 +5,7 @@
               xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
               xmlns:awe="clr-namespace:Awesomium.Windows.Controls;assembly=Awesomium.Windows.Controls"
               Width="500" Height="360" 
-              DataContext="{x:Static local:MainViewModel.Instance}">
+              DataContext="{x:Static local:LoginViewModel.Instance}">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -13,7 +13,6 @@
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.ListView.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
-            <local:userid_OnlineModeConverter x:Key="userid_OnlineModeConverter"/>
             <local:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
         </ResourceDictionary>
     </UserControl.Resources>
@@ -32,17 +31,15 @@
                                 <TextBlock DockPanel.Dock="Right">
                                     <TextBlock.Style>
                                         <Style TargetType="{x:Type TextBlock}">
+                                            <Setter Property="Text" Value="{DynamicResource Premium}" />
+                                            <Setter Property="Foreground" Value="Green" />
                                             <Style.Triggers>
-                                                <DataTrigger Binding="{Binding userid, Converter={StaticResource userid_OnlineModeConverter}}" Value="True">
-                                                    <Setter Property="Text" Value="{DynamicResource Premium}" />
-                                                    <Setter Property="Foreground" Value="Green" />
-                                                </DataTrigger>
                                                 <DataTrigger Binding="{Binding userid, Converter={StaticResource userid_OnlineModeConverter}}" Value="False">
                                                     <Setter Property="Text" Value="{DynamicResource Cracked}" />
                                                     <Setter Property="Foreground" Value="Red" />
                                                 </DataTrigger>
                                             </Style.Triggers>
-                                        </Style>
+                                            </Style>
                                     </TextBlock.Style>
                                 </TextBlock>
                                 <TextBlock Text="{Binding displayName}" DockPanel.Dock="Left" />

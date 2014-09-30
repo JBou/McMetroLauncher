@@ -1859,21 +1859,23 @@ Public Class MainWindow
                 'Login with access token
                 Try
                     If authenticationDatabase.List.Select(Function(p) p.uuid.Replace("-", "")).Contains(profile.playerUUID) Then
-                        Write(Application.Current.FindResource("LoggingInWithAccessToken").ToString)
                         Dim Account = authenticationDatabase.List.Where(Function(p) p.uuid.Replace("-", "") = profile.playerUUID).First
                         If Guid.TryParse(Account.userid, New Guid) Then
                             Startinfos.Session = New Session() With {.AccessToken = Account.accessToken,
                                                                   .ClientToken = authenticationDatabase.clientToken,
                                                                   .SelectedProfile = Nothing}
-                            Await Startinfos.Session.Refresh()
-                            authenticationDatabase.List.Where(Function(p) p.uuid.Replace("-", "") = profile.playerUUID).First.accessToken = Startinfos.Session.AccessToken
-                            Await authenticationDatabase.Save()
+                            If MainViewModel.Instance.Account Is Nothing OrElse Not MainViewModel.Instance.Account.uuid = Account.uuid Then
+                                Write(Application.Current.FindResource("LoggingInWithAccessToken").ToString)
+                                Await Startinfos.Session.Refresh()
+                                authenticationDatabase.List.Where(Function(p) p.uuid.Replace("-", "") = profile.playerUUID).First.accessToken = Startinfos.Session.AccessToken
+                                Await authenticationDatabase.Save()
+                            End If
                         Else
                             Startinfos.Session = New Session() With {.ClientToken = authenticationDatabase.clientToken,
                                                                   .SelectedProfile = New Profile() With {.Name = Account.displayName}}
                         End If
                         'This comes last:
-                        Await ShowUsername_Avatar(Account)
+                        MainViewModel.Instance.Account = Account
                         Return True
                     Else
                         LoginScreen.Open()
@@ -1895,21 +1897,21 @@ Public Class MainWindow
         End If
     End Function
 
-    Async Function ShowUsername_Avatar(Account As authenticationDatabase.Account) As Task
-        lbl_Username.Text = Account.displayName
-        lbl_user_state.Text = If(Guid.TryParse(Account.userid, New Guid), Application.Current.FindResource("Premium").ToString, Application.Current.FindResource("Cracked").ToString)
-        lbl_user_state.Foreground = If(Guid.TryParse(Account.userid, New Guid), Brushes.Green, Brushes.Red)
-        Try
-            Dim WebRequest As HttpWebRequest = DirectCast(HttpWebRequest.Create("https://minotar.net/avatar/" & Account.displayName & "/100"), HttpWebRequest)
-            Using WebReponse As HttpWebResponse = DirectCast(Await WebRequest.GetResponseAsync, HttpWebResponse)
-                Using stream As Stream = WebReponse.GetResponseStream
-                    img_avatar.Source = ImageConvert.GetImageStream(System.Drawing.Image.FromStream(stream))
-                End Using
-            End Using
-        Catch ex As WebException
-            'Failed to load Avatar
-        End Try
-    End Function
+    'Async Function ShowUsername_Avatar(Account As authenticationDatabase.Account) As Task
+    '    lbl_Username.Text = Account.displayName
+    '    lbl_user_state.Text = If(Guid.TryParse(Account.userid, New Guid), Application.Current.FindResource("Premium").ToString, Application.Current.FindResource("Cracked").ToString)
+    '    lbl_user_state.Foreground = If(Guid.TryParse(Account.userid, New Guid), Brushes.Green, Brushes.Red)
+    '    Try
+    '        Dim WebRequest As HttpWebRequest = DirectCast(HttpWebRequest.Create("https://minotar.net/avatar/" & Account.displayName & "/100"), HttpWebRequest)
+    '        Using WebReponse As HttpWebResponse = DirectCast(Await WebRequest.GetResponseAsync, HttpWebResponse)
+    '            Using stream As Stream = WebReponse.GetResponseStream
+    '                img_avatar.Source = ImageConvert.GetImageStream(System.Drawing.Image.FromStream(stream))
+    '            End Using
+    '        End Using
+    '    Catch ex As WebException
+    '        'Failed to load Avatar
+    '    End Try
+    'End Function
 
     Private Async Sub btn_logout_Click(sender As Object, e As RoutedEventArgs) Handles btn_logout.Click
         'logout / invalidate session

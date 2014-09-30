@@ -67,26 +67,92 @@ Public Class authenticationDatabase
 
 
     Public Class Account
+        Inherits PropertyChangedBase
 
+        Private _userProperties As IList(Of Userproperty)
+        <JsonProperty("userProperties")>
         Public Property userProperties As IList(Of Userproperty)
-        Public Property username As String
-        Public Property accessToken As String
-        Public Property userid As String
-        'todo: make in the get a guid.parse
-        Private m_uuid As String
-        Public Property uuid As String
             Get
-                Return m_uuid
+                Return _userProperties
             End Get
-            Set(value As String)
-                m_uuid = Guid.Parse(value).ToString
+            Set(value As IList(Of Userproperty))
+                SetProperty(value, _userProperties)
             End Set
         End Property
+        Private _username As String
+        <JsonProperty("username")>
+        Public Property username As String
+            Get
+                Return _username
+            End Get
+            Set(value As String)
+                SetProperty(value, _username)
+            End Set
+        End Property
+        Private _accessToken As String
+        <JsonProperty("accessToken")>
+        Public Property accessToken As String
+            Get
+                Return _accessToken
+            End Get
+            Set(value As String)
+                SetProperty(value, _accessToken)
+            End Set
+        End Property
+        Private _userid As String
+        <JsonProperty("userid")>
+        Public Property userid As String
+            Get
+                Return _userid
+            End Get
+            Set(value As String)
+                SetProperty(value, _userid)
+            End Set
+        End Property
+        'todo: make in the get a guid.parse
+        Private _uuid As String
+        <JsonProperty("uuid")>
+        Public Property uuid As String
+            Get
+                Return _uuid
+            End Get
+            Set(value As String)
+                SetProperty(Guid.Parse(value).ToString, _uuid)
+            End Set
+        End Property
+        Private _displayName As String
+        <JsonProperty("displayName")>
         Public Property displayName As String
+            Get
+                Return _displayName
+            End Get
+            Set(value As String)
+                SetProperty(value, _displayName)
+            End Set
+        End Property
     End Class
 
     Public Class Userproperty
+        Inherits PropertyChangedBase
+        Private _name As String
+        <JsonProperty("name")>
         Public Property name As String
+            Get
+                Return _name
+            End Get
+            Set(value As String)
+                SetProperty(value, _name)
+            End Set
+        End Property
+        Private _value As String
+        <JsonProperty("value")>
         Public Property value As String
+            Get
+                Return _value
+            End Get
+            Set(value As String)
+                SetProperty(value, _value)
+            End Set
+        End Property
     End Class
 End Class

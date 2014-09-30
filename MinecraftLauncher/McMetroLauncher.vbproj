@@ -193,7 +193,9 @@
     <Compile Include="Extensions\ButtonHelper.vb" />
     <Compile Include="Extensions\Converters\JsonConverters.vb" />
     <Compile Include="Extensions\Converters\NullToBooleanConverter.vb" />
+    <Compile Include="Extensions\Converters\Username_Minotar_Converter.vb" />
     <Compile Include="Extensions\Converters\ValueConverterGroup.vb" />
+    <Compile Include="Extensions\ImageAsyncHelper.vb" />
     <Compile Include="Helpers\ExtensionMethods.vb" />
     <Compile Include="Models\Accent-ThemeMenuData.vb" />
     <Compile Include="Models\authenticationDatabase.vb" />
@@ -202,6 +204,7 @@
     <Compile Include="Models\Forge.vb" />
     <Compile Include="Models\GlobalInfos.vb" />
     <Compile Include="Models\Language.vb" />
+    <Compile Include="ViewModels\LoginViewModel.vb" />
     <Compile Include="ViewModels\UpdaterViewModel.vb" />
     <Compile Include="ViewModels\LiteLoaderInstallerViewModel.vb" />
     <Compile Include="ViewModels\ForgeInstallerViewModel.vb" />

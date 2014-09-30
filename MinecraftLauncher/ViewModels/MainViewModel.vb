@@ -9,7 +9,6 @@ Imports System
 
 Public Class MainViewModel
     Inherits PropertyChangedBase
-    Implements IDataErrorInfo
 
 #Region "Singleton & Constructor"
     Private Shared _Instance As MainViewModel
@@ -87,6 +86,7 @@ Public Class MainViewModel
             SetProperty(value, _Settings)
         End Set
     End Property
+    'TODO: Move to Settings
     Private _Directjoinaddress As String
     Public Property Directjoinaddress As String
         Get
@@ -98,6 +98,15 @@ Public Class MainViewModel
             Settings.Save()
         End Set
     End Property
+    Private _Account As authenticationDatabase.Account
+    Public Property Account As authenticationDatabase.Account
+        Get
+            Return _Account
+        End Get
+        Set(value As authenticationDatabase.Account)
+            SetProperty(value, _Account)
+        End Set
+    End Property
 #End Region
 
 #Region "Methods"
@@ -105,68 +114,6 @@ Public Class MainViewModel
     Public Async Function LoadSettings() As Task
         Settings = Await Settings.Load()
     End Function
-
-#End Region
-
-#Region "Login"
-    Public _username As String
-    Public Property Username As String
-        Get
-            Return _username
-        End Get
-        Set(value As String)
-            If Equals(value, Username) Then
-                Return
-            Else
-                SetProperty(value, _username)
-            End If
-        End Set
-    End Property
-    Public _onlineMode As Boolean = True
-    Public Property OnlineMode As Boolean
-        Get
-            Return _onlineMode
-        End Get
-        Set(value As Boolean)
-            If Equals(value, Username) Then
-                Return
-            Else
-                SetProperty(value, _onlineMode)
-            End If
-        End Set
-    End Property
-
-#End Region
-
-#Region "Error"
-    Public ReadOnly Property [Error]() As String Implements IDataErrorInfo.Error
-        Get
-            Return String.Empty
-        End Get
-    End Property
-
-    Default Public ReadOnly Property Item(columnName As String) As String Implements IDataErrorInfo.Item
-        Get
-            If columnName = "Username" Then
-                If String.IsNullOrWhiteSpace(Username) Then
-                    Return Application.Current.FindResource("UsernameMissing").ToString
-                ElseIf Not OnlineMode Then
-                    'Username Validation
-                    If Username.Length < 3 OrElse Username.Length > 16 Then
-                        Return "3 - 16 " & Application.Current.FindResource("Characters").ToString
-                    Else
-                        Dim regex As New Regex("^[A-Za-z0-9_-]{2,16}$")
-                        Dim match As Match = regex.Match(Username)
-
-                        If Not match.Success Then
-                            Return Application.Current.FindResource("NoSpecialChars").ToString
-                        End If
-                    End If
-                End If
-            End If
-            Return String.Empty
-        End Get
-    End Property
 
 #End Region
 

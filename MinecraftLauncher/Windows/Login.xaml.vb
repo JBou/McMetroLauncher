@@ -53,20 +53,23 @@ Public Class Login
             Dim Account = DirectCast(cb_existing_users.SelectedItem, authenticationDatabase.Account)
             If Guid.TryParse(Account.userid, New Guid) Then
                 Dim session = New Session() With {.AccessToken = Account.accessToken,
-                                                  .ClientToken = authenticationDatabase.clientToken,
-                                                  .SelectedProfile = Nothing}
-                Await session.Refresh
-                authenticationDatabase.List.Where(Function(p) p.uuid = Account.uuid).First.accessToken = session.AccessToken
-                Await authenticationDatabase.Save()
-                Dim profile As Profiles.Profile = Await Profiles.FromName(MainViewModel.Instance.selectedprofile)
-                profile.playerUUID = session.SelectedProfile.Id
-                Await Profiles.Edit(MainViewModel.Instance.selectedprofile, profile)
-                Await Main.ShowUsername_Avatar(session.ToAccount)
-            Else
-                Dim profile As Profiles.Profile = Await Profiles.FromName(MainViewModel.Instance.selectedprofile)
+                                                    .ClientToken = authenticationDatabase.clientToken,
+                                                    .SelectedProfile = Nothing}
+                Dim profile As Profiles.Profile = Await Profiles.FromName(MainViewModel.Instance.selectedProfile)
                 profile.playerUUID = Account.uuid.Replace("-", "")
-                Await Profiles.Edit(MainViewModel.Instance.selectedprofile, profile)
-                Await Main.ShowUsername_Avatar(Account)
+                If MainViewModel.Instance.Account Is Nothing OrElse Not MainViewModel.Instance.Account.uuid = Account.uuid Then
+                    Await session.Refresh
+                    authenticationDatabase.List.Where(Function(p) p.uuid = Account.uuid).First.accessToken = session.AccessToken
+                    Await authenticationDatabase.Save()
+                    profile.playerUUID = session.SelectedProfile.Id
+                    MainViewModel.Instance.Account = session.ToAccount
+                End If
+                Await Profiles.Edit(MainViewModel.Instance.selectedProfile, profile)
+            Else
+                Dim profile As Profiles.Profile = Await Profiles.FromName(MainViewModel.Instance.selectedProfile)
+                profile.playerUUID = Account.uuid.Replace("-", "")
+                Await Profiles.Edit(MainViewModel.Instance.selectedProfile, profile)
+                MainViewModel.Instance.Account = Account
             End If
             Main.Show()
             Me.Visibility = System.Windows.Visibility.Collapsed
@@ -102,7 +105,7 @@ Public Class Login
                     Dim profile As Profiles.Profile = Await Profiles.FromName(MainViewModel.Instance.selectedprofile)
                     profile.playerUUID = Session.SelectedProfile.Id
                     Await Profiles.Edit(MainViewModel.Instance.selectedprofile, profile)
-                    Await Main.ShowUsername_Avatar(Session.ToAccount)
+                    MainViewModel.Instance.Account = Session.ToAccount
                 Else
                     If authenticationDatabase.List.Select(Function(p) p.userid).Contains(tb_username.Text) Then
                         authenticationDatabase.List.Remove(authenticationDatabase.List.Where(Function(p) p.userid = tb_username.Text).First)
@@ -117,7 +120,7 @@ Public Class Login
                     Dim profile As Profiles.Profile = Await Profiles.FromName(MainViewModel.Instance.selectedprofile)
                     profile.playerUUID = account.uuid.Replace("-", "")
                     Await Profiles.Edit(MainViewModel.Instance.selectedprofile, profile)
-                    Await Main.ShowUsername_Avatar(account)
+                    MainViewModel.Instance.Account = account
                 End If
                 Main.Show()
                 Me.Visibility = System.Windows.Visibility.Collapsed
