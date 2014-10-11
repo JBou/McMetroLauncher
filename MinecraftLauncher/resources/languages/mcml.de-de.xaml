@@ -223,7 +223,7 @@
     <System:String x:Key="DownloadingMinecraftForgeAutomatically">Minecraft Forge Library wird automatisch heruntergeladen</System:String>
     <System:String x:Key="LibraryAlreadyExists">Library existiert bereits</System:String>
     <System:String x:Key="LocalFileMatchesLocalChecksum">Lokale Datei entspricht lokaler Prüfsumme, benutze diese</System:String>
-    <System:String x:Key="LibraryExistsNotChecksumMatched">Library Couldn't match checksumkonnte nicht auf Hash überprüft werden und wird übersprungen, in der Annahme, dass die lokale Datei gut ist</System:String>
+    <System:String x:Key="LibraryExistsNotChecksumMatched">Library konnte nicht auf Hash überprüft werden und wird übersprungen, in der Annahme, dass die lokale Datei gut ist</System:String>
     <System:String x:Key="ErrorDownloadingLibrary">Library konnte nicht heruntergeladen werden</System:String>
     <System:String x:Key="ReinstallForgeIfStarted">Falls du gerade Forge gestartet hast, installiere es erneut</System:String>
     <System:String x:Key="ErrorDeletingLibrary">Ein Fehler ist beim Löschen der Library aufgetreten</System:String>

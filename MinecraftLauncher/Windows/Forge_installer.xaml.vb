@@ -273,7 +273,7 @@ Class Forge_installer
                     libpath = New FileInfo(IO.Path.Combine(librariesfolder.FullName, .path) & ".pack.xz")
                     Dim customurl As String = .url
                     Dim url As String = customurl & .path & ".pack.xz"
-                    controller.SetMessage(Application.Current.FindResource("DownloadLibrary").ToString & ": " & libpath.FullName)
+                    controller.SetMessage(Application.Current.FindResource("DownloadingLibrary").ToString & ": " & libpath.FullName)
                     If Not libpath.Directory.Exists Then
                         libpath.Directory.Create()
                     End If
