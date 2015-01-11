@@ -12,7 +12,6 @@ Class Forge_installer
     Dim wcauto As New WebClient
     Private filename As String
     Dim build As ForgeBuild
-    Dim Legacyforge As Boolean = False
     Dim stripmeta As Boolean = False
     Dim liblist As List(Of Library) = New List(Of Library)
     Dim libdownloadindex As Integer
@@ -60,9 +59,9 @@ Class Forge_installer
             If Forge.LegacyBuildList.Select(Function(p) p.version).Contains(build.version) Then
                 Legacyforgefile = True
             End If
-            Dim url As New Uri(String.Format("http://files.minecraftforge.net/maven/net/minecraftforge/forge/{0}-{1}/forge-{0}-{1}-installer.jar", build.mcversion, build.version))
+            Dim url As New Uri(String.Format("http://files.minecraftforge.net/maven/net/minecraftforge/forge/{1}-{0}{2}/forge-{1}-{0}{2}-installer.jar", build.version, build.mcversion, IIf(build.branch = Nothing, "", "-" & build.branch).ToString))
             If Legacyforgefile = True Then
-                url = New Uri(String.Format("http://files.minecraftforge.net/minecraftforge/minecraftforge-installer-{0}-{1}.jar", build.mcversion, build.version))
+                url = New Uri(String.Format("http://files.minecraftforge.net/minecraftforge/minecraftforge-installer-{1}-{0}.jar", build.version, build.mcversion))
             End If
             filename = IO.Path.Combine(cachefolder.FullName, String.Format("forge-{0}-{1}-installer.jar", build.mcversion, build.version))
             wc.DownloadFileAsync(url, filename)
@@ -90,13 +89,14 @@ Class Forge_installer
     End Sub
 
     Private Async Sub btn_download_auto_Click(sender As Object, e As RoutedEventArgs) Handles btn_download_auto.Click
+        Dim branch As String = IIf(build.branch = Nothing, "", "-" & build.branch).ToString
         Try
             If lst.SelectedIndex = -1 Then
                 Await Me.ShowMessageAsync(Nothing, Application.Current.FindResource("ChooseForgeVersion").ToString, MessageDialogStyle.Affirmative, New MetroDialogSettings() With {.AffirmativeButtonText = Application.Current.FindResource("OK").ToString, .ColorScheme = MetroDialogColorScheme.Accented})
             Else
                 stripmeta = False
                 controller = Await Me.ShowProgressAsync(Application.Current.FindResource("InstallingForge").ToString, Application.Current.FindResource("PleaseWait").ToString, False, New MetroDialogSettings() With {.ColorScheme = MetroDialogColorScheme.Theme})
-                Legacyforge = False
+                Dim Legacyforge As Boolean = False
                 If Forge.LegacyBuildList.Select(Function(p) p.version).Contains(build.version) Then
                     Legacyforge = True
                 End If
@@ -105,11 +105,11 @@ Class Forge_installer
                 If extension = "zip" Then
                     stripmeta = True
                 End If
-                Dim url As New Uri(String.Format("http://files.minecraftforge.net/maven/net/minecraftforge/forge/{1}-{0}{2}/forge-{1}-{0}{2}-universal.jar", build.version, build.mcversion, IIf(build.branch = Nothing, "", "-" & build.branch), extension))
+                Dim url As New Uri(String.Format("http://files.minecraftforge.net/maven/net/minecraftforge/forge/{1}-{0}{2}/forge-{1}-{0}{2}-universal.{3}", build.version, build.mcversion, branch, extension))
                 If Legacyforge = True Then
                     url = New Uri(String.Format("http://files.minecraftforge.net/minecraftforge/minecraftforge-universal-{1}-{0}.{2}", build.version, build.mcversion, extension))
                 End If
-                filename = IO.Path.Combine(cachefolder.FullName, String.Format("forge-{0}-{1}{2}-universal.jar", build.mcversion, build.version, IIf(build.branch = Nothing, "", "-" & build.branch)))
+                filename = IO.Path.Combine(cachefolder.FullName, String.Format("forge-{0}-{1}{2}-universal.jar", build.mcversion, build.version, branch))
                 wcauto.DownloadFileAsync(url, filename)
                 AddHandler wcauto.DownloadFileCompleted, AddressOf Install_Version
                 AddHandler wcauto.DownloadProgressChanged, Sub(sender2 As Object, e2 As Net.DownloadProgressChangedEventArgs)

@@ -453,8 +453,6 @@
     <Content Include="resources\images\logo_technic_launcher.png" />
     <Resource Include="resources\images\tl.png" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Views\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
 </Project>

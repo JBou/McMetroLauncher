@@ -472,6 +472,7 @@
                                                                             <MultiBinding StringFormat="{}{0} / {1}&#xA;{2}">
                                                                                 <Binding Path="ServerStatus.Players.OnlinePlayers" />
                                                                                 <Binding Path="ServerStatus.Players.MaxPlayers" />
+                                                                                
                                                                                 <Binding Path="ServerStatus.Version.Name" />
                                                                             </MultiBinding>
                                                                         </Setter.Value>
