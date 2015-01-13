@@ -15,7 +15,7 @@ Imports System.Windows
 <Assembly: AssemblyDescription("")> 
 <Assembly: AssemblyCompany("")> 
 <Assembly: AssemblyProduct("McMetroLauncher")> 
-<Assembly: AssemblyCopyright("© 2013-2014 JBou")> 
+<Assembly: AssemblyCopyright("© 2013-2015 JBou")> 
 <Assembly: AssemblyTrademark("")> 
 <Assembly: ComVisible(false)>
 

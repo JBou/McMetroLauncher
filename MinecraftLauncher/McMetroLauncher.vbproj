@@ -271,6 +271,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="resources\languages\mcml.vn-vn.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Windows\Forge_installer.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -438,6 +442,7 @@
     <Resource Include="resources\images\dark\appbar.alert.png" />
     <Resource Include="resources\languages\icons\de.png" />
     <Resource Include="resources\languages\icons\en.png" />
+    <Resource Include="resources\languages\icons\vn.png" />
     <Content Include="tools\Pack_xz_Extractor.jar">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

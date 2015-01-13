@@ -46,7 +46,9 @@ Public Class Settings
 #Region "Properties"
     Private _mcpfad As String, _accent As String, _Theme As String, _ServerAddress As String, _DirectJoin As Boolean, _WindowState As WindowState, _JavaPath As String
     Public Sub New()
-        _lstLanguages = New List(Of Language) From {New Language("Deutsch", "/resources/languages/mcml.de-de.xaml", "de-de", New Uri("/resources/languages/icons/de.png", UriKind.Relative)), New Language("English", "/resources/languages/mcml.en-us.xaml", "en-us", New Uri("/resources/languages/icons/en.png", UriKind.Relative))}
+        _lstLanguages = New List(Of Language) From {New Language("Deutsch", "/resources/languages/mcml.de-de.xaml", "de-de", New Uri("/resources/languages/icons/de.png", UriKind.Relative)),
+                                                    New Language("English", "/resources/languages/mcml.en-us.xaml", "en-us", New Uri("/resources/languages/icons/en.png", UriKind.Relative)),
+                                                    New Language("tiếng Việt", "/resources/languages/mcml.vn-vn.xaml", "vn-vn", New Uri("/resources/languages/icons/vn.png", UriKind.Relative))}
         LoadDefaultLanguage()
         mcpfad = Nothing
         Accent = "Blue"
@@ -60,8 +62,8 @@ Public Class Settings
         Dim currentCultur = System.Threading.Thread.CurrentThread.CurrentCulture
         If currentCultur.TwoLetterISOLanguageName = "de" Then
             Me.ActivLanguage = lstLanguages(0)
-        Else
-            Me.ActivLanguage = lstLanguages(1)
+        ElseIf currentCultur.TwoLetterISOLanguageName = "vn" Then
+            Me.ActivLanguage = lstLanguages(2)
         End If
     End Sub
 
