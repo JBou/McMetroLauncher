@@ -600,12 +600,12 @@ Public Class MainWindow
                     If librarypath.Directory.Exists = False Then
                         librarypath.Directory.Create()
                     End If
-                    Dim sha1filehashPath As FileInfo = New FileInfo(librarypath.FullName & ".sha")
+                    Dim sha1filehashPath As FileInfo = New FileInfo(librarypath.FullName & ".sha1")
                     Dim hashexisted As Boolean = True
                     If Not sha1filehashPath.Exists Then
                         hashexisted = False
                         Try
-                            Await a.DownloadFileTaskAsync(New Uri(url & ".sha"), sha1filehashPath.FullName)
+                            Await a.DownloadFileTaskAsync(New Uri(url & ".sha1"), sha1filehashPath.FullName)
                         Catch e As Exception
                             Currentlibrarysha1 = Nothing
                         End Try
@@ -932,9 +932,6 @@ Public Class MainWindow
                                       Teil_Arguments = String.Join(Chr(32), mainClass, String.Join(Chr(32), minecraftArguments), height, width)
                                       Arguments = javaargs & " -Djava.library.path=" & natives & " -cp " & libraries & Versionsjar & " " & Teil_Arguments
                                   End Sub))
-        'StartArgumente und mainclass ... von JSON IO.File
-        'Überprüfen, ob username eingegeben wurde!
-        'Libraries zum Start hinzufügen!
         If Startinfos.IsStarting = True Then
             Start_MC_Process(Teil_Arguments)
         End If
@@ -1861,14 +1858,24 @@ Public Class MainWindow
                     If authenticationDatabase.List.Select(Function(p) p.uuid.Replace("-", "")).Contains(profile.playerUUID) Then
                         Dim Account = authenticationDatabase.List.Where(Function(p) p.uuid.Replace("-", "") = profile.playerUUID).First
                         If Guid.TryParse(Account.userid, New Guid) Then
-                            Startinfos.Session = New Session() With {.AccessToken = Account.accessToken,
-                                                                  .ClientToken = authenticationDatabase.clientToken,
-                                                                  .SelectedProfile = Nothing}
+                            If Startinfos.Session Is Nothing Then
+                                Startinfos.Session = New Session() With {.AccessToken = Account.accessToken,
+                                                                         .ClientToken = authenticationDatabase.clientToken,
+                                                                         .SelectedProfile = Nothing}
+                            End If
                             If MainViewModel.Instance.Account Is Nothing OrElse Not MainViewModel.Instance.Account.uuid = Account.uuid Then
+                                Startinfos.Session = New Session() With {.AccessToken = Account.accessToken,
+                                      .ClientToken = authenticationDatabase.clientToken,
+                                      .SelectedProfile = Nothing}
                                 Write(Application.Current.FindResource("LoggingInWithAccessToken").ToString)
                                 Await Startinfos.Session.Refresh()
                                 authenticationDatabase.List.Where(Function(p) p.uuid.Replace("-", "") = profile.playerUUID).First.accessToken = Startinfos.Session.AccessToken
                                 Await authenticationDatabase.Save()
+                            Else
+                                'Just logged in
+                                'NPE
+                                Startinfos.Session.AccessToken = Account.accessToken
+                                Startinfos.Session.ClientToken = authenticationDatabase.clientToken
                             End If
                         Else
                             Startinfos.Session = New Session() With {.ClientToken = authenticationDatabase.clientToken,

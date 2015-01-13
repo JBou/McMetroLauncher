@@ -64,6 +64,8 @@ Public Class Settings
             Me.ActivLanguage = lstLanguages(0)
         ElseIf currentCultur.TwoLetterISOLanguageName = "vn" Then
             Me.ActivLanguage = lstLanguages(2)
+        Else
+            Me.ActivLanguage = lstLanguages(1)
         End If
     End Sub
 
