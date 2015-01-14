@@ -14,8 +14,8 @@
     <System:String x:Key="Start">Bắt đầu</System:String>
     <System:String x:Key="Play">Chạy</System:String>
     <System:String x:Key="Error">Lỗi</System:String>
-    <System:String x:Key="Save">Save</System:String>
-    <System:String x:Key="Skip">Skip</System:String>
+    <System:String x:Key="Save">Lưu</System:String>
+    <System:String x:Key="Skip">Bỏ qua</System:String>
 
     <System:String x:Key="Player">Player</System:String>
     <System:String x:Key="Players">Players</System:String>
@@ -222,7 +222,7 @@
     <System:String x:Key="DownloadingLibraryFromForgeServer">Tải thư viện Minecraft Forge</System:String>
     <System:String x:Key="DownloadingMinecraftForgeAutomatically">Tự động tải thư viện Minecraft Forge</System:String>
     <System:String x:Key="LibraryAlreadyExists">Thư viện đã có sẵn</System:String>
-    <System:String x:Key="LocalFileMatchesLocalChecksum">Tập tin hoàn toàn phù hợp với Checksum, dùng nó</System:String>
+    <System:String x:Key="LocalFileMatchesLocalChecksum">Tập tin hoàn toàn phù hợp với Checksum, dùng file </System:String>
     <System:String x:Key="LibraryExistsNotChecksumMatched">Không thể kiểm tra Checksum, nhưng vẫn có thể dùng thư mục gốc </System:String>
     <System:String x:Key="ErrorDownloadingLibrary">Không thể tải thư viện</System:String>
     <System:String x:Key="ReinstallForgeIfStarted">Nếu bạn đã chạy Forge, xin hãy cài lại</System:String>
