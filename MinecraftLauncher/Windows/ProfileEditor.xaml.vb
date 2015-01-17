@@ -13,7 +13,6 @@ Public Class ProfileEditor
     Private loadedprofile As String
 
     Sub Get_Versions()
-        'Wenn index nicht - ist
         Dim selectedid As String = Nothing
         If cb_versions.SelectedIndex <> -1 Then
             selectedid = DirectCast(cb_versions.SelectedItem, Versionslist.Version).id

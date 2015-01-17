@@ -11,7 +11,16 @@ Public Class Language
             _Name = value
         End Set
     End Property
-
+    Private _Author As String
+    <JsonIgnore>
+    Public Property Author() As String
+        Get
+            Return _Author
+        End Get
+        Set(ByVal value As String)
+            _Author = value
+        End Set
+    End Property
     Private _path As String
     <JsonIgnore>
     Public Property Path() As String
@@ -47,8 +56,9 @@ Public Class Language
     Public Sub New()
     End Sub
 
-    Public Sub New(Name As String, Path As String, Code As String, Icon As Uri)
+    Public Sub New(Name As String, Author As String, Path As String, Code As String, Icon As Uri)
         Me.Name = Name
+        Me.Author = Author
         Me.Path = Path
         Me.Code = Code
         Application.Current.Dispatcher.Invoke(Sub() Me.Icon = New BitmapImage(Icon))

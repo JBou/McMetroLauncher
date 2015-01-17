@@ -31,7 +31,7 @@ Public Module GlobalInfos
                 End If
             Next
             For Each Version As String In list_versions
-                If File.Exists(Path.Combine(versionsfolder.FullName, Version, Version & ".jar")) AndAlso File.Exists(Path.Combine(versionsfolder.FullName, Version, Version & ".json")) Then
+                If File.Exists(Path.Combine(versionsfolder.FullName, Version, Version & ".json")) Then
                     Dim jo As JObject = JObject.Parse(File.ReadAllText(Path.Combine(versionsfolder.FullName, Version, Version & ".json")))
                     If jo("id").ToString = Version Then
                         Dim versionitem As New Versionslist.Version() With {
@@ -54,28 +54,31 @@ Public Module GlobalInfos
         If environmentPath IsNot Nothing Then
             Return environmentPath
         End If
-        Dim javaKey As String = "SOFTWARE\JavaSoft\Java Runtime Environment"
-        Dim javakeyWow6432Node As String = "SOFTWARE\Wow6432Node\JavaSoft\Java Runtime Environment"
-        Using baseKey = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64).OpenSubKey(javaKey)
-            If baseKey IsNot Nothing Then
-                Dim currentVersion As String = baseKey.GetValue("CurrentVersion").ToString()
-                Using homeKey = baseKey.OpenSubKey(currentVersion)
-                    If homeKey IsNot Nothing Then
-                        Return homeKey.GetValue("JavaHome").ToString()
-                    End If
-                End Using
-            End If
-        End Using
-        Using baseKey = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64).OpenSubKey(javakeyWow6432Node)
-            If baseKey IsNot Nothing Then
-                Dim currentVersion As String = baseKey.GetValue("CurrentVersion").ToString()
-                Using homeKey = baseKey.OpenSubKey(currentVersion)
-                    If homeKey IsNot Nothing Then
-                        Return homeKey.GetValue("JavaHome").ToString()
-                    End If
-                End Using
-            End If
-        End Using
+        Try
+            Dim javaKey As String = "SOFTWARE\JavaSoft\Java Runtime Environment"
+            Dim javakeyWow6432Node As String = "SOFTWARE\Wow6432Node\JavaSoft\Java Runtime Environment"
+            Using baseKey = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64).OpenSubKey(javaKey)
+                If baseKey IsNot Nothing Then
+                    Dim currentVersion As String = baseKey.GetValue("CurrentVersion").ToString()
+                    Using homeKey = baseKey.OpenSubKey(currentVersion)
+                        If homeKey IsNot Nothing Then
+                            Return homeKey.GetValue("JavaHome").ToString()
+                        End If
+                    End Using
+                End If
+            End Using
+            Using baseKey = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64).OpenSubKey(javakeyWow6432Node)
+                If baseKey IsNot Nothing Then
+                    Dim currentVersion As String = baseKey.GetValue("CurrentVersion").ToString()
+                    Using homeKey = baseKey.OpenSubKey(currentVersion)
+                        If homeKey IsNot Nothing Then
+                            Return homeKey.GetValue("JavaHome").ToString()
+                        End If
+                    End Using
+                End If
+            End Using
+        Catch
+        End Try
         Return Nothing
     End Function
 
@@ -139,15 +142,15 @@ Public Module GlobalInfos
             End Set
         End Property
         Private Shared m_version As Versionslist.Version
-        Public Shared Property Versionsinfo As VersionsInfo
+        Public Shared Property Versionsinfo As VersionInfo
             Get
                 Return m_versionsinfo
             End Get
-            Set(value As VersionsInfo)
+            Set(value As VersionInfo)
                 m_versionsinfo = value
             End Set
         End Property
-        Private Shared m_versionsinfo As VersionsInfo
+        Private Shared m_versionsinfo As VersionInfo
         Public Shared Property IsStarting As Boolean
             Get
                 Return m_isstarting
@@ -164,7 +167,7 @@ Public Module GlobalInfos
     End Class
 
     '--------supportedLauncherVersion---------
-    Public Const supportedLauncherVersion As Integer = 14
+    Public Const supportedLauncherVersion As Integer = 16
     '--------------MainWindow------------------
     Public Property Main As New MainWindow
     '------------------------------------------

@@ -56,18 +56,24 @@
                       OnlyDetect="yes"
                       Language="1033"
                       Property="NEWPRODUCTFOUND" />
-      <UpgradeVersion Minimum="0.1.0.0"
+      <UpgradeVersion Minimum="0.0.0.0"
                       IncludeMinimum="yes"
                       Maximum="!(bind.FileVersion.MyApplicationFile)"
                       IncludeMaximum="no"
                       Language="1033"
                       Property="UPGRADEFOUND" />
-      <UpgradeVersion Minimum="1.0.0.0"
-                      Maximum="99.0.0.0"
+      <UpgradeVersion Minimum="0.0.0.0"
+                      Maximum="!(bind.FileVersion.MyApplicationFile)"
                       Property="PREVIOUSVERSIONSINSTALLED"
                       IncludeMinimum="yes"
                       IncludeMaximum="no" />
-    </Upgrade>      
+    </Upgrade>
+
+    <PropertyRef Id="NETFRAMEWORK45"/>
+    <Condition Message='The $(var.Name) requires Microsoft .NET Framework 4.5. Install it to continue!'>
+      <![CDATA[Installed OR NETFRAMEWORK45]]>
+    </Condition>
+    
     <Directory Id="TARGETDIR" Name="SourceDir">
       <Directory Id="FontsFolder" />
       <Directory Id="ProgramFilesFolder">
@@ -280,16 +286,9 @@
     <!--<Property Id="RepairperformancecounterTarget" Value="cmd.exe lodctr /r" />
     <CustomAction Id="Repairperformancecounter" BinaryKey="WixCA" DllEntry="RepairperformancecounterTarget" Impersonate="yes" />-->
     <!--<CustomAction Id="Repairperformancecounter" Directory="INSTALLLOCATION" ExeCommand="cmd.exe lodctr /r" Impersonate="yes" />-->
-    <Property Id="CMD">
-      <DirectorySearch Id="CmdFolder" Path="[SystemFolder]" Depth="1">
-        <FileSearch Id="CmdExe" Name="cmd.exe"  />
-      </DirectorySearch>
-    </Property>
-    
-    
-    <CustomAction Id="QtExecCmdLine" Property="Cmd" Value="[SystemFolder]cmd.exe" />
-    <CustomAction Id="RepairPerformanceCounters" Property="CMD" ExeCommand="lodctr /r" Return="check" />
 
+    <Property Id="QtExecCmdLine" Value="lodctr /r"/>
+    <CustomAction Id="RepairPerformanceCounters" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="immediate" Return="check"/>
 
     <!-- So kann man eine eigene Lizenzmeldung ausgeben -->
     <!--<WixVariable Id='WixUILicenseRtf' Overridable='yes' Value='$(var.McMetroLauncher.ProjectDir)Lizenzbestimmungen.rtf'/>-->

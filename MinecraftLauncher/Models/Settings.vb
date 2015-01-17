@@ -36,6 +36,9 @@ Public Class Settings
         End If
         Dim text As String = JsonConvert.SerializeObject(Me, Newtonsoft.Json.Formatting.Indented, New JsonSerializerSettings() With {.DefaultValueHandling = DefaultValueHandling.Ignore, .NullValueHandling = NullValueHandling.Ignore})
         Try
+            If Not SettingsFile.Directory.Exists Then
+                SettingsFile.Directory.Create()
+            End If
             File.WriteAllText(SettingsFile.FullName, text)
         Catch ex As IOException
             Return False
@@ -46,9 +49,9 @@ Public Class Settings
 #Region "Properties"
     Private _mcpfad As String, _accent As String, _Theme As String, _ServerAddress As String, _DirectJoin As Boolean, _WindowState As WindowState, _JavaPath As String
     Public Sub New()
-        _lstLanguages = New List(Of Language) From {New Language("Deutsch", "/resources/languages/mcml.de-de.xaml", "de-de", New Uri("/resources/languages/icons/de.png", UriKind.Relative)),
-                                                    New Language("English", "/resources/languages/mcml.en-us.xaml", "en-us", New Uri("/resources/languages/icons/en.png", UriKind.Relative)),
-                                                    New Language("tiếng Việt", "/resources/languages/mcml.vn-vn.xaml", "vn-vn", New Uri("/resources/languages/icons/vn.png", UriKind.Relative))}
+        _lstLanguages = New List(Of Language) From {New Language("Deutsch", "JBou", "/resources/languages/mcml.de-de.xaml", "de-de", New Uri("/resources/languages/icons/de.png", UriKind.Relative)),
+                                                    New Language("English", "JBou, ep9869", "/resources/languages/mcml.en-us.xaml", "en-us", New Uri("/resources/languages/icons/en.png", UriKind.Relative)),
+                                                    New Language("tiếng Việt", "sdvn", "/resources/languages/mcml.vn-vn.xaml", "vn-vn", New Uri("/resources/languages/icons/vn.png", UriKind.Relative))}
         LoadDefaultLanguage()
         mcpfad = Nothing
         Accent = "Blue"

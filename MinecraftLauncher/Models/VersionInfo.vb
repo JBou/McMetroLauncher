@@ -146,7 +146,7 @@ Public Class Library
 
 End Class
 
-Public Class VersionsInfo
+Public Class VersionInfo
     Public Property id() As String
         Get
             Return m_id
@@ -156,6 +156,24 @@ Public Class VersionsInfo
         End Set
     End Property
     Private m_id As String
+    Public Property inheritsFrom() As String
+        Get
+            Return m_inheritsFrom
+        End Get
+        Set(value As String)
+            m_inheritsFrom = value
+        End Set
+    End Property
+    Private m_inheritsFrom As String
+    Public Property jar() As String
+        Get
+            Return m_jar
+        End Get
+        Set(value As String)
+            m_jar = value
+        End Set
+    End Property
+    Private m_jar As String
     Public Property time() As String
         Get
             Return m_time
@@ -192,15 +210,15 @@ Public Class VersionsInfo
         End Set
     End Property
     Private m_minecraftArguments As String
-    Public Property libraries() As List(Of Library)
+    Public Property libraries() As IList(Of Library)
         Get
             Return m_libraries
         End Get
-        Set(value As List(Of Library))
+        Set(value As IList(Of Library))
             m_libraries = value
         End Set
     End Property
-    Private m_libraries As List(Of Library)
+    Private m_libraries As IList(Of Library)
     Public Property mainClass() As String
         Get
             Return m_mainClass
@@ -228,14 +246,58 @@ Public Class VersionsInfo
         End Set
     End Property
     Private m_assets As String
-    <JsonIgnore>
-    Public Property JObject As JObject
-        Get
-            Return m_jobject
-        End Get
-        Set(value As JObject)
-            m_jobject = value
-        End Set
-    End Property
-    Private m_jobject As JObject
+
+    Public Function getJar() As String
+        Return If(jar, id)
+    End Function
+
+    Public Async Function resolve() As Task(Of VersionInfo)
+        If inheritsFrom = Nothing Then
+            Return Me
+        End If
+        Dim parentversion = Versions.versions.Where(Function(p) p.id = inheritsFrom).First()
+        If parentversion IsNot Nothing Then
+            If Await MinecraftDownloadManager.DownloadVersion(parentversion) Then
+                Dim parent As VersionInfo = Await MinecraftDownloadManager.ParseVersionsInfo(parentversion)
+                Dim result As VersionInfo = Await parent.resolve
+                result.inheritsFrom = Nothing
+                result.id = id
+                result.time = time
+                result.releaseTime = releaseTime
+                result.type = type
+                If minecraftArguments IsNot Nothing Then
+                    result.minecraftArguments = minecraftArguments
+                End If
+                If mainClass IsNot Nothing Then
+                    result.mainClass = mainClass
+                End If
+                'TODO If incompatibilityReason IsNot Nothing Then
+                'result.incompatibilityReason = incompatibilityReason
+                'End If
+                If assets IsNot Nothing Then
+                    result.assets = assets
+                End If
+                If jar IsNot Nothing Then
+                    result.jar = jar
+                End If
+                If libraries IsNot Nothing Then
+                    Dim newLibraries As IList(Of Library) = New List(Of Library)
+                    For Each library As Library In libraries
+                        newLibraries.Add(library)
+                    Next
+                    For Each library As Library In result.libraries
+                        newLibraries.Add(library)
+                    Next
+                    result.libraries = newLibraries
+                End If
+                'TODO If compatibilityRules IsNot Nothing Then
+                'For Each compatibilityRule As CompatibilityRule In compatibilityRules
+                'result.compatibilityRules.add(compatibilityRule)
+                'Next
+                Return result
+            End If
+        End If
+        Return Me
+    End Function
+
 End Class

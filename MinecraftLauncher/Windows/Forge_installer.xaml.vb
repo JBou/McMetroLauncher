@@ -206,7 +206,7 @@ Class Forge_installer
                         Dim targetoutput As String = Path.Combine(versionsfolder.FullName, versionsname, versionsname & ".json")
                         File.Copy(jsonoutput, targetoutput, True)
                         Dim text As String = File.ReadAllText(targetoutput)
-                        Dim versioninfo As VersionsInfo = Await JsonConvert.DeserializeObjectAsync(Of VersionsInfo)(text)
+                        Dim versioninfo As VersionInfo = Await JsonConvert.DeserializeObjectAsync(Of VersionInfo)(text)
                         versioninfo.id = versionsname
                         File.WriteAllText(targetoutput, Await JsonConvert.SerializeObjectAsync(versioninfo, Formatting.Indented))
                     End If
@@ -214,7 +214,7 @@ Class Forge_installer
                     'Copy universal to corresponding library
                     Dim o As String = File.ReadAllText(Path.Combine(versionsfolder.FullName, versionsname, versionsname & ".json"))
                     'Converter because some Forge Versions(10.12.0.1054) has Double as minimumlauncherversion, expected integer. It rounds the double to an integer
-                    Dim Versionsinfos As VersionsInfo = Await JsonConvert.DeserializeObjectAsync(Of VersionsInfo)(o, New JsonSerializerSettings() With {.NullValueHandling = NullValueHandling.Ignore, .Converters = New List(Of JsonConverter) From {New CustomIntConverter()}})
+                    Dim Versionsinfos As VersionInfo = Await JsonConvert.DeserializeObjectAsync(Of VersionInfo)(o, New JsonSerializerSettings() With {.NullValueHandling = NullValueHandling.Ignore, .Converters = New List(Of JsonConverter) From {New CustomIntConverter()}})
                     Dim libpath As String = Nothing
                     If Versionsinfos.libraries.Select(Function(p) p.name.Split(CChar(":"))(1)).Contains("forge") Then
                         libpath = String.Format(Path.Combine(librariesfolder.FullName, "net", "minecraftforge", "forge\{1}-{0}{2}\forge-{1}-{0}{2}.jar"), build.version, build.mcversion, branch)

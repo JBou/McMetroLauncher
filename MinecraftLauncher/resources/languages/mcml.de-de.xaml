@@ -153,7 +153,7 @@
 
     <!-- GetJavaPath -->
     <System:String x:Key="JavaPathNotFound">Java-Pfad nicht gefunden</System:String>
-    <System:String x:Key="JavaPathNotFoundText">Leider konnten wir den Pfad zu Java nicht finden. Bitte wähle die java.exe manuell aus oder installieren Sie Java, wenn sie es nicht bereits getan haben.</System:String>
+    <System:String x:Key="JavaPathNotFoundText">Leider konnten wir den Pfad zu Java nicht finden. Bitte wähle die java.exe manuell aus oder installiere Java, wenn du es nicht bereits getan hast.</System:String>
     <System:String x:Key="OFDJavaPathTitle">Bitte wähle die "java.exe" aus</System:String>
     <System:String x:Key="ExectuableFiles">Ausführbare Dateien</System:String>
 

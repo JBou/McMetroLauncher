@@ -190,6 +190,7 @@
     <Compile Include="Controls\FluidWrapPanel\FluidLayoutManager.vb" />
     <Compile Include="Controls\FluidWrapPanel\FluidMouseDragBehavior.vb" />
     <Compile Include="Controls\FluidWrapPanel\FluidWrapPanel.vb" />
+    <Compile Include="download\MinecraftDownloadManager.vb" />
     <Compile Include="Extensions\ButtonHelper.vb" />
     <Compile Include="Extensions\Converters\JsonConverters.vb" />
     <Compile Include="Extensions\Converters\NullToBooleanConverter.vb" />
@@ -197,6 +198,7 @@
     <Compile Include="Extensions\Converters\ValueConverterGroup.vb" />
     <Compile Include="Extensions\ImageAsyncHelper.vb" />
     <Compile Include="Helpers\ExtensionMethods.vb" />
+    <Compile Include="Helpers\Helpers.vb" />
     <Compile Include="Models\Accent-ThemeMenuData.vb" />
     <Compile Include="Models\authenticationDatabase.vb" />
     <Compile Include="Extensions\Converters\Converters.vb" />
@@ -234,7 +236,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Models\VersionsInfo.vb" />
+    <Compile Include="Models\VersionInfo.vb" />
     <Compile Include="Windows\MainWindow.xaml.vb">
       <DependentUpon>MainWindow.xaml</DependentUpon>
     </Compile>

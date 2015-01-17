@@ -41,12 +41,6 @@ Imports McMetroLauncher.Forge
 Public Class MainWindow
 #Region "Variables"
     '****************Webclients*****************
-    WithEvents wcresources As New System.Net.WebClient ' Für das WebClient steuerelement mit Events z.b. DownloadProgressChanged... 
-    WithEvents wcversionsdownload As New System.Net.WebClient
-    WithEvents wcversionsjsondownload As New System.Net.WebClient
-    WithEvents wcindexes As New System.Net.WebClient
-    WithEvents wcversionsstring As New System.Net.WebClient
-    WithEvents wc_libraries As New System.Net.WebClient
     WithEvents wcmod As New System.Net.WebClient
     '*************Minecraft Prozess*************
     WithEvents mc As New Process
@@ -58,23 +52,6 @@ Public Class MainWindow
     Private Modsfilename As String
     Private modslist As IList(Of Modifications.Mod)
     Private modsfolderPath As String
-    '************Resources Download*************
-    Private resourcesdownloading As Boolean
-    Private resourcesindexes As resourcesindex
-    Private resourcesdownloadindex As Integer
-    Private resourcesdownloadtry As Integer
-    Private currentresourcesobject As resourcesindexobject
-    '************Libraries Download*************
-    Private librariesdownloading As Boolean
-    Private librariesdownloadtry As Integer
-    Private librariesdownloadindex As Integer
-    Private librariesdownloadfailures As Integer
-    Private Currentlibrary As Library
-    Private Currentlibrarysha1 As String
-    Private Tounpack As Boolean
-    Private downloadforgelib As Boolean
-    '******************Assets*******************
-    Private assets_index_name As String
     '********************UI*********************
     Public controller As ProgressDialogController
     Public toolscontroller As ProgressDialogController
@@ -99,13 +76,6 @@ Public Class MainWindow
                     IO.Directory.Delete(startedversions.Item(i).ToString, True)
                 End If
             Next
-
-            wcresources.CancelAsync()
-            wcversionsdownload.CancelAsync()
-            wcindexes.CancelAsync()
-            wcversionsstring.CancelAsync()
-            wc_libraries.CancelAsync()
-
             If cachefolder.Exists = True Then
                 cachefolder.Delete(True)
             End If
@@ -193,577 +163,6 @@ Public Class MainWindow
         myKey.SetValue(Nothing, Chr(34) & applicationPath & Chr(34) & " %1")
     End Sub
 
-    Async Sub Download_Resources()
-        If Startinfos.Versionsinfo Is Nothing Then
-            Await Parse_VersionsInfo(Startinfos.Version)
-        End If
-        If Startinfos.Versionsinfo.assets <> Nothing Then
-            assets_index_name = Startinfos.Versionsinfo.assets
-        Else
-            assets_index_name = "legacy"
-        End If
-        resourcesdownloading = True
-        MainWindowViewModel.Instance.pb_download_IsIndeterminate = True
-        If resources_dir.Exists = False Then
-            resources_dir.Create()
-        End If
-        If indexesfile(assets_index_name).Exists = False Then
-            Write(Application.Current.FindResource("DownloadingResourcesIndexes").ToString)
-            AddHandler wcindexes.DownloadFileCompleted, AddressOf downloadindexesfinished
-            If cacheindexesfile(assets_index_name).Directory.Exists = False Then
-                cacheindexesfile(assets_index_name).Directory.Create()
-            End If
-            wcindexes.DownloadFileAsync(New Uri(indexesurl(assets_index_name)), cacheindexesfile(assets_index_name).FullName)
-        Else
-            Await Parse_Resources()
-        End If
-        MainWindowViewModel.Instance.pb_download_IsIndeterminate = False
-    End Sub
-
-    Async Sub downloadindexesfinished(sender As Object, e As System.ComponentModel.AsyncCompletedEventArgs)
-        Try
-            If indexesfile(assets_index_name).Directory.Exists = False Then
-                indexesfile(assets_index_name).Directory.Create()
-            End If
-            If indexesfile(assets_index_name).Exists Then
-                indexesfile(assets_index_name).Delete()
-            End If
-            cacheindexesfile(assets_index_name).CopyTo(indexesfile(assets_index_name).FullName, True)
-        Catch
-        End Try
-        Await Parse_Resources()
-    End Sub
-
-    Async Function Parse_Resources() As Task
-        MainWindowViewModel.Instance.pb_download_IsIndeterminate = False
-        Await Task.Run(New Action(Sub()
-                                      Write(Application.Current.FindResource("DownloadingResources").ToString)
-                                      Dim indexjo As JObject = JObject.Parse(File.ReadAllText(indexesfile(assets_index_name).FullName))
-                                      Dim indexesobjects As IList(Of resourcesindexobject) = New List(Of resourcesindexobject)
-                                      Dim virtual As Boolean
-                                      If indexjo.Properties.Select(Function(p) p.Name).Contains("virtual") = False Then
-                                          virtual = False
-                                      Else
-                                          virtual = Convert.ToBoolean(indexjo("virtual").ToString)
-                                      End If
-                                      For i = 0 To indexjo("objects").Values.Count - 1
-                                          Dim keys As List(Of JProperty) = indexjo.Value(Of JObject)("objects").Properties.ToList
-                                          Dim key As String = keys.Item(i).Name
-                                          'indexjo.Values(Of JProperty)("objects").ElementAt(i).ToString()
-                                          Dim hash As String = keys.Item(i).Value.Value(Of String)("hash")
-                                          Dim size As Integer = CInt(keys.Item(i).Value.Value(Of String)("size"))
-                                          Dim item As New resourcesindexobject(key, hash, size)
-                                          indexesobjects.Add(item)
-                                      Next
-                                      resourcesindexes = New resourcesindex(virtual, indexesobjects)
-                                      resourcesdownloadindex = 0
-                                      resourcesdownloadtry = 1
-                                      resourcesdownloading = True
-                                      DownloadResources()
-                                  End Sub))
-    End Function
-
-    Sub DownloadResources()
-        If resourcesdownloadindex < resourcesindexes.objects.Count Then
-            MainWindowViewModel.Instance.pb_download_Value = resourcesdownloadindex / (resourcesindexes.objects.Count - 1) * 100
-            currentresourcesobject = resourcesindexes.objects.Item(resourcesdownloadindex)
-            Dim resource As New FileInfo(resourcefile(currentresourcesobject.hash).FullName.Replace("/", "\"))
-            Dim todownload As Boolean = True
-            If resource.Exists Then
-                'Hash überprüfen
-                If SHA1FileHash(resource.FullName).ToLower = currentresourcesobject.hash Then
-                    'Diese Resource überspringen
-                    todownload = False
-                Else
-                    'Diese Resource Downloaden
-                    todownload = True
-                End If
-            Else
-                todownload = True
-            End If
-            If todownload = True Then
-                If resource.Directory.Exists = False Then
-                    resource.Directory.Create()
-                End If
-                wcresources.DownloadFileAsync(New Uri(resourceurl(currentresourcesobject.hash)), resource.FullName)
-                Write(Application.Current.FindResource("DownloadingResource").ToString & " (" & Application.Current.FindResource("Try").ToString & " " & resourcesdownloadtry & "): " & resource.FullName)
-            Else
-                resourcesdownloadindex += 1
-                DownloadResources()
-            End If
-        Else
-            'Downloads fertig
-            DownloadResourcesfinished()
-        End If
-    End Sub
-
-    Private Sub wcresources_DownloadFileCompleted(sender As Object, e As System.ComponentModel.AsyncCompletedEventArgs) Handles wcresources.DownloadFileCompleted
-        If e.Cancelled = False AndAlso e.Error Is Nothing Then
-            If resourcesdownloadtry > 3 Then
-                Write(Application.Current.FindResource("DownloadCanceledTooManyAttempts").ToString & "!", LogLevel.ERROR)
-                Startinfos.IsStarting = False
-                resourcesdownloading = False
-                Exit Sub
-            Else
-                'Hash überprüfen
-                If SHA1FileHash(resourcefile(currentresourcesobject.hash).FullName).ToLower = currentresourcesobject.hash Then
-                    'Nächste Resource Downloaden
-                    resourcesdownloadindex += 1
-                    resourcesdownloadtry = 1
-                    Write(Application.Current.FindResource("DownloadingResourceSuccessful").ToString)
-                Else
-                    'Resource erneut herunterladen, Versuch erhöhen:
-                    resourcesdownloadtry += 1
-                End If
-                DownloadResources()
-            End If
-        End If
-    End Sub
-
-    Sub DownloadResourcesfinished()
-        resourcesdownloading = False
-        If resourcesindexes.virtual = True Then
-            'Alle keys in den ordner :"virtual\legacy" kopieren
-            Write(String.Format(Application.Current.FindResource("CreateVirtualResources").ToString, assetspath.FullName))
-            For Each item As resourcesindexobject In resourcesindexes.objects
-                Dim destination As New FileInfo(Path.Combine(assetspath.FullName, "virtual", assets_index_name, item.key.Replace("/", "\")))
-                If destination.Directory.Exists = False Then
-                    destination.Directory.Create()
-                End If
-                Try
-                    If destination.Exists = True Then
-                        destination.Delete()
-                    End If
-                    resourcefile(item.hash).CopyTo(destination.FullName)
-                Catch ex As Exception
-                End Try
-            Next
-        End If
-        If Startinfos.IsStarting = True Then
-            Download_Libraries()
-        End If
-    End Sub
-
-    Private Sub wc_DownloadProgressChanged(sender As Object, e As DownloadProgressChangedEventArgs) Handles wcresources.DownloadProgressChanged, wc_libraries.DownloadProgressChanged, wcversionsdownload.DownloadProgressChanged
-        Dim totalbytes As Double = e.TotalBytesToReceive / 1000
-        Dim bytes As Double = e.BytesReceived / 1000
-        Dim Einheit As String = "KB"
-        If totalbytes >= 1000 Then
-            totalbytes = e.TotalBytesToReceive / 1000000
-            bytes = e.BytesReceived / 1000000
-            Einheit = "MB"
-        End If
-        MainWindowViewModel.Instance.lbl_downloadstatus_Content = String.Format(Application.Current.FindResource("DownloadProgressFormat").ToString, e.ProgressPercentage, Math.Round(bytes, 2), Einheit, Math.Round(totalbytes, 2))
-    End Sub
-
-    Private Sub wc_libraries_DownloadProgressChanged(sender As Object, e As DownloadProgressChangedEventArgs) Handles wc_libraries.DownloadProgressChanged
-        If librariesdownloadindex < Startinfos.Versionsinfo.libraries.Count Then
-            MainWindowViewModel.Instance.pb_download_Value = (librariesdownloadindex / Startinfos.Versionsinfo.libraries.Count) * 100 + e.ProgressPercentage / Startinfos.Versionsinfo.libraries.Count
-        End If
-    End Sub
-
-    Public Function SHA1FileHash(ByVal sFile As String) As String
-        Dim SHA1 As New SHA1CryptoServiceProvider
-        Dim Hash As Byte()
-        Dim Result As String = Nothing
-
-        Dim FN As New FileStream(sFile, FileMode.Open, FileAccess.Read, FileShare.Read, 8192)
-        SHA1.ComputeHash(FN)
-        FN.Close()
-
-        Hash = SHA1.Hash
-        Result = Strings.Replace(BitConverter.ToString(Hash), "-", "")
-        Return Result
-    End Function
-
-    Public Function MD5FileHash(ByVal sFile As String) As String
-        Dim MD5 As New MD5CryptoServiceProvider
-        Dim Hash As Byte()
-        Dim Result As String = Nothing
-
-        Dim FN As New FileStream(sFile, FileMode.Open, FileAccess.Read, FileShare.Read, 8192)
-        MD5.ComputeHash(FN)
-        FN.Close()
-
-        Hash = MD5.Hash
-        Result = Strings.Replace(BitConverter.ToString(Hash), "-", "")
-        Return Result
-    End Function
-
-    Async Sub Download_Version()
-        Dim versionid As String = Startinfos.Version.id
-        Dim VersionsURl As String = "https://s3.amazonaws.com/Minecraft.Download/versions/" & versionid & "/" & versionid & ".jar"
-        Dim Outputfile As New FileInfo(Path.Combine(versionsfolder.FullName, versionid, versionid & ".jar"))
-        Dim CacheOutputfile As New FileInfo(Path.Combine(cachefolder.FullName, "versions", versionid, versionid & ".jar"))
-
-        'Jar File download
-        Write(Application.Current.FindResource("CheckVersionUpToDate").ToString)
-        Dim todownload As Boolean = False
-        If Outputfile.Exists = False Then
-            todownload = True
-        Else
-            If Versions.versions.Where(Function(p) p.custom = False).Select(Function(p) p.id).Contains(versionid) Then
-                Try
-                    Dim Request As HttpWebRequest = DirectCast(WebRequest.Create(VersionsURl), HttpWebRequest)
-                    Request.Timeout = 5000
-                    Dim Response As WebResponse = Await Request.GetResponseAsync
-                    Dim etag As String = Response.Headers("ETag")
-                    Response.Close()
-                    Dim md5 As String = MD5FileHash(Outputfile.FullName).ToLower
-                    If etag <> Chr(34) & md5 & Chr(34) Then
-                        todownload = True
-                    End If
-                Catch
-                    todownload = False
-                End Try
-            Else
-                todownload = False
-            End If
-        End If
-        If todownload = True Then
-            Write(String.Format(Application.Current.FindResource("DownloadingMinecraftVersion").ToString, versionid))
-            Try
-                If CacheOutputfile.Directory.Exists = False Then
-                    CacheOutputfile.Directory.Create()
-                End If
-                wcversionsdownload = New WebClient
-                wcversionsdownload.DownloadFileAsync(New Uri(VersionsURl), CacheOutputfile.FullName)
-                AddHandler wcversionsdownload.DownloadFileCompleted, AddressOf versiondownloadfinished
-            Catch ex As Exception
-                Write(String.Format(Application.Current.FindResource("ErrorDownloadingMinecraftVersion").ToString, versionid) & ":" & Environment.NewLine & ex.Message & Environment.NewLine & ex.StackTrace, LogLevel.ERROR)
-                Startinfos.IsStarting = False
-            End Try
-        Else
-            Await downloadversionsjson()
-        End If
-    End Sub
-
-    Public Async Sub versiondownloadfinished(sender As Object, e As ComponentModel.AsyncCompletedEventArgs)
-        Dim versionid As String = Startinfos.Version.id
-        Dim Outputfile As New FileInfo(Path.Combine(versionsfolder.FullName, versionid, versionid & ".jar"))
-        Dim CacheOutputfile As New FileInfo(Path.Combine(cachefolder.FullName, "versions", versionid, versionid & ".jar"))
-
-        If e.Error Is Nothing AndAlso e.Cancelled = False Then
-            If Outputfile.Exists Then
-                Outputfile.Delete()
-            End If
-            If Outputfile.Directory.Exists = False Then
-                Outputfile.Directory.Create()
-            End If
-            CacheOutputfile.MoveTo(Outputfile.FullName)
-            Await downloadversionsjson()
-        Else
-            Write(String.Format(Application.Current.FindResource("ErrorDownloadingMinecraftVersion").ToString, Startinfos.Version.id) & ":" & Environment.NewLine & e.Error.Message & Environment.NewLine & e.Error.StackTrace, LogLevel.ERROR)
-            Startinfos.IsStarting = False
-        End If
-    End Sub
-
-    Async Function downloadversionsjson() As Task
-        Dim versionid As String = Startinfos.Version.id
-        Dim VersionsJSONURL As String = "https://s3.amazonaws.com/Minecraft.Download/versions/" & versionid & "/" & versionid & ".json"
-        Dim OutputfileJSON As New FileInfo(Path.Combine(versionsfolder.FullName, versionid, versionid & ".json"))
-        Dim CacheOutputfileJSON As New FileInfo(Path.Combine(cachefolder.FullName, "versions", versionid, versionid & ".json"))
-        Dim Request As HttpWebRequest = DirectCast(WebRequest.Create(VersionsJSONURL), HttpWebRequest)
-        Request.Timeout = 5000
-        'Json File download
-        Dim jsontodownload As Boolean = False
-        If OutputfileJSON.Exists = False Then
-            jsontodownload = True
-        Else
-            If Versions.versions.Where(Function(p) p.custom = False).Select(Function(p) p.id).Contains(versionid) Then
-                Try
-                    Dim Response As WebResponse = Await Request.GetResponseAsync
-                    Dim etag As String = Response.Headers("ETag")
-                    Response.Close()
-                    Dim md5 As String = MD5FileHash(OutputfileJSON.FullName).ToLower
-                    If etag <> Chr(34) & md5 & Chr(34) Then
-                        jsontodownload = True
-                    End If
-                Catch
-                    jsontodownload = False
-                End Try
-            Else
-                jsontodownload = False
-            End If
-        End If
-        If jsontodownload = True Then
-            If CacheOutputfileJSON.Directory.Exists = False Then
-                CacheOutputfileJSON.Directory.Create()
-            End If
-            If CacheOutputfileJSON.Exists Then
-                CacheOutputfileJSON.Delete()
-            End If
-            Try
-                wcversionsjsondownload = New WebClient
-                wcversionsjsondownload.DownloadFileAsync(New Uri(VersionsJSONURL), CacheOutputfileJSON.FullName)
-                AddHandler wcversionsjsondownload.DownloadFileCompleted, AddressOf jsondownloadfinished
-            Catch ex As Exception
-                Write(String.Format(Application.Current.FindResource("ErrorDownloadingMinecraftVersion").ToString, versionid) & ":" & Environment.NewLine & ex.Message & Environment.NewLine & ex.StackTrace, LogLevel.ERROR)
-                Startinfos.IsStarting = False
-            End Try
-        Else
-            Await Versiondownloadfinished_start()
-        End If
-    End Function
-
-    Public Async Sub jsondownloadfinished(sender As Object, e As ComponentModel.AsyncCompletedEventArgs)
-        Dim versionid As String = Startinfos.Version.id
-        Dim OutputfileJSON As New FileInfo(Path.Combine(versionsfolder.FullName, versionid, versionid & ".json"))
-        Dim CacheOutputfileJSON As New FileInfo(Path.Combine(cachefolder.FullName, "versions", versionid, versionid & ".json"))
-        If e.Error Is Nothing AndAlso e.Cancelled = False Then
-            If OutputfileJSON.Exists Then
-                OutputfileJSON.Delete()
-            End If
-            If OutputfileJSON.Directory.Exists = False Then
-                OutputfileJSON.Directory.Create()
-            End If
-            CacheOutputfileJSON.MoveTo(OutputfileJSON.FullName)
-            Await Versiondownloadfinished_start()
-        ElseIf e.Error IsNot Nothing Then
-            Write(String.Format(Application.Current.FindResource("ErrorDownloadingMinecraftVersion").ToString, versionid) & ":" & Environment.NewLine & e.Error.Message & Environment.NewLine & e.Error.StackTrace, LogLevel.ERROR)
-            Startinfos.IsStarting = False
-        End If
-    End Sub
-
-    Async Function Versiondownloadfinished_start() As Task
-        'Start 
-        If Startinfos.Versionsinfo Is Nothing Then
-            Await Parse_VersionsInfo(Startinfos.Version)
-            If Startinfos.Versionsinfo.minimumLauncherVersion > supportedLauncherVersion Then
-                Write(Application.Current.FindResource("VersionNotSupported").ToString, LogLevel.ERROR)
-            End If
-        End If
-        If Startinfos.IsStarting = True Then
-            Download_Resources()
-        End If
-    End Function
-
-    Async Sub Download_Libraries()
-        If Startinfos.Versionsinfo Is Nothing Then
-            Await Parse_VersionsInfo(Startinfos.Version)
-        End If
-        'http://wiki.vg/Game_Files
-        librariesdownloadindex = 0
-        librariesdownloadtry = 1
-        librariesdownloading = True
-        librariesdownloadfailures = 0
-        DownloadLibraries()
-    End Sub
-
-    Async Function Parse_VersionsInfo(Version As Versionslist.Version) As Task
-        Dim o As String = File.ReadAllText(versionsJSON(Version))
-        Dim javaarch As Integer = Await GetJavaArch()
-        o = o.Replace("${arch}", javaarch.ToString)
-        'Converter because some Forge Versions(10.12.0.1054) has Double as minimumlauncherversion, expected integer. It rounds the double to an integer
-        Startinfos.Versionsinfo = Await JsonConvert.DeserializeObjectAsync(Of VersionsInfo)(o, New JsonSerializerSettings() With {.NullValueHandling = NullValueHandling.Ignore, .Converters = New List(Of JsonConverter) From {New CustomIntConverter()}})
-        Startinfos.Versionsinfo.JObject = JObject.Parse(o)
-    End Function
-
-    Async Sub DownloadLibraries()
-        Try
-            MainWindowViewModel.Instance.pb_download_Value = librariesdownloadindex / Startinfos.Versionsinfo.libraries.Count * 100
-            If librariesdownloadindex < Startinfos.Versionsinfo.libraries.Count Then
-                Currentlibrary = Startinfos.Versionsinfo.libraries.Item(librariesdownloadindex)
-                Dim allowdownload As Boolean = True
-                If Currentlibrary.rules Is Nothing Then
-                    allowdownload = True
-                Else
-                    If Currentlibrary.rules.Select(Function(p) p.action).Contains("allow") Then
-                        If Currentlibrary.rules.Where(Function(p) p.action = "allow").First.os IsNot Nothing Then
-                            If Currentlibrary.rules.Where(Function(p) p.action = "allow").First.os.name = "windows" Then
-                                allowdownload = True
-                            Else
-                                allowdownload = False
-                            End If
-                        End If
-                    ElseIf Currentlibrary.rules.Select(Function(p) p.action).Contains("disallow") Then
-                        If Currentlibrary.rules.Where(Function(p) p.action = "disallow").First.os IsNot Nothing Then
-                            If Currentlibrary.rules.Where(Function(p) p.action = "disallow").First.os.name = "windows" Then
-                                allowdownload = False
-                            Else
-                                allowdownload = True
-                            End If
-                        End If
-                    End If
-                End If
-                If allowdownload = True Then
-                    Dim todownload As Boolean = True
-                    Dim url As String = Nothing
-                    If Startinfos.Versionsinfo.libraries.ElementAt(librariesdownloadindex).url = Nothing Then
-                        url = librariesurl & Currentlibrary.path
-                    Else
-                        Dim customurl As String = Startinfos.Versionsinfo.libraries.ElementAt(librariesdownloadindex).url
-                        url = customurl & Currentlibrary.path
-                    End If
-                    Dim librarypath As New FileInfo(IO.Path.Combine(librariesfolder.FullName, Currentlibrary.path))
-                    Dim a As New WebClient()
-                    If librarypath.Directory.Exists = False Then
-                        librarypath.Directory.Create()
-                    End If
-                    Dim sha1filehashPath As FileInfo = New FileInfo(librarypath.FullName & ".sha1")
-                    Dim hashexisted As Boolean = True
-                    If Not sha1filehashPath.Exists Then
-                        hashexisted = False
-                        Try
-                            Await a.DownloadFileTaskAsync(New Uri(url & ".sha1"), sha1filehashPath.FullName)
-                        Catch e As Exception
-                            Currentlibrarysha1 = Nothing
-                        End Try
-                    End If
-                    Currentlibrarysha1 = File.ReadAllText(sha1filehashPath.FullName)
-                    If librarypath.Exists Then
-                        If String.IsNullOrWhiteSpace(Currentlibrarysha1) Then
-                            todownload = False
-                        Else
-                            If SHA1FileHash(librarypath.FullName).ToLower = Currentlibrarysha1 Then
-                                todownload = False
-                            Else
-                                todownload = True
-                            End If
-                        End If
-                    Else
-                        todownload = True
-                    End If
-                    If todownload = True Then
-                        'Download
-                        If librarypath.Directory.Exists = False Then
-                            librarypath.Directory.Create()
-                        End If
-                        'Falls es ein MinecraftForge Build ist, url ändern
-                        downloadforgelib = False
-                        Dim forgeuniversal As Boolean = False
-                        Dim version As String = Currentlibrary.name.Split(CChar(":"))(2)
-                        'legacy = "minecraftforge", new versions = "forge"
-                        If Currentlibrary.name.Split(CChar(":"))(1) = "minecraftforge" AndAlso Forge.ForgeList.Select(Function(p) p.version).Contains(version) OrElse Currentlibrary.name.Split(CChar(":"))(1) = "forge" AndAlso Forge.ForgeList.Select(Function(p) p.mcversion & "-" & p.version & IIf(p.branch = Nothing, "", "-" & p.branch).ToString).Contains(version) Then
-                            Dim build As ForgeBuild
-                            If Currentlibrary.name.Split(CChar(":"))(1) = "minecraftforge" Then
-                                build = Forge.ForgeList.Where(Function(p) p.version = version).First
-                            Else
-                                build = Forge.ForgeList.Where(Function(p) (p.mcversion & "-" & p.version & IIf(p.branch = Nothing, "", "-" & p.branch).ToString) = version).First
-                            End If
-                            'Buildlist durchsuchen
-                            downloadforgelib = True
-                            forgeuniversal = True
-                            Dim branch As String = IIf(build.branch = Nothing, "", "-" & build.branch).ToString
-                            If Forge.LegacyBuildList.Select(Function(p) p.version).Contains(version) Then
-                                url = String.Format("http://files.minecraftforge.net/minecraftforge/minecraftforge-universal-{1}-{0}.jar", version, build.mcversion)
-                            Else
-                                If Currentlibrary.name.Split(CChar(":"))(1) = "minecraftforge" Then
-                                    url = String.Format("http://files.minecraftforge.net/maven/net/minecraftforge/forge/{1}-{0}{2}/forge-{1}-{0}{2}-universal.jar", version, build.mcversion, branch)
-                                Else
-                                    url = String.Format("http://files.minecraftforge.net/maven/net/minecraftforge/forge/{0}/forge-{0}-universal.jar", version)
-                                End If
-                            End If
-                        End If
-                        Dim outputfile As String = librarypath.FullName
-                        'Auser bei forge universal lib
-                        If url.Contains("files.minecraftforge.net") AndAlso forgeuniversal = False Then
-                            downloadforgelib = True
-                            Tounpack = True
-                            url = url.Insert(url.Length, ".pack.xz")
-                            outputfile = outputfile.Insert(outputfile.Length, ".pack.xz")
-                            Write(Application.Current.FindResource("DownloadingLibraryFromForgeServer").ToString & " (" & Application.Current.FindResource("Try").ToString & " " & librariesdownloadtry & "): " & librarypath.FullName)
-                        Else
-                            If forgeuniversal = True Then
-                                Write(Application.Current.FindResource("DownloadingMinecraftForgeAutomatically").ToString & " (" & Application.Current.FindResource("Try").ToString & " " & librariesdownloadtry & "): " & librarypath.FullName)
-                            End If
-                        End If
-                        If downloadforgelib = False Then
-                            Write(Application.Current.FindResource("DownloadingLibrary").ToString & " (" & Application.Current.FindResource("Try").ToString & " " & librariesdownloadtry & "): " & outputfile)
-                        End If
-                        wc_libraries.DownloadFileAsync(New Uri(url), outputfile)
-                    Else
-                        If String.IsNullOrWhiteSpace(Currentlibrarysha1) Then
-                            Write(Application.Current.FindResource("LibraryExistsNotChecksumMatched").ToString & ": " & librarypath.FullName, LogLevel.WARNING)
-                        Else
-                            If hashexisted Then
-                                Write(Application.Current.FindResource("LocalFileMatchesLocalChecksum").ToString & ": " & librarypath.FullName)
-                            Else
-                                Write(Application.Current.FindResource("LibraryAlreadyExists").ToString & ": " & librarypath.FullName)
-                            End If
-                        End If
-                        librariesdownloadindex += 1
-                        DownloadLibraries()
-                    End If
-                Else
-                    librariesdownloadindex += 1
-                    DownloadLibraries()
-                End If
-            Else
-                'Downloads fertig
-                DownloadLibrariesfinished()
-            End If
-        Catch Ex As Exception
-            Write(Ex.Message & Environment.NewLine & Ex.StackTrace, LogLevel.ERROR)
-            Startinfos.IsStarting = False
-        End Try
-    End Sub
-
-    Private Async Sub wc_libraries_DownloadFileCompleted(sender As Object, e As System.ComponentModel.AsyncCompletedEventArgs) Handles wc_libraries.DownloadFileCompleted
-        If e.Error IsNot Nothing Then
-            Write(Application.Current.FindResource("ErrorDownloadingLibrary").ToString & ": " & e.Error.Message & Environment.NewLine & Application.Current.FindResource("ReinstallForgeIfStarted").ToString & "!", LogLevel.ERROR)
-            librariesdownloadindex += 1
-            librariesdownloadtry = 1
-            librariesdownloadfailures += 1
-            Try
-                File.Delete(Path.Combine(librariesfolder.FullName, Currentlibrary.path))
-            Catch Ex As Exception
-                Write(Application.Current.FindResource("ErrorDeletingLibrary").ToString & "!", LogLevel.WARNING)
-            End Try
-            DownloadLibraries()
-        End If
-        If e.Cancelled Then
-            Dim libpath As FileInfo = New FileInfo(Path.Combine(librariesfolder.FullName, Currentlibrary.path))
-            libpath.Delete()
-        End If
-        If e.Cancelled = False AndAlso e.Error Is Nothing Then
-            Dim libpath As String = Path.Combine(librariesfolder.FullName, Currentlibrary.path)
-            If Tounpack = True Then
-                Dim input As New FileInfo(libpath & ".pack.xz")
-                Dim output As New FileInfo(libpath)
-                Write(Application.Current.FindResource("UnpackingLibrary").ToString & ": " & libpath)
-                If Await Unpack.Unpack(input, output) = False Then
-                    'ShowError
-                    Write(Application.Current.FindResource("ErrorUnpackingLibrary").ToString & ": " & libpath)
-                End If
-                input.Delete()
-            End If
-            If librariesdownloadtry > 3 Then
-                librariesdownloadfailures += 1
-                Write(Application.Current.FindResource("DownloadCanceledTooManyAttempts").ToString & "!" & Environment.NewLine & Application.Current.FindResource("ReinstallForgeIfStarted").ToString & "!", LogLevel.ERROR)
-                Startinfos.IsStarting = False
-                librariesdownloading = False
-            Else
-                If Tounpack = True Then
-                    Tounpack = False
-                    'Nächste Library Downloaden
-                    librariesdownloadindex += 1
-                    librariesdownloadtry = 1
-                    Write(Application.Current.FindResource("DownloadingLibrarySuccessful").ToString)
-                Else
-                    'Hash überprüfen
-                    If SHA1FileHash(libpath).ToLower = Currentlibrarysha1 Then
-                        'Nächste Library Downloaden
-                        librariesdownloadindex += 1
-                        librariesdownloadtry = 1
-                        Write(Application.Current.FindResource("DownloadingLibrarySuccessfulAndChecksumMatched").ToString)
-                    Else
-                        'Library erneut heruntergeladen, Versuch erhöhen:
-                        librariesdownloadtry += 1
-                    End If
-                End If
-                DownloadLibraries()
-            End If
-        End If
-    End Sub
-
-    Sub DownloadLibrariesfinished()
-        librariesdownloading = False
-        If Startinfos.IsStarting = True Then
-            Get_Startinfos()
-        End If
-    End Sub
-
     Async Function Unzip() As Task
         Await Task.Run(New Action(Sub()
                                       Try
@@ -772,7 +171,7 @@ Public Class MainWindow
                                           If startedversions.Contains(UnpackDirectory) = False Then
                                               startedversions.Add(UnpackDirectory)
                                           End If
-                                          For Each item In Startinfos.Versionsinfo.libraries.Where(Function(p) p.natives IsNot Nothing)
+                                          For Each item In Startinfos.Versionsinfo.libraries.Where(Function(p) p.natives IsNot Nothing) 'TODO Resolve VersionsInfo
                                               With item
                                                   'Rules überprüfen
                                                   Dim allowdownload As Boolean = True
@@ -827,7 +226,7 @@ Public Class MainWindow
                                   End Sub))
     End Function
 
-    Async Sub Get_Startinfos()
+    Async Function Get_Startinfos() As Task 'TODO Move to Version?
         Await Unzip()
         Write(Application.Current.FindResource("GettingStartInfos").ToString)
         Dim mainClass As String = Startinfos.Versionsinfo.mainClass
@@ -842,19 +241,16 @@ Public Class MainWindow
         Dim Teil_Arguments As String = Nothing
 
         Await Task.Run(New Action(Async Sub()
-                                      Versionsjar = """" & Path.Combine(versionsfolder.FullName, Startinfos.Version.id, Startinfos.Version.id & ".jar") & """"
+                                      'TODO
                                       'Split by Space --> (Chr(32))
                                       If Startinfos.Versionsinfo Is Nothing Then
-                                          Await Parse_VersionsInfo(Startinfos.Version)
+                                          Startinfos.Versionsinfo = Await MinecraftDownloadManager.ParseVersionsInfo(Startinfos.Version)
                                       End If
+                                      Versionsjar = """" & Path.Combine(versionsfolder.FullName, Startinfos.Versionsinfo.getJar, Startinfos.Versionsinfo.getJar & ".jar") & """"
                                       For i = 0 To Startinfos.Versionsinfo.libraries.Count - 1
                                           Dim librarytemp As Library = Startinfos.Versionsinfo.libraries.Item(i)
-                                          If librarytemp.natives Is Nothing Then
+                                          If librarytemp.natives Is Nothing OrElse librarytemp.natives.windows IsNot Nothing Then
                                               libraries &= """" & Path.Combine(librariesfolder.FullName, librarytemp.path.Replace("/", "\")) & """" & ";"
-                                          Else
-                                              If librarytemp.natives.windows IsNot Nothing Then
-                                                  libraries &= """" & Path.Combine(librariesfolder.FullName, librarytemp.path.Replace("/", "\")) & """" & ";"
-                                              End If
                                           End If
                                       Next
 
@@ -868,7 +264,9 @@ Public Class MainWindow
                                           IO.Directory.CreateDirectory(gamedir)
                                       End If
                                       Dim assets_dir As String = assetspath.FullName
-                                      If resourcesindexes.virtual = True Then
+                                      Dim assets_index_name = If(Startinfos.Versionsinfo.assets, "legacy")
+                                      Dim resourcesindex As resourcesindex = Await MinecraftDownloadManager.ParseResources(assets_index_name) 'TODO Don't Parse it again, just parsed when resources where downloaded
+                                      If resourcesindex.virtual Then
                                           assets_dir = Path.Combine(assetspath.FullName, "virtual", assets_index_name)
                                       End If
                                       argumentreplacements.Add(New String() {"${auth_player_name}", Startinfos.Session.SelectedProfile.Name})
@@ -891,7 +289,6 @@ Public Class MainWindow
                                           argumentreplacements.Add(New String() {"${user_properties}", jo.ToString})
                                           'TODO:
                                           'argumentreplacements.Add(New String() {"${user_type}", "mojang/legacy"})
-                                          'Else
                                           'Vielleicht twitch token aus einstellungen, so kann man auch cracked streamen
                                       End If
 
@@ -930,12 +327,15 @@ Public Class MainWindow
                                       End If
 
                                       Teil_Arguments = String.Join(Chr(32), mainClass, String.Join(Chr(32), minecraftArguments), height, width)
+                                      'TODO
                                       Arguments = javaargs & " -Djava.library.path=" & natives & " -cp " & libraries & Versionsjar & " " & Teil_Arguments
+                                      If Startinfos.IsStarting = True Then
+                                          Start_MC_Process(Teil_Arguments)
+                                      End If
                                   End Sub))
-        If Startinfos.IsStarting = True Then
-            Start_MC_Process(Teil_Arguments)
-        End If
-    End Sub
+    End Function
+
+#Region "MinecraftStart"
 
     Async Sub Start_MC_Process(Optional Teil_Arguments As String = Nothing)
         If Teil_Arguments = Nothing Then Teil_Arguments = Arguments
@@ -952,7 +352,6 @@ Public Class MainWindow
             .UseShellExecute = False
             ' StandardOutput von Console umleiten
             .RedirectStandardError = True
-            .RedirectStandardInput = True
             .RedirectStandardOutput = True
         End With
         ' Prozess starten
@@ -1018,6 +417,7 @@ Public Class MainWindow
 
                 If Startinfos.Version Is Nothing Then
                     If Startinfos.Profile.lastVersionId <> Nothing Then
+                        'TODO
                         If Versions.versions.Select(Function(p) p.id).Contains(Startinfos.Profile.lastVersionId) Then
                             Startinfos.Version = Versions.versions.Where(Function(p) p.id = Startinfos.Profile.lastVersionId).First
                         Else
@@ -1044,7 +444,20 @@ Public Class MainWindow
                 End If
                 Clear()
                 Startinfos.IsStarting = True
-                Download_Version()
+                If Await MinecraftDownloadManager.DownloadVersion(Startinfos.Version) Then
+                    If Startinfos.Versionsinfo Is Nothing Then
+                        Startinfos.Versionsinfo = Await MinecraftDownloadManager.ParseVersionsInfo(Startinfos.Version)
+                        If Startinfos.Versionsinfo.minimumLauncherVersion > supportedLauncherVersion Then
+                            Main.Write(Application.Current.FindResource("VersionNotSupported").ToString, MainWindow.LogLevel.ERROR)
+                        End If
+                    End If
+                    Startinfos.Versionsinfo = Await Startinfos.Versionsinfo.resolve
+                    If Await MinecraftDownloadManager.DownloadResources() Then
+                        If Await MinecraftDownloadManager.DownloadLibraries(Startinfos.Versionsinfo) Then
+                            Await Get_Startinfos()
+                        End If
+                    End If
+                End If
             End If
         End If
     End Sub
@@ -1066,6 +479,8 @@ Public Class MainWindow
         Catch ex As Exception
         End Try
     End Sub
+
+#End Region
 
 #Region "LOG"
     Public Sub Append(ByVal Line As String, rtb As RichTextBox, Optional Color As Brush = Nothing)
@@ -1155,10 +570,6 @@ Public Class MainWindow
             Return 32
         End If
     End Function
-
-    Private Sub wcversionsdownload_DownloadProgressChanged(sender As Object, e As DownloadProgressChangedEventArgs) Handles wcversionsdownload.DownloadProgressChanged
-        MainWindowViewModel.Instance.pb_download_Value = e.ProgressPercentage
-    End Sub
 
     Private Sub tb_ausgabe_TextChanged(sender As Object, e As TextChangedEventArgs) Handles tb_ausgabe.TextChanged
         tb_ausgabe.ScrollToEnd()
@@ -1873,7 +1284,6 @@ Public Class MainWindow
                                 Await authenticationDatabase.Save()
                             Else
                                 'Just logged in
-                                'NPE
                                 Startinfos.Session.AccessToken = Account.accessToken
                                 Startinfos.Session.ClientToken = authenticationDatabase.clientToken
                             End If
@@ -1894,13 +1304,20 @@ Public Class MainWindow
                 End Try
                 If capturedException IsNot Nothing Then
                     Await Me.ShowMessageAsync(capturedException.Error, capturedException.ErrorMessage, MessageDialogStyle.Affirmative)
+                    If capturedException.ErrorMessage = "Invalid token." Then
+                        If MainViewModel.Instance.Account IsNot Nothing Then
+                            Dim Account = MainViewModel.Instance.Account
+                            authenticationDatabase.List.Remove(authenticationDatabase.List.Where(Function(p) p.uuid = Account.uuid).First)
+                            Await authenticationDatabase.Save()
+                        End If
+                    End If
                     LoginScreen.Open()
                     TabControl_main.Visibility = Windows.Visibility.Collapsed
                 End If
                 Return False
-            End If
+                End If
         Else
-            Return False
+                Return False
         End If
     End Function
 

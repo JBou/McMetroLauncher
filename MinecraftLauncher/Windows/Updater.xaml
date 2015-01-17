@@ -5,7 +5,7 @@
                       xmlns:awe="clr-namespace:Awesomium.Windows.Controls;assembly=Awesomium.Windows.Controls"
                       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                      Title="{DynamicResource UpdateAvailable}" Height="550" Width="550" ResizeMode="CanResizeWithGrip" WindowStartupLocation="CenterScreen" ShowMinButton="False" ShowMaxRestoreButton="False" MinWidth="550" MinHeight="550">
+                      Title="{DynamicResource UpdateFound}" Height="550" Width="550" ResizeMode="CanResizeWithGrip" WindowStartupLocation="CenterScreen" ShowMinButton="False" ShowMaxRestoreButton="False" MinWidth="550" MinHeight="550">
 
     <Grid>
         <Grid.ColumnDefinitions>
