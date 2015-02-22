@@ -1,0 +1,258 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:System="clr-namespace:System;assembly=mscorlib">
+    <!-- General -->
+    <System:String x:Key="Yes">Yes</System:String>
+    <System:String x:Key="No">No</System:String>
+    <System:String x:Key="OK">Ok</System:String>
+    <System:String x:Key="Apply">Apply</System:String>
+    <System:String x:Key="Cancel">Cancel</System:String>
+    <System:String x:Key="Search">Search</System:String>
+    <System:String x:Key="DateFormat">HH:mm:ss tt mm/dd/yyyy</System:String>
+    <System:String x:Key="Close">Close</System:String>
+    <System:String x:Key="Download">Download</System:String>
+    <System:String x:Key="DownloadAndInstall">Download and install</System:String>
+    <System:String x:Key="Start">Start</System:String>
+    <System:String x:Key="Play">Play</System:String>
+    <System:String x:Key="Error">Error</System:String>
+    <System:String x:Key="Save">Save</System:String>
+    <System:String x:Key="Skip">Skip</System:String>
+
+    <System:String x:Key="Player">Player</System:String>
+    <System:String x:Key="Players">Players</System:String>
+    <System:String x:Key="Version">Version</System:String>
+    <System:String x:Key="MinecraftVersion">Minecraft version</System:String>
+    <System:String x:Key="Date">Date</System:String>
+
+    <System:String x:Key="Website">Website</System:String>
+    <System:String x:Key="Icon">Icon</System:String>
+    <System:String x:Key="Info">Info</System:String>
+    <System:String x:Key="Refresh">Refresh</System:String>
+    <System:String x:Key="Add">Add</System:String>
+    
+    <!-- Warnings -->
+    <System:String x:Key="Warning">Warnung</System:String>
+    <System:String x:Key="Attention">Attention</System:String>
+    <System:String x:Key="UsernameMissing">Type your Username</System:String>
+    <System:String x:Key="NoSpecialChars">May only contain letters, numbers, dashes and underscores</System:String>
+    <System:String x:Key="Characters">Characters</System:String>
+    <System:String x:Key="ErrorLoading">Error loading</System:String>
+    
+    <!-- Header -->
+    <System:String x:Key="Console">Console</System:String>
+    <System:String x:Key="News">News</System:String>
+    <System:String x:Key="Tools">Tools</System:String>
+    <System:String x:Key="Mods">Mods</System:String>
+    <System:String x:Key="Servers">Servers</System:String>
+    <System:String x:Key="Infos">Infos</System:String>
+    <System:String x:Key="Settings">Settings</System:String>
+    <System:String x:Key="Help">Hilfe</System:String>
+    <System:String x:Key="Minecraft">Minecraft</System:String>
+    <System:String x:Key="Resourcepacks">Resourcepacks</System:String>
+
+    <!-- Minecraft Tab -->
+    <System:String x:Key="LoadingNews">Loading News</System:String>
+    <System:String x:Key="SwitchUser">Switch User</System:String>
+
+    <!-- Window Titles -->
+    <System:String x:Key="AddVersionToProfile">Add version to profile</System:String>
+    <System:String x:Key="ProfileEditor">Profile Editor</System:String>
+    <System:String x:Key="MinecraftForge">Minecraft Forge</System:String>
+    <System:String x:Key="LiteLoader">LiteLoader</System:String>
+    <System:String x:Key="McMetroLauncher">McMetroLauncher</System:String>
+    <System:String x:Key="ServerEditor">Server Editor</System:String>
+
+    <!-- SplashScreen -->
+    <System:String x:Key="LauncherStarting">Launcher is starting...</System:String>
+    <System:String x:Key="CheckInternetConnection">Please check your Internet connection</System:String>
+    <System:String x:Key="MsgDownloadingVersions">Downloading Versionslist</System:String>
+    <System:String x:Key="MsgDownloadingModlist">Downloading Modlist</System:String>
+    <System:String x:Key="MsgDownloadingForgeBuilds">Downloading Forge Buildlist</System:String>
+
+    <!-- Profile Editor -->
+    <System:String x:Key="ProfileExists">Profil already exists</System:String>
+    <System:String x:Key="CreateNewProfile">Create new profile</System:String>
+    <System:String x:Key="AddToExistingProfile">Add to existing profile</System:String>
+    <System:String x:Key="LatestVersion">Latest Version</System:String>
+    <System:String x:Key="MissingProfileName">Profile name is missing</System:String>
+    <System:String x:Key="EnterProfileName">Please enter a profil name</System:String>
+    <System:String x:Key="EnterValidResolution">Please enter a valid resolution</System:String>
+    <System:String x:Key="SelectGameDirectory">Select Game Directory</System:String>
+    <System:String x:Key="OpenGameDirectory">Open Game Directory</System:String>
+    <System:String x:Key="SnapshotVersionsMessage" xml:space="preserve">Are you sure you want to enable development builds?&#10;They are not guaranteed to be stable and may corrupt your world.&#10;You are advised to run this in a separate directory or run regular backups.&#10;&#10;Are you sure you want to continue?</System:String>
+    <System:String x:Key="OldVersionsMessage" xml:space="preserve">These versions are very out of date and may be unstable. Any bugs, crashes, missing features or other nasties you may find will never be fixed in these versions.&#10;It is strongly recommended you play these in separate directories to avoid corruption.&#10;We are not responsible for the damage to your nostalgia or your save files!&#10;&#10;Are you sure you want to continue?</System:String>
+    <System:String x:Key="ProfileInfos">Profile Infos</System:String>
+    <System:String x:Key="ProfileName">Profile Name</System:String>
+    <System:String x:Key="GameDirectory">Game Directory</System:String>
+    <System:String x:Key="Resolution">Resolution</System:String>
+    <System:String x:Key="EnableSnapshots">Enable experimental development versions (&quot;snapshots&quot;)</System:String>
+    <System:String x:Key="EnableOldBeta">Allow use of old &quot;Beta&quot; Minecraft versions (From 2010-2011)</System:String>
+    <System:String x:Key="EnableOldAlpha">Allow use of old &quot;Alpha&quot; Minecraft versions (From 2010)</System:String>
+    <System:String x:Key="JavaSettings">Java Settings (Advanced)</System:String>
+    <System:String x:Key="JVMArguments">JVM Arguments</System:String>
+    <System:String x:Key="JavaExecutable">Java Executable</System:String>
+    <System:String x:Key="SaveProfile">Save Profile</System:String>
+
+    <System:String x:Key="New">New</System:String>
+    <System:String x:Key="Edit">Edit</System:String>
+    <System:String x:Key="Delete">Delete</System:String>
+    
+    <!-- Server Editor -->
+    <System:String x:Key="Name">Name</System:String>
+    <System:String x:Key="Address">Address</System:String>
+    <System:String x:Key="HideAddress">Hide Address</System:String>
+    <System:String x:Key="AllowTextures">Allow Textures</System:String>
+
+    <!-- Authentification -->
+    <System:String x:Key="LoginWithExistingUser">Login with existing User:</System:String>
+    <System:String x:Key="LoginWithNewAccount">Login with a new Account:</System:String>
+    <System:String x:Key="EmailAddressOrUsername">Email Address or Username:</System:String>
+    <System:String x:Key="Username">Username:</System:String>
+    <System:String x:Key="Password">Password:</System:String>
+    <System:String x:Key="Register">Register</System:String>
+    <System:String x:Key="Login">Login</System:String>
+    <System:String x:Key="Logout">Logout</System:String>
+    <System:String x:Key="OnlineModePremiumAccount">Online Mode (Premium Account)</System:String>
+    <System:String x:Key="WhichDoIUse">Which do I use?</System:String>
+    <System:String x:Key="ForgotPassword">Forgot Password?</System:String>
+    <System:String x:Key="Premium">Premium</System:String>
+    <System:String x:Key="Cracked">Cracked</System:String>
+
+    <!-- Forge -->
+    <System:String x:Key="ChooseForgeVersion">Please choose a Forge version</System:String>
+    <System:String x:Key="manualInstallInstaller">Install manually (Installer)</System:String>
+    <System:String x:Key="autoInstall">Install automatically</System:String>
+    <System:String x:Key="InstallingForge">Installing Forge</System:String>
+    <System:String x:Key="PleaseWait">Please wait</System:String>
+    <System:String x:Key="DownloadingVersion">Downloading version</System:String>
+    <System:String x:Key="InstallingVersion">Installing version</System:String>
+    <System:String x:Key="DownloadingRequiredLibraries">Please wait, downloading required libraries</System:String>
+    <System:String x:Key="DownloadingLibrary">Downloading library</System:String>
+    <System:String x:Key="ErrorDownloading">Error downloading</System:String>
+    <System:String x:Key="ErrorUnpacking">Error unpacking</System:String>
+    <System:String x:Key="UnpackingLibrary">Unpacking library</System:String>
+    <System:String x:Key="ForgeVersions">Forge versions</System:String>
+    <System:String x:Key="ForgeInstructionsManual">Instructions (Manual installation)</System:String>
+    <System:String x:Key="CopyToClipboard">Copy to clipboard</System:String>
+    <System:String x:Key="ForgeInstructionsManualText1">After Forge was downloaded, a window opens. Choose &quot;Install Client&quot; and select the following path for the Minecraft directory:</System:String>
+    <System:String x:Key="ForgeInstructionsManualText2">After that click &quot;OK&quot; and Minecraft Forge is installing. After it downloaded a few files and finished installing, a message appears, that Minecraft Forge has been successfully installed. A new profil named &quot;Forge&quot; has been created and you can now install Mods from the Tab &quot;Mods&quot;. You can also select Forge from another profile in the Profile Editor.</System:String>
+
+    <!-- LiteLoader -->
+    <System:String x:Key="ChooseLiteLoaderVersion">Please choose a LiteLoader version</System:String>
+    <System:String x:Key="LiteLoaderVersions">LiteLoader versions</System:String>
+    <System:String x:Key="Instructions">Instructions</System:String>
+    <System:String x:Key="LiteLoaderInstructionsManualText1">After LiteLoader was downloaded, a window opens. Choose &quot;Install LiteLoader&quot; and select the following path for the Minecraft directory:</System:String>
+    <System:String x:Key="LiteLoaderInstructionsManualText2">If you want to chain LiteLoader to Minecraft Forge, select a Forge Version from the &quot;Extend from:&quot; dropdown menu (You have to install Forge first). After that you can change the profile name .Then click &quot;OK&quot; and LiteLoader is installing. After it downloaded a few files and finished installing, a message appears, that LiteLoader has been successfully installed. The new profil has been created and you can now install Mods from the Tab &quot;Mods&quot;. You can also select LiteLoader from another profile in the Profile Editor.</System:String>
+
+    <!-- Exception -->
+    <System:String x:Key="ExceptionTitle">McMetroLauncher Error</System:String>
+    <System:String x:Key="ExceptionTitleWindow">McMetroLauncher has encountered a problem and needs to close. We are sorry for the inconvenience.</System:String>
+    <System:String x:Key="ExceptionText">We have created an error report that you can send to us. We will treat this error as confidential and anonymous.</System:String>
+    <System:String x:Key="ExceptionNote">To help us diagnose the cause of this error and improve the software, you can write down a note (optional):</System:String>
+    <System:String x:Key="Exception">Error</System:String>
+    <System:String x:Key="ExceptionSendErrorAndClose">Send report and close</System:String>
+
+    <!-- GetJavaPath -->
+    <System:String x:Key="JavaPathNotFound">Java path not found</System:String>
+    <System:String x:Key="JavaPathNotFoundText">Unfortunately we couldn't find the path to Java. Please select the "java.exe" or install Java if it isn't already installed.</System:String>
+    <System:String x:Key="OFDJavaPathTitle">Please select the "java.exe"</System:String>
+    <System:String x:Key="ExectuableFiles">Exectuable Files</System:String>
+
+    <!-- Update -->
+    <System:String x:Key="CheckingForUpdates">Checking for Updates</System:String>
+    <System:String x:Key="UpdateFound">Updates available</System:String>
+    <System:String x:Key="CurrentVersion">Current version</System:String>
+    <System:String x:Key="NewVersion">New version</System:String>
+    <System:String x:Key="Update">Update</System:String>
+    <System:String x:Key="Changelog">Changelog</System:String>
+    <System:String x:Key="UpdatePackageTitle">Changes in version {0} (Published on: {1})</System:String>
+
+    <!-- Tools -->
+    <System:String x:Key="InstallForge">Install Forge</System:String>
+    <System:String x:Key="InstallLiteLoader">Install LiteLoader</System:String>
+    <System:String x:Key="TechnicLauncherDescription">Using the Technic Launcher you can play lots of well known modpacks such as Tekkit, Hexxit, Volt.... You can add and play your own modpacks as well. You can find them on http://technicpack.net.</System:String>
+    <System:String x:Key="LiteLoaderDescription">LiteLoader is a lightweight mod bootstrap designed to provide very basic loader functionality for mods which don't need to modify game mechanics. It is designed to run alongside Minecraft Forge and Forge Mod Loader (FML) and LiteLoader mods will virtually never conflict with Forge mods.</System:String>
+    <System:String x:Key="ForgeDescription">Minecraft Forge is a ModLoader that eases the installation of mods. It assist in compatibility between mods. Most mods are based on Minecraft Forge. You can download and install Mods for Forge from the &quot;Mods&quot; Tab.</System:String>
+    <System:String x:Key="FeedTheBeastDescription">With the Feed The Beast Launcher you can play plenty of popular modpacks like Unleashed, Unhinged, FTB Ultimate, Direwolf 20.... See more on http://feed-the-beast.com.</System:String>
+
+    <!-- Mods -->
+    <System:String x:Key="Authors">Authors</System:String>
+    <System:String x:Key="InstallModsIn">Install mods in</System:String>
+    <System:String x:Key="Default">Default</System:String>
+    <System:String x:Key="OpenWebsite">Open the Website</System:String>
+    <System:String x:Key="WatchVideo">Watch the Video</System:String>
+    <System:String x:Key="Install">Install</System:String>
+    <System:String x:Key="ShiftOrControlForMultiselection">SHIFT oder CTRL for multiselection</System:String>
+    
+    <!-- Servers -->
+    <System:String x:Key="ServersOlder1_7Offline">Servers, whose version is older than 1.7 are displayed as "Offline", right click for more options</System:String>
+    <System:String x:Key="CopyServerAddress">Copy server address</System:String>
+    <System:String x:Key="DirectJoinManual">Direct Join (Manual)</System:String>
+    <System:String x:Key="DirectJoinAuto">Direct Join (Auto)</System:String>
+    <System:String x:Key="Online">Online</System:String>
+    <System:String x:Key="Offline">Offline</System:String>
+    <System:String x:Key="NoSavedServers">You don't have any saved servers</System:String>
+    <System:String x:Key="DirectJoin">Direct Join</System:String>
+    <System:String x:Key="DirectJoinToolTip">Automatically joins the specified server after the game starts</System:String>
+
+    <!-- Launcher Settings -->
+    <System:String x:Key="Language">Language</System:String>
+    <System:String x:Key="General">General</System:String>
+
+    <!-- MainWindow -->
+    <System:String x:Key="Ram">Ram</System:String>
+    <System:String x:Key="CPU">CPU</System:String>
+    <System:String x:Key="ServiceStatuses">Service Statuses</System:String>
+    <System:String x:Key="GitHub">GitHub</System:String>
+    <System:String x:Key="Theme">Theme</System:String>
+    <System:String x:Key="Accent">Accent</System:String>
+
+    <!-- MainWindow Code -->
+    <System:String x:Key="DownloadingResourcesIndexes">Downloading resources-list</System:String>
+    <System:String x:Key="DownloadingResources">Downloading resources</System:String>
+    <System:String x:Key="Try">Try</System:String>
+    <System:String x:Key="DownloadingResource">Downloading resource</System:String>
+    <System:String x:Key="DownloadCanceledTooManyAttempts">Download aborted due to too many failed attempts</System:String>
+    <System:String x:Key="DownloadingResourceSuccessful">Resource successfully downloaded and hash matched</System:String>
+    <System:String x:Key="CreateVirtualResources">Reconstructing virtual assets folder at {0}</System:String>
+    <System:String x:Key="DownloadProgressFormat">{0}% - {1} {2} of {3} {2} downloaded</System:String>
+    <System:String x:Key="CheckVersionUpToDate">Getting syncinfos for selected version</System:String>
+    <System:String x:Key="DownloadingMinecraftVersion">Downloading Minecraft version {0}</System:String>
+    <System:String x:Key="ErrorDownloadingMinecraftVersion">An error occured while downloading Minecraft version {0}</System:String>
+    <System:String x:Key="VersionNotSupported">This Minecraft version is not fully supported by the launcher yet. Errors could occure!</System:String>
+    <System:String x:Key="DownloadingLibraryFromForgeServer">Downloading Library from the Minecraft Forge servers</System:String>
+    <System:String x:Key="DownloadingMinecraftForgeAutomatically">Automatically downloading the Minecraft Forge library</System:String>
+    <System:String x:Key="LibraryAlreadyExists">Library already exists</System:String>
+    <System:String x:Key="LocalFileMatchesLocalChecksum">Local file matches local checksum, using that</System:String>
+    <System:String x:Key="LibraryExistsNotChecksumMatched">Couldn't match checksum, but have local file, assuming it's good</System:String>
+    <System:String x:Key="ErrorDownloadingLibrary">Couldn't download Library</System:String>
+    <System:String x:Key="ReinstallForgeIfStarted">If you just started Forge, please reinstall it</System:String>
+    <System:String x:Key="ErrorDeletingLibrary">An error occured while deleting library</System:String>
+    <System:String x:Key="ErrorUnpackingLibrary">An error occured while unzipping</System:String>
+    <System:String x:Key="DownloadingLibrarySuccessful">Library successfully downloaded</System:String>
+    <System:String x:Key="DownloadingLibrarySuccessfulAndChecksumMatched">Downloaded Library successfully and checksum matched</System:String>
+    <System:String x:Key="UnpackingNatives">Unzipping natives</System:String>
+    <System:String x:Key="ErrorUnpackingNatives">An error occured while unzipping natives</System:String>
+    <System:String x:Key="ErrorUnpackingNativesLibraryMissing">An error occured while unzipping natives. Was the needed library downloaded successfully?</System:String>
+    <System:String x:Key="GettingStartInfos">Getting Startinfos</System:String>
+    <System:String x:Key="StartingMinecraft">Starting Minecraft</System:String>
+    <System:String x:Key="JavaArchitecture">Java {0} Bit</System:String>
+    <System:String x:Key="MinecraftAlreadyStarting">Minecraft is already starting</System:String>
+    <System:String x:Key="PleaseSelectProfile">Please select a profile</System:String>
+    <System:String x:Key="JarOrJsonNotFound">{0}.jar and/or {1}.json does not exist</System:String>
+    <System:String x:Key="ignoreInvalidMinecraftCertificatesMessage">An error occured. Please try to add following to the "JVM Arguments" in the profile editor: "-Dfml.ignoreInvalidMinecraftCertificates=true"</System:String>
+    <System:String x:Key="CannotDeleteLastProfile">Couldn't delete last profile</System:String>
+    <System:String x:Key="Prerequisite">Prerequisite</System:String>
+    <System:String x:Key="Type">Type</System:String> 
+    <System:String x:Key="SelectModsFolder">Select mods folder</System:String>
+    <System:String x:Key="ErrorDeletingMod">Couldn't delete mod: {0}&#10;If the mod is currently used by Minecraft, close Minecraft first</System:String>
+    <System:String x:Key="InstallingMods">Installing mods</System:String>
+    <System:String x:Key="Canceled">Canceled</System:String>
+    <System:String x:Key="InstallingModsSuccessful">Mods were successfully installed</System:String>
+    <System:String x:Key="ErrorInstallingMods">An error occured while installing mods</System:String>
+    <System:String x:Key="DeleteServerMessage">Are you sure you want to delete the server "{0}"?</System:String>
+    <System:String x:Key="DeleteServer">Delete server</System:String>
+    <System:String x:Key="DownloadingFTB">Downloading Feed the Beast</System:String>
+    <System:String x:Key="DownloadingTechnicLauncher">Downloading Technic Launcher</System:String>
+    <System:String x:Key="LoggingInWithAccessToken">Logging in with access token</System:String>
+    
+</ResourceDictionary>
