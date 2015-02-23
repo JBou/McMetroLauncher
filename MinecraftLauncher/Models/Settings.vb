@@ -5,6 +5,7 @@ Imports MahApps
 Imports Newtonsoft.Json
 Imports System.ComponentModel
 Imports Newtonsoft.Json.Linq
+Imports System.Threading
 
 Public Class Settings
     Inherits PropertyChangedBase
@@ -27,7 +28,7 @@ Public Class Settings
     Private Shared Async Function ReadSettings() As Task(Of Settings)
         Dim text As String = File.ReadAllText(SettingsFile.FullName)
         Dim settings As Settings = Await JsonConvert.DeserializeObjectAsync(Of Settings)(text, New JsonSerializerSettings() With {.DefaultValueHandling = DefaultValueHandling.Ignore, .NullValueHandling = NullValueHandling.Ignore})
-        settings.ActivLanguage = settings.lstLanguages.Where(Function(p) p.Code = settings.ActivLanguage.Code).First
+        settings.ChangeLanguage()
         Return settings
     End Function
     Public Function Save() As Boolean
@@ -49,9 +50,10 @@ Public Class Settings
 #Region "Properties"
     Private _mcpfad As String, _accent As String, _Theme As String, _ServerAddress As String, _DirectJoin As Boolean, _WindowState As WindowState, _JavaPath As String
     Public Sub New()
-        _lstLanguages = New List(Of Language) From {New Language("Deutsch", "JBou", "/resources/languages/mcml.de-de.xaml", "de-de", New Uri("/resources/languages/icons/de.png", UriKind.Relative)),
-                                                    New Language("English", "JBou, ep9869", "/resources/languages/mcml.en-us.xaml", "en-us", New Uri("/resources/languages/icons/en.png", UriKind.Relative)),
-                                                    New Language("tiếng Việt", "sdvn", "/resources/languages/mcml.vn-vn.xaml", "vn-vn", New Uri("/resources/languages/icons/vn.png", UriKind.Relative))}
+        Languages = New List(Of Language) From {New Language("Deutsch", "JBou", "/resources/languages/mcml.de-de.xaml", "de", New Uri("/resources/languages/icons/de.png", UriKind.Relative)),
+                                                    New Language("English", "JBou, ep9869", "/resources/languages/mcml.en-us.xaml", "en", New Uri("/resources/languages/icons/en.png", UriKind.Relative)),
+                                                    New Language("español", "PromGames", "/resources/languages/mcml.es-es.xaml", "es", New Uri("/resources/languages/icons/es.png", UriKind.Relative)),
+                                                    New Language("tiếng Việt", "sdvn", "/resources/languages/mcml.vn-vn.xaml", "vn", New Uri("/resources/languages/icons/vn.png", UriKind.Relative))}
         LoadDefaultLanguage()
         mcpfad = Nothing
         Accent = "Blue"
@@ -62,40 +64,41 @@ Public Class Settings
     End Sub
 
     Private Sub LoadDefaultLanguage()
-        Dim currentCultur = System.Threading.Thread.CurrentThread.CurrentCulture
-        If currentCultur.TwoLetterISOLanguageName = "de" Then
-            Me.ActivLanguage = lstLanguages(0)
-        ElseIf currentCultur.TwoLetterISOLanguageName = "vn" Then
-            Me.ActivLanguage = lstLanguages(2)
-        Else
-            Me.ActivLanguage = lstLanguages(1)
+        Dim lang As Language = Languages.FirstOrDefault(Function(x) x.Code = Thread.CurrentThread.CurrentCulture.TwoLetterISOLanguageName)
+        Me.Language = If(lang Is Nothing, "en", lang.Code)
+    End Sub
+
+    Public Sub ChangeLanguage()
+        Dim dic = New ResourceDictionary() With {.Source = New Uri(Languages.First(Function(x) x.Code = Language).Path, UriKind.Relative)}
+        If _lastLanguage IsNot Nothing Then
+            Application.Current.Resources.Remove(_lastLanguage)
         End If
+        Application.Current.Resources.MergedDictionaries.Add(dic)
+        _lastLanguage = dic
     End Sub
 
     Private _lastLanguage As ResourceDictionary
-    Private _ActivLanguage As Language
+    Private _Language As String
 
-    Public Property ActivLanguage() As Language
+    Public Property Language() As String
         Get
-            Return _ActivLanguage
+            Return _Language
         End Get
-        Set(ByVal value As Language)
-            SetProperty(value, _ActivLanguage)
-            Dim dic = New ResourceDictionary() With {.Source = New Uri(value.Path, UriKind.Relative)}
-            If _lastLanguage IsNot Nothing Then
-                Application.Current.Resources.Remove(_lastLanguage)
-            End If
-            Application.Current.Resources.MergedDictionaries.Add(dic)
-            _lastLanguage = dic
+        Set(ByVal value As String)
+            SetProperty(value, _Language)
+            ChangeLanguage()
             Me.Save()
         End Set
     End Property
-    Private _lstLanguages As IList(Of Language)
+    Private _Languages As IList(Of Language)
     <JsonIgnore>
-    Public ReadOnly Property lstLanguages As IList(Of Language)
+    Public Property Languages As IList(Of Language)
         Get
-            Return _lstLanguages
+            Return _Languages
         End Get
+        Set(value As IList(Of Language))
+            _Languages = value
+        End Set
     End Property
     Public Property mcpfad As String
         Get

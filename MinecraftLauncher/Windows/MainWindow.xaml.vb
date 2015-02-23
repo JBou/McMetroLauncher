@@ -861,7 +861,7 @@ Public Class MainWindow
             Await controller.CloseAsync()
         ElseIf e.Cancelled = True Then
             'lbl_mods_status.Content = "Abgebrochen
-            controller.SetMessage(Application.Current.FindResource("Canceled").ToString)
+            controller.SetMessage(Application.Current.FindResource("Cancelled").ToString)
         Else
             Try
                 Dim path As String = modsfolderPath & "\" & Modsfilename

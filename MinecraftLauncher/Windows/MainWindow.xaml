@@ -598,7 +598,7 @@
                                     <TextBlock Text="{DynamicResource Language}" VerticalAlignment="Center"/>
                                     <TextBlock Text=":" Margin="0,0,10,0" VerticalAlignment="Center"/>
                                 </StackPanel>
-                                <ComboBox ItemsSource="{Binding Settings.lstLanguages}" SelectedItem="{Binding Settings.ActivLanguage, UpdateSourceTrigger=PropertyChanged}" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="46" Margin="0,0,0,-37">
+                                <ComboBox ItemsSource="{Binding Settings.Languages}" SelectedItem="{Binding CurrentLanguage, UpdateSourceTrigger=PropertyChanged}" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="46" Margin="0,0,0,-37">
                                     <ComboBox.ItemTemplate>
                                         <DataTemplate>
                                             <StackPanel Orientation="Horizontal">

@@ -219,7 +219,7 @@
     <System:String x:Key="DownloadingMinecraftVersion">Descargando versión de Minecraft {0}</System:String>
     <System:String x:Key="ErrorDownloadingMinecraftVersion">Error en la descarga de la versión de Minecraft {0}</System:String>
     <System:String x:Key="VersionNotSupported">Esta versión de  Minecraft no está soportada por el programa. Posibles errores podrían suceder!</System:String>
-    <System:String x:Key="DownloadingLibraryFromForgeServer">Descargando Librería de los servers de Minecraft Forge </System:String>
+    <System:String x:Key="DownloadingLibraryFromForgeServer">Descargando Librería de los servers de Minecraft Forge</System:String>
     <System:String x:Key="DownloadingMinecraftForgeAutomatically">Descargando automaticamente la libreria de Minecraft Forge</System:String>
     <System:String x:Key="LibraryAlreadyExists">La librería ya existe</System:String>
     <System:String x:Key="LocalFileMatchesLocalChecksum">Utilizando el archivo local cuyo checksum coincide</System:String>
@@ -246,7 +246,7 @@
     <System:String x:Key="SelectModsFolder">Seleccione carpeta de modsr</System:String>
     <System:String x:Key="ErrorDeletingMod">No puedo borrar el mod: {0}&#10;Si este mod esta en uso actualmente por Minecraft, cierre Minecraft primero</System:String>
     <System:String x:Key="InstallingMods">Instalando mods</System:String>
-    <System:String x:Key="Canceled">Cancelado</System:String>
+    <System:String x:Key="Cancelled">Cancelado</System:String>
     <System:String x:Key="InstallingModsSuccessful">Los Mods fueron instalados correctamente</System:String>
     <System:String x:Key="ErrorInstallingMods">Error al instalar mods</System:String>
     <System:String x:Key="DeleteServerMessage">¿Está seguro de querer eliminar el server "{0}"?</System:String>

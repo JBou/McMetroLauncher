@@ -273,6 +273,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="resources\languages\mcml.es-es.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="resources\languages\mcml.vn-vn.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -445,6 +449,7 @@
     <Resource Include="resources\languages\icons\de.png" />
     <Resource Include="resources\languages\icons\en.png" />
     <Resource Include="resources\languages\icons\vn.png" />
+    <Resource Include="resources\languages\icons\es.png" />
     <Content Include="tools\Pack_xz_Extractor.jar">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

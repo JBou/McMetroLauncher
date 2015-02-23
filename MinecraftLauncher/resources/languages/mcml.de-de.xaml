@@ -246,7 +246,7 @@
     <System:String x:Key="SelectModsFolder">Mods Ordner auswählen</System:String>
     <System:String x:Key="ErrorDeletingMod">Mod konnte nicht gelöscht werden: {0}&#10;Falls der Mod in Minecraft geöffnet ist, schließe zuerst Minecraft</System:String>
     <System:String x:Key="InstallingMods">Mods werden installiert</System:String>
-    <System:String x:Key="Canceled">Abgebrochen</System:String>
+    <System:String x:Key="Cancelled">Abgebrochen</System:String>
     <System:String x:Key="InstallingModsSuccessful">Mods erfolgreich Installiert</System:String>
     <System:String x:Key="ErrorInstallingMods">Fehler beim Installieren der Mods</System:String>
     <System:String x:Key="DeleteServerMessage">Bist du dir sicher, dass du den Server "{0}" entgültig löschen willst?</System:String>

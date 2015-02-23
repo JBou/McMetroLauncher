@@ -246,7 +246,7 @@
     <System:String x:Key="SelectModsFolder">Select mods folder</System:String>
     <System:String x:Key="ErrorDeletingMod">Couldn't delete mod: {0}&#10;If the mod is currently used by Minecraft, close Minecraft first</System:String>
     <System:String x:Key="InstallingMods">Installing mods</System:String>
-    <System:String x:Key="Canceled">Canceled</System:String>
+    <System:String x:Key="Cancelled">Cancelled</System:String>
     <System:String x:Key="InstallingModsSuccessful">Mods were successfully installed</System:String>
     <System:String x:Key="ErrorInstallingMods">An error occured while installing mods</System:String>
     <System:String x:Key="DeleteServerMessage">Are you sure you want to delete the server "{0}"?</System:String>

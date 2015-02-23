@@ -107,12 +107,27 @@ Public Class MainViewModel
             SetProperty(value, _Account)
         End Set
     End Property
+
+    Private _currentlanguage As Language
+    Public Property CurrentLanguage() As Language
+        Get
+            Return _currentlanguage
+        End Get
+        Set(value As Language)
+            If SetProperty(value, _currentlanguage) AndAlso value IsNot Nothing Then
+                MainViewModel.Instance.Settings.Language = value.Code
+                MainViewModel.Instance.Settings.ChangeLanguage()
+            End If
+        End Set
+    End Property
+
 #End Region
 
 #Region "Methods"
 
     Public Async Function LoadSettings() As Task
         Settings = Await Settings.Load()
+        CurrentLanguage = Settings.Languages.First(Function(x) x.Code = MainViewModel.Instance.Settings.Language)
     End Function
 
 #End Region
@@ -140,6 +155,8 @@ Public Class MainViewModel
             Return _ram
         End Get
     End Property
+
+
 
     Private ReadOnly _cpu As ObservableCollection(Of CPU) = New ObservableCollection(Of CPU)
     Private CPUCounter As PerformanceCounter = New PerformanceCounter("Processor", "% Processor Time", "_Total")

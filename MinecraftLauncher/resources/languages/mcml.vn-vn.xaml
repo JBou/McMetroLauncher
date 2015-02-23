@@ -246,7 +246,7 @@
     <System:String x:Key="SelectModsFolder">Chọn thư mục mod</System:String>
     <System:String x:Key="ErrorDeletingMod">Không thể xóa Mod: {0}&#10;Nếu vẫn chạy Minecraft, tắt Minecraft trước</System:String>
     <System:String x:Key="InstallingMods">Cài mods</System:String>
-    <System:String x:Key="Canceled">Đã hủy bỏ</System:String>
+    <System:String x:Key="Cancelled">Đã hủy bỏ</System:String>
     <System:String x:Key="InstallingModsSuccessful">Mods được cài thành công</System:String>
     <System:String x:Key="ErrorInstallingMods">Có lỗi khi cài Mods</System:String>
     <System:String x:Key="DeleteServerMessage">Bạn có chắc muốn bỏ server "{0}"?</System:String>
