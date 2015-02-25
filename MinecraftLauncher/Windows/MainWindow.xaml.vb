@@ -283,9 +283,11 @@ Public Class MainWindow
                                           argumentreplacements.Add(New String() {"${auth_access_token}", Startinfos.Session.AccessToken})
                                           argumentreplacements.Add(New String() {"${auth_session}", "token:" & Startinfos.Session.AccessToken & ":" & Startinfos.Session.SelectedProfile.Id})
                                           Dim jo As New JObject
-                                          For Each item As authenticationDatabase.Userproperty In Startinfos.Session.User.Properties
-                                              jo.Add(New JProperty(item.name, item.value))
-                                          Next
+                                          If Startinfos.Session.User.Properties IsNot Nothing Then
+                                              For Each item As authenticationDatabase.Userproperty In Startinfos.Session.User.Properties
+                                                  jo.Add(New JProperty(item.name, item.value))
+                                              Next
+                                          End If
                                           argumentreplacements.Add(New String() {"${user_properties}", jo.ToString})
                                           'TODO:
                                           'argumentreplacements.Add(New String() {"${user_type}", "mojang/legacy"})
