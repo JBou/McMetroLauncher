@@ -17,6 +17,19 @@ Public Class SubmitException
         End Set
     End Property
 
+    Private _email As String
+    Public Property email() As String
+        Get
+            Return _email
+        End Get
+        Set(ByVal value As String)
+            If value <> _txtNote Then
+                _email = value
+                RaiseEvent PropertyChanged(Me, New PropertyChangedEventArgs("email"))
+            End If
+        End Set
+    End Property
+
     Private _txtNote As String
     Public Property txtNote() As String
         Get
@@ -36,8 +49,8 @@ Public Class SubmitException
     Public ReadOnly Property SendReport As RelayCommand
         Get
             If _SendReport Is Nothing Then _SendReport = New RelayCommand(Sub(parameter As Object)
-                                                                              If Not String.IsNullOrWhiteSpace(txtNote) Then Exception.ToExceptionless().SetUserDescription(txtNote).Submit() Else Exception.ToExceptionless().Submit()
-                                                                              ExceptionlessClient.Current.ProcessQueue()
+                                                                              If Not String.IsNullOrWhiteSpace(txtNote) Then Exception.ToExceptionless().SetUserDescription(email, txtNote).Submit() Else Exception.ToExceptionless().Submit()
+                                                                              ExceptionlessClient.Default.ProcessQueue()
                                                                               Application.Current.Shutdown()
                                                                           End Sub)
             Return _SendReport

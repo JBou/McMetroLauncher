@@ -5,13 +5,13 @@ Exceptionless provides real-time error reporting for your apps. It organizes the
 gathered information into simple actionable data that will help your app become 
 exceptionless!
 
-Learn more at http://exceptionless.com.
+Learn more at http://exceptionless.io.
 
 -------------------------------------
 		How to get an api key
 -------------------------------------
 The Exceptionless client requires an api key to use the Exceptionless service. 
-You can get your Exceptionless api key by logging into http://exceptionless.com 
+You can get your Exceptionless api key by logging into http://exceptionless.io 
 and viewing your project configuration page.
 
 -------------------------------------
@@ -31,7 +31,7 @@ assembly attribute and your own api key to your project (E.G., AssemblyInfo clas
 Finally, you must import the "Exceptionless" namespace and call the following line
 of code to start reporting unhandled exceptions.
 
-Exceptionless.ExceptionlessClient.Current.Register()
+Exceptionless.ExceptionlessClient.Default.Register()
 
 -------------------------------------
    Manually reporting an exception
@@ -45,4 +45,4 @@ exception.ToExceptionless().Submit()
 -------------------------------------
 	  Documentation and Support
 -------------------------------------
-Please visit http://exceptionless.com for documentation and support.
+Please visit http://exceptionless.io for documentation and support.

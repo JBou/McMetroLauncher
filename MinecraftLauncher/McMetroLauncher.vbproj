@@ -118,14 +118,20 @@
     <Reference Include="De.TorstenMandelkow.MetroChart">
       <HintPath>..\libraries\De.TorstenMandelkow.MetroChart.dll</HintPath>
     </Reference>
-    <Reference Include="Exceptionless">
-      <HintPath>..\packages\Exceptionless.1.5.2092\lib\net45\Exceptionless.dll</HintPath>
+    <Reference Include="Exceptionless, Version=2.0.1122.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Exceptionless.2.0.1122-preview\lib\portable-net40+sl50+win+wpa81+wp80\Exceptionless.dll</HintPath>
     </Reference>
-    <Reference Include="Exceptionless.Models">
-      <HintPath>..\packages\Exceptionless.1.5.2092\lib\net45\Exceptionless.Models.dll</HintPath>
+    <Reference Include="Exceptionless.Extras">
+      <HintPath>..\packages\Exceptionless.Wpf.2.0.1122-preview\lib\net45\Exceptionless.Extras.dll</HintPath>
     </Reference>
-    <Reference Include="Exceptionless.Wpf">
-      <HintPath>..\packages\Exceptionless.Wpf.1.5.2092\lib\net45\Exceptionless.Wpf.dll</HintPath>
+    <Reference Include="Exceptionless.Models, Version=2.0.1122.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Exceptionless.2.0.1122-preview\lib\portable-net40+sl50+win+wpa81+wp80\Exceptionless.Models.dll</HintPath>
+    </Reference>
+    <Reference Include="Exceptionless.Wpf, Version=2.0.1122.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Exceptionless.Wpf.2.0.1122-preview\lib\net45\Exceptionless.Wpf.dll</HintPath>
     </Reference>
     <Reference Include="fNbt">
       <HintPath>..\libraries\fNbt.dll</HintPath>
