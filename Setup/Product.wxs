@@ -69,10 +69,7 @@
                       IncludeMaximum="no" />
     </Upgrade>
 
-    <PropertyRef Id="NETFRAMEWORK45"/>
-    <Condition Message='The $(var.Name) requires Microsoft .NET Framework 4.5. Install it to continue!'>
-      <![CDATA[Installed OR NETFRAMEWORK45]]>
-    </Condition>
+ 
     
     <Directory Id="TARGETDIR" Name="SourceDir">
       <Directory Id="FontsFolder" />

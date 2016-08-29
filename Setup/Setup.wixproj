@@ -41,6 +41,7 @@
     <Content Include="Dialog.bmp" />
     <Content Include="Dialog.png" />
     <Content Include="Banner.png" />
+    <Content Include="Setup.wax" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MinecraftLauncher\MCMetroLauncher.vbproj">
