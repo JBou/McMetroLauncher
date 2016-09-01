@@ -1,0 +1,1624 @@
+﻿{
+  "mods": [
+    {
+      "name": "ArmorStatusHUD",
+      "authors": [ "bspkrs" ],
+      "descriptions": [
+        {
+          "id": "en",
+          "text": "ArmorStatusHUD displays your currently equipped armor and held item along with the durability remaining without having to open your inventory!"
+        }
+      ],
+      "versions": [
+        {
+          "version": "1.7.10",
+          "dependencies": [ "bspkrsCore" ],
+          "downloadlink": "http://patzleiner.net/download/mods/1.7.10/[1.7.10]ArmorStatusHUD-client-1.27.jar",
+          "extension": "jar"
+        },
+        {
+          "version": "1.7.2",
+          "dependencies": [ "bspkrsCore" ],
+          "downloadlink": "http://patzleiner.net/download/mods/1.7.2/[1.7.2]ArmorStatusHUD-client-1.18(1.7.2).jar",
+          "extension": "jar"
+        },
+        {
+          "version": "1.6.4",
+          "dependencies": [ "bspkrsCore" ],
+          "downloadlink": "http://patzleiner.net/download/mods/1.6.4/[1.6.4]ArmorStatusHUDv1.15.zip",
+          "extension": "zip"
+        }
+      ],
+      "video": "https://www.youtube.com/watch?v=G72Uq6_xR94",
+      "website": "http://www.minecraftforum.net/topic/1114612-172-bspkrs-mods-armorstatushud-directionhud-statuseffecthud/",
+      "id": "ArmorStatusHUD",
+      "type": "forge"
+    },
+    {
+      "name": "Better PvP Mod",
+      "authors": [ "xaero96" ],
+      "descriptions": [
+        {
+          "id": "en",
+          "text": "This mod adds a whole bunch of useful features to Minecraft that can be used either for PVP or for survival/hardcore. The mod adds a fully customizable GUI interface system which consists of various, also customizable, interfaces such as a minimap, armour status, potion status etc. It also adds a lot of useful keybinds that can make your game even more convenient, one of which is an rpg-like actionbar system. "
+        }
+      ],
+      "versions": [
+        {
+          "version": "1.8",
+          "dependencies": [ ],
+          "downloadlink": "http://patzleiner.net/download/mods/1.8/BetterPvP_1.2.9_1.8_Forge.jar",
+          "extension": "jar"
+        },
+        {
+          "version": "1.7.10",
+          "dependencies": [ ],
+          "downloadlink": "http://patzleiner.net/download/mods/1.7.10/BetterPvP_1.2.3_1.7.10_Forge.jar",
+          "extension": "jar"
+        }
+      ],
+      "video": "https://www.youtube.com/watch?v=FI2xcep5cME",
+      "website": "http://www.planetminecraft.com/mod/164-better-pvp-v10/",
+      "id": "better-pvp-mod",
+      "type": "forge"
+    },
+    {
+      "name": "BiblioCraft",
+      "authors": [ "Nuchaz" ],
+      "descriptions": [
+        {
+          "id": "de",
+          "text": "Diese Mod fügt sehr viele neue Blöcke hinzu, welche das Haus verschönern und auch sehr nützlich sind. z.B. 3D Bücherregale oder Potionregale, Schreibtische, Lampen, Kleiderständer und vieles mehr."
+        },
+        {
+          "id": "en",
+          "text": "A fairly simple mod that adds 8 new types of unique storage blocks to display a few different items. There is a bookcase that shows up to 16 books on the shelf, an Armor stand to display a full set of armor. There is also a potion shelf for up to 12 potions, a tool rack to hang 4 different tools/weapons, a general shelf that can display any 4 items, a display case for a single fancy item, and a wooden label that can display up to 3 items in small scale for tasks such as indicating what is in a chest. The newest edition includes the wooden Desk that can hold up to 9 books."
+        }
+      ],
+      "versions": [
+        {
+          "version": "1.7.10",
+          "dependencies": [ ],
+          "downloadlink": "http://patzleiner.net/download/mods/1.7.10/BiblioCraft[v1.7.5][MC1.7.10].jar",
+          "extension": "jar"
+        },
+        {
+          "version": "1.7.2",
+          "dependencies": [ ],
+          "downloadlink": "http://patzleiner.net/download/mods/1.7.2/BiblioCraft[v1.7.5][MC1.7.2].jar",
+          "extension": "jar"
+        },
+        {
+          "version": "1.6.4",
+          "dependencies": [ ],
+          "downloadlink": "http://patzleiner.net/download/mods/1.6.4/BiblioCraft%5bv1.4.0%5d.zip",
+          "extension": "zip"
+        }
+      ],
+      "video": "http://www.youtube.com/watch?v=m7MsUIOF8YU",
+      "website": "http://www.minecraftforum.net/topic/1680480-162164forgesmp-bibliocraft-v150-bookcases-armor-stands-shelves-printing-presses-seats-map-frames-and-more-updated-10162013/",
+      "id": "BiblioCraft",
+      "type": "forge"
+    },
+    {
+      "name": "bspkrsCore",
+      "authors": [ "bspkrs" ],
+      "descriptions": [
+        {
+          "id": "en",
+          "text": "This mod is required by all other mods created/maintained by bspkrs."
+        }
+      ],
+      "versions": [
+        {
+          "version": "1.7.10",
+          "dependencies": [ ],
+          "downloadlink": "http://patzleiner.net/download/mods/1.7.10/[1.7.10]bspkrsCore-universal-6.12.jar",
+          "extension": "jar"
+        },
+        {
+          "version": "1.7.2",
+          "dependencies": [ ],
+          "downloadlink": "http://patzleiner.net/download/mods/1.7.2/[1.7.2]bspkrsCore-universal-6.0(1.7.2).jar",
+          "extension": "jar"
+        },
+        {
+          "version": "1.6.4",
+          "dependencies": [ ],
+          "downloadlink": "http://patzleiner.net/download/mods/1.6.4/[1.6.4]bspkrsCorev5.3.zip",
+          "extension": "zip"
+        }
+      ],
+      "video": "https://www.youtube.com/watch?v=G72Uq6_xR94",
+      "website": "http://www.minecraftforum.net/topic/1114612-172-bspkrs-mods-armorstatushud-directionhud-statuseffecthud/",
+      "id": "bspkrsCore",
+      "type": "forge"
+    },
+    {
+      "name": "BuildCraft",
+      "authors": [ "SpaceToad" ],
+      "descriptions": [
+        {
+          "id": "de",
+          "text": "BuildCraft ist eine Mod von SpaceToad, welche Rohre, automatisiertes Crafting, automatische Minenapparate und Öl hinzufügt. Außerdem ist es möglich, Baupläne von Bauwerken zu erstellen und diese an anderer Stelle zu bauen."
+        },
+        {
+          "id": "en",
+          "text": "Adds tubes and machines which can be powered by engines and fuel to help build and/or dig!"
+        }
+      ],
+      "versions": [
+        {
+          "version": "1.7.10",
+          "dependencies": [ ],
+          "downloadlink": "http://patzleiner.net/download/mods/1.7.10/buildcraft-6.0.18.jar",
+          "extension": "jar"
+        },
+        {
+          "version": "1.7.2",
+          "dependencies": [ ],
+          "downloadlink": "http://patzleiner.net/download/mods/1.7.2/buildcraft-6.0.16.jar",
+          "extension": "jar"
+        },
+        {
+          "version": "1.6.4",
+          "dependencies": [ ],
+          "downloadlink": "http://patzleiner.net/download/mods/1.6.4/buildcraft-A-1.6.2-4.1.2.jar",
+          "extension": "jar"
+        }
+      ],
+      "video": "http://www.youtube.com/watch?v=XDo4iGDW4-Q",
+      "website": "http://www.mod-buildcraft.com/",
+      "id": "BuildCraft",
+      "type": "forge"
+    },
+    {
+      "name": "ChickenChunks",
+      "authors": [ "chicken_bones" ],
+      "descriptions": [
+        {
+          "id": "en",
+          "text": "As you all should know, the minecraft world is seperated into chunks. 16x16 areas that are loaded depending on how close a player is to them. If you have machines or plants or anything that does something in a chunk that is not loaded because there are no players nearby nothing will happen.\r\nThis mod adds a block called a chunkloader, when placed it will keep chunks around it loaded even if no players are nearby or even online. So now your plants can grow and your automatic quarries can run, even when you're not around."
+        }
+      ],
+      "versions": [
+        {
+          "version": "1.6.4",
+          "dependencies": [ "CodeChickenCore" ],
+          "downloadlink": "http://patzleiner.net/download/mods/1.6.4/ChickenChunks%201.3.3.3.jar",
+          "extension": "jar"
+        }
+      ],
+      "video": "http://www.youtube.com/watch?v=O0-5LnLAklE",
+      "website": "http://www.minecraftforum.net/topic/909223-164-smp-chickenbones-mods/",
+      "id": "ChickenChunks",
+      "type": "forge"
+    },
+    {
+      "name": "CodeChickenCore",
+      "authors": [ "chicken_bones" ],
+      "descriptions": [
+        {
+          "id": "de",
+          "text": "Diese Library wird von folgende Mods gebraucht:\r\n\r\nNot Enough Items (NEI)\r\nEnder Storage\r\nWireless Redstone Chicken Bones Edition (WR-CBE)\r\nChickenChunks\r\nTranslocators"
+        },
+        {
+          "id": "en",
+          "text": "This mod is required for Not Enough Items (NEI), Ender Storage, Translocator, Wireless Redstone Chicken Bones Edition (WR-CBE) and ChickenChunks."
+        }
+      ],
+      "versions": [
+        {
+          "version": "1.7.10",
+          "dependencies": [ ],
+          "downloadlink": "http://patzleiner.net/download/mods/1.7.10/CodeChickenCore-1.7.10-1.0.3.25-universal.jar",
+          "extension": "jar"
+        },
+        {
+          "version": "1.7.2",
+          "dependencies": [ ],
+          "downloadlink": "http://patzleiner.net/download/mods/1.7.2/CodeChickenCore-1.7.2-1.0.2.10-universal.jar",
+          "extension": "jar"
+        },
+        {
+          "version": "1.6.4",
+          "downloadlink": "http://patzleiner.net/download/mods/1.6.4/CodeChickenCore%200.9.0.6.jar",
+          "extension": "jar"
+        }
+      ],
+      "video": "https://www.youtube.com/watch?v=ED4oav4HFPE",
+      "website": "http://www.minecraftforum.net/forums/mapping-and-modding/minecraft-mods/1279956-chickenbones-mods",
+      "id": "CodeChickenCore",
+      "type": "forge"
+    },
+    {
+      "name": "ComputerCraft",
+      "authors": [ "dan200" ],
+      "descriptions": [
+        {
+          "id": "de",
+          "text": "Computer Craft ist eine Mod welche In - Game Computer hinzufügt. Jedes Computer System hat sein eigenes Oparating System mit vorinstallierten Programmen, und kann auch programmiert werden um alles zu tun was du willst mit der einfach zu lernenden LUA Programmier Sprache. Jeder Computer hat sein eigenes Datei System und OS, ein DOS - ähnliches Interface, ein umfangreiches Hilfe - System, zwei coole Spiele (inklusive ein Text - Adventure welches auf Minecraft basiert und ein flottes Arcade Action Spiel), die Fähigkeit mit Redstone in alle 6 Richtungen zu interagieren und kann Nachrichten kabellos mit RedNet senden und empfangen. Das OS hat noch einige weitere extra Programme wie z.B. Star Wars oder Worn spielen, eine ascii Version von Snake."
+        },
+        {
+          "id": "en",
+          "text": "ComputerCraft adds programmable computers and robots."
+        }
+      ],
+      "versions": [
+        {
+          "version": "1.6.4",
+          "dependencies": [ ],
+          "downloadlink": "http://patzleiner.net/download/mods/1.6.4/ComputerCraft1.57.zip",
+          "extension": "zip"
+        }
+      ],
+      "video": "http://www.youtube.com/watch?v=YH9ircxbvuw",
+      "website": "http://www.computercraft.info/",
+      "id": "ComputerCraft",
+      "type": "forge"
+    },
+    {
+      "name": "CraftGuide",
+      "authors": [ "Uristqwerty" ],
+      "descriptions": [
+        {
+          "id": "de",
+          "text": "Schneller Zugang zu einer Liste aller Crafting-Rezepte im Spiel."
+        },
+        {
+          "id": "en",
+          "text": "Quick access to a list of every crafting recipe in the game!"
+        }
+      ],
+      "versions": [
+        {
+          "version": "1.7.2",
+          "dependencies": [ ],
+          "downloadlink": "http://patzleiner.net/download/mods/1.7.2/CraftGuide-1.6.8.1.zip",
+          "extension": "zip"
+        },
+        {
+          "version": "1.6.4",
+          "dependencies": [ ],
+          "downloadlink": "http://patzleiner.net/download/mods/1.6.4/CraftGuide-1.6.7.4.zip",
+          "extension": "zip"
+        }
+      ],
+      "video": "http://www.youtube.com/watch?v=4o3AZMsk93w",
+      "website": "http://www.minecraftforum.net/topic/731133-162164-craftguide-v1674/",
+      "id": "craftguide",
+      "type": "forge"
+    },
+    {
+      "name": "Damage Indicators",
+      "authors": [ "rich1051414" ],
+      "descriptions": [
+        {
+          "id": "en",
+          "text": "When anything living takes damage, the damage they took will bounce off their head, with a cool little effect. Also shows a mod portrait, with name, status"
+        }
+      ],
+      "versions": [
+        {
+          "version": "1.8",
+          "dependencies": [ ],
+          "downloadlink": "http://patzleiner.net/download/mods/1.8/[1.8]DamageIndicatorsMod-3.3.2.jar",
+          "extension": "jar"
+        },
+        {
+          "version": "1.7.10",
+          "dependencies": [ ],
+          "downloadlink": "http://patzleiner.net/download/mods/1.7.10/[1.7.10]DamageIndicatorsMod-3.2.0.jar",
+          "extension": "jar"
+        },
+        {
+          "version": "1.7.2",
+          "dependencies": [ ],
+          "downloadlink": "http://patzleiner.net/download/mods/1.7.2/[1.7.2]DamageIndicatorsMod-3.1.2.jar",
+          "extension": "jar"
+        },
+        {
+          "version": "1.6.4",
+          "dependencies": [ ],
+          "downloadlink": "http://patzleiner.net/download/mods/1.6.4/1.6.4%20DamageIndicatorsv2.9.2.4.zip",
+          "extension": "jar"
+        }
+      ],
+      "video": "https://www.youtube.com/watch?v=Uhjt4m2jRQw",
+      "website": "http://www.minecraftforum.net/forums/mapping-and-modding/minecraft-mods/1286538-hit-splat-damage-indicators-v3-3-2-rpg-ui-and",
+      "id": "damage-indicators",
+      "type": "forge"
+    },
+    {
+      "name": "DirectionHUD",
+      "authors": [ "bspkrs" ],
+      "descriptions": [
+        {
+          "id": "en",
+          "text": "Displays your magnetic compass heading at the top of your screen."
+        }
+      ],
+      "versions": [
+        {
+          "version": "1.7.10",
+          "dependencies": [ "bspkrsCore" ],
+          "downloadlink": "http://patzleiner.net/download/mods/1.7.10/[1.7.10]DirectionHUD-client-1.23.jar",
+          "extension": "jar"
+        },
+        {
+          "version": "1.7.2",
+          "dependencies": [ "bspkrsCore" ],
+          "downloadlink": "http://patzleiner.net/download/mods/1.7.2/[1.7.2]DirectionHUD-client-1.18(1.7.2).jar",
+          "extension": "jar"
+        },
+        {
+          "version": "1.6.4",
+          "dependencies": [ "bspkrsCore" ],
+          "downloadlink": "http://patzleiner.net/download/mods/1.6.4/[1.6.4]DirectionHUDv1.16.zip",
+          "extension": "zip"
+        }
+      ],
+      "video": "https://www.youtube.com/watch?v=G72Uq6_xR94",
+      "website": "http://www.minecraftforum.net/topic/1114612-172-bspkrs-mods-armorstatushud-directionhud-statuseffecthud/",
+      "id": "DirectionHUD",
+      "type": "forge"
+    },
+    {
+      "name": "Ender Storage",
+      "authors": [ "chicken_bones" ],
+      "descriptions": [
+        {
+          "id": "en",
+          "text": "EnderStorage is a mod that offers a means to store your items in The END, causing them to be everywhere and nowhere at the same time. All EnderStorage makes use of the magic of colors to link storage with its little piece of The END. Any EnderStorage with the same color code share inventory (even across dimensions). Currently there are two types of storage, EnderChest and EnderPouch."
+        }
+      ],
+      "versions": [
+        {
+          "version": "1.7.10",
+          "dependencies": [ "CodeChickenCore" ],
+          "downloadlink": "http://patzleiner.net/download/mods/1.7.10/EnderStorage-1.7.10-1.4.5.22-universal.jar",
+          "extension": "jar"
+        },
+        {
+          "version": "1.7.2",
+          "dependencies": [ ],
+          "downloadlink": "http://patzleiner.net/download/mods/1.7.2/EnderStorage-1.7.2-1.4.4.8-universal.jar",
+          "extension": "jar"
+        },
+        {
+          "version": "1.6.4",
+          "dependencies": [ "CodeChickenCore" ],
+          "downloadlink": "http://patzleiner.net/download/mods/1.6.4/EnderStorage%201.4.3.5.jar",
+          "extension": "jar"
+        }
+      ],
+      "video": "http://www.youtube.com/watch?v=rSq-ISnkEJw",
+      "website": "http://www.minecraftforum.net/topic/909223-164-smp-chickenbones-mods/",
+      "id": "Ender_Storage",
+      "type": "forge"
+    },
+    {
+      "name": "ExtrabiomesXL",
+      "authors": [ "MrFibre" ],
+      "descriptions": [
+        {
+          "id": "de",
+          "text": "ExtrabiomesXL ist eine kollaborative Open-Source-Mod für Minecraft, die neuen Biome und eine Auswahl an natürlichen Blöcke und Gegenstände hinzufügt, die das Gameplay verbessern und Ausflüge lustiger und interessanter machen."
+        },
+        {
+          "id": "en",
+          "text": "Adds new biomes that enhance game play and make exploring fun and interesting."
+        }
+      ],
+      "versions": [
+        {
+          "version": "1.6.4",
+          "dependencies": [ ],
+          "downloadlink": "http://patzleiner.net/download/mods/1.6.4/ExtrabiomesXL-universal-1.6.4-3.14.2.jar",
+          "extension": "jar"
+        }
+      ],
+      "video": "http://www.youtube.com/watch?v=dXfCb0KHLuw",
+      "website": "http://www.minecraftforum.net/topic/1090288-164-extrabiomesxl-3142/",
+      "id": "ExtrabiomesXLv",
+      "type": "forge"
+    },
+    {
+      "name": "Flenix Roads",
+      "authors": [ "Flenix" ],
+      "descriptions": [
+        {
+          "id": "de",
+          "text": "Roads fügt eine ganze Menge neuer Blöcke hinzu, um sie zum herumreisen zu benützen. Man kann Straßen, Straßenschilder, Ampeln und vieles mehr damit bauen."
+        },
+        {
+          "id": "en",
+          "text": "Adds a more complex road system to Minecraft, used very commonly with Flan's Mod."
+        }
+      ],
+      "versions": [
+        {
+          "version": "1.6.4",
+          "dependencies": [ ],
+          "downloadlink": "http://patzleiner.net/download/mods/1.6.4/FlenixRoads_0.5.1.jar",
+          "extension": "jar"
+        }
+      ],
+      "video": "http://www.youtube.com/watch?v=5KzzSmGax-o",
+      "website": "http://www.minecraftforum.net/topic/1841256-164wip-flenixroads-bring-your-city-to-life-with-realistic-roads-updated-24th-oct/",
+      "id": "flenix_roads",
+      "type": "forge"
+    },
+    {
+      "name": "Forestry",
+      "authors": [ "SirSengir" ],
+      "descriptions": [
+        {
+          "id": "de",
+          "text": "Ermöglicht das Erstellen von Sachen wie automatische Farmen, intelligente Rucksäcke, ein Mail-System, sowie die Energieerzeugung. Außerdem ermöglicht es solche Dinge wie Bienenzucht und Baum Zucht."
+        },
+        {
+          "id": "en",
+          "text": "Lets you create things such as automatic farms, intelligent backpacks, a mail system, and energy production. Also allows for such things as bee keeping/breeding and tree breeding."
+        }
+      ],
+      "versions": [
+        {
+          "version": "1.6.4",
+          "dependencies": [ ],
+          "downloadlink": "http://patzleiner.net/download/mods/1.6.4/forestry-A-2.3.0.7.jar",
+          "extension": "jar"
+        }
+      ],
+      "video": "https://www.youtube.com/watch?v=DCVXCQRjBRk",
+      "website": "http://www.minecraftforum.net/topic/700588-forestry-for-minecraft-trees-bees-and-more/",
+      "id": "forestry",
+      "type": "forge"
+    },
+    {
+      "name": "Furniture Mod",
+      "authors": [ "Mr_Crayfish" ],
+      "descriptions": [
+        {
+          "id": "de",
+          "text": "Diese Mod fügt eine Menge neuer Möbel hinzu zum dekorieren deiner Küche, deines Schlafzimmers, deines Wohnzimmers und sogar deines Gartens."
+        },
+        {
+          "id": "en",
+          "text": "Adds in what Minecraft has been missing for years, furniture! It includes over 30 pieces of furniture to decorate your bedroom, kitchen, living room and even your garden! This mod also has an API which can be used in development of your mods to make them play more nicely alongside it."
+        }
+      ],
+      "versions": [
+        {
+          "version": "1.6.4",
+          "dependencies": [ ],
+          "downloadlink": "http://patzleiner.net/download/mods/1.6.4/[Forge]FurnitureModv3.2(1.6.4).zip",
+          "extension": "zip"
+        }
+      ],
+      "video": "http://www.youtube.com/watch?v=Me-425Ei0_s",
+      "website": "http://www.minecraftforum.net/topic/1114866-164-forge-sspsmp-mrcrayfishs-furniture-mod-v32-electronic-update-tv-computer-stereo/",
+      "id": "furniture_mod",
+      "type": "forge"
+    },
+    {
+      "name": "Galacticraft",
+      "authors": [ "Micdoodle8" ],
+      "descriptions": [
+        {
+          "id": "de",
+          "text": "Mit dieser Mod kannst du mit deinem eigenen Raumschiff auf neue Planeten reisen."
+        },
+        {
+          "id": "en",
+          "text": "Lets you travel to new planets with your own spaceship."
+        }
+      ],
+      "versions": [
+        {
+          "version": "1.6.4",
+          "dependencies": [ "Micdoodle_Core" ],
+          "downloadlink": "http://patzleiner.net/download/mods/1.6.4/Galacticraft-1.6.4-2.0.4.862.jar",
+          "extension": "jar"
+        }
+      ],
+      "video": "https://www.youtube.com/watch?v=XtGnxAlK4I8",
+      "website": "http://micdoodle8.com/",
+      "id": "Galacticraft",
+      "type": "forge"
+    },
+    {
+      "name": "Galacticraft Planets",
+      "authors": [ "Micdoodle8" ],
+      "descriptions": [
+        {
+          "id": "de",
+          "text": "Diese Mod fügt Galacticraft zusätzliche Planeten hinzu."
+        },
+        {
+          "id": "en",
+          "text": "This mod adds additional planets to Galacticraft."
+        }
+      ],
+      "versions": [
+        {
+          "version": "1.6.4",
+          "dependencies": [ "Galacticraft" ],
+          "downloadlink": "http://patzleiner.net/download/mods/1.6.4/Galacticraft-Planets-1.6.4-2.0.4.862.jar",
+          "extension": "jar"
+        }
+      ],
+      "video": "https://www.youtube.com/watch?v=XtGnxAlK4I8",
+      "website": "http://micdoodle8.com/",
+      "id": "Galacticraft_Planets",
+      "type": "forge"
+    },
+    {
+      "name": "iChun Util",
+      "authors": [ "iChun" ],
+      "descriptions": [
+        {
+          "id": "en",
+          "text": "A majority of mods by iChun will require this mod as a base. This includes Gravity Gun, Portal Gun, Trail Mix, Torched, Attachable Grinders, Mob Amputation, Mob Dismemberment, etc"
+        }
+      ],
+      "versions": [
+        {
+          "version": "1.6.4",
+          "dependencies": [ ],
+          "downloadlink": "http://patzleiner.net/download/mods/1.6.4/util^iChunUtil2.4.0.zip",
+          "extension": "zip"
+        }
+      ],
+      "video": "https://www.youtube.com/watch?v=JL1GcafROUM",
+      "website": "http://bit.ly/ichun-util",
+      "id": "iChun_Util",
+      "type": "forge"
+    },
+    {
+      "name": "Industrial Craft 2",
+      "authors": [ "Alblaka" ],
+      "descriptions": [
+        {
+          "id": "de",
+          "text": "Diese Mod fügt eine Vielzahl and neuen Blöcken, Maschinen und Funktionen hinzu. Man kann Strom erzeugen und dadurch Vorgänge automatisieren."
+        },
+        {
+          "id": "en",
+          "text": "Adds many blocks and items for both crafting and to find whilst exploring, adding the ability to industrialize your Minecraft life with electricity and various means of increasing efficiency for the materials you've collected."
+        }
+      ],
+      "versions": [
+        {
+          "version": "1.6.4",
+          "dependencies": [ ],
+          "downloadlink": "http://patzleiner.net/download/mods/1.6.4/industrialcraft-2_2.0.305-experimental.jar",
+          "extension": "jar"
+        }
+      ],
+      "video": "https://www.youtube.com/watch?v=1Gjd81J1ct8",
+      "website": "http://forum.industrial-craft.net/",
+      "id": "industrial_craft2",
+      "type": "forge"
+    },
+    {
+      "name": "Inventory Tweaks",
+      "authors": [ "Kobata" ],
+      "descriptions": [
+        {
+          "id": "en",
+          "text": "Allows you to easily manage your inventory, in both single player and multiplayer. It works out of the box, and will save you a massive amount of time!"
+        }
+      ],
+      "versions": [
+        {
+          "version": "1.7.2",
+          "dependencies": [ ],
+          "downloadlink": "http://patzleiner.net/download/mods/1.7.2/InventoryTweaks-1.57-116.jar",
+          "extension": "jar"
+        },
+        {
+          "version": "1.6.4",
+          "dependencies": [ ],
+          "downloadlink": "http://patzleiner.net/download/mods/1.6.4/InventoryTweaks-MC1.6.2-1.56-b77.jar",
+          "extension": "jar"
+        }
+      ],
+      "video": "https://www.youtube.com/watch?v=QOnqQCsr3o0",
+      "website": "http://bit.ly/k-invtweaks",
+      "id": "inventory_tweaks",
+      "type": "forge"
+    },
+    {
+      "name": "Mantle",
+      "authors": [ "mDiyo", "progwml6", "Sunstrike", "fuj1n", "pillbox" ],
+      "descriptions": [
+        {
+          "id": "de",
+          "text": "Vorrausgesetzte Abhängigkeit für Tinkers' Construct."
+        },
+        {
+          "id": "en",
+          "text": "Required dependency for Tinkers' Construct."
+        }
+      ],
+      "versions": [
+        {
+          "version": "1.7.2",
+          "dependencies": [ ],
+          "downloadlink": "http://patzleiner.net/download/mods/1.7.2/Mantle-1.7.2-0.2.5.jar",
+          "extension": "jar"
+        }
+      ],
+      "video": "http://www.youtube.com/watch?v=lPOpY419wMM",
+      "website": "http://bit.ly/Z7xU26",
+      "id": "mantle",
+      "type": "forge"
+    },
+    {
+      "name": "Micdoodle Core",
+      "authors": [ "Micdoodle8" ],
+      "descriptions": [
+        {
+          "id": "de",
+          "text": "Diese Library wird von folgende Mods gebraucht:\r\n\r\n- Galacticraft\r\n- Crossbow Mod 2"
+        },
+        {
+          "id": "en",
+          "text": "Core file for Galacticraft and Crossbow Mod 2."
+        }
+      ],
+      "versions": [
+        {
+          "version": "1.6.4",
+          "dependencies": [ ],
+          "downloadlink": "http://patzleiner.net/download/mods/1.6.4/MicdoodleCore-1.6.4-2.0.4.862.jar",
+          "extension": "jar"
+        }
+      ],
+      "video": "http://micdoodle8.com/",
+      "website": "http://micdoodle8.com/",
+      "id": "Micdoodle_Core",
+      "type": "forge"
+    },
+    {
+      "name": "Not Enough Items",
+      "authors": [ "chicken_bones" ],
+      "descriptions": [
+        {
+          "id": "de",
+          "text": "Not Enough Items ist eine Interessante Alternative zu Toomanyitems. Zwar ist die Funktion Blöcke und Gegenstände zu erschaffen die gleiche wie bei TMI allerdings fiel es einem immer schwer den richtigen Block zu finden und diesen zu sortieren.\r\nDie Lösung ist der Not Enough Items Mod, der fast alle schwächen von Toomanyitems ausbessert."
+        },
+        {
+          "id": "en",
+          "text": "NEI is a successor to both Too Many Items and Recipe Book. It arose around the same time as Craft Guide when Alexandria and a few others on the IRC suggested that I merge both Too Many Items and Recipe Book to remove their greatest flaws, ironically too many items, or in the case of recipe book, too many recipies. Too Many Items was great, but the one thing it lacked was an easy way to search and sort your items. When you had a mod like Red Power coming along with 10000 items both TMI and Recipe Book were racking up the pages. Even if you don't want to use NEI for cheating in items, you will likely feel right at home with the Recipe component of the mod."
+        }
+      ],
+      "versions": [
+        {
+          "version": "1.7.10",
+          "dependencies": [ "CodeChickenCore" ],
+          "downloadlink": "http://patzleiner.net/download/mods/1.7.10/NotEnoughItems-1.7.10-1.0.3.51-universal.jar",
+          "extension": "jar"
+        },
+        {
+          "version": "1.7.2",
+          "dependencies": [ "CodeChickenCore" ],
+          "downloadlink": "http://patzleiner.net/download/mods/1.7.2/NotEnoughItems-1.7.2-1.0.2.34-universal.jar",
+          "extension": "jar"
+        },
+        {
+          "version": "1.6.4",
+          "dependencies": [ "CodeChickenCore" ],
+          "downloadlink": "http://patzleiner.net/download/mods/1.6.4/NotEnoughItems%201.6.1.5.jar",
+          "extension": "jar"
+        }
+      ],
+      "video": "https://www.youtube.com/watch?v=ED4oav4HFPE",
+      "website": "http://www.minecraftforum.net/topic/909223-164-smp-chickenbones-mods/",
+      "id": "Not_Enough_Items",
+      "type": "forge"
+    },
+    {
+      "name": "NotEnoughCodecs",
+      "authors": [ "Mikeemoo", "OpenMods team" ],
+      "descriptions": [
+        {
+          "id": "en",
+          "text": "This mod is an optional client-side mod that'll allow users to listen to mp3 and aac streams from the OpenBlocks radio. Don't worry - if the user doesn't have this mod installed, they simpily won't hear the stream."
+        }
+      ],
+      "versions": [
+        {
+          "version": "1.6.4",
+          "dependencies": [ ],
+          "downloadlink": "http://patzleiner.net/download/mods/1.6.4/NotEnoughCodecs-0.1.jar",
+          "extension": "jar"
+        }
+      ],
+      "video": "http://www.youtube.com/watch?v=inTTtLvZoow",
+      "website": "http://openmods.info/",
+      "id": "NotEnoughCodecs",
+      "type": "forge"
+    },
+    {
+      "name": "OpenBlocks",
+      "authors": [ "Mikeemoo", "OpenMods team" ],
+      "descriptions": [
+        {
+          "id": "de",
+          "text": "Openblocks ist eine zufällige Sammlung von Ideen - Ideen die die Gemeinschaft vorgeschlagen hat, oder Ideen, bei denen wir dachten: \r\n\"Warum hat das noch niemand getan?\". Es gibt kein Thema, es ist ganz zufällig."
+        },
+        {
+          "id": "en",
+          "text": "OpenBlocks introduces a range of random ideas into minecraft. There is no theme. Some of it is rather silly! Requires OpenModsLib."
+        }
+      ],
+      "versions": [
+        {
+          "version": "1.6.4",
+          "dependencies": [ ],
+          "downloadlink": "http://patzleiner.net/download/mods/1.6.4/OpenBlocks-1.2.7.jar",
+          "extension": "jar"
+        }
+      ],
+      "video": "http://www.youtube.com/watch?v=inTTtLvZoow",
+      "website": "http://www.openmods.info/",
+      "id": "openblocks",
+      "type": "forge"
+    },
+    {
+      "name": "OpenModsLib",
+      "authors": [ "Mikeemoo", "OpenMods team" ],
+      "descriptions": [
+        {
+          "id": "en",
+          "text": "This is required for all mods by the OpenMods Team."
+        }
+      ],
+      "versions": [
+        {
+          "version": "1.6.4",
+          "dependencies": [ ],
+          "downloadlink": "http://patzleiner.net/download/mods/1.6.4/OpenModsLib-0.4b.jar",
+          "extension": "jar"
+        }
+      ],
+      "video": "http://www.youtube.com/watch?v=inTTtLvZoow",
+      "website": "http://bit.ly/19P7fg6",
+      "id": "OpenModsLib",
+      "type": "forge"
+    },
+    {
+      "name": "OpenPeripheral Addons",
+      "authors": [ "Mikeemoo", "OpenMods team" ],
+      "descriptions": [
+        {
+          "id": "en",
+          "text": "This addons pack extends the OpenPeripheral core with Terminal Glasses, PIMs, Peripheral Proxies and more. To install the addons mod you'll need OpenPeripheral core installed on the clients as well as the server."
+        }
+      ],
+      "versions": [
+        {
+          "version": "1.6.4",
+          "dependencies": [ "OpenPeripheral_Core" ],
+          "downloadlink": "http://patzleiner.net/download/mods/1.6.4/OpenPeripheralAddons-0.1.3.jar",
+          "extension": "jar"
+        }
+      ],
+      "video": "https://www.youtube.com/watch?v=TX21z643q6I",
+      "website": "http://www.minecraftforum.net/topic/1838133-mc-152-openperipheral/",
+      "id": "OpenPeripheral_Addons",
+      "type": "forge"
+    },
+    {
+      "name": "OpenPeripheral Core",
+      "authors": [ "Mikeemoo", "OpenMods team" ],
+      "descriptions": [
+        {
+          "id": "en",
+          "text": "This is an add-on for ComputerCraft which can convert many blocks from all different mods into ComputerCraft peripherals. OpenPeripheral Core isn't required on the client unless you decide to also use OpenPeripheral Addons."
+        }
+      ],
+      "versions": [
+        {
+          "version": "1.6.4",
+          "dependencies": [ "ComputerCraft", "openblocks" ],
+          "downloadlink": "http://patzleiner.net/download/mods/1.6.4/OpenPeripheralCore-0.3.3.jar",
+          "extension": "jar"
+        }
+      ],
+      "video": "https://www.youtube.com/watch?v=TX21z643q6I",
+      "website": "http://www.minecraftforum.net/topic/1838133-mc-152-openperipheral/",
+      "id": "OpenPeripheral_Core",
+      "type": "forge"
+    },
+    {
+      "name": "OptiFine HD Ultra",
+      "authors": [ "sp614x" ],
+      "descriptions": [
+        {
+          "id": "en",
+          "text": "Adds advanced graphical settings to the video options menu as well as grants the ability to easily use high-definition texture packs. Also boosts your FPS."
+        }
+      ],
+      "versions": [
+        {
+          "version": "1.8",
+          "dependencies": [ ],
+          "downloadlink": "http://patzleiner.net/download/mods/1.8/OptiFine_1.8.0_HD_U_C7.jar",
+          "extension": "jar"
+        },
+        {
+          "version": "1.7.10",
+          "dependencies": [ ],
+          "downloadlink": "http://patzleiner.net/download/mods/1.7.10/OptiFine_1.7.10_HD_U_A4.jar",
+          "extension": "jar"
+        },
+        {
+          "version": "1.7.2",
+          "dependencies": [ ],
+          "downloadlink": "http://patzleiner.net/download/mods/1.7.2/OptiFine_1.7.2_HD_U_D1.jar",
+          "extension": "jar"
+        },
+        {
+          "version": "1.6.4",
+          "dependencies": [ ],
+          "downloadlink": "http://patzleiner.net/download/mods/1.6.4/OptiFine_1.6.4_HD_U_C6.jar",
+          "extension": "jar"
+        }
+      ],
+      "video": "http://www.youtube.com/watch?v=AOHkg1tFzJY",
+      "website": "http://www.minecraftforum.net/topic/249637-164-optifine-hd-c6-fps-boost-hd-textures-aa-af-and-much-more/",
+      "id": "OptiFine_HD_Ultra",
+      "type": "forge"
+    },
+    {
+      "name": "Player API",
+      "authors": [ "Divisor" ],
+      "descriptions": [
+        {
+          "id": "en",
+          "text": "Player API is an API which provides access to\r\n- the client class \"EntityPlayerSP\" aka \"bex\" or\r\n- the server class \"EntityPlayerMP\" aka \"jv\" or\r\n- the bukkit class \"EntityPlayer\"\r\nwhile minimizing conflicts between mods."
+        }
+      ],
+      "versions": [
+        {
+          "version": "1.6.4",
+          "dependencies": [ ],
+          "downloadlink": "http://patzleiner.net/download/mods/1.6.4/PlayerAPI.jar",
+          "extension": "jar"
+        }
+      ],
+      "video": "http://www.minecraftforum.net/topic/738498-164api-player-api/",
+      "website": "http://www.minecraftforum.net/topic/738498-164api-player-api/",
+      "id": "Player_API",
+      "type": "forge"
+    },
+    {
+      "name": "PortalGun",
+      "authors": [ "iChun" ],
+      "descriptions": [
+        {
+          "id": "en",
+          "text": "This mod adds the portalgun, as well as several other portal-related aspects, to Minecraft!"
+        }
+      ],
+      "versions": [
+        {
+          "version": "1.6.4",
+          "dependencies": [ "iChun_Util" ],
+          "downloadlink": "http://patzleiner.net/download/mods/1.6.4/PortalGun2.0.2.zip",
+          "extension": "zip"
+        }
+      ],
+      "video": "https://www.youtube.com/watch?v=JL1GcafROUM",
+      "website": "http://ichun.us/mods/portalgun/",
+      "id": "PortalGun",
+      "type": "forge"
+    },
+    {
+      "name": "Project: Red Base",
+      "authors": [ "Mr_TJP" ],
+      "descriptions": [
+        {
+          "id": "de",
+          "text": "Diese Mod fügt die Grundlegenden Gegenstände dieser Mod hinzu. Project: Red ist die Weiterführung von RedPower 2 die Redstone um einiges erweitert.\r\nSie ist die Grundlage für folgende weiteren Mods:\r\n- Project: Red Integration\r\n- Project: Red Transmission\r\n- Project: Red Expansion\r\n- Project: Red Transportation\r\n- Project: Red Exploration\r\n- Project: Red Illumination\r\n- Project: Red Compatability"
+        },
+        {
+          "id": "en",
+          "text": "Project: Red is a replacement for the RedPower 2 mod, since 1.6.2.\r\nThe following Mods need Project: Red Base:\r\n- Project: Red Integration\r\n- Project: Red Transmission\r\n- Project: Red Expansion\r\n- Project: Red Transportation\r\n- Project: Red Exploration\r\n- Project: Red Illumination\r\n- Project: Red Compatability"
+        }
+      ],
+      "versions": [
+        {
+          "version": "1.6.4",
+          "dependencies": [ "CodeChickenCore" ],
+          "downloadlink": "http://patzleiner.net/download/mods/1.6.4/ProjectRedBase-1.6.4-4.3.3.28.jar",
+          "extension": "jar"
+        }
+      ],
+      "video": "https://www.youtube.com/watch?v=xMInmSLlCPU",
+      "website": "http://www.minecraftforum.net/topic/1885652-164forge-multipart-projectred-v40512-10172013/",
+      "id": "project_red_base",
+      "type": "forge"
+    },
+    {
+      "name": "Project: Red Compatability",
+      "authors": [ "Mr_TJP" ],
+      "descriptions": [
+        {
+          "id": "de",
+          "text": "Integriere Project: Red mit anderen Mods, die du benutzt."
+        },
+        {
+          "id": "en",
+          "text": "Integrate ProjectRed with other mods you use."
+        }
+      ],
+      "versions": [
+        {
+          "version": "1.6.4",
+          "dependencies": [ "project_red_base" ],
+          "downloadlink": "http://patzleiner.net/download/mods/1.6.4/ProjectRedCompat-1.6.4-4.3.3.28.jar",
+          "extension": "jar"
+        }
+      ],
+      "video": "https://www.youtube.com/watch?v=xMInmSLlCPU",
+      "website": "http://www.minecraftforum.net/topic/1885652-164forge-multipart-projectred-v40512-10172013/",
+      "id": "project_red_compatability",
+      "type": "forge"
+    },
+    {
+      "name": "Project: Red Expansion + Transportation",
+      "authors": [ "MrTJP" ],
+      "descriptions": [
+        {
+          "id": "de",
+          "text": "- Expansion:\r\nBaue Mechanismen, die mit der Welt interagieren.\r\n- Transportation:\r\nTransportiere, organisiere, speichere und crafte deine Gegenstände automatisch mit Leichtigkeit."
+        },
+        {
+          "id": "en",
+          "text": "- Expansion:\r\nConstruct mechanisms that interact with the world.\r\n- Transportation:\r\nTransport, organize, store your items, and even craft automatically with ease."
+        }
+      ],
+      "versions": [
+        {
+          "version": "1.6.4",
+          "dependencies": [ "project_red_base" ],
+          "downloadlink": "http://patzleiner.net/download/mods/1.6.4/ProjectRedMechanical-BETA-1.6.4-4.3.3.28.jar",
+          "extension": "jar"
+        }
+      ],
+      "video": "https://www.youtube.com/watch?v=PKclsUvBhGY",
+      "website": "http://www.minecraftforum.net/topic/1885652-164forge-multipart-projectred-v40512-10172013/",
+      "id": "Project_Red_Expansion_Transportation",
+      "type": "forge"
+    },
+    {
+      "name": "Project: Red Exploration",
+      "authors": [ "Mr_TJP" ],
+      "descriptions": [
+        {
+          "id": "de",
+          "text": "Entdecke neue Strukturen wie z.B. Vulkane und Marmorhöhlen."
+        },
+        {
+          "id": "en",
+          "text": "Discover new world structures such as Volcanos and Marble caves."
+        }
+      ],
+      "versions": [
+        {
+          "version": "1.6.4",
+          "dependencies": [ "project_red_base" ],
+          "downloadlink": "http://patzleiner.net/download/mods/1.6.4/ProjectRedWorld-1.6.4-4.3.3.28.jar",
+          "extension": "jar"
+        }
+      ],
+      "video": "https://www.youtube.com/watch?v=xMInmSLlCPU",
+      "website": "http://www.minecraftforum.net/topic/1885652-164forge-multipart-projectred-v40512-10172013/",
+      "id": "project_red_exploration",
+      "type": "forge"
+    },
+    {
+      "name": "Project: Red Illumination",
+      "authors": [ "MrTJP" ],
+      "descriptions": [
+        {
+          "id": "de",
+          "text": "Beleuchte dein Zuhause mit Stil. Kein Gebrauch von hässlichen Fackeln."
+        },
+        {
+          "id": "en",
+          "text": "Light up your home in style. No need for ugly torches."
+        }
+      ],
+      "versions": [
+        {
+          "version": "1.6.4",
+          "dependencies": [ "project_red_base" ],
+          "downloadlink": "http://patzleiner.net/download/mods/1.6.4/ProjectRedLighting-1.6.4-4.3.3.28.jar",
+          "extension": "jar"
+        }
+      ],
+      "video": "https://www.youtube.com/watch?v=xMInmSLlCPU",
+      "website": "http://www.minecraftforum.net/topic/1885652-164forge-multipart-projectred-v40512-10172013/",
+      "id": "project_red_illumination",
+      "type": "forge"
+    },
+    {
+      "name": "Project: Red Transmission + Integration",
+      "authors": [ "Mr_TJP" ],
+      "descriptions": [
+        {
+          "id": "de",
+          "text": "- Integration:\r\nNehmen Sie riesige Redstone Apparate und quetschen Sie sie in ein winziges Logikgatter.\r\n- Transmission:\r\nMache aus Redstone einen Draht der über Wände von hunderten von Metern hochlaufen kann."
+        },
+        {
+          "id": "en",
+          "text": "- Integration\r\nTake huge redstone contraptions and squeeze them into a tiny logic gate.\r\n- Transmission\r\nTurn redstone it into a wire that can be run up walls and hundreds of blocks away."
+        }
+      ],
+      "versions": [
+        {
+          "version": "1.6.4",
+          "dependencies": [ "project_red_base" ],
+          "downloadlink": "http://patzleiner.net/download/mods/1.6.4/ProjectRedIntegration-1.6.4-4.3.3.28.jar",
+          "extension": "jar"
+        }
+      ],
+      "video": "https://www.youtube.com/watch?v=xMInmSLlCPU",
+      "website": "http://www.minecraftforum.net/topic/1885652-164forge-multipart-projectred-v40512-10172013/",
+      "id": "project_red_Transmission_Integration",
+      "type": "forge"
+    },
+    {
+      "name": "qCraft",
+      "authors": [ "Google", "MinecraftEdu", "Caltech" ],
+      "descriptions": [
+        {
+          "id": "de",
+          "text": "Der qCraft-Mod erweitert Minecraft um quantenmechanische Elemente. Google und MinecraftEdu wollen dem durchschnittlichen Zocker so das Thema der Quantenphysik näher bringen. Die Modifikation ist zwar keine exakte wissenschaftliche Simulation, aber verarbeitet die grundlegenden Elemente der Quantenhypothese und des Wellen-Teilchen-Dualismus."
+        },
+        {
+          "id": "en",
+          "text": "qCraft is a mod that brings the principles of quantum physics to the world of Minecraft."
+        }
+      ],
+      "versions": [
+        {
+          "version": "1.6.4",
+          "dependencies": [ ],
+          "downloadlink": "http://patzleiner.net/download/mods/1.6.4/qCraft1.02_mc164.zip",
+          "extension": "zip"
+        }
+      ],
+      "video": "http://www.youtube.com/watch?v=uEvaIrT3bA0",
+      "website": "http://qcraft.org/",
+      "id": "qCraft",
+      "type": "forge"
+    },
+    {
+      "name": "Railcraft",
+      "authors": [ "CovertJaguar" ],
+      "descriptions": [
+        {
+          "id": "de",
+          "text": "Diese Mod fügt neue Loren, Schienen und diverse weitere Blöcke hinzu. Loren können automatisch be- und entladen werden, sowie durch verschiedene Detektoren sortiert oder gesteuert werden."
+        },
+        {
+          "id": "en",
+          "text": "Features a fully fleshed out tech tree, with great effort gone into providing a balanced gameplay based around rails and their creation."
+        }
+      ],
+      "versions": [
+        {
+          "version": "1.6.4",
+          "dependencies": [ ],
+          "downloadlink": "http://patzleiner.net/download/mods/1.6.4/Railcraft_1.6.2-8.2.0.0.jar",
+          "extension": "jar"
+        }
+      ],
+      "video": "http://www.youtube.com/watch?v=WpeOuDhrlN0",
+      "website": "http://www.minecraftforum.net/topic/701990-162-railcraft-8000-forge/",
+      "id": "railcraft",
+      "type": "forge"
+    },
+    {
+      "name": "Rei's Minimap",
+      "authors": [ "ReiFNSK" ],
+      "descriptions": [
+        {
+          "id": "de",
+          "text": "Die Rei’s Minimap Mod fügt zum Spiel eine kleine Karte hinzu, mit welcher sich die Minecraft Welt um ein vielfaches besser erkunden lässt. Auch kann man mit dieser Mod wichtige Punkte, wie sein Haus markieren, damit es nicht mehr verloren geht."
+        },
+        {
+          "id": "en",
+          "text": "Features: Fast processing, Beautiful map rendering, Expression of semitransparent blocks, Bump-map expression of height, Expression of dynamically changing lighting, Automatically generate the block colors from your texturepack, Biome color, Entities radar, Cave mapping, Waypoints (Can not teleport), Ingame keyconfig, ZanMinimap frame appearance, and Indication of slime spawning chunks."
+        }
+      ],
+      "versions": [
+        {
+          "version": "1.6.4",
+          "dependencies": [ ],
+          "downloadlink": "http://patzleiner.net/download/mods/1.6.4/Rei%20Minimap%201.6.4.zip",
+          "extension": "zip"
+        }
+      ],
+      "video": "http://www.youtube.com/watch?v=s7D6eFxzrUI",
+      "website": "http://www.minecraftforum.net/topic/482147-162-jul08-reis-minimap-v34-01/",
+      "id": "rei_minimap",
+      "type": "forge"
+    },
+    {
+      "name": "Render Player API",
+      "authors": [ "Divisor" ],
+      "descriptions": [
+        {
+          "id": "en",
+          "text": "Render Player API is a client API which provides access to\r\n- the class \"RenderPlayer\" aka \"bhj\" and\r\n- the class \"ModelBiped\" aka \"bbj\"\r\nwhile minimizing conflicts between mods."
+        }
+      ],
+      "versions": [
+        {
+          "version": "1.6.4",
+          "dependencies": [ ],
+          "downloadlink": "http://patzleiner.net/download/mods/1.6.4/RenderPlayerAPI.jar",
+          "extension": "jar"
+        }
+      ],
+      "video": "http://www.minecraftforum.net/topic/1261354-164api-render-player-api/",
+      "website": "http://www.minecraftforum.net/topic/1261354-164api-render-player-api/",
+      "id": "Render_Player_API",
+      "type": "forge"
+    },
+    {
+      "name": "Shader Mod",
+      "authors": [ "karyonix" ],
+      "descriptions": [
+        {
+          "id": "de",
+          "text": "Der Shader Mod fügt in Minecraft Shaders ein die Minecraft Realistischer machen z.B. Schatten, bewegende Blätter und Gras und vieles mehr. Je nachdem welchen Shader du installierst, werden andere Funktionen hinzugefügt."
+        },
+        {
+          "id": "en",
+          "text": "Adds shaders that can be swapped in-game. Allows use of Depth of Field, Parallax Occlusion and other advanced shading. Continuation of daxnitro's GLSL Shaders."
+        }
+      ],
+      "versions": [
+        {
+          "version": "1.8",
+          "dependencies": [ ],
+          "downloadlink": "http://patzleiner.net/download/mods/1.8/ShadersMod-v2.4.7mc1.8.jar",
+          "extension": "jar"
+        },
+        {
+          "version": "1.7.2",
+          "dependencies": [ ],
+          "downloadlink": "http://patzleiner.net/download/mods/1.7.2/ShadersModCore-v2.3.1-beta-mc1.7.2-f1007.jar",
+          "extension": "jar"
+        },
+        {
+          "version": "1.6.4",
+          "dependencies": [ ],
+          "downloadlink": "http://patzleiner.net/download/mods/1.6.4/ShadersModCore-v2.0.1-beta18-mc1.6.2-f859-ofuc4.jar",
+          "extension": "jar"
+        }
+      ],
+      "video": "https://www.youtube.com/watch?v=ft4Ys-nJs44",
+      "website": "http://www.minecraftforum.net/topic/1544257-glsl-shaders-mod-updated-by-karyonix/",
+      "id": "shader-mod",
+      "type": "forge"
+    },
+    {
+      "name": "Smart Moving",
+      "authors": [ "Divisor" ],
+      "descriptions": [
+        {
+          "id": "en",
+          "text": "The Smart Moving mod provides various additional moving possibilities\r\n- Climbing only via gaps in the walls\r\n- Climbing ladders with different speeds depending on ladder coverage and neighbour blocks\r\n- Alternative animations for flying and falling\r\n- Climbing along ceilings and up vines\r\n- Jumping up & back while climbing\r\n- Configurable sneaking\r\n- Alternative swimming\r\n- Alternative diving\r\n- Alternative flying\r\n- Faster sprinting\r\n- Side & Back jumps\r\n- Charged jumps\r\n- Wall jumping\r\n- Head jumps\r\n- Crawling\r\n- Sliding"
+        }
+      ],
+      "versions": [
+        {
+          "version": "1.6.4",
+          "dependencies": [ "Player_API", "Render_Player_API" ],
+          "downloadlink": "http://patzleiner.net/download/mods/1.6.4/Smart%20Moving%20Universal%20for%20ModLoader%20or%20Minecraft%20Forge%20or%20MCPC+.zip",
+          "extension": "zip"
+        }
+      ],
+      "video": "https://www.youtube.com/watch?v=YtMnV-Zc3-8",
+      "website": "http://www.minecraftforum.net/topic/361430-164smp-smart-moving/",
+      "id": "Smart_Moving",
+      "type": "forge"
+    },
+    {
+      "name": "SpaceCore",
+      "authors": [ "spacechase0" ],
+      "descriptions": [
+        {
+          "id": "en",
+          "text": "This mod is required for all other mods created by spacechase0."
+        }
+      ],
+      "versions": [
+        {
+          "version": "1.7.10",
+          "dependencies": [ ],
+          "downloadlink": "http://patzleiner.net/download/mods/1.7.10/[1.7.10]%20SpaceCore%200.7.8.jar",
+          "extension": "jar"
+        },
+        {
+          "version": "1.7.2",
+          "dependencies": [ ],
+          "downloadlink": "http://patzleiner.net/download/mods/1.7.2/[1.7.2]%20SpaceCore%200.7.6.jar",
+          "extension": "jar"
+        },
+        {
+          "version": "1.6.4",
+          "dependencies": [ ],
+          "downloadlink": "http://patzleiner.net/download/mods/1.6.4/[1.6.4]%20SpaceCore%200.6.2.jar",
+          "extension": "jar"
+        }
+      ],
+      "video": "https://www.youtube.com/watch?v=RowMzS-h8-c",
+      "website": "http://bit.ly/1moHycF",
+      "id": "spacecore",
+      "type": "forge"
+    },
+    {
+      "name": "StatusEffectHUD",
+      "authors": [ "bspkrs" ],
+      "descriptions": [
+        {
+          "id": "en",
+          "text": "Displays your currently active potions/effects without having to open your inventory!"
+        }
+      ],
+      "versions": [
+        {
+          "version": "1.7.10",
+          "dependencies": [ "bspkrsCore" ],
+          "downloadlink": "http://patzleiner.net/download/mods/1.7.10/[1.7.10]StatusEffectHUD-client-1.26.jar",
+          "extension": "jar"
+        },
+        {
+          "version": "1.7.2",
+          "dependencies": [ "bspkrsCore" ],
+          "downloadlink": "http://patzleiner.net/download/mods/1.7.2/[1.7.2]StatusEffectHUD-client-1.21(1.7.2).jar",
+          "extension": "jar"
+        },
+        {
+          "version": "1.6.4",
+          "dependencies": [ "bspkrsCore" ],
+          "downloadlink": "http://patzleiner.net/download/mods/1.6.4/[1.6.4]StatusEffectHUDv1.19.zip",
+          "extension": "zip"
+        }
+      ],
+      "video": "https://www.youtube.com/watch?v=G72Uq6_xR94",
+      "website": "http://www.minecraftforum.net/topic/1114612-172-bspkrs-mods-armorstatushud-directionhud-statuseffecthud/",
+      "id": "StatusEffectHUD",
+      "type": "forge"
+    },
+    {
+      "name": "Thaumcraft",
+      "authors": [ "Azanor" ],
+      "descriptions": [
+        {
+          "id": "de",
+          "text": "In dieser Mod geht es um das Wirken von Magie mit physikalischen Objekten in Form von Essentia, um Wunder zu wirken."
+        },
+        {
+          "id": "en",
+          "text": "Adds Thaumaturgy. Thaumaturgy is the capability of a magician to work miracles. A practitioner of thaumaturgy is a thaumaturge, thaumaturgist or miracle worker. This mod is all about drawing magic from physical objects in the form of Essentia and reshaping it to perform miracles."
+        }
+      ],
+      "versions": [
+        {
+          "version": "1.6.4",
+          "dependencies": [ ],
+          "downloadlink": "http://patzleiner.net/download/mods/1.6.4/Thaumcraft4.1.0g.zip",
+          "extension": "zip"
+        }
+      ],
+      "video": "http://www.youtube.com/watch?v=JhduaDL3enc",
+      "website": "http://www.minecraftforum.net/topic/2011841-thaumcraft-405b-updated-24112013/",
+      "id": "thaumcraft",
+      "type": "forge"
+    },
+    {
+      "name": "Tinkers' Construct",
+      "authors": [ "mDiyo", "progwml6", "Sunstrike", "fuj1n", "pillbox" ],
+      "descriptions": [
+        {
+          "id": "de",
+          "text": "Tinkers' Construct ist eine Mod um Werkzeuge in einer Vielzahl von Möglichkeiten zusammenzubauen. Sie verschwinden nie und können beliebig umbenannt und geändert werden. Wenn du sie einmal erstellt hast, gehören sie für immer dir."
+        },
+        {
+          "id": "en",
+          "text": "A mod about putting tools together in a wide variety of ways, then modifying them until they turn into something else. The tools never disappear and can be named and changed to your heart's desire. Once you make them, they're yours forever."
+        }
+      ],
+      "versions": [
+        {
+          "version": "1.7.2",
+          "dependencies": [ "mantle" ],
+          "downloadlink": "http://patzleiner.net/download/mods/1.7.2/TConstruct-1.7.2-1.6.0.a11.jar",
+          "extension": "jar"
+        },
+        {
+          "version": "1.6.4",
+          "dependencies": [ ],
+          "downloadlink": "http://patzleiner.net/download/mods/1.6.4/TConstruct_mc1.6.4_1.5.4.jar",
+          "extension": "jar"
+        }
+      ],
+      "video": "http://www.youtube.com/watch?v=lPOpY419wMM",
+      "website": "http://www.minecraftforum.net/topic/1659892-164tinkers-construct/",
+      "id": "tinkers_construct",
+      "type": "forge"
+    },
+    {
+      "name": "Tinkers' Mechworks",
+      "authors": [ "mDiyo", "progwml6", "Sunstrike", "fuj1n", "pillbox" ],
+      "descriptions": [
+        {
+          "id": "en",
+          "text": "Adds drawbridges, igniters, signals, and cable buses to Tinkers' Construct."
+        }
+      ],
+      "versions": [
+        {
+          "version": "1.7.2",
+          "dependencies": [ "tinkers_construct" ],
+          "downloadlink": "http://patzleiner.net/download/mods/1.7.2/TMechworks-1.7.2-0.2.5.jar",
+          "extension": "jar"
+        },
+        {
+          "version": "1.6.4",
+          "dependencies": [ "tinkers_construct" ],
+          "downloadlink": "http://patzleiner.net/download/mods/1.6.4/TMechworks_mc1.6.4_0.1.4.2.jar",
+          "extension": "jar"
+        }
+      ],
+      "video": "http://www.youtube.com/watch?v=lPOpY419wMM",
+      "website": "http://bit.ly/Z7xU26",
+      "id": "tinkers_mechworks",
+      "type": "forge"
+    },
+    {
+      "name": "Traincraft",
+      "authors": [ "Traincraft" ],
+      "descriptions": [
+        {
+          "id": "de",
+          "text": "Fügt mehr als 80 Züge, Wagone und andere bewegliche Fahrzeuge zum Spiel hinzu."
+        },
+        {
+          "id": "en",
+          "text": "Adds more than 80 trains, wagons and other moving vehicles to the game."
+        }
+      ],
+      "versions": [
+        {
+          "version": "1.6.4",
+          "dependencies": [ ],
+          "downloadlink": "http://patzleiner.net/download/mods/1.6.4/traincraft-4.1.4_024.jar",
+          "extension": "jar"
+        }
+      ],
+      "video": "https://www.youtube.com/watch?v=bOuvGIHT65Q",
+      "website": "http://bit.ly/RBXBcJ",
+      "id": "Traincraft",
+      "type": "forge"
+    },
+    {
+      "name": "Translocator",
+      "authors": [ "chicken_bones" ],
+      "descriptions": [
+        {
+          "id": "en",
+          "text": "Adds an attachment for chests that cause contents in the chest to be moved to a different chest within a one block space."
+        }
+      ],
+      "versions": [
+        {
+          "version": "1.7.10",
+          "dependencies": [ ],
+          "downloadlink": "http://patzleiner.net/download/mods/1.7.10/Translocator-1.7.10-1.1.1.10-universal.jar",
+          "extension": "jar"
+        },
+        {
+          "version": "1.6.4",
+          "dependencies": [ "ChickenChunks" ],
+          "downloadlink": "http://patzleiner.net/download/mods/1.6.4/Translocator%201.1.0.13.jar",
+          "extension": "jar"
+        }
+      ],
+      "video": "http://www.youtube.com/watch?v=xHR4aWJHq2M",
+      "website": "http://www.minecraftforum.net/topic/909223-164-smp-chickenbones-mods/",
+      "id": "Translocator",
+      "type": "forge"
+    },
+    {
+      "name": "Useful Pets",
+      "authors": [ "spacechase0" ],
+      "descriptions": [
+        {
+          "id": "de",
+          "text": "Mit dieser Mod kann man Haustiere zähmen, sie leveln und dadurch ihre Fähigkeiten verbessern."
+        },
+        {
+          "id": "en",
+          "text": "Allows you to level up tamable pets, as well as have them earn new skills, such as mountable, which lets you ride them. Works with wolves, cats, and pigs."
+        }
+      ],
+      "versions": [
+        {
+          "version": "1.7.10",
+          "dependencies": [ "spacecore" ],
+          "downloadlink": "http://patzleiner.net/download/mods/1.7.10/[1.7.10]%20Useful%20Pets%201.2.3.jar",
+          "extension": "jar"
+        },
+        {
+          "version": "1.7.2",
+          "dependencies": [ "spacecore" ],
+          "downloadlink": "http://patzleiner.net/download/mods/1.7.2/[1.7.2]%20Useful%20Pets%201.2.0.zip",
+          "extension": "zip"
+        },
+        {
+          "version": "1.6.4",
+          "dependencies": [ "spacecore" ],
+          "downloadlink": "http://patzleiner.net/download/mods/1.6.4/[1.6.4]%20Useful%20Pets%201.1.6.zip",
+          "extension": "zip"
+        }
+      ],
+      "video": "http://www.youtube.com/watch?v=HFjYsEXfkrw",
+      "website": "http://spacechase0.com/minecraft/mods/useful-pets/",
+      "id": "useful_pets",
+      "type": "forge"
+    },
+    {
+      "name": "Waila (What Am I Looking At)",
+      "authors": [ "ProfMobius" ],
+      "descriptions": [
+        {
+          "id": "en",
+          "text": "An extension for NEI. Shows what mod an item is from, allowing you to easily group items per mod. Capable of showing the name of blocks and mods in-game on top of your screen, including internal information of specific blocks from BuildCraft and IndustrialCraft 2."
+        }
+      ],
+      "versions": [
+        {
+          "version": "1.8",
+          "dependencies": [ ],
+          "downloadlink": "http://patzleiner.net/download/mods/1.8/Waila-1.6.0_B1_1.8.1.jar",
+          "extension": "jar"
+        },
+        {
+          "version": "1.7.10",
+          "dependencies": [ "Not_Enough_Items" ],
+          "downloadlink": "http://patzleiner.net/download/mods/1.7.10/Waila-1.5.3a_1.7.10.jar",
+          "extension": "jar"
+        },
+        {
+          "version": "1.7.2",
+          "dependencies": [ "Not_Enough_Items" ],
+          "downloadlink": "http://patzleiner.net/download/mods/1.7.2/Waila-1.5.2a_1.7.2.jar",
+          "extension": "jar"
+        },
+        {
+          "version": "1.6.4",
+          "dependencies": [ "Not_Enough_Items" ],
+          "downloadlink": "http://patzleiner.net/download/mods/1.6.4/Waila_1.4.5.zip",
+          "extension": "zip"
+        }
+      ],
+      "video": "https://www.youtube.com/watch?v=LRpNtoYzSYA",
+      "website": "http://www.minecraftforum.net/topic/1846244-164-waila-145/",
+      "id": "Waila",
+      "type": "forge"
+    },
+    {
+      "name": "Wireless Redstone: Chicken Bones Edition",
+      "authors": [ "chicken_bones" ],
+      "descriptions": [
+        {
+          "id": "en",
+          "text": "In its simplest this is a mod that allows you to transmit your redstone state wirelessly. Even if you dont use redstone this mod could still be for you. Found an awesome landscape you'd like to mark, a cool cave to explore, or keep losing your way from base to base? Ever wished that compass pointed somewhere else or there was a way to mark things on a map. Well now there is. With the wireless addons component of this mod you can use wireless signals for navigation."
+        }
+      ],
+      "versions": [
+        {
+          "version": "1.6.4",
+          "dependencies": [ "CodeChickenCore" ],
+          "downloadlink": "http://patzleiner.net/download/mods/1.6.4/WR-CBE%201.4.0.6.jar",
+          "extension": "jar"
+        }
+      ],
+      "video": "http://www.youtube.com/watch?v=vK65eatYD6c",
+      "website": "http://www.minecraftforum.net/topic/909223-164-smp-chickenbones-mods/",
+      "id": "Wireless_Redstone_Chicken_Bones_Edition",
+      "type": "forge"
+    },
+    {
+      "name": "Worldedit CUI",
+      "authors": [ "Mumfrey" ],
+      "descriptions": [
+        {
+          "id": "de",
+          "text": "Diese Mod stellt ein CUI (Client-side User Interface) für das Plugin Worldedit bereit, was dir das Sehen deiner ausgewählten Region im Spiel in Echtzeit möglich macht. So kannst du schneller und genauer mit deiner Worldedit Auswahl arbeiten und es ist besonders hilfreich, wenn du mit Polygonen, Konvexen Hüllen und Zylindern arbeitest."
+        },
+        {
+          "id": "en",
+          "text": "CUI is a client mod that adds an in-game GUI for WorldEdit. It shows your current selection in a visible, adjustable box with the corners clearly marked. This helps admins reduce errors while using WorldEdit, select more complex areas, and visualize the area that they are actually editing. It is an essential tool for any server that uses WorldEdit."
+        }
+      ],
+      "versions": [
+        {
+          "version": "1.7.10",
+          "dependencies": [ ],
+          "downloadlink": "http://patzleiner.net/download/mods/1.7.10/mod_worldeditcui_1.7.10_00_mc1.7.10.litemod",
+          "extension": "jar"
+        },
+        {
+          "version": "1.7.2",
+          "dependencies": [ ],
+          "downloadlink": "http://patzleiner.net/download/mods/1.7.2/mod_worldeditcui_1.7.2_02_lite_mc1.7.2.litemod",
+          "extension": "litemod"
+        },
+        {
+          "version": "1.6.4",
+          "dependencies": [ ],
+          "downloadlink": "http://patzleiner.net/download/mods/1.6.4/mod_worldeditcui_1.6.4_00_lite_mc1.6.4.litemod",
+          "extension": "litemod"
+        }
+      ],
+      "video": "http://www.youtube.com/watch?v=f32Q73BSMYw",
+      "website": "http://www.minecraftforum.net/topic/2171206-172-worldeditcui/",
+      "id": "worldedit-cui",
+      "type": "liteloader"
+    }
+  ],
+  "liteloader": [
+    {
+      "version": "1.7.10-04",
+      "downloadlink": "http://dl.liteloader.com/redist/1.7.10/liteloader-installer-1.7.10-04.jar"
+    },
+    {
+      "version": "1.7.10-03",
+      "downloadlink": "http://dl.liteloader.com/redist/1.7.10/liteloader-installer-1.7.10-03.jar"
+    },
+    {
+      "version": "1.7.10-02",
+      "downloadlink": "http://dl.liteloader.com/redist/1.7.10/liteloader-installer-1.7.10-02.jar"
+    },
+    {
+      "version": "1.7.10-01",
+      "downloadlink": "http://dl.liteloader.com/redist/1.7.10/liteloader-installer-1.7.10-01.jar"
+    },
+    {
+      "version": "1.7.2-04",
+      "downloadlink": "http://dl.liteloader.com/redist/1.7.2/liteloader-installer-1.7.2-04.jar"
+    },
+    {
+      "version": "1.7.2-01",
+      "downloadlink": "http://dl.liteloader.com/redist/1.7.2/liteloader-installer-beta-1.7.2-01.jar"
+    },
+    {
+      "version": "1.6.2-04",
+      "downloadlink": "http://dl.liteloader.com/redist/1.6.2/liteloader-installer-1.6.2-04.jar"
+    },
+    {
+      "version": "1.6.4-01",
+      "downloadlink": "http://dl.liteloader.com/redist/1.6.4/liteloader-installer-1.6.4-01.jar"
+    }
+  ],
+  "downloads": {
+    "feedthebeast": {
+      "website": "http://feed-the-beast.com/",
+      "url": "http://ftb.cursecdn.com/FTB2/launcher/FTB_Launcher.jar",
+      "filename": "FTB_Launcher.jar"
+    }
+  }
+}

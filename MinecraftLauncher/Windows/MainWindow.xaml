@@ -8,7 +8,7 @@
                        xmlns:JBouControls="clr-namespace:McMetroLauncher.JBou.Controls"        
                        xmlns:Extensions="clr-namespace:McMetroLauncher.Extensions"        
                        xmlns:System="clr-namespace:System;assembly=mscorlib"  x:Class="MainWindow" x:Name="window"        
-                       Title="{DynamicResource McMetroLauncher}" 
+                       Title="MINEZ.us Launcher" 
                        Height="610" 
                        Width="950"
                        ForceCursor="True"
@@ -180,19 +180,19 @@
                                 </Setter>
                             </Style>
                         </TabControl.Resources>
-                        <TabItem Header="{DynamicResource News}" >
+                        <TabItem Header="News" >
                             <Grid>
                                 <awe:WebControl x:Name="Webcontrol_news" Margin="10,10,10,0" Source="http://mcupdate.tumblr.com/" />
                                 <Grid HorizontalAlignment="Center" VerticalAlignment="Center" Height="100">
                                     <StackPanel x:Name="lbl_news_loading" Orientation="Horizontal" VerticalAlignment="Top">
-                                        <TextBlock FontSize="60" Text="{DynamicResource LoadingNews}" />
+                                        <TextBlock FontSize="60" Text="Loading News" />
                                         <TextBlock Text="..." FontSize="60" />
                                     </StackPanel>
                                     <Controls:MetroProgressBar x:Name="pb_news_loading" IsIndeterminate="True" VerticalAlignment="Bottom" Height="10" />
                                 </Grid>
                             </Grid>
                         </TabItem>
-                        <TabItem x:Name="tabitem_console" Header="{DynamicResource Console}" >
+                        <TabItem x:Name="tabitem_console" Header="Console" >
                             <RichTextBox x:Name="tb_ausgabe" VerticalScrollBarVisibility="Auto" IsReadOnly="True" VerticalContentAlignment="Top" Margin="10,10,10,0" HorizontalScrollBarVisibility="Auto" TabIndex="2">
                                 <RichTextBox.Resources>
                                     <Style TargetType="{x:Type Paragraph}">
@@ -203,47 +203,46 @@
                         </TabItem>
                     </TabControl>
                     <StackPanel Orientation="Horizontal" Margin="0,0,165,10" Height="69"  HorizontalAlignment="Right"  VerticalAlignment="Bottom" >
-                        <StackPanel Height="69">
-                            <TextBlock x:Name="lbl_Username" Height="22" HorizontalAlignment="Center" Text="{Binding Account.displayName}" />
-                            <TextBlock x:Name="lbl_user_state" Height="22" HorizontalAlignment="Center">
-                                <TextBlock.Style>
-                                    <Style TargetType="{x:Type TextBlock}">
-                                        <Setter Property="Text" Value="{DynamicResource Premium}" />
-                                        <Setter Property="Foreground" Value="Green" />
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding Account.userid, Converter={StaticResource userid_OnlineModeConverter}}" Value="False">
-                                                <Setter Property="Text" Value="{DynamicResource Cracked}" />
-                                                <Setter Property="Foreground" Value="Red" />
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </TextBlock.Style>
-                            </TextBlock>
-                            <Button x:Name="btn_logout" Content="{DynamicResource SwitchUser}" TabIndex="11" HorizontalAlignment="Center"/>
-                        </StackPanel>
-                        <Image x:Name="img_avatar" Height="69" Width="69" Margin="5,0,0,0" Extensions:ImageAsyncHelper.SourceUri="{Binding Path=Account.displayName, Converter={StaticResource Username_Minotar_Converter}, ConverterParameter=69}" />
                         <!--<Image x:Name="img_avatar" Height="69" Width="69" Margin="5,0,0,0">
                             <Extensions:ImageAsyncHelper.SourceUri>
                                 <Binding StringFormat="" Path="Account.displayName" />
                             </Extensions:ImageAsyncHelper.SourceUri>
                         </Image>-->
                     </StackPanel>
-                    <Button x:Name="btn_startMC" Content="{DynamicResource Play}" HorizontalAlignment="Right" Margin="0,0,10,10" VerticalAlignment="Bottom" Width="150" Height="69" FontSize="30" TabIndex="11"/>
+                    <Button x:Name="btn_startMC" Content="Play" HorizontalAlignment="Right" Margin="0,0,252,15" VerticalAlignment="Bottom" Width="368" Height="69" FontSize="30" TabIndex="11"/>
                     <Controls:MetroProgressBar DataContext="{x:Static local:MainWindowViewModel.Instance}" Foreground="{DynamicResource AccentColorBrush}" Height="5" Margin="10,0,10,84" VerticalAlignment="Bottom" IsIndeterminate="{Binding pb_download_IsIndeterminate}" Value="{Binding pb_download_Value}"/>
                     <TextBlock DataContext="{x:Static local:MainWindowViewModel.Instance}" x:Name="lbl_downloadstatus" HorizontalAlignment="Center" Margin="10,0,0,79" VerticalAlignment="Bottom" Height="16" Text="{Binding lbl_downloadstatus_Content}"/>
-                    <Button x:Name="btn_new_profile" Content="{DynamicResource New}" HorizontalAlignment="Left" Margin="10,0,0,10" VerticalAlignment="Bottom" Width="26" Height="33" MinWidth="50" TabIndex="4"/>
-                    <Button x:Name="btn_edit_profile" Content="{DynamicResource Edit}" HorizontalAlignment="Left" Margin="65,0,0,10" VerticalAlignment="Bottom" Width="89" Height="33" TabIndex="5"/>
+                    <Button x:Name="btn_new_profile" Content="New" HorizontalAlignment="Left" Margin="10,0,0,10" VerticalAlignment="Bottom" Width="26" Height="33" MinWidth="50" TabIndex="4"/>
+                    <Button x:Name="btn_edit_profile" Content="Edit" HorizontalAlignment="Left" Margin="65,0,0,10" VerticalAlignment="Bottom" Width="89" Height="33" TabIndex="5"/>
                     <ComboBox ItemsSource="{Binding Profiles}" SelectedItem="{Binding selectedProfile, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" x:Name="cb_profiles" HorizontalAlignment="Left" Margin="10,0,0,48" VerticalAlignment="Bottom" Width="218" Height="31" TabIndex="3"/>
-                    <Button x:Name="btn_delete_profile" Content="{DynamicResource Delete}" HorizontalAlignment="Left" Margin="159,0,0,10" VerticalAlignment="Bottom" Width="69" Height="33" TabIndex="6"/>
-                    <TextBox Text="{Binding Directjoinaddress, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Controls:TextboxHelper.Watermark="{DynamicResource Address}" HorizontalAlignment="Left" Height="32" Margin="246,0,0,10" TextWrapping="Wrap" VerticalAlignment="Bottom" Width="148" VerticalContentAlignment="Center" TabIndex="8"/>
-                    <CheckBox x:Name="cb_direct_join" HorizontalAlignment="Left" Height="32" Content="{DynamicResource DirectJoin}" Margin="246,0,0,48" VerticalAlignment="Bottom" Width="148" VerticalContentAlignment="Center" Padding="6,0,0,0" FontSize="15" ToolTip="{DynamicResource DirectJoinToolTip}" TabIndex="7"/>
+                    <Button x:Name="btn_delete_profile" Content="Delete" HorizontalAlignment="Left" Margin="159,0,0,10" VerticalAlignment="Bottom" Width="69" Height="33" TabIndex="6"/>
+                    <StackPanel Height="69" Margin="771,444,92,10">
+                        <TextBlock x:Name="lbl_Username" Height="22" HorizontalAlignment="Center" Text="{Binding Account.displayName}" />
+                        <TextBlock x:Name="lbl_user_state" Height="22" HorizontalAlignment="Center">
+                            <TextBlock.Style>
+                                <Style TargetType="{x:Type TextBlock}">
+                                    <Setter Property="Text" Value="Premium" />
+                                    <Setter Property="Foreground" Value="Green" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Account.userid, Converter={StaticResource userid_OnlineModeConverter}}" Value="False">
+                                            <Setter Property="Text" Value="Cracked" />
+                                            <Setter Property="Foreground" Value="Red" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+                        <Button x:Name="btn_logout" Content="SwitchUser" TabIndex="11" HorizontalAlignment="Center"/>
+                    </StackPanel>
+                    <Image x:Name="img_avatar" Height="69" Margin="849,444,18,10" Extensions:ImageAsyncHelper.SourceUri="{Binding Account.displayName, ConverterParameter=69, Converter={StaticResource Username_Minotar_Converter}}" />
 
 
                 </Grid>
             </TabItem>
-            <TabItem Header="{DynamicResource Tools}">
+
+            <TabItem Header="{DynamicResource Tools}" IsEnabled="False" Visibility="Hidden">
                 <Grid Margin="24,37,18,-7" Width="900">
-                    <Button Content="{DynamicResource InstallForge}" x:Name="install_forge" Click="forge_installer" Margin="0,10,10,0" Height="74" VerticalAlignment="Top" HorizontalAlignment="Right" Width="165"/>
+                    <Button Content="InstallForge" x:Name="install_forge" Click="forge_installer" Margin="0,10,10,0" Height="74" VerticalAlignment="Top" HorizontalAlignment="Right" Width="165"/>
                     <TextBlock TextWrapping="Wrap" Margin="274,18,180,422" Padding="5" Text="{DynamicResource ForgeDescription}" VerticalAlignment="Top" />
                     <Image Margin="26,10,0,0" Height="74" VerticalAlignment="Top" HorizontalAlignment="Left" Width="243" Source="/resources/images/forge_banner.png"/>
                     <Button Content="{DynamicResource InstallLiteLoader}" x:Name="install_liteloader" Click="liteloader_installer" Margin="0,110,10,0" Height="74" VerticalAlignment="Top" HorizontalAlignment="Right" Width="165"/>
@@ -259,7 +258,8 @@
                     <Image Margin="74,270,0,0" Height="86" VerticalAlignment="Top" HorizontalAlignment="Left" Width="134" Source="/resources/images/web-ftb-logo_0.png"/>
                 </Grid>
             </TabItem>
-            <TabItem Header="{DynamicResource Mods}" x:Name="tabitem_Mods">
+
+            <TabItem Header="{DynamicResource Mods}" x:Name="tabitem_Mods" IsEnabled="False" Visibility="Hidden">
                 <Grid>
                     <ListView x:Name="lb_mods" Margin="10,72,0,35" Width="352" HorizontalAlignment="Left" BorderThickness="0" >
                         <ListView.View>
@@ -272,7 +272,9 @@
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>
                                 <GridViewColumn Header="{DynamicResource Name}" DisplayMemberBinding="{Binding name}" Width="300"/>
-                                <!--<GridViewColumn Header="{DynamicResource Authors" DisplayMemberBinding="{Binding Path=authors, Converter={StaticResource List_String_Converter}}" />-->
+                                <!--   <GridViewColumn Header="{DynamicResource Authors" DisplayMemberBinding="{Binding Path=authors, Converter={StaticResource List_String_Converter}}" /> -->
+
+
                             </GridView>
                         </ListView.View>
                     </ListView>
@@ -331,6 +333,8 @@
                     </ComboBox>
                 </Grid>
             </TabItem>
+
+
             <TabItem Header="{DynamicResource Resourcepacks}" Visibility="Collapsed">
                 <Grid>
                     <ComboBox x:Name="cb_resourcepacksversions" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="350" Height="31"/>
@@ -345,7 +349,7 @@
                     </ListView>
                 </Grid>
             </TabItem>
-            <TabItem Header="{DynamicResource Servers}">
+            <TabItem Header="{DynamicResource Servers}" IsEnabled="False" Visibility="Hidden">
                 <Grid>
                     <TextBlock Margin="10,10,10,10" VerticalAlignment="Top" HorizontalAlignment="Center" Text="{DynamicResource ServersOlder1_7Offline}" Foreground="Red" FontWeight="Bold" FontSize="16"  />
                     <ListView x:Name="lb_servers" Margin="10,42,10,47" HorizontalAlignment="Stretch" BorderThickness="0" >
@@ -446,7 +450,7 @@
                         </ListView.ItemContainerStyle>
                         <ListView.View>
                             <GridView ColumnHeaderContainerStyle="{StaticResource CollapsedHeaderStyle}"  AllowsColumnReorder="False">
-                                <!--Icon-->
+
                                 <GridViewColumn Header="{DynamicResource Icon}" Width="80" >
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
@@ -472,7 +476,7 @@
                                                                             <MultiBinding StringFormat="{}{0} / {1}&#xA;{2}">
                                                                                 <Binding Path="ServerStatus.Players.OnlinePlayers" />
                                                                                 <Binding Path="ServerStatus.Players.MaxPlayers" />
-                                                                                
+
                                                                                 <Binding Path="ServerStatus.Version.Name" />
                                                                             </MultiBinding>
                                                                         </Setter.Value>
@@ -544,7 +548,7 @@
                     </DockPanel>
                 </Grid>
             </TabItem>
-            <TabItem Header="{DynamicResource Infos}">
+            <TabItem Header="{DynamicResource Infos}" Visibility="Hidden">
                 <Grid Margin="24,37,18,-7" Width="900">
                     <StackPanel Orientation="Horizontal" >
                         <chart:RadialGaugeChart ChartTitle="{DynamicResource Ram}" 
@@ -585,7 +589,7 @@
                     </StackPanel>
                 </Grid>
             </TabItem>
-            <TabItem Header="{DynamicResource Settings}">
+            <TabItem Header="{DynamicResource Settings}" IsEnabled="False" Visibility="Hidden">
                 <TabControl ItemContainerStyle="{StaticResource VerticalTabItem}" TabStripPlacement="Left">
                     <TabItem Header="{DynamicResource General}">
                         <StackPanel Orientation="Vertical" Margin="10">
@@ -621,14 +625,7 @@
         <Menu Height="30" VerticalAlignment="Top" HorizontalAlignment="Right" HorizontalContentAlignment="Center">
             <MenuItem Click="Open_Github" Padding="0,0,5,0">
                 <MenuItem.Header>
-                    <StackPanel Orientation="Horizontal">
-                        <Rectangle Height="28" Width="28" Fill="{DynamicResource BlackBrush}">
-                            <Rectangle.OpacityMask>
-                                <ImageBrush ImageSource="/resources/images/light/appbar.social.github.octocat.png"/>
-                            </Rectangle.OpacityMask>
-                        </Rectangle>
-                        <TextBlock Text="{DynamicResource GitHub}" VerticalAlignment="Center" />
-                    </StackPanel>
+                    <StackPanel Orientation="Horizontal"/>
                 </MenuItem.Header>
             </MenuItem>
             <MenuItem Click="Open_Website" Padding="0,0,5,0" >
@@ -639,14 +636,11 @@
                                 <ImageBrush ImageSource="/resources/images/light/appbar.globe.png"/>
                             </Rectangle.OpacityMask>
                         </Rectangle>
-                        <TextBlock Text="{DynamicResource Website}" VerticalAlignment="Center" />
+                        <TextBlock Text="{DynamicResource Website}" VerticalAlignment="Bottom" Margin="0,0,0,6" />
                     </StackPanel>
                 </MenuItem.Header>
             </MenuItem>
-            <MenuItem Header="{DynamicResource Theme}" 
-				ItemsSource="{Binding AppThemes}"
-				ItemContainerStyle="{StaticResource AppThemeMenuItemStyle}" VerticalAlignment="Center" HorizontalAlignment="Center" />
-            <MenuItem Header="{DynamicResource Accent}"
+            <MenuItem Header="Color"
 				ItemsSource="{Binding AccentColors}"
 				ItemContainerStyle="{StaticResource AccentColorMenuItemStyle}" VerticalAlignment="Center" HorizontalAlignment="Center" />
         </Menu>

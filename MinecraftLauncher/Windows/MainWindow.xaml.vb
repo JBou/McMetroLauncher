@@ -67,6 +67,8 @@ Public Class MainWindow
         ' Fügen Sie Initialisierungen nach dem InitializeComponent()-Aufruf hinzu.
         AddHandler ThemeManager.IsThemeChanged, AddressOf IsThemeChanged
         Me.MetroDialogOptions.ColorScheme = MetroDialogColorScheme.Theme
+
+
     End Sub
 
     Private Sub MainWindow_Closed(sender As Object, e As EventArgs) Handles Me.Closed
@@ -109,7 +111,7 @@ Public Class MainWindow
     End Sub
 
     Public Sub Open_Website()
-        Process.Start(GlobalInfos.Website)
+        Process.Start(GlobalInfos.WebsiteNew)
     End Sub
 
     Public Sub Open_Github()
@@ -398,22 +400,8 @@ Public Class MainWindow
             mc = New Process
             If Await Check_Account() Then
                 If Startinfos.Server.JustStarted = False Then
-                    If cb_direct_join.IsChecked = True Then
-                        If MainViewModel.Instance.Directjoinaddress <> Nothing Then
-                            If Startinfos.Server.JustStarted = False Then
-                                If MainViewModel.Instance.Directjoinaddress.Contains(":") = False Then
-                                    Startinfos.Server.ServerAdress = MainViewModel.Instance.Directjoinaddress
-                                Else
-                                    Dim address As String() = MainViewModel.Instance.Directjoinaddress.Split(CChar(":"))
-                                    Startinfos.Server.ServerAdress = address(0)
-                                    Startinfos.Server.ServerPort = address(1)
-                                End If
-                                Startinfos.Server.JustStarted = True
-                            End If
-                        End If
-                    Else
-                        Startinfos.Server.ServerAdress = Nothing
-                    End If
+                    Startinfos.Server.ServerAdress = Nothing
+                End If
                 End If
 
 
@@ -461,7 +449,7 @@ Public Class MainWindow
                     End If
                 End If
             End If
-        End If
+
     End Sub
 
     Private Sub btn_startMC_Click(sender As Object, e As RoutedEventArgs) Handles btn_startMC.Click
@@ -1066,7 +1054,7 @@ Public Class MainWindow
     Sub join_server_from_list()
         If lb_servers.SelectedIndex <> -1 Then
             MainViewModel.Instance.Directjoinaddress = DirectCast(lb_servers.SelectedItem, ServerList.Server).ip
-            cb_direct_join.IsChecked = True
+
             tabitem_Minecraft.IsSelected = True
         End If
     End Sub
@@ -1130,10 +1118,7 @@ Public Class MainWindow
 
 #End Region
 
-    Private Sub cb_direct_join_Click(sender As Object, e As RoutedEventArgs) Handles cb_direct_join.Click
-        MainViewModel.Instance.Settings.DirectJoin = cb_direct_join.IsChecked.Value
-        MainViewModel.Instance.Settings.Save()
-    End Sub
+
 
 #Region "Tools"
 

@@ -8,7 +8,7 @@
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{F184B08F-C81C-45F6-A57F-5ABD9991F28F}</ProjectTypeGuids>
     <OutputType>WinExe</OutputType>
     <RootNamespace>McMetroLauncher</RootNamespace>
-    <AssemblyName>McMetroLauncher</AssemblyName>
+    <AssemblyName>MINEZus Launcher</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <MyType>Custom</MyType>
     <IsWebBootstrapper>true</IsWebBootstrapper>
@@ -39,7 +39,7 @@
     <DefineTrace>true</DefineTrace>
     <IncrementalBuild>true</IncrementalBuild>
     <OutputPath>bin\Debug\</OutputPath>
-    <DocumentationFile>McMetroLauncher.xml</DocumentationFile>
+    <DocumentationFile>MINEZus Launcher.xml</DocumentationFile>
     <NoWarn>42314</NoWarn>
     <WarningsAsErrors>41999,42016,42017,42018,42019,42020,42021,42022,42032,42036</WarningsAsErrors>
     <Prefer32Bit>true</Prefer32Bit>
@@ -53,7 +53,7 @@
     <IncrementalBuild>false</IncrementalBuild>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DocumentationFile>McMetroLauncher.xml</DocumentationFile>
+    <DocumentationFile>MINEZus Launcher.xml</DocumentationFile>
     <NoWarn>42314</NoWarn>
     <WarningsAsErrors>41999,42016,42017,42018,42019,42020,42021,42022,42032,42036</WarningsAsErrors>
     <Prefer32Bit>true</Prefer32Bit>
@@ -382,15 +382,10 @@
       <SubType>Designer</SubType>
       <LastGenOutput>Resources.Designer.vb</LastGenOutput>
     </EmbeddedResource>
-    <Content Include="resources\fonts\Minecraft.ttf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="resources\fonts\Minecraftia.ttf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="resources\fonts\ProFontWindows.ttf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+    <Content Include="resources\fonts\Minecraft.ttf" />
+    <Content Include="resources\fonts\Minecraftia.ttf" />
+    <Content Include="resources\fonts\ProFontWindows.ttf" />
+    <None Include="json-website\modlist.json" />
     <None Include="My Project\app.manifest" />
     <None Include="My Project\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -456,9 +451,7 @@
     <Resource Include="resources\languages\icons\en.png" />
     <Resource Include="resources\languages\icons\vn.png" />
     <Resource Include="resources\languages\icons\es.png" />
-    <Content Include="tools\Pack_xz_Extractor.jar">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+    <Content Include="tools\Pack_xz_Extractor.jar" />
     <Resource Include="minecraft_block.png" />
     <Resource Include="resources\images\web-ftb-logo_0.png" />
     <Resource Include="resources\images\light\appbar.control.play.png" />

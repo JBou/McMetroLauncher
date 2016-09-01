@@ -3,7 +3,7 @@
                       xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
                       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                      Title="{DynamicResource McMetroLauncher}" 
+                      Title="MINEZ.us Launcher"
                       ResizeMode="NoResize" 
                       WindowStartupLocation="CenterScreen" 
                       ShowTitleBar="True"
