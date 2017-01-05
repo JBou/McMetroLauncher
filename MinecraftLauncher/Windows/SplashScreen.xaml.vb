@@ -251,7 +251,7 @@ Public Class SplashScreen
         Main.tb_modsfolder.Text = modsfolder.FullName
         Main.Load_ModVersions()
         Profiles.Get_Profiles()
-        Main.cb_direct_join.IsChecked = MainViewModel.Instance.Settings.DirectJoin
+
         MainViewModel.Instance.Directjoinaddress = MainViewModel.Instance.Settings.ServerAddress
         Try
             If CommandLineArgs.Count > 1 Then
@@ -265,12 +265,7 @@ Public Class SplashScreen
                 'For Each x As String In Parms.AllKeys
                 '    Console.WriteLine(vbTab & "Parm: {0} = {1}", x, Parms(x))
                 'Next
-                If url.Host = "join" Then
-                    If url.Segments.Count > 1 Then
-                        MainViewModel.Instance.Directjoinaddress = url.Segments.ElementAt(1)
-                        Main.cb_direct_join.IsChecked = True
-                    End If
-                End If
+
                 If url.Host = "mods" Then
                     If url.Segments.Count > 2 Then
                         If url.Segments.ElementAt(1).Replace("/", "") = "show" Then

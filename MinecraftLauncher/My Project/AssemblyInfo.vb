@@ -11,11 +11,11 @@ Imports System.Windows
 
 ' Die Werte der Assemblyattribute überprüfen
 
-<Assembly: AssemblyTitle("McMetroLauncher")> 
+<Assembly: AssemblyTitle("MINEZus Launcher")>
 <Assembly: AssemblyDescription("")> 
-<Assembly: AssemblyCompany("")> 
-<Assembly: AssemblyProduct("McMetroLauncher")> 
-<Assembly: AssemblyCopyright("© 2013-2015 JBou")> 
+<Assembly: AssemblyCompany("")>
+<Assembly: AssemblyProduct("MINEZus Launcher")>
+<Assembly: AssemblyCopyright("© 2013-2015 JBou / Crayse1")>
 <Assembly: AssemblyTrademark("")> 
 <Assembly: ComVisible(false)>
 
@@ -42,7 +42,7 @@ Imports System.Windows
 
 
 'Die folgende GUID bestimmt die ID der Typbibliothek, wenn dieses Projekt für COM verfügbar gemacht wird
-<Assembly: Guid("1baf95d5-08c6-43dc-b9d3-8e12843df4f8")> 
+<Assembly: Guid("1baf95d5-08c6-43dc-b9d3-8e12843df4f8")>
 
 ' Versionsinformationen für eine Assembly bestehen aus den folgenden vier Werten:
 '
@@ -55,5 +55,5 @@ Imports System.Windows
 ' übernehmen, indem Sie "*" eingeben:
 ' <Assembly: AssemblyVersion("1.0.*")> 
 
-<Assembly: AssemblyVersion("1.1.5.5")> 
-<Assembly: AssemblyFileVersion("1.1.5.5")> 
+<Assembly: AssemblyVersion("1.1.5.6")>
+<Assembly: AssemblyFileVersion("1.1.5.6")>
