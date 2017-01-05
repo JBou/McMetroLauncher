@@ -438,8 +438,9 @@ Public Class MainWindow
                     If Startinfos.Versionsinfo Is Nothing Then
                         Startinfos.Versionsinfo = Await MinecraftDownloadManager.ParseVersionsInfo(Startinfos.Version)
                         If Startinfos.Versionsinfo.minimumLauncherVersion > supportedLauncherVersion Then
-                            Main.Write(Application.Current.FindResource("VersionNotSupported").ToString, MainWindow.LogLevel.ERROR)
-                        End If
+                        'All versions are supported until further notice.
+                        'Main.Write(Application.Current.FindResource("VersionNotSupported").ToString, MainWindow.LogLevel.ERROR)
+                    End If
                     End If
                     Startinfos.Versionsinfo = Await Startinfos.Versionsinfo.resolve
                     If Await MinecraftDownloadManager.DownloadResources() Then

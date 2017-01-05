@@ -182,8 +182,12 @@
                         </TabControl.Resources>
                         <TabItem Header="News" >
                             <Grid>
-                                <awe:WebControl x:Name="Webcontrol_news" Margin="10,10,10,0" Source="http://mcupdate.tumblr.com/" />
-                                <Grid HorizontalAlignment="Center" VerticalAlignment="Center" Height="100">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="20*"/>
+                                    <RowDefinition Height="191*"/>
+                                </Grid.RowDefinitions>
+                                <awe:WebControl x:Name="Webcontrol_news" Margin="10,10,10,0" Source="http://www.minez.us/" Grid.RowSpan="2" />
+                                <Grid HorizontalAlignment="Center" VerticalAlignment="Center" Height="100" Margin="234,120.865,233,161" Grid.Row="1">
                                     <StackPanel x:Name="lbl_news_loading" Orientation="Horizontal" VerticalAlignment="Top">
                                         <TextBlock FontSize="60" Text="Loading News" />
                                         <TextBlock Text="..." FontSize="60" />
