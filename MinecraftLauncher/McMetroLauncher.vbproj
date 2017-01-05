@@ -400,6 +400,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <None Include="README.md" />
     <None Include="resources\images\minecraft_block.png" />
   </ItemGroup>
   <ItemGroup>
